@@ -4,6 +4,23 @@ export const partnerCopy = {
   dashboard: {
     title: "Partner dashboard",
     subtitle: "Your platform, your brand. Powered by Doculet.",
+    overview: {
+      subtitle: (orgName: string | null) =>
+        orgName
+          ? `${orgName} — integration performance at a glance.`
+          : "Monitor your integration performance.",
+      stats: {
+        totalStudents: { label: "Total Students", sub: "enrolled via your integration" },
+        verifiedStudents: { label: "Verified Students", sub: "KYC complete" },
+        activeApiKeys: { label: "Active API Keys", sub: "in use" },
+      },
+      summary: {
+        withStudents: (verified: number, total: number) =>
+          `${verified} of ${total} students have completed KYC verification.`,
+        empty: "No students enrolled yet. Use the API Keys page to get your integration started.",
+      },
+      cta: "View students",
+    },
     stats: {
       totalVerifications: "Total verifications",
       certificatesIssued: "Certificates issued",

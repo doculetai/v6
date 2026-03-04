@@ -20,10 +20,13 @@ import {
   dashboardShellCopy,
   studentHomeCopy,
 } from '@/config/copy/dashboard-shell';
+import { agentCopy } from '@/config/copy/agent';
+import { partnerCopy } from '@/config/copy/partner';
+import { sponsorCopy } from '@/config/copy/sponsor';
 import type { DashboardRole } from '@/config/roles';
 import { isDashboardRole } from '@/config/roles';
 import { studentDocumentTypeValues } from '@/lib/documents';
-import { cn } from '@/lib/utils';
+import { cn, formatNGN } from '@/lib/utils';
 import { api } from '@/trpc/server';
 
 type DashboardRolePageProps = {
@@ -341,13 +344,7 @@ async function SponsorOverview({
   const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
   const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
   const recentStudents = students.slice(0, 3);
-
-  function formatNGN(kobo: number): string {
-    const naira = kobo / 100;
-    if (naira >= 1_000_000) return `₦${(naira / 1_000_000).toFixed(1)}M`;
-    if (naira >= 1_000) return `₦${(naira / 1_000).toFixed(0)}K`;
-    return `₦${naira.toLocaleString()}`;
-  }
+  const copy = sponsorCopy.dashboard.overview;
 
   return (
     <section className="mx-auto w-full max-w-5xl space-y-6">
@@ -355,52 +352,52 @@ async function SponsorOverview({
         <h1 className="text-2xl font-bold text-foreground md:text-3xl">
           Welcome back, {firstName}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Track your commitments and upcoming disbursements.
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{copy.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={<Banknote className="size-4.5" aria-hidden="true" />}
-          label="Total Committed"
+          label={copy.stats.totalCommitted.label}
           value={overview ? formatNGN(overview.totalCommittedKobo) : '—'}
-          sub="across active sponsorships"
+          sub={copy.stats.totalCommitted.sub}
           accent={Boolean(overview?.totalCommittedKobo)}
         />
         <StatCard
           icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
-          label="Active Students"
+          label={copy.stats.activeStudents.label}
           value={overview ? String(overview.activeStudents) : '—'}
-          sub="currently sponsored"
+          sub={copy.stats.activeStudents.sub}
           accent={Boolean(overview?.activeStudents)}
         />
         <StatCard
           icon={<UserRoundSearch className="size-4.5" aria-hidden="true" />}
-          label="Pending Invites"
+          label={copy.stats.pendingInvites.label}
           value={overview ? String(overview.pendingInvites) : '—'}
-          sub="awaiting your response"
+          sub={copy.stats.pendingInvites.sub}
           accent={Boolean(overview?.pendingInvites)}
         />
         <StatCard
           icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
-          label="Next Disbursement"
+          label={copy.stats.nextDisbursement.label}
           value={
             overview?.nextDisbursementAt
               ? new Intl.DateTimeFormat('en-NG', { day: 'numeric', month: 'short' }).format(
                   overview.nextDisbursementAt,
                 )
-              : 'None scheduled'
+              : copy.stats.nextDisbursement.noneValue
           }
           sub={
-            overview?.nextDisbursementAt ? 'scheduled date' : 'accept a sponsorship first'
+            overview?.nextDisbursementAt
+              ? copy.stats.nextDisbursement.scheduledSub
+              : copy.stats.nextDisbursement.noneSub
           }
         />
       </div>
 
       {recentStudents.length > 0 ? (
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-foreground">Recent Students</h2>
+          <h2 className="text-sm font-semibold text-foreground">{copy.recentStudents.heading}</h2>
           <div className="space-y-2">
             {recentStudents.map((s) => (
               <Card key={s.id} className="border-border bg-card">
@@ -431,15 +428,13 @@ async function SponsorOverview({
       ) : (
         <Card className="border-border bg-card">
           <CardContent className="pt-5">
-            <p className="text-sm text-muted-foreground">
-              No active sponsorships yet. Review pending student requests to get started.
-            </p>
+            <p className="text-sm text-muted-foreground">{copy.recentStudents.empty}</p>
           </CardContent>
         </Card>
       )}
 
       <Button asChild className="min-h-11 w-full sm:w-auto">
-        <Link href="/dashboard/sponsor/students">Review pending requests</Link>
+        <Link href="/dashboard/sponsor/students">{copy.cta}</Link>
       </Button>
     </section>
   );
@@ -455,13 +450,7 @@ async function AgentOverview({
   const firstName = getFirstName(email);
   const [overviewResult] = await Promise.allSettled([caller.agent.getAgentOverview()]);
   const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
-
-  function formatNGN(kobo: number): string {
-    const naira = kobo / 100;
-    if (naira >= 1_000_000) return `₦${(naira / 1_000_000).toFixed(1)}M`;
-    if (naira >= 1_000) return `₦${(naira / 1_000).toFixed(0)}K`;
-    return `₦${naira.toLocaleString()}`;
-  }
+  const copy = agentCopy.dashboard.overview;
 
   return (
     <section className="mx-auto w-full max-w-5xl space-y-6">
@@ -469,38 +458,36 @@ async function AgentOverview({
         <h1 className="text-2xl font-bold text-foreground md:text-3xl">
           Welcome back, {firstName}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Guide your active students through their funding journey.
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{copy.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
-          label="Assigned Students"
+          label={copy.stats.assignedStudents.label}
           value={overview ? String(overview.totalAssignedStudents) : '—'}
-          sub="in your caseload"
+          sub={copy.stats.assignedStudents.sub}
           accent={Boolean(overview?.totalAssignedStudents)}
         />
         <StatCard
           icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
-          label="Active Students"
+          label={copy.stats.activeStudents.label}
           value={overview ? String(overview.activeStudents) : '—'}
-          sub="verified and funded"
+          sub={copy.stats.activeStudents.sub}
           accent={Boolean(overview?.activeStudents)}
         />
         <StatCard
           icon={<Banknote className="size-4.5" aria-hidden="true" />}
-          label="Pending Commissions"
+          label={copy.stats.pendingCommissions.label}
           value={overview ? formatNGN(overview.pendingCommissionsKobo) : '—'}
-          sub="awaiting payout"
+          sub={copy.stats.pendingCommissions.sub}
           accent={Boolean(overview?.pendingCommissionsKobo)}
         />
         <StatCard
           icon={<Sparkles className="size-4.5" aria-hidden="true" />}
-          label="Total Earned"
+          label={copy.stats.totalEarned.label}
           value={overview ? formatNGN(overview.totalEarnedKobo) : '—'}
-          sub="lifetime commissions paid"
+          sub={copy.stats.totalEarned.sub}
           accent={Boolean(overview?.totalEarnedKobo)}
         />
       </div>
@@ -509,14 +496,16 @@ async function AgentOverview({
         <CardContent className="pt-5">
           <p className="text-sm text-muted-foreground">
             {overview?.totalAssignedStudents
-              ? `You have ${overview.totalAssignedStudents} student${overview.totalAssignedStudents === 1 ? '' : 's'} in your caseload. Keep their journeys moving forward.`
-              : 'No students assigned yet. Use the Actions page to invite your first student.'}
+              ? overview.totalAssignedStudents === 1
+                ? copy.caseload.filledSingle(overview.totalAssignedStudents)
+                : copy.caseload.filledPlural(overview.totalAssignedStudents)
+              : copy.caseload.empty}
           </p>
         </CardContent>
       </Card>
 
       <Button asChild className="min-h-11 w-full sm:w-auto">
-        <Link href="/dashboard/agent/students">View your students</Link>
+        <Link href="/dashboard/agent/students">{copy.cta}</Link>
       </Button>
     </section>
   );
@@ -532,6 +521,7 @@ async function PartnerOverview({
   const firstName = getFirstName(email);
   const [overviewResult] = await Promise.allSettled([caller.partner.getPartnerOverview()]);
   const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+  const copy = partnerCopy.dashboard.overview;
 
   return (
     <section className="mx-auto w-full max-w-5xl space-y-6">
@@ -540,32 +530,30 @@ async function PartnerOverview({
           Welcome back, {firstName}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {overview?.organizationName
-            ? `${overview.organizationName} — integration performance at a glance.`
-            : 'Monitor your integration performance.'}
+          {copy.subtitle(overview?.organizationName ?? null)}
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
           icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
-          label="Total Students"
+          label={copy.stats.totalStudents.label}
           value={overview ? String(overview.totalStudents) : '—'}
-          sub="enrolled via your integration"
+          sub={copy.stats.totalStudents.sub}
           accent={Boolean(overview?.totalStudents)}
         />
         <StatCard
           icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
-          label="Verified Students"
+          label={copy.stats.verifiedStudents.label}
           value={overview ? String(overview.verifiedStudents) : '—'}
-          sub="KYC complete"
+          sub={copy.stats.verifiedStudents.sub}
           accent={Boolean(overview?.verifiedStudents)}
         />
         <StatCard
           icon={<FileStack className="size-4.5" aria-hidden="true" />}
-          label="Active API Keys"
+          label={copy.stats.activeApiKeys.label}
           value={overview ? String(overview.activeApiKeys) : '—'}
-          sub="in use"
+          sub={copy.stats.activeApiKeys.sub}
           accent={Boolean(overview?.activeApiKeys)}
         />
       </div>
@@ -574,14 +562,14 @@ async function PartnerOverview({
         <CardContent className="pt-5">
           <p className="text-sm text-muted-foreground">
             {overview?.totalStudents
-              ? `${overview.verifiedStudents} of ${overview.totalStudents} students have completed KYC verification.`
-              : 'No students enrolled yet. Use the API Keys page to get your integration started.'}
+              ? copy.summary.withStudents(overview.verifiedStudents, overview.totalStudents)
+              : copy.summary.empty}
           </p>
         </CardContent>
       </Card>
 
       <Button asChild className="min-h-11 w-full sm:w-auto">
-        <Link href="/dashboard/partner/students">View students</Link>
+        <Link href="/dashboard/partner/students">{copy.cta}</Link>
       </Button>
     </section>
   );

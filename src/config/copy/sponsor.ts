@@ -4,6 +4,25 @@ export const sponsorCopy = {
   dashboard: {
     title: "Sponsor dashboard",
     subtitle: "Fund education with confidence. Every naira tracked.",
+    overview: {
+      subtitle: "Track your commitments and upcoming disbursements.",
+      stats: {
+        totalCommitted: { label: "Total Committed", sub: "across active sponsorships" },
+        activeStudents: { label: "Active Students", sub: "currently sponsored" },
+        pendingInvites: { label: "Pending Invites", sub: "awaiting your response" },
+        nextDisbursement: {
+          label: "Next Disbursement",
+          noneValue: "None scheduled",
+          noneSub: "accept a sponsorship first",
+          scheduledSub: "scheduled date",
+        },
+      },
+      recentStudents: {
+        heading: "Recent Students",
+        empty: "No active sponsorships yet. Review pending student requests to get started.",
+      },
+      cta: "Review pending requests",
+    },
     stats: {
       totalCommitted: "Total committed (₦)",
       studentsSupported: "Students supported",

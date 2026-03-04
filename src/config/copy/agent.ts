@@ -4,6 +4,23 @@ export const agentCopy = {
   dashboard: {
     title: "Agent dashboard",
     subtitle: "Grow your student portfolio. Earn on every verification.",
+    overview: {
+      subtitle: "Guide your active students through their funding journey.",
+      stats: {
+        assignedStudents: { label: "Assigned Students", sub: "in your caseload" },
+        activeStudents: { label: "Active Students", sub: "verified and funded" },
+        pendingCommissions: { label: "Pending Commissions", sub: "awaiting payout" },
+        totalEarned: { label: "Total Earned", sub: "lifetime commissions paid" },
+      },
+      caseload: {
+        filledSingle: (n: number) =>
+          `You have ${n} student in your caseload. Keep their journey moving forward.`,
+        filledPlural: (n: number) =>
+          `You have ${n} students in your caseload. Keep their journeys moving forward.`,
+        empty: "No students assigned yet. Use the Actions page to invite your first student.",
+      },
+      cta: "View your students",
+    },
     stats: {
       totalStudents: "Students in portfolio",
       activeStudents: "Active students",

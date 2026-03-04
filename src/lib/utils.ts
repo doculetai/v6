@@ -12,3 +12,10 @@ export function formatCurrency(amount: number, currency = 'NGN'): string {
 export function formatDocumentType(type: string): string {
   return type.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
+
+export function formatNGN(kobo: number): string {
+  const naira = kobo / 100;
+  if (naira >= 1_000_000) return `₦${(naira / 1_000_000).toFixed(1)}M`;
+  if (naira >= 1_000) return `₦${(naira / 1_000).toFixed(0)}K`;
+  return `₦${naira.toLocaleString()}`;
+}
