@@ -1,5 +1,7 @@
 "use client"
 
+import * as React from "react"
+
 import { cn } from "@/lib/utils"
 
 interface EarningsPanelProps {
@@ -40,10 +42,10 @@ function EarningsPanel({
         aria-valuemin={0}
         aria-valuemax={100}
         className="mb-6 h-2 w-full overflow-hidden rounded-full bg-muted"
+        style={{ '--progress-width': `${rate}%` } as React.CSSProperties}
       >
         <div
-          className="h-full rounded-full bg-primary transition-all duration-300 ease-out"
-          style={{ width: `${rate}%` }}
+          className="h-full rounded-full bg-primary transition-all duration-300 ease-out [width:var(--progress-width)]"
         />
       </div>
 
