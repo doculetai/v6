@@ -115,7 +115,7 @@ export function AdminOperationsReviewDialog({
             variant="outline"
             onClick={handleClose}
             disabled={isLoading}
-            className="min-h-[44px]"
+            className="min-h-11"
           >
             {copy.cancel}
           </Button>
@@ -123,7 +123,7 @@ export function AdminOperationsReviewDialog({
             variant="outline"
             onClick={() => handleDecision('more_info_requested')}
             disabled={isLoading}
-            className="min-h-[44px]"
+            className="min-h-11"
           >
             {copy.requestInfoCta}
           </Button>
@@ -131,14 +131,14 @@ export function AdminOperationsReviewDialog({
             variant="destructive"
             onClick={() => handleDecision('rejected')}
             disabled={isLoading}
-            className="min-h-[44px]"
+            className="min-h-11"
           >
             {copy.rejectCta}
           </Button>
           <Button
             onClick={() => handleDecision('approved')}
             disabled={isLoading}
-            className="min-h-[44px]"
+            className="min-h-11"
           >
             {copy.approveCta}
           </Button>

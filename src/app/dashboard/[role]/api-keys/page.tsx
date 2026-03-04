@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Sparkles } from 'lucide-react';
+import { Key } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Onboarding — Doculet',
+  title: 'API Keys — Doculet',
 };
 
 type PageProps = { params: Promise<{ role: string }> };
 
-export default async function OnboardingPage({ params }: PageProps) {
+export default async function ApiKeysPage({ params }: PageProps) {
   const { role } = await params;
 
-  if (!['student'].includes(role)) {
+  if (!['partner'].includes(role)) {
     notFound();
   }
 
@@ -19,15 +19,15 @@ export default async function OnboardingPage({ params }: PageProps) {
     <section className="space-y-8">
       <header className="flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Onboarding</h1>
-          <p className="text-sm text-muted-foreground sm:text-base">Get started with Doculet</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">API Keys</h1>
+          <p className="text-sm text-muted-foreground sm:text-base">Manage integration keys</p>
         </div>
       </header>
       <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
-        <Sparkles className="size-10 text-muted-foreground/40" aria-hidden="true" />
+        <Key className="size-10 text-muted-foreground/40" aria-hidden="true" />
         <p className="text-sm font-medium text-foreground">This page is being built</p>
         <p className="max-w-xs text-xs text-muted-foreground">
-          Full functionality for <strong>Onboarding</strong> is coming soon. Your navigation and layout are fully wired.
+          Full functionality for <strong>API Keys</strong> is coming soon. Your navigation and layout are fully wired.
         </p>
       </div>
     </section>

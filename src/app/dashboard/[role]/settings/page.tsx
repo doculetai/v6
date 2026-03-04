@@ -48,6 +48,7 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
   if (!settings) {
     return (
       <div className="mx-auto w-full max-w-2xl">
+        <h1 className="sr-only">{agentCopy.settings.title}</h1>
         <Card className="border-border bg-card dark:border-border dark:bg-card">
           <CardHeader className="space-y-3">
             <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />

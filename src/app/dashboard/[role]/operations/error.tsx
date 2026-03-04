@@ -25,7 +25,7 @@ export default function OperationsError({
           </p>
         )}
       </div>
-      <Button variant="outline" onClick={reset} className="min-h-[44px]">
+      <Button variant="outline" onClick={reset} className="min-h-11">
         Try again
       </Button>
     </div>

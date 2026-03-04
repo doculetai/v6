@@ -19,7 +19,7 @@ export default function OverviewError({ error, reset }: OverviewErrorProps) {
   }, [error]);
 
   return (
-    <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
+    <div className="flex min-h-96 flex-col items-center justify-center gap-4 text-center">
       <AlertTriangle className="size-10 text-destructive" aria-hidden="true" />
       <div className="space-y-1">
         <h1 className="text-lg font-semibold text-foreground">{copy.heading}</h1>

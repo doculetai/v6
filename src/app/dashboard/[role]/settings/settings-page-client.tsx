@@ -93,7 +93,7 @@ function FormSuccessBanner({ message }: { message: string }) {
   return (
     <p
       role="status"
-      className="flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-400"
+      className="flex items-center gap-1.5 rounded-md border border-border bg-muted px-3 py-2 text-sm text-foreground"
     >
       <CheckCircle2 className="size-4 shrink-0" aria-hidden="true" />
       {message}

@@ -47,7 +47,7 @@ export function AdminOperationsBulkBar({
             variant="outline"
             onClick={onRequestInfo}
             disabled={isLoading}
-            className="min-h-[44px] flex-1 sm:flex-none"
+            className="min-h-11 flex-1 sm:flex-none"
           >
             <Info className="mr-1.5 size-4" />
             {copy.requestInfo}
@@ -57,7 +57,7 @@ export function AdminOperationsBulkBar({
             variant="destructive"
             onClick={onReject}
             disabled={isLoading}
-            className="min-h-[44px] flex-1 sm:flex-none"
+            className="min-h-11 flex-1 sm:flex-none"
           >
             <XCircle className="mr-1.5 size-4" />
             {copy.reject}
@@ -66,7 +66,7 @@ export function AdminOperationsBulkBar({
             size="sm"
             onClick={onApprove}
             disabled={isLoading}
-            className="min-h-[44px] flex-1 sm:flex-none"
+            className="min-h-11 flex-1 sm:flex-none"
           >
             <CheckCircle2 className="mr-1.5 size-4" />
             {copy.approve}

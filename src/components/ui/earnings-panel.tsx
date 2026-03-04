@@ -1,3 +1,4 @@
+// design-lint-ignore: dynamic percentage width — Tailwind JIT compiles at build time; runtime-computed widths require inline style
 "use client"
 
 import { cn } from "@/lib/utils"

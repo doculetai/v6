@@ -112,7 +112,7 @@ export function AdminOperationsTable({
                       className="size-4 cursor-pointer accent-primary"
                     />
                   </td>
-                  <td className="max-w-[180px] truncate px-4 py-3 font-medium text-foreground dark:text-foreground">
+                  <td className="max-w-44 truncate px-4 py-3 font-medium text-foreground dark:text-foreground">
                     {row.studentEmail}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground dark:text-muted-foreground">
@@ -137,7 +137,7 @@ export function AdminOperationsTable({
                         size="sm"
                         variant="outline"
                         onClick={() => onReview(row)}
-                        className="min-h-[44px] text-xs"
+                        className="min-h-11 text-xs"
                       >
                         {copy.actions.review}
                       </Button>
@@ -192,7 +192,7 @@ export function AdminOperationsTable({
                 size="sm"
                 variant="outline"
                 onClick={() => onReview(row)}
-                className="mt-3 min-h-[44px] w-full text-xs"
+                className="mt-3 min-h-11 w-full text-xs"
               >
                 {copy.actions.review}
               </Button>

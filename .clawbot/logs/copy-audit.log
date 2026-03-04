@@ -174,3 +174,16 @@ fatal: Exiting because of an unresolved conflict.
 [copy-audit] 2026-03-04 09:09:19 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 09:09:19 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 09:09:19 Auto-fixing copy violations (round 1 of max 8)...
+The eslint-watch auto-commit (`c679a65`) already captured my edits to both files. All 6 violations are resolved:
+
+| File | Key | Before | After |
+|------|-----|--------|-------|
+| `agent.ts:144` | `fullNamePlaceholder` | `"Enter your full name"` | `"e.g. Amara Okafor"` |
+| `agent.ts:146` | `phonePlaceholder` | `"+234XXXXXXXXXX"` | `"+234 801 234 5678"` |
+| `agent.ts:150` | `accreditationPlaceholder` | `"Enter your accreditation number"` | `"e.g. AGT-2024-00123"` |
+| `admin.ts:160` | `searchPlaceholder` | `"Search by student…"` | `"Name, email, or student ID…"` |
+| `admin.ts:205` | `notesPlaceholder` | `"Explain your decision…"` | `"Describe your decision clearly — this message is sent directly to the student…"` |
+
+TypeScript exits clean. Working tree is clean.
+Everything up-to-date
+[copy-audit] 2026-03-04 09:15:04 Copy fixes pushed to main.

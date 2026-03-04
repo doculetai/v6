@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Zap } from 'lucide-react';
-import { PageHeader } from '@/components/ui/page-header';
 
 export const metadata: Metadata = {
   title: 'Quick Actions — Doculet',
@@ -18,7 +17,12 @@ export default async function ActionsPage({ params }: PageProps) {
 
   return (
     <section className="space-y-8">
-      <PageHeader title="Quick Actions" subtitle="Shortcuts and bulk operations" />
+      <header className="flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Quick Actions</h1>
+          <p className="text-sm text-muted-foreground sm:text-base">Shortcuts and bulk operations</p>
+        </div>
+      </header>
       <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
         <Zap className="size-10 text-muted-foreground/40" aria-hidden="true" />
         <p className="text-sm font-medium text-foreground">This page is being built</p>
