@@ -775,3 +775,13 @@ error: Please commit or stash them.
 0 violation line(s).
 [a11y-watch] 2026-03-04 13:07:12 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
 [a11y-watch] 2026-03-04 13:07:12 Invoking claude to fix a11y violations (round 1 of max 8)...
+Fixed. Both violations resolved:
+
+- **`commissions/page.tsx`** — wrapped return in `<div className="space-y-6">` with `<h1 className="sr-only">{agentCopy.commissions.title}</h1>`
+- **`activity/page.tsx`** — same pattern with `agentCopy.activity.title`
+
+This matches the established convention in `students/page.tsx`: the `sr-only` h1 in the server component is detectable by static analysis tools (which can't trace into client component boundaries), while the visible heading is still rendered by `PageHeader` inside each client component.
+[a11y-watch] 2026-03-04 13:09:50 Auto-fix committed changes. Pushing to main...
+To https://github.com/doculetai/v6.git
+   641d39a..75ee702  main -> main
+[a11y-watch] 2026-03-04 13:09:50 A11y fixes pushed. FIX_COUNT reset.

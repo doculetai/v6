@@ -545,3 +545,13 @@ Fixed both violations in `src/config/copy/agent.ts:268-271`:
 Typecheck clean, committed.
 Everything up-to-date
 [copy-audit] 2026-03-04 13:04:23 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 13:07:24 Scanning copy config coverage...
+[copy-audit] 2026-03-04 13:07:24 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 13:07:24 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 13:07:24 Auto-fixing copy violations (round 1 of max 8)...
+Fixed. Changed `'Generating your unique referral link…'` to `'Loading your referral link'` — removes the ellipsis-as-placeholder pattern while keeping it functional as a loading state label. TypeScript passes clean, committed.
+To https://github.com/doculetai/v6.git
+   f77da42..641d39a  main -> main
+[copy-audit] 2026-03-04 13:08:08 Copy fixes pushed to main.
