@@ -147,6 +147,72 @@ export const adminCopy = {
     },
   },
 
+  analytics: {
+    title: "Analytics",
+    subtitle: "Platform performance and business intelligence.",
+    period: {
+      week: "By week",
+      month: "By month",
+    },
+    metrics: {
+      approvalRate: "Approval rate",
+      approvalRateSuffix: "of reviewed docs",
+      avgReviewTime: "Avg. review time",
+      avgReviewTimeSuffix: "hours to decision",
+    },
+    chart: {
+      title: "Applications over time",
+      subtitle: "New platform registrations",
+      empty: "No registration data for this period.",
+      ariaLabel: "Bar chart showing platform applications over time",
+    },
+    topUniversities: {
+      title: "Top universities",
+      table: {
+        university: "University",
+        students: "Students",
+      },
+      empty: {
+        title: "No university data",
+        description: "University breakdown appears as students complete onboarding.",
+      },
+    },
+    fundingBreakdown: {
+      title: "Funding type",
+      types: {
+        self: "Self-funded",
+        sponsor: "Sponsored",
+        corporate: "Corporate",
+      },
+      empty: {
+        title: "No funding data",
+        description: "Funding breakdown appears as students register.",
+      },
+    },
+    documentStatus: {
+      title: "Document status",
+      statuses: {
+        pending: "Pending",
+        approved: "Approved",
+        rejected: "Rejected",
+        more_info_requested: "Info needed",
+      },
+      empty: {
+        title: "No documents",
+        description: "Document status breakdown appears as students submit documents.",
+      },
+    },
+    error: {
+      title: "Failed to load analytics",
+      description: "An error occurred loading analytics data. Please try refreshing.",
+      retryLabel: "Try again",
+    },
+    forbidden: {
+      title: "Access restricted",
+      description: "Analytics is only available to admin users.",
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
     documents: "Document review",
