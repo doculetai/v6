@@ -55,7 +55,10 @@ function ActivityTimeline({
   }
 
   return (
-    <ol className={cn("space-y-0", className)} aria-label="Activity timeline">
+    <ol
+      className={cn("space-y-0", className)}
+      aria-label={primitivesCopy.aria.activityTimeline}
+    >
       {sorted.map((item, index) => {
         const tone = item.tone ?? "neutral"
         const isLast = index === sorted.length - 1

@@ -50,7 +50,7 @@ For EVERY component request, walk through ALL layers in order. Skip nothing.
 
 **Layer 4: Implementation** (read `skills/v6-component-builder/`, `skills/shadcn-ui/`, `skills/tailwind-v4-shadcn/`)
 - Follow 5-stage pipeline: Generate → Review → Test → Storybook → Commit
-- Import `cn` from `@/lib/utils`, layout components from `@/components/layout`
+- Import `cn` from `@/lib/utils`, layout primitives from `@/components/layout/content-primitives`
 - Semantic tokens only. `dark:` variants on everything. Mobile-first 375px.
 - Copy from `@/config/copy/` — never hardcode strings
 - Lucide icons only: Nav 24px, Inline 20px, Small 16px
@@ -130,8 +130,9 @@ Self-review — if ANY fail, fix before outputting:
 | `src/components/ui/` | shadcn/ui primitives |
 | `src/components/[role]/` | Role-specific (student, sponsor, university, admin, agent, partner) |
 | `src/components/shared/` | Cross-role shared components |
-| `src/components/layout/` | Section, Container, Grid, Stack |
-| `src/config/copy/` | All UI copy (never hardcode strings) |
+| `src/components/layout/` | DashboardShell, Sidebar, TopBar; content primitives in `content-primitives.ts` |
+| `src/components/layout/content-primitives` | Section, Container, Grid, Stack, PageHeader, PageShell, EmptyState, skeletons |
+| `src/config/copy/` | All UI copy; `primitives.ts` for shared primitive strings (never hardcode) |
 | `server/routers/` | tRPC routers (one file per domain/persona) |
 | `server/db/schema/` | Drizzle schema files (one file per domain) |
 | `server/db/index.ts` | Drizzle client instance |

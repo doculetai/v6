@@ -1737,3 +1737,10 @@ No changes needed. The import architecture is clean.
 To https://github.com/doculetai/v6.git
    316737d..fe379a2  main -> main
 [import-guard] 2026-03-04 18:55:11 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 18:58:12 Scanning import boundaries...
+[import-guard] 2026-03-04 18:58:13 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 18:58:13 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 18:58:13 Auto-fixing import violations (round 1 of max 8)...

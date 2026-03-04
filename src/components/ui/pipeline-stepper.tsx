@@ -1,5 +1,6 @@
 import { CheckCircle2, Circle, CircleDashed, XCircle } from "lucide-react"
 
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 export type PipelineStepStatus = "completed" | "current" | "upcoming" | "blocked" | "failed"
@@ -40,7 +41,7 @@ function labelClass(status: PipelineStepStatus): string {
 
 function PipelineStepper({ steps, className }: PipelineStepperProps) {
   return (
-    <ol className={cn("flex flex-col gap-2", className)} aria-label="Pipeline steps">
+    <ol className={cn("flex flex-col gap-2", className)} aria-label={primitivesCopy.aria.pipelineSteps}>
       {steps.map((step, index) => {
         const isLast = index === steps.length - 1
         return (

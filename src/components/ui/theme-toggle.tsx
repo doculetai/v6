@@ -4,6 +4,7 @@ import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
@@ -25,7 +26,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
         variant="ghost"
         size="sm"
         className={cn("h-8 w-8 p-0", className)}
-        aria-label="Toggle theme"
+        aria-label={primitivesCopy.labels.toggleTheme}
       >
         <Sun className="h-4 w-4" />
       </Button>

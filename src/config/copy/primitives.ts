@@ -5,6 +5,20 @@ export const primitivesCopy = {
     clearFilters: "Clear filters",
     loadingContent: "Loading content",
     searchPlaceholder: "Search by name, reference, or status…",
+    toggleTheme: "Toggle theme",
+  },
+  fileUploader: {
+    dropzone: "Drop file here or click to browse",
+    releaseToUpload: "Release to upload",
+    errorInvalidType: "This file type is not supported",
+    errorFileTooLarge: "File must be under 10MB",
+    constraintsDefault: "PDF, JPG, PNG · Max 10MB",
+  },
+  aria: {
+    activityTimeline: "Activity timeline",
+    pipelineSteps: "Pipeline steps",
+    maskedValueShow: "Show value",
+    maskedValueHide: "Hide value",
   },
   storybook: {
     pageHeader: {

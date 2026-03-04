@@ -2,6 +2,8 @@
 
 import { useCallback, useRef, useState } from "react";
 import { Upload } from "lucide-react";
+
+import { primitivesCopy } from "@/config/copy/primitives";
 import { cn } from "@/lib/utils";
 
 interface FileUploaderProps {
@@ -46,8 +48,8 @@ export function FileUploader({
   maxSize = DEFAULT_MAX_SIZE,
   onUpload,
   multiple = false,
-  dropzoneText = DEFAULT_DROPZONE_TEXT,
-  constraintsText = DEFAULT_CONSTRAINTS_TEXT,
+  dropzoneText = primitivesCopy.fileUploader.dropzone,
+  constraintsText = primitivesCopy.fileUploader.constraintsDefault,
   disabled = false,
   className,
 }: FileUploaderProps) {
@@ -64,13 +66,13 @@ export function FileUploader({
     (file: File) => {
       if (!validateFileType(file, accept)) {
         setState("error");
-        setErrorMessage(ERROR_INVALID_FILE_TYPE);
+        setErrorMessage(primitivesCopy.fileUploader.errorInvalidType);
         return;
       }
 
       if (!validateFileSize(file, maxSize)) {
         setState("error");
-        setErrorMessage(ERROR_FILE_TOO_LARGE);
+        setErrorMessage(primitivesCopy.fileUploader.errorFileTooLarge);
         return;
       }
 
@@ -195,7 +197,7 @@ export function FileUploader({
             isDragHover ? "text-primary" : "text-foreground",
           )}
         >
-          {isDragHover ? "Release to upload" : dropzoneText}
+          {isDragHover ? primitivesCopy.fileUploader.releaseToUpload : dropzoneText}
         </span>
         <span className="text-xs text-muted-foreground">
           {constraintsText}
