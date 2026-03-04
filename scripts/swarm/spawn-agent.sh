@@ -16,14 +16,18 @@ Usage:
   scripts/swarm/spawn-agent.sh \
     --id <task-id> \
     --description <text> \
-    --agent <codex|claude|openclaw|openrouter|gemini|ollama> \
+    --agent <codex|claude|openclaw|openrouter|gemini|ollama|openhands> \
     --message <prompt text> \
+    [--persona <cto|architect|frontend-lead|backend-lead|qa-lead|devops>] \
     [--branch <branch>] \
     [--base <rev>] \
     [--model <model>] \
     [--effort <low|medium|high>] \
     [--install] \
     [--notify]
+
+Personas inject a company-role system prompt before the task prompt.
+Persona files live in .clawbot/personas/<name>.md
 USAGE
 }
 
@@ -37,6 +41,7 @@ MODEL=""
 EFFORT="high"
 DO_INSTALL="false"
 NOTIFY="false"
+PERSONA=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -44,6 +49,7 @@ while [[ $# -gt 0 ]]; do
     --description) DESCRIPTION="$2"; shift 2 ;;
     --agent) AGENT="$2"; shift 2 ;;
     --message) MESSAGE="$2"; shift 2 ;;
+    --persona) PERSONA="$2"; shift 2 ;;
     --branch) BRANCH="$2"; shift 2 ;;
     --base) BASE_REF="$2"; shift 2 ;;
     --model) MODEL="$2"; shift 2 ;;
@@ -100,6 +106,28 @@ fi
 if [[ "$AGENT" == "ollama" ]] && ! command -v ollama >/dev/null 2>&1; then
   echo "ollama not found — install from https://ollama.ai" >&2; exit 1
 fi
+if [[ "$AGENT" == "openhands" ]]; then
+  if ! python3 -c "import openhands" >/dev/null 2>&1; then
+    echo "OpenHands not installed — installing now..." >&2
+    pip3 install openhands-ai --quiet || {
+      echo "OpenHands install failed. Try: pip3 install openhands-ai" >&2; exit 1
+    }
+  fi
+fi
+
+# ── Persona injection: prepend role persona to message if --persona set ──
+if [[ -n "$PERSONA" ]]; then
+  PERSONA_FILE="$ROOT_DIR/.clawbot/personas/${PERSONA}.md"
+  if [[ -f "$PERSONA_FILE" ]]; then
+    PERSONA_CONTENT="$(cat "$PERSONA_FILE")"
+    MESSAGE="${PERSONA_CONTENT}
+
+${MESSAGE}"
+    echo "  Persona: $PERSONA (injected $(wc -c < "$PERSONA_FILE") chars)"
+  else
+    echo "Warning: persona '$PERSONA' not found at $PERSONA_FILE — proceeding without it" >&2
+  fi
+fi
 
 if [[ ! -d "$WORKTREE_PATH/.git" && ! -f "$WORKTREE_PATH/.git" ]]; then
   if ! git rev-parse --verify "$BASE_REF" >/dev/null 2>&1; then
@@ -136,6 +164,7 @@ if [[ -z "$MODEL" ]]; then
     openrouter) MODEL="arcee-ai/trinity-large-preview:free" ;; # 400B MoE, agentic, free
     gemini)     MODEL="gemini-2.0-flash" ;;
     ollama)     MODEL="qwen2.5-coder:32b" ;;
+    openhands)  MODEL="claude-sonnet-4-6" ;; # OpenHands supports any LLM via litellm
     *)
       echo "Unsupported agent: $AGENT" >&2
       exit 1
@@ -154,7 +183,8 @@ case "$AGENT" in
     exec codex --full-auto --model "$MODEL" -c "model_reasoning_effort=$EFFORT" "\$(cat "\$PROMPT_FILE")"
     ;;
   claude)
-    exec claude --model "$MODEL" -p "\$(cat "\$PROMPT_FILE")"
+    # --dangerouslySkipPermissions: no tool-approval prompts — fully autonomous
+    exec claude --model "$MODEL" --dangerouslySkipPermissions -p "\$(cat "\$PROMPT_FILE")"
     ;;
   openclaw)
     exec openclaw agent --agent v6-factory --message "\$(cat "\$PROMPT_FILE")"
@@ -179,6 +209,18 @@ PY
   ollama)
     # Local Ollama — no API key needed, no cost.
     exec ollama run "$MODEL" "\$(cat "\$PROMPT_FILE")"
+    ;;
+  openhands)
+    # OpenHands (formerly OpenDevin) — autonomous software engineer.
+    # Full tool use: browser, terminal, file editor. Runs headlessly via CLI.
+    # Docs: https://docs.all-hands.ai/modules/usage/how-to/headless-mode
+    # Install: pip3 install openhands-ai
+    exec python3 -m openhands.core.main \
+      --task "\$(cat "\$PROMPT_FILE")" \
+      --workspace-base "\$(pwd)" \
+      --runtime local \
+      --model "$MODEL" \
+      --max-iterations 50
     ;;
   *)
     echo "Unsupported agent: $AGENT" >&2
