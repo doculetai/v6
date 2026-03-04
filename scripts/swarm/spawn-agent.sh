@@ -16,7 +16,7 @@ Usage:
   scripts/swarm/spawn-agent.sh \
     --id <task-id> \
     --description <text> \
-    --agent <codex|claude|openclaw> \
+    --agent <codex|claude|openclaw|openrouter|gemini|ollama> \
     --message <prompt text> \
     [--branch <branch>] \
     [--base <rev>] \
@@ -80,16 +80,25 @@ if ! command -v git >/dev/null 2>&1; then
 fi
 
 if [[ "$AGENT" == "codex" ]] && ! command -v codex >/dev/null 2>&1; then
-  echo "codex command not found" >&2
-  exit 1
+  echo "codex command not found" >&2; exit 1
 fi
 if [[ "$AGENT" == "claude" ]] && ! command -v claude >/dev/null 2>&1; then
-  echo "claude command not found" >&2
-  exit 1
+  echo "claude command not found" >&2; exit 1
 fi
 if [[ "$AGENT" == "openclaw" ]] && ! command -v openclaw >/dev/null 2>&1; then
-  echo "openclaw command not found" >&2
-  exit 1
+  echo "openclaw command not found" >&2; exit 1
+fi
+if [[ "$AGENT" == "openrouter" ]] && ! command -v openai >/dev/null 2>&1; then
+  echo "openai CLI not found — run: pip install openai" >&2; exit 1
+fi
+if [[ "$AGENT" == "openrouter" ]] && [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
+  echo "OPENROUTER_API_KEY not set" >&2; exit 1
+fi
+if [[ "$AGENT" == "gemini" ]] && ! command -v gemini >/dev/null 2>&1; then
+  echo "gemini CLI not found — run: npm i -g @google/gemini-cli" >&2; exit 1
+fi
+if [[ "$AGENT" == "ollama" ]] && ! command -v ollama >/dev/null 2>&1; then
+  echo "ollama not found — install from https://ollama.ai" >&2; exit 1
 fi
 
 if [[ ! -d "$WORKTREE_PATH/.git" && ! -f "$WORKTREE_PATH/.git" ]]; then
@@ -121,9 +130,12 @@ printf '%s\n' "$MESSAGE" > "$PROMPT_FILE"
 
 if [[ -z "$MODEL" ]]; then
   case "$AGENT" in
-    codex) MODEL="gpt-5.3-codex" ;;
-    claude) MODEL="claude-sonnet-4-6" ;;
-    openclaw) MODEL="groq/qwen/qwen3-32b" ;;
+    codex)      MODEL="gpt-5.3-codex" ;;
+    claude)     MODEL="claude-sonnet-4-6" ;;
+    openclaw)   MODEL="groq/qwen/qwen3-32b" ;;
+    openrouter) MODEL="qwen/qwen3-235b-a22b:free" ;;
+    gemini)     MODEL="gemini-2.0-flash" ;;
+    ollama)     MODEL="qwen2.5-coder:32b" ;;
     *)
       echo "Unsupported agent: $AGENT" >&2
       exit 1
@@ -138,13 +150,30 @@ cd "$WORKTREE_PATH"
 PROMPT_FILE="$PROMPT_FILE"
 case "$AGENT" in
   codex)
-    exec codex --model "$MODEL" -c "model_reasoning_effort=$EFFORT" "\$(cat "\$PROMPT_FILE")"
+    # --full-auto: workspace-write sandbox, no per-command approval prompts
+    exec codex --full-auto --model "$MODEL" -c "model_reasoning_effort=$EFFORT" "\$(cat "\$PROMPT_FILE")"
     ;;
   claude)
     exec claude --model "$MODEL" -p "\$(cat "\$PROMPT_FILE")"
     ;;
   openclaw)
     exec openclaw agent --agent v6-factory --message "\$(cat "\$PROMPT_FILE")"
+    ;;
+  openrouter)
+    # OpenAI-compatible API via OpenRouter. Requires OPENROUTER_API_KEY env var.
+    exec openai api chat.completions.create \
+      --base-url https://openrouter.ai/api/v1 \
+      -H "HTTP-Referer: https://doculet.ai" \
+      --model "$MODEL" \
+      -m "\$(cat "\$PROMPT_FILE")"
+    ;;
+  gemini)
+    # Google Gemini CLI. Requires GEMINI_API_KEY env var.
+    exec gemini --model "$MODEL" "\$(cat "\$PROMPT_FILE")"
+    ;;
+  ollama)
+    # Local Ollama — no API key needed, no cost.
+    exec ollama run "$MODEL" "\$(cat "\$PROMPT_FILE")"
     ;;
   *)
     echo "Unsupported agent: $AGENT" >&2
