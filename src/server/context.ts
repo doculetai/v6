@@ -1,15 +1,30 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
-import { db } from "@/db";
+import { db } from '@/db';
 
-export async function createContext() {
+export async function createTRPCContext() {
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    { cookies: { getAll: () => cookieStore.getAll() } },
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
+          } catch {
+            // Cookie writes are not always available in Server Components.
+          }
+        },
+      },
+    },
   );
 
   const {
@@ -19,4 +34,6 @@ export async function createContext() {
   return { db, supabase, session, user: session?.user ?? null };
 }
 
-export type Context = Awaited<ReturnType<typeof createContext>>;
+export const createContext = createTRPCContext;
+
+export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
