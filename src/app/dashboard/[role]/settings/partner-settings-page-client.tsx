@@ -38,9 +38,9 @@ type PartnerSettingsCopy = {
     sectionTitle: string;
     sectionDescription: string;
     orgNameLabel: string;
-    orgNamePlaceholder: string;
+    orgNameHint: string;
     webhookLabel: string;
-    webhookPlaceholder: string;
+    webhookHint: string;
     webhookDescription: string;
     saveLabel: string;
     savingLabel: string;
@@ -145,7 +145,7 @@ function PartnerProfileForm({
             <Input
               id="partner-org-name"
               type="text"
-              placeholder={copy.profile.orgNamePlaceholder}
+              placeholder={copy.profile.orgNameHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.organizationName)}
               aria-describedby={
@@ -166,7 +166,7 @@ function PartnerProfileForm({
             <Input
               id="partner-webhook-url"
               type="url"
-              placeholder={copy.profile.webhookPlaceholder}
+              placeholder={copy.profile.webhookHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.webhookUrl)}
               aria-describedby={[

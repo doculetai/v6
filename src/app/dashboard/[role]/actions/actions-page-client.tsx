@@ -51,7 +51,7 @@ function InviteCard({
           <div className="flex flex-col gap-2 sm:flex-row">
             <div className="flex-1 rounded-md border border-border bg-muted/40 px-3 py-2">
               <p className="truncate text-sm text-muted-foreground">
-                {referralUrl ?? copy.linkPlaceholder}
+                {referralUrl ?? copy.linkPending}
               </p>
             </div>
             <Button
