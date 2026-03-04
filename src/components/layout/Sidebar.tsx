@@ -197,7 +197,7 @@ export function Sidebar({
               )}
             >
               {!isCollapsed && (
-                <p className="px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                <p className="px-2 pb-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground/60">
                   {group.label}
                 </p>
               )}
@@ -305,7 +305,7 @@ function NavItemRow({ item, isActive, isCollapsed, paddingY, activeHref }: NavIt
         aria-hidden="true"
       />
       {item.badge && item.badge > 0 ? (
-        <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground">
+        <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
           {item.badge > 99 ? '99+' : item.badge}
         </span>
       ) : null}
@@ -390,7 +390,7 @@ function NavItemRow({ item, isActive, isCollapsed, paddingY, activeHref }: NavIt
         {iconEl}
         <span className="truncate">{item.label}</span>
         {item.badge && item.badge > 0 ? (
-          <span className="ml-auto flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+          <span className="ml-auto flex size-5 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
             {item.badge}
           </span>
         ) : null}

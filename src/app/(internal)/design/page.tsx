@@ -162,8 +162,8 @@ export default function DesignPage() {
             {colorTokens.map((token) => (
               <div key={token.name} className="space-y-1.5">
                 <div
-                  className="h-14 w-full rounded-lg border border-border/60 shadow-sm"
-                  style={{ background: `hsl(var(--${token.name}))` }}
+                  className="h-14 w-full rounded-lg border border-border/60 shadow-sm bg-(--swatch)"
+                  style={{ "--swatch": `hsl(var(--${token.name}))` } as React.CSSProperties}
                 />
                 <p className="text-xs font-medium text-foreground">{token.label}</p>
                 <Code>{`--${token.name}`}</Code>
@@ -220,7 +220,7 @@ export default function DesignPage() {
                   <div key={name} className="flex flex-col items-center gap-1">
                     <div className={`bg-primary/20 rounded ${cls}`} />
                     <p className="text-xs text-muted-foreground">{name}</p>
-                    <p className="text-[10px] text-muted-foreground/60">{size}</p>
+                    <p className="text-xs text-muted-foreground/60">{size}</p>
                   </div>
                 ))}
               </div>
@@ -280,7 +280,7 @@ export default function DesignPage() {
                       className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-card p-3 text-center"
                     >
                       <Icon className="size-5 text-foreground" aria-hidden="true" />
-                      <p className="text-[10px] text-muted-foreground leading-tight">{name}</p>
+                      <p className="text-xs text-muted-foreground leading-tight">{name}</p>
                     </div>
                   ))}
                 </div>

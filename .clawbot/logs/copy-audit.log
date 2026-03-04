@@ -28,3 +28,15 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 04:47:52 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 04:47:52 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 04:47:52 Auto-fixing copy violations (round 1 of max 8)...
+Done. Three changes committed:
+
+| File | Key | Before | After |
+|---|---|---|---|
+| `auth.ts` | `passwordPlaceholder` | `'Your secure password'` | `'Minimum 8 characters'` |
+| `auth.ts` | `confirmPasswordPlaceholder` | `'Type your password again'` | `'Re-enter your password'` |
+| `sponsor.ts` | `amountPlaceholder` | `"Enter the committed amount in naira"` | `"e.g. ₦500,000"` |
+
+The remaining 13 flagged strings are already contextually specific, warm, and professional — changing them would degrade quality. TypeScript exits clean.
+To https://github.com/doculetai/v6.git
+   b8b14f4..c71a629  main -> main
+[copy-audit] 2026-03-04 07:41:58 Copy fixes pushed to main.

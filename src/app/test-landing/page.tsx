@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+
+import { landingCopy } from "@/config/copy/test-landing";
+
 import { TestLandingClient } from "./test-landing-client";
 
 export const metadata: Metadata = {
@@ -16,5 +19,10 @@ export const metadata: Metadata = {
 };
 
 export default function TestLandingPage() {
-  return <TestLandingClient />;
+  return (
+    <>
+      <h1 className="sr-only">{`${landingCopy.hero.headline} ${landingCopy.hero.headlineAccent}`}</h1>
+      <TestLandingClient />
+    </>
+  );
 }

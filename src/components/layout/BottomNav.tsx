@@ -53,7 +53,7 @@ export function BottomNav({ role }: BottomNavProps) {
                 <Icon className="size-6" aria-hidden="true" />
                 <span className="truncate">{item.label}</span>
                 {item.badge && item.badge > 0 ? (
-                  <span className="absolute right-1 top-1 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground dark:bg-primary dark:text-primary-foreground">
+                  <span className="absolute right-1 top-1 rounded-full bg-primary px-1.5 py-0.5 text-xs font-medium text-primary-foreground dark:bg-primary dark:text-primary-foreground">
                     {item.badge}
                   </span>
                 ) : null}
