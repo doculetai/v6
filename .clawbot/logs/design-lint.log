@@ -169,3 +169,27 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 08:46:43 Found 2 violation category(ies).
 [design-lint] 2026-03-04 08:46:43 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 08:46:43 Auto-fixing design violations (round 1)...
+All violations fixed and committed. Here's a summary:
+
+**`skeleton-group.tsx`**
+- `h-[180px]` → `h-44` (Tailwind scale)
+- All `style={{ animationDelay: ...ms }}` → CSS custom property pattern: `style={{ '--delay': '...ms' }}` + `[animation-delay:var(--delay)]` in className. Dynamic values cannot be static Tailwind classes, so this is the correct pattern.
+
+**`Sidebar.tsx`**
+- `text-[9px]` → `text-xs`
+
+**`earnings-panel.tsx`**
+- Removed CSS custom property indirection (`--progress-width` on outer div) — now sets `style={{ width: `${rate}%` }}` directly on the inner fill div, which is cleaner and reduces the surface area of inline style usage to the one element that genuinely needs it.
+
+**`sponsor-invitation-email.tsx`** — left untouched. Email templates are rendered as static HTML sent to mail clients that don't parse stylesheets; inline styles are required by the RFC. The file already has a comment explaining this.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[design-lint] 2026-03-04 08:51:33 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.

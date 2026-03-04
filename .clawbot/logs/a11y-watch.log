@@ -200,3 +200,35 @@ error: Please commit or stash them.
 0 violation line(s).
 [a11y-watch] 2026-03-04 08:46:08 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
 [a11y-watch] 2026-03-04 08:46:08 Invoking claude to fix a11y violations (round 1 of max 8)...
+Both checks are clean. No changes were made because none are needed.
+
+**Summary:** All 7 flagged pages are already WCAG 2.1 AA compliant. Each one calls `<PageHeader title="...">`, and `PageHeader` renders:
+
+```tsx
+// src/components/ui/page-header.tsx:32
+<h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
+```
+
+The a11y-watch tool's static scanner operates at the file level and cannot resolve component imports, so it misses `<h1>` elements rendered by composed components. The check logic for CHECK 2 needs to be updated to also recognize `<PageHeader` as satisfying the `<h1>` requirement — otherwise it will keep producing false positives for every page that uses this pattern.
+[a11y-watch] 2026-03-04 08:49:08 Auto-fix committed changes. Pushing to main...
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[a11y-watch] 2026-03-04 08:49:09 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[a11y-watch] 2026-03-04 08:49:10 ERROR: push failed again. Manual push required.
+[a11y-watch] 2026-03-04 08:49:10 A11y fixes pushed. FIX_COUNT reset.
