@@ -88,6 +88,26 @@ export const agentCopy = {
     downloadStatement: "Download statement",
   },
 
+  activity: {
+    title: "Activity log",
+    subtitle: "Your recent actions across all managed students.",
+    actionLabels: {
+      claimed_student: "Claimed a student",
+      sent_reminder: "Sent a reminder",
+      reviewed_document: "Reviewed document",
+      flagged_issue: "Flagged an issue",
+    },
+    empty: {
+      title: "No activity yet",
+      description: "Your actions will appear here as you manage students.",
+    },
+    error: {
+      title: "Could not load activity",
+      description: "There was a problem loading your activity log. Please try again.",
+      retryCta: "Try again",
+    },
+  },
+
   referral: {
     title: "Referral programme",
     subtitle: "Share your link and earn when students complete their proof of funds.",
