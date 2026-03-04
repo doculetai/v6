@@ -106,7 +106,7 @@ export const sponsorCopy = {
     startCta: "Start verification",
     retryLabel: "Try again",
     overallStatusLabel: "KYC status",
-    comingSoon: "Coming soon",
+    comingSoon: "Advanced verification options unlock as your sponsorship tier grows.",
   },
 
   disbursements: {
@@ -196,7 +196,7 @@ export const sponsorCopy = {
     notifications: {
       title: 'Notifications',
       description: 'Choose which updates you receive by email and in-app alert.',
-      comingSoon: 'Notification settings coming soon.',
+      comingSoon: "You\u2019ll be able to fine-tune your notification preferences here. In the meantime, we\u2019ll email you for all critical account activity.",
       items: {
         disbursement: { label: 'Disbursement updates', description: 'When a payment is processed or fails' },
         studentMilestone: { label: 'Student milestones', description: 'When your sponsored student completes a verification tier' },
