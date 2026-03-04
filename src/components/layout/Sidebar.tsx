@@ -120,18 +120,18 @@ export function Sidebar({
               <Image
                 src="/brand/logos/logo.svg"
                 alt={dashboardShellCopy.logoAlt}
-                width={120}
-                height={28}
+                width={140}
+                height={32}
                 priority
-                className="h-7 w-auto dark:hidden"
+                className="h-8 w-auto dark:hidden"
               />
               <Image
                 src="/brand/logos/logo-dark.svg"
                 alt={dashboardShellCopy.logoAlt}
-                width={120}
-                height={28}
+                width={140}
+                height={32}
                 priority
-                className="hidden h-7 w-auto dark:block"
+                className="hidden h-8 w-auto dark:block"
               />
             </Link>
           )}
@@ -143,9 +143,9 @@ export function Sidebar({
               <Image
                 src="/brand/logos/doculet-shield.svg"
                 alt="Doculet"
-                width={28}
-                height={28}
-                className="size-7"
+                width={36}
+                height={36}
+                className="size-9"
               />
             </Link>
           )}

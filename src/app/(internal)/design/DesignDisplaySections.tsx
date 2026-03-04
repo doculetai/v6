@@ -1,14 +1,21 @@
 import { ActivityTimeline } from '@/components/ui/activity-timeline';
+import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { DataTableShell } from '@/components/ui/data-table-shell';
 import { EmptyState } from '@/components/ui/empty-state';
 import { FilterBar } from '@/components/ui/filter-bar';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { MaskedValue } from '@/components/ui/masked-value';
 import { MetricCard } from '@/components/ui/metric-card';
 import { MoneyValue } from '@/components/ui/money-value';
 import { PageHeader } from '@/components/ui/page-header';
 import { PipelineStepper } from '@/components/ui/pipeline-stepper';
+import { Progress } from '@/components/ui/progress';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { SurfacePanel } from '@/components/ui/surface-panel';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TimestampLabel } from '@/components/ui/timestamp-label';
 
 import { SessionManagementDemo } from './SessionManagementDemo';

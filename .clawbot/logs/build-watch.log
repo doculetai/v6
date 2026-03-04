@@ -99,3 +99,7 @@ error: Please commit or stash them.
 error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [build-watch] 2026-03-04 08:03:00 Running typecheck...
+[build-watch] 2026-03-04 08:03:40 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 08:05:40 Running typecheck...
