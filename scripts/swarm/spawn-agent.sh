@@ -16,7 +16,7 @@ Usage:
   scripts/swarm/spawn-agent.sh \
     --id <task-id> \
     --description <text> \
-    --agent <codex|claude|openclaw|openrouter|gemini|ollama|openhands> \
+    --agent <codex|claude|openclaw|openrouter|deepseek|gemini|ollama|openhands> \
     --message <prompt text> \
     [--persona <cto|architect|frontend-lead|backend-lead|qa-lead|devops>] \
     [--branch <branch>] \
@@ -100,6 +100,9 @@ fi
 if [[ "$AGENT" == "openrouter" ]] && [[ -z "${OPENROUTER_API_KEY:-}" ]]; then
   echo "OPENROUTER_API_KEY not set" >&2; exit 1
 fi
+if [[ "$AGENT" == "deepseek" ]] && [[ -z "${DEEPSEEK_API_KEY:-}" ]]; then
+  echo "DEEPSEEK_API_KEY not set — get one at https://platform.deepseek.com" >&2; exit 1
+fi
 if [[ "$AGENT" == "gemini" ]] && ! command -v gemini >/dev/null 2>&1; then
   echo "gemini CLI not found — run: npm i -g @google/gemini-cli" >&2; exit 1
 fi
@@ -162,6 +165,7 @@ if [[ -z "$MODEL" ]]; then
     claude)     MODEL="claude-sonnet-4-6" ;;
     openclaw)   MODEL="groq/qwen/qwen3-32b" ;;
     openrouter) MODEL="arcee-ai/trinity-large-preview:free" ;; # 400B MoE, agentic, free
+    deepseek)   MODEL="deepseek-coder" ;;                      # DeepSeek Coder — code tasks
     gemini)     MODEL="gemini-2.0-flash" ;;
     ollama)     MODEL="qwen2.5-coder:32b" ;;
     openhands)  MODEL="claude-sonnet-4-6" ;; # OpenHands supports any LLM via litellm
@@ -200,6 +204,20 @@ prompt_file, model = sys.argv[1], sys.argv[2]
 client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.environ["OPENROUTER_API_KEY"])
 msg = open(prompt_file).read()
 r = client.chat.completions.create(model=model, messages=[{"role":"user","content":msg}], max_tokens=4096)
+print(r.choices[0].message.content)
+PY
+    ;;
+  deepseek)
+    # DeepSeek API — OpenAI-compatible. Requires DEEPSEEK_API_KEY env var.
+    # Models: deepseek-chat (general), deepseek-coder (code tasks), deepseek-reasoner (R1)
+    # Pricing: ~$0.14/M input, ~$0.28/M output — very cheap for large codebases.
+    exec python3 - "\$PROMPT_FILE" "$MODEL" <<'PY'
+import sys, os
+from openai import OpenAI
+prompt_file, model = sys.argv[1], sys.argv[2]
+client = OpenAI(base_url="https://api.deepseek.com", api_key=os.environ["DEEPSEEK_API_KEY"])
+msg = open(prompt_file).read()
+r = client.chat.completions.create(model=model, messages=[{"role":"user","content":msg}], max_tokens=8192)
 print(r.choices[0].message.content)
 PY
     ;;
