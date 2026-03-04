@@ -1,5 +1,6 @@
 import { adminRouter } from './routers/admin';
 import { agentRouter } from './routers/agent';
+import { dashboardRouter } from './routers/dashboard';
 import { partnerRouter } from './routers/partner';
 import { sponsorRouter } from './routers/sponsor';
 import { studentRouter } from './routers/student';
@@ -13,6 +14,7 @@ export const appRouter = createTRPCRouter({
   admin: adminRouter,
   agent: agentRouter,
   partner: partnerRouter,
+  dashboard: dashboardRouter,
 });
 
 export type AppRouter = typeof appRouter;
