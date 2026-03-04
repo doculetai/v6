@@ -330,3 +330,22 @@ error: Please commit or stash them.
 0 violation line(s).
 [a11y-watch] 2026-03-04 09:25:37 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
 [a11y-watch] 2026-03-04 09:25:37 Invoking claude to fix a11y violations (round 1 of max 8)...
+All 3 violations fixed and committed. Here's what changed:
+
+**Pattern applied to all 3 pages:** Lifted `<PageHeader>` (which renders the `<h1>`) from client components up to their server `page.tsx` files.
+
+| File | Change |
+|------|--------|
+| `operations/page.tsx` | Added `<PageHeader title subtitle>` wrapping the client |
+| `operations-page-client.tsx` | Removed `PageHeader` import + usage |
+| `students/page.tsx` | Added `<PageHeader title subtitle>` wrapping the client |
+| `students-page-client.tsx` | Removed `PageHeader` from both branches; components now return bare `<EmptyState>` or `<DataTableShell>` |
+| `overview/page.tsx` | Added `<PageHeader title subtitle actions={Button+Link}>` wrapping the client |
+| `overview-page-client.tsx` | Removed `PageHeader`, `Button`, `Link` imports + the header block |
+
+`★ Insight ─────────────────────────────────────`
+This is a common Next.js a11y pitfall: static analysis scans server component files but can't cross the `'use client'` boundary into client components. The fix also improves architecture — static content like page titles belongs in server components (faster first paint, better SEO), while client components focus on interactive state.
+`─────────────────────────────────────────────────`
+[a11y-watch] 2026-03-04 09:32:21 Auto-fix committed changes. Pushing to main...
+Everything up-to-date
+[a11y-watch] 2026-03-04 09:32:21 A11y fixes pushed. FIX_COUNT reset.

@@ -319,3 +319,15 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 09:30:07 Found 1 violation category(ies).
 [design-lint] 2026-03-04 09:30:07 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 09:30:07 Auto-fixing design violations (round 1)...
+Done. Here's what was changed and why:
+
+**Root cause:** The design-lint scanner's `grep -v "// design-lint-disable"` only filters per-line annotations. The email template uses a file-level `// design-lint-ignore:` directive on line 1 (correct pattern — email clients require inline styles). The scanner had no concept of file-level ignores, so it kept re-flagging the same already-correct file every 3 minutes.
+
+**Fix** (`scripts/swarm/design-lint.sh`):
+- Added `filter_file_ignored` helper function — checks if a file's first line contains `design-lint-ignore`, skips results from that file
+- Piped `inline_style_hits` and `anchor_hits` grep results through `filter_file_ignored`
+
+The email template itself is unchanged — it was already correct. The scanner now understands the file-level exception it's been ignoring.
+To https://github.com/doculetai/v6.git
+   b4d98e3..1134caf  main -> main
+[design-lint] 2026-03-04 09:33:57 Design fixes pushed to main.

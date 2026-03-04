@@ -236,3 +236,28 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 09:29:45 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 09:29:45 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 09:29:45 Auto-fixing copy violations (round 1 of max 8)...
+All 8 fixes are committed (the eslint-watch bot picked them up in `b4d98e3`). The working tree is clean.
+
+`★ Insight ─────────────────────────────────────`
+This project runs background "clawbot" agents (eslint-watch, import-guard, copy-audit, design-lint) that continuously commit fixes. When you make manual edits, these agents can race to stage and commit them under their own commit message — worth knowing when tracing which commit introduced a change.
+`─────────────────────────────────────────────────`
+
+Here's a summary of all 8 placeholder fixes applied:
+
+**`agent.ts`**
+- `fullNamePlaceholder` → `"e.g. Adeyemi, John O. — match your government-issued ID"`
+- `phonePlaceholder` → `"+234 801 234 5678"`
+- `regionPlaceholder` → `"e.g. Lagos Island, Abuja FCT, Accra Central"`
+- `accreditationPlaceholder` → `"DOC-AG-2024-XXXXXX"`
+
+**`admin.ts`**
+- `searchPlaceholder` → `"Name, email address, or student ID"`
+- `notesPlaceholder` → `"Be specific — this note goes directly to the student and becomes part of their permanent record"`
+
+**`student-onboarding.copy.ts`**
+- `schoolPlaceholder` → `"Type to find your university"`
+- `programPlaceholder` → `"Search your degree program"`
+
+TypeScript exits clean. All violations resolved.
+Everything up-to-date
+[copy-audit] 2026-03-04 09:34:26 Copy fixes pushed to main.
