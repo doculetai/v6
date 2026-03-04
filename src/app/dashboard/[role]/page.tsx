@@ -6,7 +6,6 @@ import { notFound, redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { dashboardOverviewCopy, dashboardShellCopy } from '@/config/copy/dashboard-shell';
-import type { DashboardRole } from '@/config/roles';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 
