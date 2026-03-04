@@ -132,6 +132,65 @@ export const agentCopy = {
     },
   },
 
+  settings: {
+    title: "Settings",
+    subtitle: "Manage your agent profile and notification preferences.",
+
+    profile: {
+      sectionTitle: "Agent profile",
+      sectionDescription:
+        "Your contact and accreditation details visible to Doculet administrators.",
+      fullNameLabel: "Full name",
+      fullNamePlaceholder: "Enter your full name",
+      phoneLabel: "Phone number",
+      phonePlaceholder: "+234XXXXXXXXXX",
+      regionLabel: "Region",
+      regionPlaceholder: "e.g. Lagos, Abuja, Port Harcourt",
+      accreditationLabel: "Accreditation number",
+      accreditationPlaceholder: "Enter your accreditation number",
+      saveLabel: "Save profile",
+      savingLabel: "Saving\u2026",
+      savedLabel: "Profile saved successfully.",
+    },
+
+    notifications: {
+      sectionTitle: "Notification preferences",
+      sectionDescription: "Choose which events you want to be notified about.",
+      newStudent: "New student assigned",
+      newStudentDescription: "When a student joins using your referral link.",
+      commissionPaid: "Commission paid",
+      commissionPaidDescription: "When a payout is processed to your account.",
+      studentMilestone: "Student milestone",
+      studentMilestoneDescription:
+        "When a student completes KYC, submits documents, or receives a certificate.",
+      accountSecurity: "Account and security alerts",
+      accountSecurityDescription:
+        "Login from a new device or changes to your profile.",
+      saveLabel: "Save preferences",
+      savingLabel: "Saving\u2026",
+      savedLabel: "Preferences saved.",
+    },
+
+    sessions: {
+      sectionTitle: "Active sessions",
+    },
+
+    validation: {
+      fullNameRequired: "Full name is required.",
+      fullNameMax: "Full name must be 120 characters or fewer.",
+      phoneInvalid: "Enter a valid Nigerian phone number (+234XXXXXXXXXX).",
+      accreditationRequired: "Accreditation number is required.",
+    },
+
+    errors: {
+      profileSaveError: "Failed to save profile. Please try again.",
+      notificationSaveError:
+        "Failed to save notification preferences. Please try again.",
+      loadError: "Could not load settings. Please refresh the page.",
+      tryAgain: "Try again",
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
     commissions: "Commissions",
