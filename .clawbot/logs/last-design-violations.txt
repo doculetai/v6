@@ -1,52 +1,57 @@
+line_count='      16'
 line_count='      56'
-line_count='     576'
+line_count='      55'
+line_count='     248'
+line_count='     420'
 line_count='      43'
 line_count='       4'
-line_count='      72'
+line_count='      73'
 line_count='      62'
 line_count='     168'
 line_count='      33'
-line_count='     176'
+line_count='     163'
 line_count='     183'
 line_count='      61'
 line_count='      46'
 line_count='      51'
 line_count='      91'
-line_count='      20'
+line_count='      28'
 line_count='      69'
 line_count='      18'
-line_count='       5'
+line_count='       8'
 line_count='     158'
 line_count='      34'
 line_count='      48'
-line_count='      50'
-line_count='     404'
-line_count='      47'
+line_count='      53'
+line_count='      24'
+line_count='     372'
+line_count='      51'
 line_count='      32'
 line_count='     155'
-line_count='      42'
+line_count='      48'
 line_count='     124'
 line_count='      27'
 line_count='      14'
 line_count='     248'
-line_count='      15'
-line_count='      21'
+line_count='      20'
+line_count='      26'
 line_count='     138'
 line_count='     147'
-line_count='      15'
+line_count='      20'
 line_count='      28'
 line_count='     158'
-line_count='      15'
+line_count='      20'
 line_count='      23'
 line_count='     168'
 line_count='     126'
-line_count='     402'
+line_count='     269'
 line_count='     146'
 line_count='      13'
 line_count='      84'
 line_count='     161'
-line_count='       5'
+line_count='       9'
 line_count='     160'
+line_count='     137'
 line_count='     227'
 line_count='     109'
 line_count='      80'
@@ -63,15 +68,21 @@ line_count='      51'
 line_count='      90'
 line_count='     150'
 line_count='      12'
-line_count='      55'
+line_count='      19'
 line_count='      14'
+line_count='      43'
+line_count='     204'
+line_count='     165'
 line_count='     144'
-line_count='    1073'
+line_count='      64'
+line_count='     131'
+line_count='     267'
 line_count='       3'
 line_count='       3'
 line_count='      39'
 line_count='       3'
 line_count='     147'
+line_count='     178'
 line_count='       3'
 line_count='      50'
 line_count='      20'
@@ -95,7 +106,7 @@ line_count='      91'
 line_count='      45'
 line_count='     109'
 line_count='     194'
-line_count='     158'
+line_count='     159'
 line_count='      92'
 line_count='      48'
 line_count='      28'
@@ -106,7 +117,7 @@ line_count='      21'
 line_count='      13'
 line_count='       5'
 line_count='      47'
-line_count='      94'
+line_count='      93'
 line_count='      67'
 line_count='     400'
 line_count='     110'
@@ -114,7 +125,7 @@ line_count='     262'
 line_count='      39'
 line_count='      42'
 line_count='      49'
-line_count='     100'
+line_count='     102'
 line_count='      86'
 line_count='     138'
 line_count='       1'
@@ -141,115 +152,17 @@ line_count='      37'
 line_count='       7'
 
 
-=== RAW TAILWIND COLORS (use semantic tokens: bg-primary, bg-card, text-foreground, etc.) ===
-/Users/gm/v6/src/app/test-landing/_shared.tsx:122:      <div className="flex w-full max-w-md items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 dark:border-emerald-800 dark:bg-emerald-950/50">
-/Users/gm/v6/src/app/test-landing/_shared.tsx:126:            isDark ? "text-emerald-400" : "text-emerald-600",
-/Users/gm/v6/src/app/test-landing/_shared.tsx:133:              ? "text-emerald-200"
-/Users/gm/v6/src/app/test-landing/_shared.tsx:134:              : "text-emerald-800 dark:text-emerald-200",
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:29:          <span className="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:90:          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-/Users/gm/v6/src/app/test-landing/landing-cta.tsx:42:                <Check className="h-3 w-3 text-emerald-400" />
-/Users/gm/v6/src/components/ui/pipeline-stepper.tsx:20:    return <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
-/Users/gm/v6/src/components/ui/pipeline-stepper.tsx:29:    return <CircleDashed className="size-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-/Users/gm/v6/src/components/ui/metric-card.tsx:63:      ? "text-emerald-600 dark:text-emerald-400"
-/Users/gm/v6/src/components/ui/activity-timeline.tsx:25:  success: "bg-emerald-500",
-/Users/gm/v6/src/components/ui/activity-timeline.tsx:26:  warning: "bg-amber-500",
-/Users/gm/v6/src/components/ui/activity-timeline.tsx:32:  if (tone === "success") return <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
-/Users/gm/v6/src/components/ui/activity-timeline.tsx:33:  if (tone === "warning") return <TriangleAlert className="size-4 text-amber-600 dark:text-amber-400" />
-/Users/gm/v6/src/components/ui/status-badge.tsx:33:    badge: "bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300",
-/Users/gm/v6/src/components/ui/status-badge.tsx:34:    dot: "bg-emerald-500",
-/Users/gm/v6/src/components/ui/status-badge.tsx:37:    badge: "bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300",
-/Users/gm/v6/src/components/ui/status-badge.tsx:38:    dot: "bg-red-500",
-/Users/gm/v6/src/components/ui/status-badge.tsx:41:    badge: "bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300",
-/Users/gm/v6/src/components/ui/status-badge.tsx:42:    dot: "bg-amber-500",
-/Users/gm/v6/src/components/ui/session-management.tsx:72:      className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200"
-/Users/gm/v6/src/components/ui/session-management.tsx:93:        session.isCurrent && "border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/10",
-
 === INLINE STYLES (convert to Tailwind classes) ===
-/Users/gm/v6/src/app/(internal)/design/page.tsx:166:                  style={{ background: `hsl(var(--${token.name}))` }}
-/Users/gm/v6/src/app/test-landing/_shared.tsx:54:      style={transitionDelay ? { transitionDelay } : undefined}
-/Users/gm/v6/src/components/ui/progress.tsx:25:        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-/Users/gm/v6/src/components/layout/TopBar.tsx:26:        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+/Users/gm/v6/src/app/test-landing/_shared.tsx:53:      style={shouldAnimate && delay > 0 ? { "--reveal-delay": `${delay}ms` } as React.CSSProperties : undefined}
+/Users/gm/v6/src/components/ui/progress.tsx:25:        style={{ "--p-offset": `-${100 - (value || 0)}%` } as React.CSSProperties}
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:35:        <h1 style={{ marginTop: 0, fontSize: '24px', lineHeight: '32px' }}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:38:        <p style={{ fontSize: '16px', lineHeight: '24px' }}>{emailCopy.sponsorInvitation.body}</p>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:39:        <p style={{ fontSize: '14px', lineHeight: '22px', marginBottom: '24px' }}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:71:        <p style={{ marginTop: '24px', fontSize: '12px', color: '#4b5563', lineHeight: '18px' }}>
 
-=== RAW <a href="/..."> (use next/link <Link> for internal navigation) ===
-/Users/gm/v6/src/app/test-landing/_shared.tsx:84:        <a href="/signup">
-/Users/gm/v6/src/app/test-landing/_shared.tsx:99:        <a href="/verify">
-
 === ARBITRARY PIXEL SIZES (use Tailwind scale: text-sm, w-64, etc.) ===
-/Users/gm/v6/src/app/(internal)/design/SidebarPreviews.tsx:36:          <div className="h-[520px]">
-/Users/gm/v6/src/app/(internal)/design/SidebarPreviews.tsx:45:          <div className="h-[520px]">
-/Users/gm/v6/src/app/(internal)/design/page.tsx:223:                    <p className="text-[10px] text-muted-foreground/60">{size}</p>
-/Users/gm/v6/src/app/(internal)/design/page.tsx:283:                      <p className="text-[10px] text-muted-foreground leading-tight">{name}</p>
-/Users/gm/v6/src/app/test-landing/landing-university.tsx:16:            <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-[#4747D4]">
-/Users/gm/v6/src/app/test-landing/landing-university.tsx:25:            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-[17px]">
-/Users/gm/v6/src/app/test-landing/landing-university.tsx:42:                    <h3 className="text-[15px] font-bold text-foreground">
-/Users/gm/v6/src/app/test-landing/landing-university.tsx:60:              className="inline-flex min-h-[52px] items-center gap-2 rounded-xl border border-[#000080] bg-[#000080] px-8 text-[15px] font-bold text-white transition-colors hover:bg-[#00006a]"
-/Users/gm/v6/src/app/test-landing/landing-university.tsx:64:            <p className="text-[13px] text-muted-foreground">
-/Users/gm/v6/src/app/test-landing/landing-problem.tsx:12:        <div className="absolute left-1/2 top-0 h-[600px] w-[900px] -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#4747D4]/20 blur-[120px]" />
-/Users/gm/v6/src/app/test-landing/landing-problem.tsx:22:            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/70 md:mt-6 md:text-[17px]">
-/Users/gm/v6/src/app/test-landing/landing-problem.tsx:39:                  <div className="absolute bottom-4 right-5 font-serif text-[2.5rem] font-bold leading-none text-white/[0.05] md:right-6 md:text-[3rem]">
-/Users/gm/v6/src/app/test-landing/landing-problem.tsx:47:                    <h3 className="mt-5 text-[16px] font-bold text-white">
-/Users/gm/v6/src/app/test-landing/landing-nav.tsx:31:          <span className="text-[15px] font-bold tracking-tight text-foreground">
-/Users/gm/v6/src/app/test-landing/landing-nav.tsx:52:                className="flex min-h-[52px] items-center rounded-xl px-4 text-base font-medium text-foreground transition-colors hover:bg-muted"
-/Users/gm/v6/src/app/test-landing/landing-nav.tsx:64:            className="flex min-h-[52px] items-center justify-center rounded-xl border border-border text-[15px] font-semibold text-foreground transition-colors hover:bg-muted"
-/Users/gm/v6/src/app/test-landing/landing-nav.tsx:71:            className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-[#000080] text-[15px] font-bold text-white transition-colors hover:bg-[#00006a]"
-/Users/gm/v6/src/app/test-landing/landing-nav.tsx:114:            <span className="text-[15px] font-bold tracking-tight text-foreground">
-/Users/gm/v6/src/app/test-landing/landing-nav.tsx:125:                  className="inline-flex min-h-[44px] items-center text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-/Users/gm/v6/src/app/test-landing/landing-nav.tsx:136:              className="hidden min-h-[44px] items-center text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:inline-flex"
-/Users/gm/v6/src/app/test-landing/landing-nav.tsx:143:              className="hidden min-h-[44px] rounded-full bg-[#000080] px-5 text-[13px] font-semibold text-white hover:bg-[#00006a] md:inline-flex"
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:25:            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/60">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:29:          <span className="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:36:          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:41:            <p className="text-[22px] font-bold tracking-tight text-white">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:44:            <p className="mt-0.5 text-[13px] text-white/60">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:51:            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/40">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:54:            <p className="mt-1 text-[28px] font-bold tabular-nums tracking-tight text-white">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:57:            <p className="mt-0.5 text-[12px] text-white/50">{cert.source}</p>
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:63:              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/40">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:66:              <p className="mt-0.5 text-[12px] font-semibold text-[#8080FF]">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:71:              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/40">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:74:              <p className="mt-0.5 text-[12px] font-semibold text-white/70">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:82:            <p className="text-center font-mono text-[10px] tracking-widest text-white/30">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:91:          <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/50">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:100:        <span className="text-[12px] font-semibold text-foreground">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:140:              <span className="inline-flex items-center gap-2 rounded-full border border-[#4747D4]/20 bg-[#4747D4]/5 px-3.5 py-1.5 text-[12px] font-bold uppercase tracking-[0.12em] text-[#4747D4]">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:147:              <h1 className="mt-6 font-serif text-[2.75rem] font-bold leading-[1.02] tracking-[-0.03em] text-foreground sm:text-[3.25rem] md:text-[4rem] lg:text-[4.5rem]">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:157:              <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground md:text-[17px]">
-/Users/gm/v6/src/app/test-landing/landing-hero.tsx:168:                <p className="mt-4 text-[13px] text-muted-foreground">
-/Users/gm/v6/src/app/test-landing/landing-steps.tsx:13:            <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-[#4747D4]">
-/Users/gm/v6/src/app/test-landing/landing-steps.tsx:42:                    <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#000080] text-[13px] font-bold text-white ring-4 ring-[#000080]/10">
-/Users/gm/v6/src/app/test-landing/landing-footer.tsx:19:            <span className="text-[13px] font-bold text-foreground">
-/Users/gm/v6/src/app/test-landing/landing-footer.tsx:23:          <p className="text-[12px] text-muted-foreground">
-/Users/gm/v6/src/app/test-landing/landing-footer.tsx:30:          <p className="text-[12px] text-muted-foreground">
-/Users/gm/v6/src/app/test-landing/landing-footer.tsx:37:              className="inline-flex min-h-[44px] items-center text-[12px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-/Users/gm/v6/src/app/test-landing/landing-cta.tsx:13:        <div className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-[#4747D4]/15 blur-[120px]" />
-/Users/gm/v6/src/app/test-landing/landing-cta.tsx:21:          <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-white/70 md:text-[17px]">
-/Users/gm/v6/src/app/test-landing/landing-cta.tsx:40:                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-[12px] font-medium text-white/60"
-/Users/gm/v6/src/app/test-landing/landing-security.tsx:22:              <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground md:text-[17px]">
-/Users/gm/v6/src/app/test-landing/landing-security.tsx:33:                    <p className="text-[13px] font-bold text-foreground">
-/Users/gm/v6/src/app/test-landing/landing-security.tsx:36:                    <p className="text-[12px] text-muted-foreground">
-/Users/gm/v6/src/app/test-landing/landing-security.tsx:45:                      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
-/Users/gm/v6/src/app/test-landing/landing-security.tsx:48:                      <p className="mt-0.5 text-[15px] font-bold tabular-nums text-foreground">
-/Users/gm/v6/src/app/test-landing/landing-security.tsx:56:                  <p className="text-[11px] text-muted-foreground">
-/Users/gm/v6/src/app/test-landing/landing-security.tsx:75:                      <h3 className="text-[15px] font-bold text-foreground">
-/Users/gm/v6/src/app/test-landing/landing-faq.tsx:20:            <p className="hidden text-[13px] font-medium text-muted-foreground md:block">
-/Users/gm/v6/src/app/test-landing/landing-faq.tsx:44:                    className="flex w-full cursor-pointer items-center justify-between px-5 py-4 text-left text-[15px] font-semibold text-foreground md:px-6 md:py-5"
-/Users/gm/v6/src/app/(auth)/layout.tsx:22:          className="h-auto w-[170px]"
-/Users/gm/v6/src/components/ui/empty-state.tsx:26:        <div className="w-[120px] h-[120px] md:w-[160px] md:h-[160px] flex items-center justify-center">
-/Users/gm/v6/src/components/ui/tooltip.tsx:51:        <TooltipPrimitive.Arrow className="z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] bg-foreground fill-foreground" />
-/Users/gm/v6/src/components/ui/session-management.tsx:117:          className="min-h-[44px] min-w-[44px] shrink-0 rounded-md px-3 text-sm font-medium text-destructive transition-colors duration-150 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-/Users/gm/v6/src/components/ui/session-management.tsx:184:            className="min-h-[44px] w-full rounded-lg border border-destructive/30 px-4 py-2 text-sm font-medium text-destructive transition-colors duration-200 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-/Users/gm/v6/src/components/layout/BottomNav.tsx:56:                  <span className="absolute right-1 top-1 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground dark:bg-primary dark:text-primary-foreground">
-/Users/gm/v6/src/components/layout/Sidebar.tsx:200:                <p className="px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
-/Users/gm/v6/src/components/layout/Sidebar.tsx:308:        <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground">
-/Users/gm/v6/src/components/layout/Sidebar.tsx:393:          <span className="ml-auto flex size-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold text-primary">
+/Users/gm/v6/src/app/test-landing/landing-problem.tsx:12:        <div className="absolute left-1/2 top-0 h-[37.5rem] w-[56.25rem] -translate-x-1/2 -translate-y-1/4 rounded-full bg-accent/20 blur-[120px]" />
+/Users/gm/v6/src/app/test-landing/landing-cta.tsx:13:        <div className="absolute left-1/2 top-0 h-[31.25rem] w-[50rem] -translate-x-1/2 -translate-y-1/3 rounded-full bg-accent/15 blur-[120px]" />
 
 === FILES OVER 400 LINES (split into focused modules) ===
-/Users/gm/v6/src/app/(internal)/design/page.tsx (     576 lines)
-/Users/gm/v6/src/app/dashboard/[role]/verify/verify-page-client.tsx (     404 lines)
-/Users/gm/v6/src/config/copy/student.ts (     402 lines)
-/Users/gm/v6/src/server/routers/student.ts (    1073 lines)
+/Users/gm/v6/src/app/(internal)/design/DesignDisplaySections.tsx (     420 lines)

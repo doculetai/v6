@@ -33,6 +33,153 @@ export function DesignDisplaySections() {
     <>
       <div className="border-t border-border/40" />
 
+      {/* ── Interactive Primitives ── */}
+      <Section id="primitives-interactive" title="Interactive Primitives">
+        <div className="space-y-10">
+
+          {/* Button */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">Button</p>
+            <Code>{`import { Button } from '@/components/ui/button'`}</Code>
+            <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+              <div>
+                <p className="mb-2 text-xs text-muted-foreground">Variants</p>
+                <div className="flex flex-wrap gap-2">
+                  <Button>Default</Button>
+                  <Button variant="secondary">Secondary</Button>
+                  <Button variant="outline">Outline</Button>
+                  <Button variant="ghost">Ghost</Button>
+                  <Button variant="destructive">Destructive</Button>
+                  <Button variant="link">Link</Button>
+                </div>
+              </div>
+              <div>
+                <p className="mb-2 text-xs text-muted-foreground">Sizes</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button size="xs">XS</Button>
+                  <Button size="sm">SM</Button>
+                  <Button>Default</Button>
+                  <Button size="lg">LG</Button>
+                  <Button disabled>Disabled</Button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Badge */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">Badge</p>
+            <Code>{`import { Badge } from '@/components/ui/badge'`}</Code>
+            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-5">
+              <Badge>Default</Badge>
+              <Badge variant="secondary">Secondary</Badge>
+              <Badge variant="outline">Outline</Badge>
+              <Badge variant="destructive">Destructive</Badge>
+              <Badge variant="ghost">Ghost</Badge>
+            </div>
+          </div>
+
+          {/* Avatar */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">Avatar</p>
+            <Code>{`import { Avatar, AvatarFallback, AvatarGroup } from '@/components/ui/avatar'`}</Code>
+            <div className="flex flex-wrap items-center gap-6 rounded-xl border border-border bg-card p-5">
+              <div className="flex items-center gap-3">
+                <Avatar size="sm"><AvatarFallback>KA</AvatarFallback></Avatar>
+                <Avatar><AvatarFallback>OA</AvatarFallback></Avatar>
+                <Avatar size="lg"><AvatarFallback>SC</AvatarFallback></Avatar>
+              </div>
+              <div className="flex items-center gap-2">
+                <p className="text-xs text-muted-foreground">Group:</p>
+                <AvatarGroup>
+                  <Avatar><AvatarFallback className="bg-primary/10 text-primary">KA</AvatarFallback></Avatar>
+                  <Avatar><AvatarFallback className="bg-primary/10 text-primary">OA</AvatarFallback></Avatar>
+                  <Avatar><AvatarFallback className="bg-primary/10 text-primary">SC</AvatarFallback></Avatar>
+                  <AvatarGroupCount>+5</AvatarGroupCount>
+                </AvatarGroup>
+              </div>
+            </div>
+          </div>
+
+          {/* Progress */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">Progress</p>
+            <Code>{`import { Progress } from '@/components/ui/progress'`}</Code>
+            <div className="space-y-4 rounded-xl border border-border bg-card p-5">
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Documents uploaded</span><span>4/5</span>
+                </div>
+                <Progress value={80} />
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Verification tier</span><span>3/5</span>
+                </div>
+                <Progress value={60} />
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Profile complete</span><span>25%</span>
+                </div>
+                <Progress value={25} />
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">Tabs</p>
+            <Code>{`import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'`}</Code>
+            <div className="rounded-xl border border-border bg-card p-5">
+              <Tabs defaultValue="overview">
+                <TabsList>
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="documents">Documents</TabsTrigger>
+                  <TabsTrigger value="activity">Activity</TabsTrigger>
+                </TabsList>
+                <TabsContent value="overview" className="mt-4">
+                  <p className="text-sm text-muted-foreground">Overview content — student funding summary, tier status.</p>
+                </TabsContent>
+                <TabsContent value="documents" className="mt-4">
+                  <p className="text-sm text-muted-foreground">Documents content — uploaded files, status, actions.</p>
+                </TabsContent>
+                <TabsContent value="activity" className="mt-4">
+                  <p className="text-sm text-muted-foreground">Activity content — timeline of recent actions.</p>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
+
+          {/* Input + Label */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">Input + Label</p>
+            <Code>{`import { Input } from '@/components/ui/input'; import { Label } from '@/components/ui/label'`}</Code>
+            <div className="grid gap-4 rounded-xl border border-border bg-card p-5 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="email-demo">Email address</Label>
+                <Input id="email-demo" type="email" placeholder="kemi@example.com" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="phone-demo">Phone number</Label>
+                <Input id="phone-demo" type="tel" placeholder="+234 800 000 0000" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="disabled-demo">Disabled field</Label>
+                <Input id="disabled-demo" disabled value="Cannot edit" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="invalid-demo">Invalid state</Label>
+                <Input id="invalid-demo" aria-invalid placeholder="Invalid input" className="border-destructive focus-visible:ring-destructive/20" />
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </Section>
+
+      <div className="border-t border-border/40" />
+
       {/* ── Display Primitives ── */}
       <Section id="primitives-display" title="Display Primitives">
         <div className="space-y-10">

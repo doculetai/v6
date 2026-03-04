@@ -48,6 +48,7 @@ const NAV_SECTIONS = [
   ['iconography', 'Iconography'],
   ['skeletons', 'Skeletons'],
   ['navigation', 'Navigation'],
+  ['primitives-interactive', 'Interactive'],
   ['primitives-display', 'Display'],
   ['primitives-data', 'Data'],
   ['primitives-layout', 'Layout'],
