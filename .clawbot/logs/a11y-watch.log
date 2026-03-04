@@ -67,3 +67,7 @@ Done. The single violation was in `/src/app/(marketing)/page.tsx` — a redirect
 To https://github.com/doculetai/v6.git
    63cfb74..d0a3e35  main -> main
 [a11y-watch] 2026-03-04 07:55:51 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 07:59:52 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 07:59:53 All accessibility checks passed. No violations found.

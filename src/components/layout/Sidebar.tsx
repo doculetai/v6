@@ -291,7 +291,7 @@ function NavItemRow({ item, isActive, isCollapsed, paddingY, activeHref }: NavIt
     paddingY,
     isCollapsed ? 'justify-center px-2' : 'px-3',
     isActive
-      ? 'bg-primary/10 font-medium text-primary shadow-[0_0_0_1px_hsl(var(--primary)/0.2)]'
+      ? 'bg-primary/10 font-medium text-primary ring-1 ring-primary/20'
       : 'text-muted-foreground hover:bg-accent/60 hover:text-accent-foreground',
   );
 
