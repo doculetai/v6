@@ -2,3 +2,8 @@ hits=''
 hits=''
 hits=''
 hits=''
+
+
+=== REACT HOOKS USED WITHOUT "use client" DIRECTIVE (add "use client" at top of file) ===
+  src/components/ui/qr-code-svg.tsx
+  src/components/ui/file-uploader.tsx

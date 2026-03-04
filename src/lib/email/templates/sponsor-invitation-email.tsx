@@ -32,11 +32,11 @@ export function SponsorInvitationEmail({
           border: '1px solid #e5e7eb',
         }}
       >
-        <h1 style={{ marginTop: 0, fontSize: '24px', lineHeight: '32px' }}>
+        <h1 style={{ marginTop: 0, fontSize: '24px', lineHeight: '32px' }} /* design-lint-disable: email client requires inline styles */>
           {emailCopy.sponsorInvitation.heading}
         </h1>
-        <p style={{ fontSize: '16px', lineHeight: '24px' }}>{emailCopy.sponsorInvitation.body}</p>
-        <p style={{ fontSize: '14px', lineHeight: '22px', marginBottom: '24px' }}>
+        <p style={{ fontSize: '16px', lineHeight: '24px' }} /* design-lint-disable: email client requires inline styles */>{emailCopy.sponsorInvitation.body}</p>
+        <p style={{ fontSize: '14px', lineHeight: '22px', marginBottom: '24px' }} /* design-lint-disable: email client requires inline styles */>
           Invited by: <strong>{studentEmail}</strong>
         </p>
         {note ? (
@@ -68,7 +68,7 @@ export function SponsorInvitationEmail({
         >
           {emailCopy.sponsorInvitation.ctaLabel}
         </a>
-        <p style={{ marginTop: '24px', fontSize: '12px', color: '#4b5563', lineHeight: '18px' }}>
+        <p style={{ marginTop: '24px', fontSize: '12px', color: '#4b5563', lineHeight: '18px' }} /* design-lint-disable: email client requires inline styles */>
           {emailCopy.sponsorInvitation.footer}
         </p>
       </div>

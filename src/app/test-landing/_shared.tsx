@@ -46,11 +46,12 @@ export function Reveal({
     <div
       ref={ref}
       className={cn(
-        shouldAnimate ? "transition-all duration-700 ease-out [transition-delay:var(--reveal-delay,0ms)]" : "",
+        shouldAnimate
+          ? cn("transition-all duration-700 ease-out", delay > 0 && `[transition-delay:${delay}ms]`)
+          : "",
         visible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0",
         className,
       )}
-      style={shouldAnimate && delay > 0 ? { "--reveal-delay": `${delay}ms` } as React.CSSProperties : undefined}
     >
       {children}
     </div>

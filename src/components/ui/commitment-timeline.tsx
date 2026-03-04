@@ -17,11 +17,11 @@ interface CommitmentTimelineProps {
 }
 
 const statusDot: Record<CommitmentEvent["status"], string> = {
-  created: "bg-blue-500",
-  signed: "bg-amber-500",
-  active: "bg-emerald-500",
-  fulfilled: "bg-emerald-500",
-  cancelled: "bg-red-500",
+  created: "bg-primary/60",
+  signed: "bg-[var(--color-warning)]",
+  active: "bg-[var(--color-success)]",
+  fulfilled: "bg-[var(--color-success)]",
+  cancelled: "bg-destructive",
 }
 
 function formatCurrency(amount: number, currency: string) {
