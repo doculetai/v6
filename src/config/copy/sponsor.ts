@@ -119,10 +119,12 @@ export const sponsorCopy = {
       student: "Student",
       amount: "Amount (₦)",
       date: "Date",
+      scheduled: "Scheduled",
       status: "Status",
       reference: "Reference",
     },
     statusLabels: {
+      all: "All",
       pending: "Pending",
       processing: "Processing",
       completed: "Completed",
@@ -168,6 +170,7 @@ export const sponsorCopy = {
     table: { student: 'Student', amount: 'Amount', disbursedAt: 'Date', reference: 'Reference' },
     summary: {
       totalDisbursed: 'Total disbursed',
+      countLabel: 'Transactions',
       count: (n: number) => `${n} transaction${n === 1 ? '' : 's'}`,
     },
   },
@@ -183,16 +186,21 @@ export const sponsorCopy = {
       companyNameHint: 'Required for corporate sponsors',
       kycStatusLabel: 'KYC status',
       saveLabel: 'Save changes',
+      savingLabel: 'Saving…',
       savedLabel: 'Saved',
     },
     notifications: {
       title: 'Notifications',
+      description: 'Choose which updates you receive by email and in-app alert.',
       items: {
         disbursement: { label: 'Disbursement updates', description: 'When a payment is processed or fails' },
         studentMilestone: { label: 'Student milestones', description: 'When your sponsored student completes a verification tier' },
         inviteResponse: { label: 'Invite responses', description: 'When a student accepts or declines your invite' },
         security: { label: 'Account security', description: 'Login alerts and account changes' },
       },
+    },
+    errors: {
+      profileSaveError: 'Failed to save profile. Please try again.',
     },
   },
 
