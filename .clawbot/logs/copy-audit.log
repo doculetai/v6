@@ -391,3 +391,19 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [copy-audit] 2026-03-04 11:25:37 Scanning copy config coverage...
 [copy-audit] 2026-03-04 11:25:37 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 11:28:37 Scanning copy config coverage...
+[copy-audit] 2026-03-04 11:28:38 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 11:31:38 Scanning copy config coverage...
+[copy-audit] 2026-03-04 11:31:39 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 11:34:39 Scanning copy config coverage...
+[copy-audit] 2026-03-04 11:34:39 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 11:37:39 Scanning copy config coverage...
+[copy-audit] 2026-03-04 11:37:39 Copy config coverage complete. No violations found.
