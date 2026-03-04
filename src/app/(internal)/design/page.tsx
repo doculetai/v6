@@ -49,6 +49,8 @@ const NAV_SECTIONS = [
   ['skeletons', 'Skeletons'],
   ['navigation', 'Navigation'],
   ['primitives-interactive', 'Interactive'],
+  ['primitives-forms', 'Form Controls'],
+  ['primitives-finance', 'Finance'],
   ['primitives-display', 'Display'],
   ['primitives-data', 'Data'],
   ['primitives-layout', 'Layout'],

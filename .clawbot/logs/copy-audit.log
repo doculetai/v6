@@ -97,3 +97,7 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [copy-audit] 2026-03-04 08:15:03 Scanning copy config coverage...
 [copy-audit] 2026-03-04 08:15:04 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 08:18:04 Scanning copy config coverage...
+[copy-audit] 2026-03-04 08:18:04 Copy config coverage complete. No violations found.

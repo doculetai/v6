@@ -144,3 +144,9 @@ hint: the same ref. If you want to integrate the remote changes, use
 hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 [build-watch] 2026-03-04 08:16:56 ERROR: push failed again. Manual push required.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 08:18:56 Running typecheck...
+[build-watch] 2026-03-04 08:19:10 Found 1 TypeScript error(s).
+[build-watch] 2026-03-04 08:19:10 Errors written to: /Users/gm/v6/.clawbot/logs/last-build-errors.txt
+[build-watch] 2026-03-04 08:19:10 Auto-fixing (round 2 of max 10)...
