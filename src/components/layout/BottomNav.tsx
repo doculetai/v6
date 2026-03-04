@@ -1,15 +1,15 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
-import { getNavItems } from '@/config/nav';
+import { getNavItems, isActivePath } from '@/config/nav';
 import type { DashboardRole } from '@/config/roles';
 import { cn } from '@/lib/utils';
 
 type BottomNavProps = {
   role: DashboardRole;
-  currentPath: string;
 };
 
 const gridColumnsByCount: Record<number, string> = {
@@ -20,11 +20,8 @@ const gridColumnsByCount: Record<number, string> = {
   5: 'grid-cols-5',
 };
 
-function isActivePath(itemHref: string, currentPath: string) {
-  return itemHref === currentPath || currentPath.startsWith(`${itemHref}/`);
-}
-
-export function BottomNav({ role, currentPath }: BottomNavProps) {
+export function BottomNav({ role }: BottomNavProps) {
+  const pathname = usePathname();
   const items = getNavItems(role).slice(0, 5);
   const gridClass = gridColumnsByCount[items.length] ?? gridColumnsByCount[5];
 
@@ -40,7 +37,7 @@ export function BottomNav({ role, currentPath }: BottomNavProps) {
       <ul className={cn('mx-auto grid max-w-screen-sm gap-1', gridClass)}>
         {items.map((item) => {
           const Icon = item.icon;
-          const isActive = isActivePath(item.href, currentPath);
+          const isActive = isActivePath(item.href, pathname);
 
           return (
             <li key={item.href} className="min-w-0">
