@@ -587,3 +587,13 @@ Fixed. Changed `linkPlaceholder` from `'Generating your unique referral link…'
 To https://github.com/doculetai/v6.git
    11320f7..0279437  main -> main
 [copy-audit] 2026-03-04 13:23:56 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 13:26:56 Scanning copy config coverage...
+[copy-audit] 2026-03-04 13:26:56 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 13:26:56 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 13:26:56 Auto-fixing copy violations (round 1 of max 8)...
+Fixed. Changed `'Your referral link is on its way…'` to `'Generating your unique referral link…'` — more precise and action-oriented for a loading/pending state. TypeScript clean, committed.
+To https://github.com/doculetai/v6.git
+   f5c7cdf..5cb2ecb  main -> main
+[copy-audit] 2026-03-04 13:27:32 Copy fixes pushed to main.

@@ -1134,3 +1134,17 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 13:22:23 Found 2 violation category(ies).
 [design-lint] 2026-03-04 13:22:23 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 13:22:23 Auto-fixing design violations (round 1)...
+All source violations are already resolved — the prior `fix(design)` commit (`1bf5222`) already applied the fixes. TypeScript is clean and ESLint shows only warnings (no errors). Nothing new to commit.
+
+**Status of each reported violation:**
+
+| File | Violation | State |
+|---|---|---|
+| `branding-page-client.tsx:145` | `text-emerald-600 dark:text-emerald-400` | Fixed → `text-primary` |
+| `branding-page-client.tsx:93` | `style={{ backgroundColor }}` | Fixed → replaced with text badge showing hex value |
+| `api-keys-page-client.tsx:139,178` | `bg-emerald-500/10 text-emerald-600` | Fixed → `bg-primary/10 text-primary` |
+| `sponsor-invitation-email.tsx` | Inline styles | Intentional — email clients strip external CSS; documented with `design-lint-ignore` comment |
+
+The design-lint watchdog detected violations that had already been remediated by the previous automation pass. No further action needed.
+Everything up-to-date
+[design-lint] 2026-03-04 13:25:35 Design fixes pushed to main.

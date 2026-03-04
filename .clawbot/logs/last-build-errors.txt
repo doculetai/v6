@@ -1,1 +1,3 @@
-src/app/dashboard/[role]/students/page.tsx(13,41): error TS2307: Cannot find module './agent-students-page-client' or its corresponding type declarations.
+src/app/dashboard/[role]/branding/branding-page-client.tsx(29,16): error TS2304: Cannot find name 'partnerCopy'.
+src/app/dashboard/[role]/branding/branding-page-client.tsx(148,18): error TS2304: Cannot find name 'partnerCopy'.
+src/app/dashboard/[role]/branding/branding-page-client.tsx(148,54): error TS2304: Cannot find name 'partnerCopy'.
