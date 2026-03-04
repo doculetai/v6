@@ -1,6 +1,73 @@
 import { commonErrors } from "./shared";
 
 export const universityCopy = {
+  documents: {
+    title: "Document review queue",
+    subtitle: "Review student documents submitted for proof-of-funds verification.",
+    filters: {
+      search: "Search by student email…",
+      all: "All",
+      pending: "Pending",
+      approved: "Approved",
+      rejected: "Rejected",
+      moreInfo: "More info needed",
+    },
+    table: {
+      student: "Student",
+      type: "Document type",
+      status: "Status",
+      submitted: "Submitted",
+      actions: "Actions",
+    },
+    typeLabels: {
+      passport: "Passport",
+      bank_statement: "Bank statement",
+      offer_letter: "Offer letter",
+      affidavit: "Affidavit",
+      cac: "CAC document",
+    },
+    statusLabels: {
+      pending: "Pending",
+      approved: "Approved",
+      rejected: "Rejected",
+      more_info_requested: "More info needed",
+    },
+    stats: {
+      total: "Total documents",
+      pending: "Pending review",
+      approved: "Approved",
+      moreInfo: "More info needed",
+    },
+    empty: {
+      title: "No documents yet",
+      body: "Documents submitted by students will appear here once they upload proof-of-funds materials.",
+    },
+    emptyFiltered: {
+      title: "No documents match",
+      body: "Try adjusting your search or filter to find what you are looking for.",
+    },
+    actions: {
+      review: "Review",
+      approve: "Approve",
+      reject: "Reject",
+      requestInfo: "Request info",
+      cancel: "Cancel",
+    },
+    review: {
+      title: "Review document",
+      student: "Student",
+      type: "Document type",
+      submitted: "Submitted",
+      previewLink: "View document",
+      notesLabel: "Notes",
+      notesPlaceholder: "Add notes visible to the student…",
+      rejectionReasonLabel: "Rejection reason",
+      rejectionReasonPlaceholder: "Explain why this document was rejected…",
+      rejectionReasonRequired: "A rejection reason is required.",
+    },
+    tryAgain: "Try again",
+  },
+
   pipeline: {
     title: "Application pipeline",
     subtitle: "Process applications at scale. Verify in seconds.",
