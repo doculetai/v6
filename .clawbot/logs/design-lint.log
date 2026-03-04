@@ -706,3 +706,9 @@ Done. Summary of what was found and fixed:
 To https://github.com/doculetai/v6.git
    0a6e7c6..18a6b76  main -> main
 [design-lint] 2026-03-04 11:23:52 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 11:26:52 Scanning for design violations...
+[design-lint] 2026-03-04 11:26:56 Found 1 violation category(ies).
+[design-lint] 2026-03-04 11:26:56 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 11:26:56 Auto-fixing design violations (round 1)...
