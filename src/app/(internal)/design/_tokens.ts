@@ -1,0 +1,16 @@
+export const colorTokens = [
+  { name: 'background', label: 'Background' },
+  { name: 'foreground', label: 'Foreground', dark: true },
+  { name: 'card', label: 'Card' },
+  { name: 'primary', label: 'Primary' },
+  { name: 'primary-foreground', label: 'Primary Fg', dark: true },
+  { name: 'secondary', label: 'Secondary' },
+  { name: 'muted', label: 'Muted' },
+  { name: 'muted-foreground', label: 'Muted Fg', dark: true },
+  { name: 'accent', label: 'Accent' },
+  { name: 'border', label: 'Border' },
+  { name: 'destructive', label: 'Destructive' },
+  { name: 'color-success', label: 'Success' },
+  { name: 'color-warning', label: 'Warning' },
+  { name: 'ring', label: 'Ring' },
+];

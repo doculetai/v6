@@ -125,3 +125,71 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [eslint-watch] 2026-03-04 07:45:57 Linting 5 changed file(s)...
 [eslint-watch] 2026-03-04 07:46:28 ESLint auto-fixed some issues. Committing...
+[main 659e530] fix(lint): eslint --fix pass [eslint-watch]
+ Committer: GM <gm@GMs-MacBook-Pro.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 80 files changed, 3893 insertions(+), 152 deletions(-)
+ create mode 100644 .clawbot/prompts/claude-admin-analytics.txt
+ create mode 100644 .clawbot/prompts/claude-admin-operations.txt
+ create mode 100644 .clawbot/prompts/claude-admin-overview.txt
+ create mode 100644 .clawbot/prompts/claude-admin-risk.txt
+ create mode 100644 .clawbot/prompts/claude-admin-settings.txt
+ create mode 100644 .clawbot/prompts/claude-admin-users.txt
+ create mode 100644 .clawbot/prompts/claude-agent-role-actions.txt
+ create mode 100644 .clawbot/prompts/claude-agent-role-activity.txt
+ create mode 100644 .clawbot/prompts/claude-agent-role-commissions.txt
+ create mode 100644 .clawbot/prompts/claude-agent-role-overview.txt
+ create mode 100644 .clawbot/prompts/claude-agent-role-settings.txt
+ create mode 100644 .clawbot/prompts/claude-agent-role-students.txt
+ create mode 100644 .clawbot/prompts/claude-partner-analytics.txt
+ create mode 100644 .clawbot/prompts/claude-partner-api-keys.txt
+ create mode 100644 .clawbot/prompts/claude-partner-branding.txt
+ create mode 100644 .clawbot/prompts/claude-partner-overview.txt
+ create mode 100644 .clawbot/prompts/claude-partner-settings.txt
+ create mode 100644 .clawbot/prompts/claude-partner-students.txt
+ create mode 100644 .clawbot/prompts/claude-university-documents.txt
+ create mode 100644 .clawbot/prompts/claude-university-overview.txt
+ create mode 100644 .clawbot/prompts/claude-university-pipeline.txt
+ create mode 100644 .clawbot/prompts/claude-university-settings.txt
+ create mode 100644 .clawbot/prompts/claude-university-students.txt
+ create mode 100755 .clawbot/runners/claude-admin-analytics.sh
+ create mode 100755 .clawbot/runners/claude-admin-operations.sh
+ create mode 100755 .clawbot/runners/claude-admin-overview.sh
+ create mode 100755 .clawbot/runners/claude-admin-risk.sh
+ create mode 100755 .clawbot/runners/claude-admin-settings.sh
+ create mode 100755 .clawbot/runners/claude-admin-users.sh
+ create mode 100755 .clawbot/runners/claude-agent-role-actions.sh
+ create mode 100755 .clawbot/runners/claude-agent-role-activity.sh
+ create mode 100755 .clawbot/runners/claude-agent-role-commissions.sh
+ create mode 100755 .clawbot/runners/claude-agent-role-overview.sh
+ create mode 100755 .clawbot/runners/claude-agent-role-settings.sh
+ create mode 100755 .clawbot/runners/claude-agent-role-students.sh
+ create mode 100755 .clawbot/runners/claude-partner-analytics.sh
+ create mode 100755 .clawbot/runners/claude-partner-api-keys.sh
+ create mode 100755 .clawbot/runners/claude-partner-branding.sh
+ create mode 100755 .clawbot/runners/claude-partner-overview.sh
+ create mode 100755 .clawbot/runners/claude-partner-settings.sh
+ create mode 100755 .clawbot/runners/claude-partner-students.sh
+ create mode 100755 .clawbot/runners/claude-university-documents.sh
+ create mode 100755 .clawbot/runners/claude-university-overview.sh
+ create mode 100755 .clawbot/runners/claude-university-pipeline.sh
+ create mode 100755 .clawbot/runners/claude-university-settings.sh
+ create mode 100755 .clawbot/runners/claude-university-students.sh
+To https://github.com/doculetai/v6.git
+   3f92487..659e530  main -> main
+[eslint-watch] 2026-03-04 07:46:37 Lint clean after auto-fix.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[eslint-watch] 2026-03-04 07:49:07 Linting 18 changed file(s)...
+[eslint-watch] 2026-03-04 07:49:10 ESLint auto-fixed some issues. Committing...
