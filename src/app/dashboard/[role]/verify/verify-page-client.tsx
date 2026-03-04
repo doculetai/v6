@@ -12,8 +12,9 @@ import { studentCopy } from '@/config/copy/student';
 import type { RouterOutputs } from '@/trpc/client';
 import { trpc } from '@/trpc/client';
 
+import { getBadgeVariant, formatDate } from './_utils';
+
 type VerificationStatusOutput = RouterOutputs['student']['getVerificationStatus'];
-type TierStatus = VerificationStatusOutput['tiers'][number]['status'];
 type IdentityType = 'bvn' | 'nin' | 'passport';
 
 type VerifyPageClientProps = {
@@ -26,36 +27,6 @@ type FeedbackState =
       message: string;
     }
   | null;
-
-function getBadgeVariant(status: TierStatus): 'default' | 'secondary' | 'destructive' | 'outline' {
-  if (status === 'verified') {
-    return 'default';
-  }
-
-  if (status === 'pending') {
-    return 'secondary';
-  }
-
-  if (status === 'failed') {
-    return 'destructive';
-  }
-
-  return 'outline';
-}
-
-function formatDate(value: Date | null): string {
-  if (!value) {
-    return 'N/A';
-  }
-
-  return new Intl.DateTimeFormat('en-NG', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(value));
-}
 
 export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
   const copy = studentCopy.verify;

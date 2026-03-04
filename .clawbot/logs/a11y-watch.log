@@ -55,3 +55,10 @@ All 9 CHECK 2 violations are resolved. Here's a summary of what was done:
 [a11y-watch] 2026-03-04 07:49:08 Auto-fix committed changes. Pushing to main...
 Everything up-to-date
 [a11y-watch] 2026-03-04 07:49:08 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 07:53:09 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 07:53:09 Found 1 check category(ies), approx 0
+0 violation line(s).
+[a11y-watch] 2026-03-04 07:53:09 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
+[a11y-watch] 2026-03-04 07:53:09 Invoking claude to fix a11y violations (round 1 of max 8)...

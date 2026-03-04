@@ -65,3 +65,7 @@ TypeScript exits clean. Committed as `bd38d82`.
 To https://github.com/doculetai/v6.git
    7d199d3..bd38d82  main -> main
 [copy-audit] 2026-03-04 07:50:55 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 07:53:55 Scanning copy config coverage...
+[copy-audit] 2026-03-04 07:53:55 Copy config coverage complete. No violations found.
