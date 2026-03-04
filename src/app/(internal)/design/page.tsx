@@ -14,6 +14,19 @@ import {
   TimelineSkeleton,
 } from '@/components/skeletons';
 import { iconography, ICON_SIZES } from '@/config/iconography';
+import { ActivityTimeline } from '@/components/ui/activity-timeline';
+import { DataTableShell } from '@/components/ui/data-table-shell';
+import { EmptyState } from '@/components/ui/empty-state';
+import { FilterBar } from '@/components/ui/filter-bar';
+import { MaskedValue } from '@/components/ui/masked-value';
+import { MetricCard } from '@/components/ui/metric-card';
+import { MoneyValue } from '@/components/ui/money-value';
+import { PageHeader } from '@/components/ui/page-header';
+import { PipelineStepper } from '@/components/ui/pipeline-stepper';
+import { SessionManagement } from '@/components/ui/session-management';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { SurfacePanel } from '@/components/ui/surface-panel';
+import { TimestampLabel } from '@/components/ui/timestamp-label';
 
 import { SidebarPreviews } from './SidebarPreviews';
 
@@ -74,6 +87,33 @@ function Code({ children }: { children: string }) {
   );
 }
 
+type DemoRow = { id: string; name: string; school: string; status: string; amount: number }
+
+const DEMO_COLUMNS: ReadonlyArray<import('@/components/ui/data-table-shell').DataTableColumn<DemoRow>> = [
+  { key: 'name', header: 'Name' },
+  { key: 'school', header: 'School' },
+  {
+    key: 'status',
+    header: 'Status',
+    cell: (row) => <StatusBadge status={row.status as 'verified' | 'pending'} />,
+  },
+  {
+    key: 'amount',
+    header: 'Amount',
+    cell: (row) => <MoneyValue amountMinor={row.amount} />,
+  },
+]
+
+const DEMO_ROWS: DemoRow[] = [
+  { id: '1', name: 'Kemi Adesanya', school: 'University of Lagos', status: 'verified', amount: 1500000 },
+  { id: '2', name: 'Emeka Obi', school: 'Covenant University', status: 'pending', amount: 750000 },
+  { id: '3', name: 'Amara Nwosu', school: 'Ahmadu Bello University', status: 'verified', amount: 2000000 },
+]
+
+function DataTableShellDemo() {
+  return <DataTableShell columns={DEMO_COLUMNS} rows={DEMO_ROWS} />
+}
+
 export default function DesignPage() {
   return (
     <div className="flex min-h-screen bg-background">
@@ -91,6 +131,10 @@ export default function DesignPage() {
             ['iconography', 'Iconography'],
             ['skeletons', 'Skeletons'],
             ['navigation', 'Navigation'],
+            ['primitives-display', 'Display'],
+            ['primitives-data', 'Data'],
+            ['primitives-layout', 'Layout'],
+            ['primitives-session', 'Session'],
           ].map(([id, label]) => (
             <a
               key={id}
@@ -269,6 +313,294 @@ export default function DesignPage() {
         {/* ── Navigation ── */}
         <Section id="navigation" title="Navigation — Sidebar Preview">
           <SidebarPreviews />
+        </Section>
+
+        <div className="border-t border-border/40" />
+
+        {/* ── Display Primitives ── */}
+        <Section id="primitives-display" title="Display Primitives">
+          <div className="space-y-10">
+
+            {/* StatusBadge */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">StatusBadge</p>
+              <Code>{`import { StatusBadge } from '@/components/ui/status-badge'`}</Code>
+              <div className="flex flex-wrap gap-3 items-center rounded-xl border border-border bg-card p-5">
+                <StatusBadge status="pending" />
+                <StatusBadge status="verified" />
+                <StatusBadge status="rejected" />
+                <StatusBadge status="attention" />
+                <StatusBadge status="expired" />
+                <StatusBadge status="verified" size="sm" />
+                <StatusBadge status="verified" size="lg" />
+              </div>
+            </div>
+
+            {/* MetricCard */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">MetricCard</p>
+              <Code>{`import { MetricCard } from '@/components/ui/metric-card'`}</Code>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <MetricCard
+                  label="Total Disbursed"
+                  value={<MoneyValue amountMinor={1500000} />}
+                  deltaValue="+12%"
+                  deltaLabel="vs last month"
+                  deltaDirection="up"
+                  timestamp={new Date().toISOString()}
+                />
+                <MetricCard
+                  label="Pending Reviews"
+                  value="34"
+                  deltaValue="-3"
+                  deltaLabel="since yesterday"
+                  deltaDirection="down"
+                />
+                <MetricCard label="Loading state" value="" loading />
+                <MetricCard label="Error state" value="" error />
+              </div>
+            </div>
+
+            {/* MoneyValue */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">MoneyValue</p>
+              <Code>{`import { MoneyValue } from '@/components/ui/money-value'`}</Code>
+              <div className="flex flex-wrap gap-6 rounded-xl border border-border bg-card p-5 items-baseline">
+                <MoneyValue amountMinor={150000} display="full" />
+                <MoneyValue amountMinor={2500000} display="full" />
+                <MoneyValue amountMinor={10000000} display="compact" />
+                <MoneyValue amountMinor={150000} showCode={false} />
+              </div>
+            </div>
+
+            {/* TimestampLabel */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">TimestampLabel</p>
+              <Code>{`import { TimestampLabel } from '@/components/ui/timestamp-label'`}</Code>
+              <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-5">
+                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="relative" />
+                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="absolute" />
+                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="both" />
+                <TimestampLabel value="not-a-date" />
+              </div>
+            </div>
+
+            {/* MaskedValue */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">MaskedValue</p>
+              <Code>{`import { MaskedValue } from '@/components/ui/masked-value'`}</Code>
+              <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-5">
+                <MaskedValue value="1234567890123456" label="Card number" />
+                <MaskedValue value="08123456789" label="Phone" />
+                <MaskedValue value="admin@doculet.ai" />
+              </div>
+            </div>
+
+            {/* SurfacePanel */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">SurfacePanel</p>
+              <Code>{`import { SurfacePanel } from '@/components/ui/surface-panel'`}</Code>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <SurfacePanel variant="default">
+                  <p className="text-sm font-medium text-foreground">default</p>
+                  <p className="text-xs text-muted-foreground">comfortable density</p>
+                </SurfacePanel>
+                <SurfacePanel variant="glass">
+                  <p className="text-sm font-medium text-foreground">glass</p>
+                  <p className="text-xs text-muted-foreground">backdrop-blur, white/70</p>
+                </SurfacePanel>
+                <SurfacePanel variant="elevated" density="compact">
+                  <p className="text-sm font-medium text-foreground">elevated + compact</p>
+                  <p className="text-xs text-muted-foreground">shadow-md, p-3</p>
+                </SurfacePanel>
+              </div>
+            </div>
+
+          </div>
+        </Section>
+
+        <div className="border-t border-border/40" />
+
+        {/* ── Data Primitives ── */}
+        <Section id="primitives-data" title="Data Primitives">
+          <div className="space-y-10">
+
+            {/* ActivityTimeline */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">ActivityTimeline</p>
+              <Code>{`import { ActivityTimeline } from '@/components/ui/activity-timeline'`}</Code>
+              <ActivityTimeline
+                items={[
+                  {
+                    id: '1',
+                    title: 'Proof of funds verified',
+                    description: 'University of Lagos confirmed the document.',
+                    timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+                    tone: 'success',
+                  },
+                  {
+                    id: '2',
+                    title: 'Document flagged for review',
+                    description: 'Admission letter requires re-upload.',
+                    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                    tone: 'warning',
+                  },
+                  {
+                    id: '3',
+                    title: 'Sponsorship disbursement scheduled',
+                    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                    tone: 'info',
+                  },
+                  {
+                    id: '4',
+                    title: 'Identity verification submitted',
+                    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                    tone: 'neutral',
+                  },
+                ]}
+              />
+            </div>
+
+            {/* PipelineStepper */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">PipelineStepper</p>
+              <Code>{`import { PipelineStepper } from '@/components/ui/pipeline-stepper'`}</Code>
+              <div className="rounded-xl border border-border bg-card p-5">
+                <PipelineStepper
+                  steps={[
+                    { id: 's1', label: 'Identity verified', status: 'completed' },
+                    { id: 's2', label: 'School enrolled', status: 'completed' },
+                    { id: 's3', label: 'Documents uploaded', status: 'current' },
+                    { id: 's4', label: 'Proof of funds issued', status: 'upcoming' },
+                    { id: 's5', label: 'Disbursement', status: 'blocked' },
+                  ]}
+                />
+              </div>
+            </div>
+
+            {/* FilterBar */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">FilterBar</p>
+              <Code>{`import { FilterBar } from '@/components/ui/filter-bar'`}</Code>
+              <FilterBar
+                query=""
+                chips={[
+                  { key: 'all', label: 'All', count: 42 },
+                  { key: 'pending', label: 'Pending', count: 8 },
+                  { key: 'verified', label: 'Verified', count: 31 },
+                  { key: 'rejected', label: 'Rejected', count: 3 },
+                ]}
+                activeChip="all"
+                queryPlaceholder="Search students..."
+              />
+            </div>
+
+            {/* DataTableShell */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">DataTableShell — table + mobile card fallback</p>
+              <Code>{`import { DataTableShell } from '@/components/ui/data-table-shell'`}</Code>
+              <DataTableShellDemo />
+              <DataTableShell columns={[{ key: 'name', header: 'Name' }]} rows={[]} emptyLabel="No students found." />
+              <DataTableShell columns={[{ key: 'name', header: 'Name' }]} rows={[]} loading />
+            </div>
+
+          </div>
+        </Section>
+
+        <div className="border-t border-border/40" />
+
+        {/* ── Layout Primitives ── */}
+        <Section id="primitives-layout" title="Layout Primitives">
+          <div className="space-y-10">
+
+            {/* PageHeader */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">PageHeader</p>
+              <Code>{`import { PageHeader } from '@/components/ui/page-header'`}</Code>
+              <div className="rounded-xl border border-border bg-card p-5">
+                <PageHeader
+                  title="Student Dashboard"
+                  subtitle="Manage your sponsorship applications and documents."
+                  badge={<StatusBadge status="verified" size="sm" />}
+                  meta="Last updated 3 minutes ago"
+                  actions={
+                    <button
+                      type="button"
+                      className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-foreground hover:bg-muted"
+                    >
+                      Export
+                    </button>
+                  }
+                />
+              </div>
+            </div>
+
+            {/* EmptyState */}
+            <div className="space-y-3">
+              <p className="font-medium text-foreground">EmptyState</p>
+              <Code>{`import { EmptyState } from '@/components/ui/empty-state'`}</Code>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-xl border border-border bg-card">
+                  <EmptyState
+                    heading="No documents uploaded yet"
+                    body="Upload your admission letter, school ID, and other required documents to proceed."
+                    action={{ label: 'Upload your first document', href: '#' }}
+                  />
+                </div>
+                <div className="rounded-xl border border-border bg-card">
+                  <EmptyState
+                    heading="No sponsorships found"
+                    body="You have not received any sponsorship offers. Share your profile to attract sponsors."
+                  />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </Section>
+
+        <div className="border-t border-border/40" />
+
+        {/* ── Session Management ── */}
+        <Section id="primitives-session" title="Session Management">
+          <div className="space-y-3">
+            <Code>{`import { SessionManagement } from '@/components/ui/session-management'`}</Code>
+            <div className="max-w-xl">
+              <SessionManagement
+                showIpAddress
+                sessions={[
+                  {
+                    id: 'sess-1',
+                    browser: 'Chrome',
+                    deviceType: 'desktop',
+                    location: 'Lagos, NG',
+                    lastActive: '2 minutes ago',
+                    isCurrent: true,
+                    ipAddress: '197.210.54.12',
+                  },
+                  {
+                    id: 'sess-2',
+                    browser: 'Safari',
+                    deviceType: 'mobile',
+                    location: 'Abuja, NG',
+                    lastActive: '1 hour ago',
+                    isCurrent: false,
+                    ipAddress: '41.58.23.199',
+                  },
+                  {
+                    id: 'sess-3',
+                    browser: 'Firefox',
+                    deviceType: 'tablet',
+                    location: 'Port Harcourt, NG',
+                    lastActive: '3 days ago',
+                    isCurrent: false,
+                  },
+                ]}
+                onRevoke={(id) => console.info('Revoke session', id)}
+                onRevokeAll={() => console.info('Revoke all sessions')}
+              />
+            </div>
+          </div>
         </Section>
       </main>
     </div>
