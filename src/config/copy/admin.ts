@@ -263,6 +263,23 @@ export const adminCopy = {
     error: { title: 'Failed to load risk flags', description: 'Please refresh the page to try again.' },
   },
 
+  settings: {
+    title: 'Platform settings',
+    subtitle: 'Configuration and administrative preferences.',
+    sections: {
+      security: {
+        title: 'Security & compliance',
+        description: 'Configure platform-wide security policies. Advanced settings are managed via the Doculet admin API.',
+        comingSoon: 'Additional security controls will be available here.',
+      },
+      notifications: {
+        title: 'System notifications',
+        description: 'Configure where critical platform alerts are sent.',
+        comingSoon: 'Notification routing configuration coming soon.',
+      },
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
     documents: "Document review",

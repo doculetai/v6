@@ -216,6 +216,33 @@ export const partnerCopy = {
     },
   },
 
+  settings: {
+    title: 'Settings',
+    subtitle: 'Manage your partner organisation and integration preferences.',
+    profile: {
+      sectionTitle: 'Organisation profile',
+      sectionDescription: 'Your organisation name and contact details visible on the platform.',
+      orgNameLabel: 'Organisation name',
+      orgNamePlaceholder: 'e.g. Greenfield University',
+      webhookLabel: 'Webhook URL',
+      webhookPlaceholder: 'https://your-server.com/webhook',
+      webhookDescription: 'Doculet will POST verification events to this URL.',
+      saveLabel: 'Save changes',
+      savingLabel: 'Saving…',
+      savedLabel: 'Changes saved.',
+    },
+    validation: {
+      orgNameMin: 'Organisation name must be at least 2 characters.',
+      orgNameMax: 'Organisation name must be 120 characters or fewer.',
+      webhookInvalid: 'Enter a valid HTTPS URL.',
+    },
+    errors: {
+      loadError: 'Could not load settings. Please refresh the page.',
+      saveError: 'Failed to save settings. Please try again.',
+      tryAgain: 'Try again',
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
     apiKeys: "API keys",

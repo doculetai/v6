@@ -5,13 +5,16 @@ import { notFound, redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { adminCopy } from '@/config/copy/admin';
 import { agentCopy } from '@/config/copy/agent';
+import { partnerCopy } from '@/config/copy/partner';
 import { sponsorCopy } from '@/config/copy/sponsor';
+import { universityCopy } from '@/config/copy/university';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 
-import { universityCopy } from '@/config/copy/university';
-
+import { AdminSettingsPageClient } from './admin-settings-page-client';
+import { PartnerSettingsPageClient } from './partner-settings-page-client';
 import type { AgentSettings, SponsorSettings, UniversityProfile } from './settings-page-client';
 import { SettingsPageClient } from './settings-page-client';
 
@@ -30,11 +33,35 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
     notFound();
   }
 
-  if (role !== 'agent' && role !== 'sponsor' && role !== 'university') {
-    redirect(`/dashboard/${role}`);
+  if (role === 'student') {
+    redirect('/dashboard/student');
   }
 
   const caller = await api();
+
+  // ── Admin branch ──────────────────────────────────────────────────────────
+  if (role === 'admin') {
+    return <AdminSettingsPageClient copy={adminCopy.settings} />;
+  }
+
+  // ── Partner branch ────────────────────────────────────────────────────────
+  if (role === 'partner') {
+    let partnerSettings: {
+      organizationName: string;
+      webhookUrl: string | null;
+      brandColor: string | null;
+      brandLogoUrl: string | null;
+    } | null = null;
+
+    try {
+      partnerSettings = await caller.partner.getPartnerSettings();
+    } catch (error) {
+      if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
+      if (error instanceof TRPCError && error.code === 'FORBIDDEN') redirect(`/dashboard/${role}`);
+    }
+
+    return <PartnerSettingsPageClient settings={partnerSettings} copy={partnerCopy.settings} />;
+  }
 
   // ── Agent branch ─────────────────────────────────────────────────────────
   if (role === 'agent') {
