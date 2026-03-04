@@ -97,6 +97,85 @@ export const universityCopy = {
     verifyAnother: "Verify another certificate",
   },
 
+  settings: {
+    title: "Settings",
+    subtitle: "Manage your institution profile, notifications, and integrations.",
+
+    profile: {
+      sectionTitle: "Institution profile",
+      sectionSubtitle: "Update your institution name, accreditation body, and contact details.",
+      institutionName: {
+        label: "Institution name",
+        placeholder: "e.g. Massachusetts Institute of Technology",
+      },
+      accreditationBody: {
+        label: "Accreditation body",
+        placeholder: "e.g. SACSCOC, HLC, NEASC",
+      },
+      contactEmail: {
+        label: "Contact email",
+        placeholder: "admissions@institution.edu",
+      },
+      contactPhone: {
+        label: "Contact phone",
+        placeholder: "+1 (617) 000-0000",
+      },
+      saveButton: "Save profile",
+      saving: "Saving\u2026",
+      saved: "Saved",
+    },
+
+    notifications: {
+      sectionTitle: "Email notifications",
+      sectionSubtitle: "Choose which events trigger email alerts to your admissions team.",
+      onSubmission: {
+        label: "New submission",
+        description: "When a student submits proof of funds for your institution.",
+      },
+      onApproval: {
+        label: "Application approved",
+        description: "When an application is marked as approved.",
+      },
+      onRejection: {
+        label: "Application rejected",
+        description: "When an application is rejected or requires action.",
+      },
+      saveButton: "Save preferences",
+      saving: "Saving\u2026",
+      saved: "Saved",
+    },
+
+    webhook: {
+      sectionTitle: "Webhook integration",
+      sectionSubtitle:
+        "Receive real-time POST events to your admissions system when application statuses change.",
+      webhookUrl: {
+        label: "Webhook URL",
+        placeholder: "https://your-system.edu/webhooks/doculet",
+      },
+      helpText:
+        "Doculet will POST JSON to this URL on submission, approval, and rejection events. Must use HTTPS.",
+      saveButton: "Save webhook",
+      saving: "Saving\u2026",
+      saved: "Saved",
+      clearButton: "Remove webhook",
+    },
+
+    sessions: {
+      sectionTitle: "Active sessions",
+      sectionSubtitle: "Devices and browsers currently signed in to your account.",
+    },
+
+    errors: {
+      profileSave: "Failed to save profile. Please try again.",
+      notificationsSave: "Failed to save notification preferences. Please try again.",
+      webhookSave: "Failed to save webhook URL. Please try again.",
+      sessionRevoke: "Failed to sign out of other sessions. Please try again.",
+      forbidden: "You do not have permission to access this page.",
+      generic: "Something went wrong. Please refresh and try again.",
+    },
+  },
+
   nav: {
     pipeline: "Pipeline",
     verify: "Verify certificate",
