@@ -112,6 +112,68 @@ export const sponsorCopy = {
     filterByStatus: "Filter by status",
   },
 
+  transactions: {
+    title: "Transactions",
+    subtitle:
+      "View every Paystack charge, disbursement, and refund with audit-ready timestamps.",
+    trustLabel: "Secure ledger",
+    summary: {
+      totalSpent: "Total spent",
+      totalPending: "Total pending",
+      lastUpdated: "Last updated",
+    },
+    filter: {
+      searchPlaceholder: "Search by reference or transaction type",
+      chips: {
+        all: "All",
+        credit: "Credit",
+        debit: "Debit",
+        fee: "Fee",
+      },
+    },
+    table: {
+      transaction: "Transaction",
+      amount: "Amount",
+      date: "Date",
+      status: "Status",
+      reference: "Reference",
+    },
+    types: {
+      credit: "Credit",
+      debit: "Debit",
+      fee: "Fee",
+      refund: "Refund",
+    },
+    statuses: {
+      successful: "Successful",
+      pending: "Pending",
+      failed: "Failed",
+      refunded: "Refunded",
+    },
+    sources: {
+      disbursement: "Disbursement",
+      paystackCharge: "Paystack charge",
+      paystackFee: "Paystack fee",
+      paystackRefund: "Paystack refund",
+      paystackCredit: "Paystack credit",
+    },
+    empty: {
+      title: "No matching transactions",
+      description: "Try another filter or clear your search to see all transactions.",
+    },
+    loading: {
+      title: "Loading transactions",
+      description: "Fetching your latest ledger activity.",
+    },
+    error: {
+      title: "Unable to load transactions",
+      description:
+        "We could not load your transaction history right now. Please try again.",
+      retry: "Try again",
+    },
+    referenceFallback: "No reference",
+  },
+
   nav: {
     dashboard: "Dashboard",
     students: "Students",
