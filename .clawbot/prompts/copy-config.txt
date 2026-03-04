@@ -1,0 +1,60 @@
+You are building Doculet.ai V6 at /Users/gm/v6.
+
+Read these first:
+1. /Users/gm/v6/CLAUDE.md — conventions
+2. /Users/gm/v6/start.md — the 6 roles, their voice, their job
+3. /Users/gm/v5/src/config/copy/student.ts — V5 reference (DO NOT copy blindly, adapt for V6)
+
+Your task: write all 6 role copy config files in src/config/copy/.
+
+## Rules
+
+- TypeScript const objects — NOT enums
+- Exhaustive: every page, every state (empty, loading, error), every button, every heading
+- Voice per role (from start.md): student=warm/hopeful, sponsor=trust-building/professional, university=efficient, admin=methodical, agent=entrepreneurial, partner=ROI-focused
+- All monetary values: use "₦" (Naira) as default currency symbol
+- No "Lorem ipsum", no "Click here", no "Submit"
+- No any types
+
+## Files to create
+
+### src/config/copy/student.ts
+Sections needed:
+- onboarding: { title, subtitle, steps: [{title, description}×4], cta }
+- schools: { title, subtitle, searchPlaceholder, empty: {title, description, cta}, card: {apply, viewDetails} }
+- verify: { title, subtitle, kycSection: {title, tiers:[{label,description}×3]}, bankSection: {title, description, connectCta} }
+- documents: { title, subtitle, uploadCta, types: {passport, bankStatement, offerLetter, affidavit}, status: {pending, approved, rejected, moreInfoRequested}, empty: {title, description} }
+- proof: { title, subtitle, checklist: [{label}×5], certificate: {title, shareCta, downloadCta}, locked: {title, description} }
+- sponsorInvite: { title, subtitle, inviteByEmail: {label, placeholder, sendCta}, status: {pending, accepted, declined}, cancel: string }
+- nav: { overview, schools, verify, documents, proof, invite }
+- errors: { generic, sessionExpired, unauthorized }
+
+### src/config/copy/sponsor.ts
+Sections: dashboard, studentDetail, kyc, disbursements, nav, errors
+Voice: "Fund education with confidence. Every naira tracked."
+
+### src/config/copy/university.ts
+Sections: pipeline, verifycert, nav, errors
+Voice: "Process applications at scale. Verify in seconds."
+
+### src/config/copy/admin.ts
+Sections: dashboard, documentReview, users, nav, errors
+Voice: "Platform health at a glance. Every action audited."
+
+### src/config/copy/agent.ts
+Sections: dashboard, commissions, referral, nav, errors
+Voice: "Grow your student portfolio. Earn on every verification."
+
+### src/config/copy/partner.ts
+Sections: dashboard, apiKeys, branding, nav, errors
+Voice: "Your platform, your brand. Powered by Doculet."
+
+## Acceptance gate
+
+Run: `npm run typecheck` — must pass.
+
+Then:
+`git add src/config/copy/`
+`git commit -m "feat(copy): add all 6 role copy configs"`
+
+Then open a PR to main.

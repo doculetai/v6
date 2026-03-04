@@ -1,0 +1,118 @@
+You are a senior backend engineer bootstrapping Doculet.ai V6 at /Users/gm/v6.
+
+Read these first:
+1. /Users/gm/v6/CLAUDE.md — conventions (MANDATORY)
+2. /Users/gm/v6/AGENTS.md — product context
+3. /Users/gm/v6/start.md — product brief
+
+Your task: write all Drizzle schema files for the V6 database.
+
+## Directories
+
+- src/db/schema/ — one file per domain
+- src/db/index.ts — Drizzle singleton (may already exist from foundation-bootstrap)
+
+## Schema files to create
+
+### src/db/schema/users.ts
+Tables: `users`, `profiles`
+
+```typescript
+// users — mirrors Supabase auth.users (subset of columns we need)
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey(), // matches auth.users.id
+  email: text('email').notNull().unique(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// profiles — role + onboarding state for every user
+export const profiles = pgTable('profiles', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull().unique(),
+  role: text('role', { enum: ['student', 'sponsor', 'university', 'admin', 'agent', 'partner'] }).notNull(),
+  onboardingComplete: boolean('onboarding_complete').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// profileRelations
+export const profileRelations = relations(profiles, ({ one }) => ({
+  user: one(users, { fields: [profiles.userId], references: [users.id] }),
+}));
+```
+
+### src/db/schema/students.ts
+Tables: `student_profiles`, `schools`, `programs`, `kyc_verifications`, `bank_accounts`
+
+Key columns:
+- `student_profiles`: userId (FK), schoolId, programId, fundingType (self/sponsor/corporate), kycStatus, bankStatus, onboardingStep (1-4)
+- `schools`: id, name, country, logoUrl
+- `programs`: id, schoolId, name, tuitionAmount (integer kobo), currency, durationMonths
+- `kyc_verifications`: userId, provider ('dojah'), status, tier (1|2|3), verifiedAt, referenceId
+- `bank_accounts`: userId, provider ('mono'), accountNumber, bankName, monoAccountId, linkedAt
+
+### src/db/schema/sponsorships.ts
+Tables: `sponsorships`, `disbursements`, `sponsor_profiles`
+
+Key columns:
+- `sponsor_profiles`: userId (FK), sponsorType (individual/corporate/self), kycStatus, companyName (nullable, for corporate)
+- `sponsorships`: id, studentId (FK→users), sponsorId (FK→users), status (pending/active/completed/cancelled), amountKobo (integer), currency, createdAt
+- `disbursements`: id, sponsorshipId (FK), amountKobo (integer), scheduledAt, disbursedAt (nullable), status (scheduled/processing/disbursed/failed), paystackReference
+
+### src/db/schema/documents.ts
+Tables: `documents`
+
+Key columns:
+- id, userId (FK), type (passport/bank_statement/offer_letter/affidavit/cac), storageUrl, status (pending/approved/rejected/more_info_requested), rejectionReason (nullable), reviewedAt (nullable), reviewedBy (nullable→users)
+
+### src/db/schema/certificates.ts
+Tables: `certificates`
+
+Key columns:
+- id, studentId (FK), sponsorshipId (FK nullable), token (text, unique — used in /certificate/[token] route), issuedAt, validUntil (nullable), status (active/revoked), metaJson (jsonb — snapshot of student+sponsor+school at issuance)
+
+### src/db/schema/partner.ts
+Tables: `partner_profiles`, `partner_api_keys`
+
+Key columns:
+- `partner_profiles`: userId (FK), organizationName, webhookUrl (nullable), brandLogoUrl (nullable), brandColor (nullable)
+- `partner_api_keys`: id, partnerId (FK), keyHash (sha-256 hash of actual key — never store plaintext), keyPrefix (first 8 chars for display), scopes (text array), lastUsedAt (nullable), revokedAt (nullable), createdAt
+
+### src/db/schema/webhooks.ts
+Tables: `webhook_events`
+
+Key columns:
+- id, eventId (text, unique — for idempotency dedup), provider (paystack/mono/dojah), eventType, payloadJson (jsonb), processedAt, status (received/processed/failed)
+
+### src/db/schema/index.ts
+Re-export all schema files:
+```typescript
+export * from './users';
+export * from './students';
+export * from './sponsorships';
+export * from './documents';
+export * from './certificates';
+export * from './partner';
+export * from './webhooks';
+```
+
+## Rules
+
+- Use `drizzle-orm/pg-core`: `pgTable`, `uuid`, `text`, `boolean`, `timestamp`, `integer`, `jsonb`
+- All monetary amounts: INTEGER (kobo/pence), never float or decimal
+- All timestamps: `timestamp('...').defaultNow().notNull()` for createdAt, `.defaultNow()` for updatedAt
+- All FKs: explicit `references(() => table.id, { onDelete: 'cascade' })`
+- All enums: `text('col', { enum: [...] })` — no Postgres enum types
+- Relations declared with `relations()` from drizzle-orm in the same file as the table
+- No `any` types
+- TypeScript strict mode
+
+## Acceptance gate
+
+Run: `npm run typecheck` — must pass with zero errors.
+
+Then:
+`git add src/db/`
+`git commit -m "feat(db): add Drizzle schema — users, students, sponsorships, documents, certificates, partner, webhooks"`
+
+Then open a PR to main.
