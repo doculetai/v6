@@ -1,3 +1,5 @@
+import { commonErrors } from "./shared";
+
 export const sponsorCopy = {
   dashboard: {
     title: "Sponsor dashboard",
@@ -118,11 +120,7 @@ export const sponsorCopy = {
     settings: "Settings",
   },
 
-  errors: {
-    generic: "Something went wrong. Please try again.",
-    sessionExpired: "Your session has expired. Please sign in again.",
-    unauthorized: "You don't have permission to access this page.",
-  },
+  errors: commonErrors,
 } as const;
 
 export type SponsorCopy = typeof sponsorCopy;
