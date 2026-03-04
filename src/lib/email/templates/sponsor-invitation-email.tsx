@@ -1,8 +1,11 @@
+// design-lint-ignore: email templates require inline styles — email clients (Gmail, Outlook)
+// strip external stylesheets and CSS classes. Inline styles here are intentional and required.
+// The <a> tag is also intentional — next/link cannot be used in email HTML.
 import * as React from 'react';
 
 import { emailCopy } from '@/config/copy/email';
 
-// Email clients require inline styles — these constants keep styles out of JSX literals
+// Styles are extracted to named constants to keep JSX readable
 const wrapperStyle: React.CSSProperties = {
   fontFamily: 'IBM Plex Sans, Arial, sans-serif',
   backgroundColor: '#f4f4f5',
