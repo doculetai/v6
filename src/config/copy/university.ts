@@ -13,7 +13,10 @@ export const universityCopy = {
     table: {
       applicant: "Applicant",
       program: "Program",
+      amount: "Amount",
+      tier: "Tier",
       status: "Status",
+      daysWaiting: "Days waiting",
       submitted: "Submitted",
       lastUpdated: "Last updated",
       action: "Action",
@@ -54,6 +57,8 @@ export const universityCopy = {
       requestInfoCta: "Request more info",
       cancel: "Cancel",
     },
+    tierLabel: "Tier",
+    allFilter: "All",
   },
 
   verifyCert: {
