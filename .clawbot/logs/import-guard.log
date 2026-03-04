@@ -1216,3 +1216,21 @@ error: Please commit or stash them.
 0 violation category(ies).
 [import-guard] 2026-03-04 12:44:03 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
 [import-guard] 2026-03-04 12:44:03 Auto-fixing import violations (round 1 of max 8)...
+The violations list is empty — all `hits=''` entries have no actual violation data. There's nothing to fix.
+
+No import boundary violations were detected in this run. The import-guard check completed clean.
+Everything up-to-date
+[import-guard] 2026-03-04 12:44:24 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 12:47:24 Scanning import boundaries...
+[import-guard] 2026-03-04 12:47:25 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 12:47:25 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 12:47:25 Auto-fixing import violations (round 1 of max 8)...
+All 19 violations listed are `hits=''` — they're empty strings. There are no actual import boundary violations to fix.
+
+No changes needed, no commit required.
+To https://github.com/doculetai/v6.git
+   90608cb..e8774a4  main -> main
+[import-guard] 2026-03-04 12:47:47 Import fixes pushed to main.

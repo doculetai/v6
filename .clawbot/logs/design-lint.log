@@ -985,3 +985,33 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 12:44:11 Found 1 violation category(ies).
 [design-lint] 2026-03-04 12:44:11 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 12:44:11 Auto-fixing design violations (round 1)...
+The only explicit violation listed is the inline styles in the email template — but that file already has a `design-lint-ignore` exemption at the top:
+
+```
+// design-lint-ignore: email templates require inline styles — email clients (Gmail, Outlook)
+// strip external stylesheets and CSS classes. Inline styles here are intentional and required.
+// The <a> tag is also intentional — next/link cannot be used in email HTML.
+```
+
+`★ Insight ─────────────────────────────────────`
+Email HTML is a completely separate rendering environment from browser HTML. Gmail, Outlook, and Apple Mail strip `<link>` tags and `<style>` blocks entirely — only inline `style=""` attributes survive. This means Tailwind classes, CSS variables (`var(--color-background)`), and even `next/link` are all incompatible with email templates. The `<a href>` here is correct; `<Link>` renders a Next.js router link that requires the browser DOM.
+`─────────────────────────────────────────────────`
+
+This is a **false positive** from the design linter. The inline styles in `sponsor-invitation-email.tsx` are:
+- **Intentional and required** — email clients don't support CSS classes or CSS variables
+- **Already documented** — the `design-lint-ignore` comment at line 1 explains exactly why
+- **Industry standard** — all email template libraries (react-email, MJML, etc.) use inline styles
+
+The large list of `line_count=` values in the prompt appears to be a truncated/malformed report with no file paths attached — there are no actionable violations beyond this email template file.
+
+**No changes are needed.** The file is correctly implemented and already exempt from the design-lint rule with proper documentation. Running a commit with no changes would create an empty commit.
+
+If the linter is still flagging this file despite the `design-lint-ignore` comment, the linter itself needs to be updated to respect that exemption directive.
+Everything up-to-date
+[design-lint] 2026-03-04 12:45:00 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 12:48:01 Scanning for design violations...
+[design-lint] 2026-03-04 12:48:03 Found 2 violation category(ies).
+[design-lint] 2026-03-04 12:48:03 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 12:48:03 Auto-fixing design violations (round 1)...

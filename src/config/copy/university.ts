@@ -56,6 +56,14 @@ export const universityCopy = {
       submitted: "Submitted",
       lastUpdated: "Last updated",
       action: "Action",
+      documents: "Documents",
+      kycStatus: "KYC status",
+    },
+    kycLabels: {
+      not_started: "Not started",
+      pending: "Pending",
+      verified: "Verified",
+      failed: "Failed",
     },
     statusLabels: {
       submitted: "Submitted",

@@ -601,3 +601,15 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [build-watch] 2026-03-04 12:42:23 Running typecheck...
 [build-watch] 2026-03-04 12:42:28 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 12:44:28 Running typecheck...
+[build-watch] 2026-03-04 12:44:34 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 12:46:34 Running typecheck...
+[build-watch] 2026-03-04 12:46:46 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 12:48:46 Running typecheck...
+[build-watch] 2026-03-04 12:48:51 Build clean. No errors found.
