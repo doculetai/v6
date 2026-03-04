@@ -70,7 +70,7 @@ for (const task of tasks) {
   let hasOpenPr = false;
 
   if (branch) {
-    const prRaw = run(`gh pr list --head "${branch}" --json number,state,url --limit 1`, repo);
+    const prRaw = run(`gh pr list --head "${branch}" --state all --json number,state,url --limit 1`, repo);
     if (prRaw) {
       try {
         const prs = JSON.parse(prRaw);
