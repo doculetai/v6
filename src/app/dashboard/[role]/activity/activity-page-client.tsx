@@ -7,39 +7,20 @@ import { PageHeader } from '@/components/ui/page-header';
 import type { agentCopy } from '@/config/copy/agent';
 import { cn, formatNGN } from '@/lib/utils';
 
+import {
+  type AgentCommission,
+  formatDate,
+  statusBadgeClass,
+} from '../_components/agent-commission-shared';
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type CommissionEvent = {
-  id: string;
-  amountKobo: number;
-  currency: string;
-  status: 'pending' | 'processing' | 'paid' | 'cancelled';
-  description: string | null;
-  paidAt: Date | null;
-  createdAt: Date;
-};
+type CommissionEvent = AgentCommission;
 
 type Props = {
   commissions: CommissionEvent[] | null;
   copy: typeof agentCopy.activity;
   commissionStatusLabels: typeof agentCopy.commissions.statusLabels;
-};
-
-// ── Status badge ──────────────────────────────────────────────────────────────
-
-const statusBadgeClass: Record<CommissionEvent['status'], string> = {
-  paid: 'bg-primary/10 text-primary',
-  processing: 'bg-warning/10 text-warning',
-  pending: 'bg-muted text-muted-foreground',
-  cancelled: 'bg-destructive/10 text-destructive',
-};
-
-function formatDate(date: Date): string {
-  return new Date(date).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
 }
 
 // ── Activity item ─────────────────────────────────────────────────────────────

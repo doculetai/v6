@@ -12,21 +12,29 @@ import type { agentCopy } from '@/config/copy/agent';
 
 type Props = {
   copy: typeof agentCopy.actions;
+  referralUrl: string | null;
 };
 
 // ── Invite card ───────────────────────────────────────────────────────────────
 
-function InviteCard({ copy }: { copy: Props['copy']['invite'] }) {
+function InviteCard({
+  copy,
+  referralUrl,
+}: {
+  copy: Props['copy']['invite'];
+  referralUrl: string | null;
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    // Referral link is populated server-side in a real implementation.
-    // For now we copy a placeholder so the UX is fully wired.
-    void navigator.clipboard.writeText(copy.linkPlaceholder).then(() => {
+    if (referralUrl === null) return;
+    void navigator.clipboard.writeText(referralUrl).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
   };
+
+  const isDisabled = referralUrl === null;
 
   return (
     <Card className="border-border bg-card">
@@ -42,13 +50,16 @@ function InviteCard({ copy }: { copy: Props['copy']['invite'] }) {
           <p className="text-xs font-medium text-muted-foreground">{copy.copyLinkLabel}</p>
           <div className="flex flex-col gap-2 sm:flex-row">
             <div className="flex-1 rounded-md border border-border bg-muted/40 px-3 py-2">
-              <p className="truncate text-sm text-muted-foreground">{copy.linkPlaceholder}</p>
+              <p className="truncate text-sm text-muted-foreground">
+                {referralUrl ?? copy.linkPlaceholder}
+              </p>
             </div>
             <Button
               variant="outline"
               size="sm"
               className="shrink-0 min-h-9 gap-1.5"
               onClick={handleCopy}
+              disabled={isDisabled}
               aria-label={copied ? copy.copied : copy.copyLinkCta}
             >
               {copied ? (
@@ -87,13 +98,13 @@ function ComingSoonCard({ copy }: { copy: Props['copy']['comingSoon'] }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function ActionsPageClient({ copy }: Props) {
+export function ActionsPageClient({ copy, referralUrl }: Props) {
   return (
     <div className="space-y-6">
       <PageHeader title={copy.title} subtitle={copy.subtitle} />
 
       <div className="grid gap-4 md:grid-cols-2">
-        <InviteCard copy={copy.invite} />
+        <InviteCard copy={copy.invite} referralUrl={referralUrl} />
         <ComingSoonCard copy={copy.comingSoon} />
       </div>
     </div>
