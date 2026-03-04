@@ -25,3 +25,10 @@ Done. Here's what was changed and why:
 To https://github.com/doculetai/v6.git
    1772aa2..e304e83  main -> main
 [a11y-watch] 2026-03-04 04:43:56 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 04:47:57 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 04:47:57 Found 1 check category(ies), approx 0
+0 violation line(s).
+[a11y-watch] 2026-03-04 04:47:57 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
+[a11y-watch] 2026-03-04 04:47:57 Invoking claude to fix a11y violations (round 1 of max 8)...

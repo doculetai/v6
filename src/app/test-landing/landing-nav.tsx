@@ -28,7 +28,7 @@ function MobileMenu({
             height={24}
             aria-hidden="true"
           />
-          <span className="text-[15px] font-bold tracking-tight text-foreground">
+          <span className="text-sm font-bold tracking-tight text-foreground">
             {copy.nav.brand}
           </span>
         </Link>
@@ -46,13 +46,13 @@ function MobileMenu({
         <ul className="space-y-1">
           {copy.nav.links.map((link) => (
             <li key={link.href}>
-              <a
+              <Link
                 href={link.href}
                 onClick={onClose}
-                className="flex min-h-[52px] items-center rounded-xl px-4 text-base font-medium text-foreground transition-colors hover:bg-muted"
+                className="flex min-h-13 items-center rounded-xl px-4 text-base font-medium text-foreground transition-colors hover:bg-muted"
               >
                 {link.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -61,14 +61,14 @@ function MobileMenu({
           <Link
             href="/login"
             onClick={onClose}
-            className="flex min-h-[52px] items-center justify-center rounded-xl border border-border text-[15px] font-semibold text-foreground transition-colors hover:bg-muted"
+            className="flex min-h-13 items-center justify-center rounded-xl border border-border text-sm font-semibold text-foreground transition-colors hover:bg-muted"
           >
             {copy.nav.signIn}
           </Link>
           <Link
             href="/signup"
             onClick={onClose}
-            className="flex min-h-[52px] items-center justify-center gap-2 rounded-xl bg-[#000080] text-[15px] font-bold text-white transition-colors hover:bg-[#00006a]"
+            className="flex min-h-13 items-center justify-center gap-2 rounded-xl bg-primary text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             {copy.nav.cta}
             <ArrowRight className="h-4 w-4" />
@@ -111,7 +111,7 @@ export function Nav() {
               height={24}
               aria-hidden="true"
             />
-            <span className="text-[15px] font-bold tracking-tight text-foreground">
+            <span className="text-sm font-bold tracking-tight text-foreground">
               {copy.nav.brand}
             </span>
           </Link>
@@ -120,12 +120,12 @@ export function Nav() {
           <ul className="hidden items-center gap-8 md:flex">
             {copy.nav.links.map((link) => (
               <li key={link.href}>
-                <a
+                <Link
                   href={link.href}
-                  className="inline-flex min-h-[44px] items-center text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  className="inline-flex min-h-11 items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -133,14 +133,14 @@ export function Nav() {
           <div className="flex items-center gap-3">
             <Link
               href="/login"
-              className="hidden min-h-[44px] items-center text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:inline-flex"
+              className="hidden min-h-11 items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:inline-flex"
             >
               {copy.nav.signIn}
             </Link>
 
             <Button
               asChild
-              className="hidden min-h-[44px] rounded-full bg-[#000080] px-5 text-[13px] font-semibold text-white hover:bg-[#00006a] md:inline-flex"
+              className="hidden min-h-11 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 md:inline-flex"
             >
               <Link href="/signup">
                 {copy.nav.cta}

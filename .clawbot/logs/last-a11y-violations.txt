@@ -9,7 +9,6 @@ Add <h1> as the first visible heading, or use your PageHeading component.
 /Users/gm/v6/src/app/dashboard/[role]/proof/page.tsx
 /Users/gm/v6/src/app/dashboard/[role]/verify/page.tsx
 /Users/gm/v6/src/app/dashboard/[role]/documents/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/page.tsx
 /Users/gm/v6/src/app/(auth)/signup/page.tsx
 /Users/gm/v6/src/app/(auth)/update-password/page.tsx
 /Users/gm/v6/src/app/(auth)/forgot-password/page.tsx
