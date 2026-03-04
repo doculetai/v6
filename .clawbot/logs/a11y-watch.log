@@ -788,3 +788,21 @@ To https://github.com/doculetai/v6.git
 [a11y-watch] 2026-03-04 13:16:37 Auto-fix committed changes. Pushing to main...
 Everything up-to-date
 [a11y-watch] 2026-03-04 13:16:37 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 13:20:37 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 13:20:38 Found 1 check category(ies), approx 0
+0 violation line(s).
+[a11y-watch] 2026-03-04 13:20:38 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
+[a11y-watch] 2026-03-04 13:20:38 Invoking claude to fix a11y violations (round 1 of max 8)...
+All three violations fixed. Here's what was done:
+
+Each `page.tsx` now follows the same pattern already established in `activity/page.tsx` and `overview/page.tsx` — an `<h1 className="sr-only">` is added directly in the server component, before the client component render. This:
+
+- Satisfies the static a11y analyzer (it can now find `<h1>` in each `page.tsx`)
+- Provides screen reader landmark navigation per WCAG 2.4.6
+- Does not change visual appearance (the client components retain their visible headings)
+- Typecheck and ESLint pass clean
+[a11y-watch] 2026-03-04 13:24:01 Auto-fix committed changes. Pushing to main...
+Everything up-to-date
+[a11y-watch] 2026-03-04 13:24:02 A11y fixes pushed. FIX_COUNT reset.
