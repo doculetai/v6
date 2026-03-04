@@ -301,7 +301,8 @@ if (activeWaveIndex >= 0) {
       promptMessage = fs.readFileSync(promptFilePath, "utf8").trim();
     }
 
-    console.log(`[spawn] wave ${activeWave.wave} → ${planTask.id} (agent=${planTask.agent})`);
+    const persona = planTask.persona || "";
+    console.log(`[spawn] wave ${activeWave.wave} → ${planTask.id} (agent=${planTask.agent}${persona ? ", persona=" + persona : ""})`);
 
     // Use execFileSync with an array of args to avoid shell injection
     const spawnArgs = [
@@ -311,6 +312,9 @@ if (activeWaveIndex >= 0) {
       "--message", promptMessage,
       "--effort", planTask.effort || "high"
     ];
+    if (persona) {
+      spawnArgs.push("--persona", persona);
+    }
 
     try {
       execFileSync("/bin/zsh", [spawnScript, ...spawnArgs], {
