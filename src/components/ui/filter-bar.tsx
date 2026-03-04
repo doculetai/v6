@@ -2,6 +2,7 @@
 
 import { Search } from "lucide-react"
 
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 import { Button } from "./button"
@@ -26,7 +27,7 @@ interface FilterBarProps {
 
 function FilterBar({
   query,
-  queryPlaceholder = "Search...",
+  queryPlaceholder = primitivesCopy.storybook.filterBar.queryPlaceholder,
   chips,
   activeChip,
   onQueryChange,
@@ -54,7 +55,7 @@ function FilterBar({
       <div
         className="mt-3 flex flex-wrap gap-2"
         role="tablist"
-        aria-label="Filter options"
+        aria-label={primitivesCopy.storybook.filterBar.tabAriaLabel}
       >
         {chips.map((chip) => {
           const isActive = chip.key === activeChip

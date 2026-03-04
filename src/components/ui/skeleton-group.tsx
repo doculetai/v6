@@ -1,5 +1,6 @@
 import type React from "react"
 
+import { primitivesCopy } from "@/config/copy/primitives"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
@@ -67,7 +68,11 @@ const variantComponents: Record<SkeletonVariant, React.ComponentType> = {
 function SkeletonGroup({ variant, count = 1, className }: SkeletonGroupProps) {
   const VariantComponent = variantComponents[variant]
   return (
-    <div role="status" aria-label="Loading content" className={cn("flex flex-col gap-6", className)}>
+    <div
+      role="status"
+      aria-label={primitivesCopy.labels.loadingContent}
+      className={cn("flex flex-col gap-6", className)}
+    >
       {Array.from({ length: count }).map((_, i) => (
         <VariantComponent key={i} />
       ))}

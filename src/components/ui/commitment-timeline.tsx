@@ -1,5 +1,6 @@
 "use client"
 
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 export interface CommitmentEvent {
@@ -40,11 +41,14 @@ function formatDate(iso: string) {
   }).format(new Date(iso))
 }
 
-export function CommitmentTimeline({ events, emptyLabel }: CommitmentTimelineProps) {
+export function CommitmentTimeline({
+  events,
+  emptyLabel = primitivesCopy.storybook.commitmentTimeline.empty,
+}: CommitmentTimelineProps) {
   if (events.length === 0) {
     return (
       <p className="py-8 text-center text-sm text-muted-foreground">
-        {emptyLabel ?? "No commitment history"}
+        {emptyLabel}
       </p>
     )
   }

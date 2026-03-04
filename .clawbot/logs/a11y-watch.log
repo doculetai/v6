@@ -866,3 +866,59 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [a11y-watch] 2026-03-04 17:03:29 Scanning for accessibility violations...
 [a11y-watch] 2026-03-04 17:03:29 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 17:07:29 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 17:07:30 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 17:11:30 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 17:11:30 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 17:15:30 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 17:15:31 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:12:07 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:12:08 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:16:08 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:16:09 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:20:10 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:20:11 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:24:11 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:24:13 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:28:13 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:28:14 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:32:14 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:32:15 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:36:16 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:36:17 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:40:17 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:40:18 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:44:19 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:44:20 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:48:21 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:48:23 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 18:52:24 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 18:52:29 All accessibility checks passed. No violations found.

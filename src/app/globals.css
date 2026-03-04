@@ -146,6 +146,10 @@
   --sidebar-width: 240px;
   --header-height: 56px;
   --content-max-width: 1280px;
+
+  /* Section surfaces (M3-aligned hierarchy) */
+  --color-surface: var(--background);
+  --color-surface-container: var(--card);
 }
 
 /* Base styles */

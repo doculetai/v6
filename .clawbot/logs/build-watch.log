@@ -797,3 +797,105 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [build-watch] 2026-03-04 17:04:00 Running typecheck...
 [build-watch] 2026-03-04 17:04:04 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 17:06:04 Running typecheck...
+[build-watch] 2026-03-04 17:06:07 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 17:08:07 Running typecheck...
+[build-watch] 2026-03-04 17:08:10 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 17:10:10 Running typecheck...
+[build-watch] 2026-03-04 17:10:14 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 17:12:15 Running typecheck...
+[build-watch] 2026-03-04 17:12:19 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 17:14:19 Running typecheck...
+[build-watch] 2026-03-04 17:14:24 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 17:16:24 Running typecheck...
+[build-watch] 2026-03-04 17:16:28 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 17:18:29 Running typecheck...
+[build-watch] 2026-03-04 17:18:34 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:13:09 Running typecheck...
+[build-watch] 2026-03-04 18:13:21 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:15:21 Running typecheck...
+[build-watch] 2026-03-04 18:15:29 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:17:29 Running typecheck...
+[build-watch] 2026-03-04 18:17:48 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:19:48 Running typecheck...
+[build-watch] 2026-03-04 18:20:11 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:22:12 Running typecheck...
+[build-watch] 2026-03-04 18:23:32 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:25:32 Running typecheck...
+[build-watch] 2026-03-04 18:25:59 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:27:59 Running typecheck...
+[build-watch] 2026-03-04 18:28:05 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:30:06 Running typecheck...
+[build-watch] 2026-03-04 18:30:25 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:32:25 Running typecheck...
+[build-watch] 2026-03-04 18:32:45 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:34:45 Running typecheck...
+[build-watch] 2026-03-04 18:35:14 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:37:15 Running typecheck...
+[build-watch] 2026-03-04 18:37:49 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:39:49 Running typecheck...
+[build-watch] 2026-03-04 18:40:07 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:42:08 Running typecheck...
+[build-watch] 2026-03-04 18:42:41 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:44:42 Running typecheck...
+[build-watch] 2026-03-04 18:45:01 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:47:02 Running typecheck...
+[build-watch] 2026-03-04 18:47:37 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 18:49:37 Running typecheck...
+[build-watch] 2026-03-04 18:50:54 Found 1 TypeScript error(s).
+[build-watch] 2026-03-04 18:50:54 Errors written to: /Users/gm/v6/.clawbot/logs/last-build-errors.txt
+[build-watch] 2026-03-04 18:50:54 Auto-fixing (round 1 of max 10)...
+Fixed. `searchPlaceholder` was declared in `ControlToolbarProps` but missing from the destructured parameters in the function signature. Added it to the destructuring — typecheck is clean and committed.
+
+`★ Insight ─────────────────────────────────────`
+This is a common TypeScript pattern gotcha: optional props declared in an interface must also be explicitly destructured in the function parameters, otherwise they're not in scope even though they compile in the type definition. TypeScript's strict mode catches the usage (`placeholder={searchPlaceholder}`) before the runtime would.
+`─────────────────────────────────────────────────`
+[build-watch] 2026-03-04 18:54:50 Auto-fix committed changes.
+To https://github.com/doculetai/v6.git
+   90f275e..316737d  main -> main

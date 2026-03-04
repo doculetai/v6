@@ -1,3 +1,1 @@
-src/app/dashboard/[role]/branding/branding-page-client.tsx(29,16): error TS2304: Cannot find name 'partnerCopy'.
-src/app/dashboard/[role]/branding/branding-page-client.tsx(148,18): error TS2304: Cannot find name 'partnerCopy'.
-src/app/dashboard/[role]/branding/branding-page-client.tsx(148,54): error TS2304: Cannot find name 'partnerCopy'.
+src/components/ui/control-toolbar.tsx(34,24): error TS2304: Cannot find name 'searchPlaceholder'.

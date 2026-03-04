@@ -1,4 +1,4 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/primitives.ts:56:      queryPlaceholder: "Search applications, students, or case references…",
+/Users/gm/v6/src/config/copy/primitives.ts:7:    searchPlaceholder: "Search…",

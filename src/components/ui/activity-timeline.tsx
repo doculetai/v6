@@ -1,5 +1,6 @@
 import { CheckCircle2, Clock3, Info, TriangleAlert, XCircle } from "lucide-react"
 
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 import { TimestampLabel } from "./timestamp-label"
@@ -38,7 +39,7 @@ function toneIcon(tone: ActivityTone): React.ReactNode {
 
 function ActivityTimeline({
   items,
-  emptyLabel = "No activity yet.",
+  emptyLabel = primitivesCopy.storybook.activityTimeline.empty,
   className,
 }: ActivityTimelineProps) {
   const sorted = [...items].sort(

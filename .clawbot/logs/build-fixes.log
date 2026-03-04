@@ -38,3 +38,6 @@ src/app/(auth)/signup/signup-page-client.tsx(129,11): error TS17002: Expected co
 src/app/dashboard/[role]/branding/branding-page-client.tsx(148,18): error TS2304: Cannot find name 'partnerCopy'.
 src/app/dashboard/[role]/branding/branding-page-client.tsx(148,54): error TS2304: Cannot find name 'partnerCopy'.
 2026-03-04 13:26:51 ---
+2026-03-04 18:50:54 Round 1: 1 errors
+2026-03-04 18:50:54 src/components/ui/control-toolbar.tsx(34,24): error TS2304: Cannot find name 'searchPlaceholder'.
+2026-03-04 18:50:54 ---
