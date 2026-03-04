@@ -22,6 +22,8 @@ export const partnerApiKeys = pgTable('partner_api_keys', {
   partnerId: uuid('partner_id')
     .references(() => partnerProfiles.id, { onDelete: 'cascade' })
     .notNull(),
+  name: text('name').notNull(),
+  environment: text('environment').notNull(),
   keyHash: text('key_hash').notNull().unique(),
   keyPrefix: text('key_prefix').notNull(),
   scopes: text('scopes').array().notNull(),

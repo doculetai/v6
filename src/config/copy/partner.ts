@@ -75,6 +75,7 @@ export const partnerCopy = {
     table: {
       name: "Name",
       environment: "Environment",
+      key: "Key",
       lastUsed: "Last used",
       created: "Created",
       status: "Status",
@@ -100,6 +101,11 @@ export const partnerCopy = {
       description:
         "Create your first key to start integrating with the Doculet API.",
       cta: "Create your first key",
+    },
+    validation: {
+      nameRequired: "Key name is required",
+      nameTooLong: "Key name must be 100 characters or fewer",
+      scopesRequired: "Select at least one scope",
     },
   },
 
