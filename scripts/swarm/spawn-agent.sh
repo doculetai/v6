@@ -133,7 +133,7 @@ if [[ -z "$MODEL" ]]; then
     codex)      MODEL="gpt-5.3-codex" ;;
     claude)     MODEL="claude-sonnet-4-6" ;;
     openclaw)   MODEL="groq/qwen/qwen3-32b" ;;
-    openrouter) MODEL="qwen/qwen3-235b-a22b:free" ;;
+    openrouter) MODEL="google/gemma-3-4b-it:free" ;; # free tier; use --model to override
     gemini)     MODEL="gemini-2.0-flash" ;;
     ollama)     MODEL="qwen2.5-coder:32b" ;;
     *)
@@ -161,11 +161,16 @@ case "$AGENT" in
     ;;
   openrouter)
     # OpenAI-compatible API via OpenRouter. Requires OPENROUTER_API_KEY env var.
-    exec openai api chat.completions.create \
-      --base-url https://openrouter.ai/api/v1 \
-      -H "HTTP-Referer: https://doculet.ai" \
-      --model "$MODEL" \
-      -m "\$(cat "\$PROMPT_FILE")"
+    # Best for: simple analysis, copy config, stub files (free 4B model = small tasks only).
+    exec python3 - "\$PROMPT_FILE" "$MODEL" <<'PY'
+import sys, os
+from openai import OpenAI
+prompt_file, model = sys.argv[1], sys.argv[2]
+client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.environ["OPENROUTER_API_KEY"])
+msg = open(prompt_file).read()
+r = client.chat.completions.create(model=model, messages=[{"role":"user","content":msg}], max_tokens=4096)
+print(r.choices[0].message.content)
+PY
     ;;
   gemini)
     # Google Gemini CLI. Requires GEMINI_API_KEY env var.
