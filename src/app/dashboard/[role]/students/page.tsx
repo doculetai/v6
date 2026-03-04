@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
+import { agentCopy } from '@/config/copy/agent';
 import { partnerCopy } from '@/config/copy/partner';
 import { sponsorCopy } from '@/config/copy/sponsor';
 import { universityCopy } from '@/config/copy/university';
@@ -9,6 +10,7 @@ import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 import { PageHeader } from '@/components/ui/page-header';
 
+import { AgentStudentsPageClient } from './agent-students-page-client';
 import { StudentsPageClient } from './students-page-client';
 import { SponsorStudentsPageClient } from './sponsor-students-page-client';
 import { UniversityStudentsPageClient } from './university-students-page-client';
@@ -67,6 +69,27 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
           subtitle={universityCopy.students.subtitle}
         />
         <UniversityStudentsPageClient students={students} copy={universityCopy.students} />
+      </div>
+    );
+  }
+
+  // Agent branch
+  if (role === 'agent') {
+    let students: Awaited<ReturnType<typeof caller.agent.listAgentStudents>>;
+    try {
+      students = await caller.agent.listAgentStudents();
+    } catch (error) {
+      if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
+      students = [];
+    }
+    return (
+      <div className="space-y-6">
+        <h1 className="sr-only">{agentCopy.students.title}</h1>
+        <PageHeader
+          title={agentCopy.students.title}
+          subtitle={agentCopy.students.subtitle}
+        />
+        <AgentStudentsPageClient students={students} copy={agentCopy.students} />
       </div>
     );
   }

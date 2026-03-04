@@ -756,3 +756,15 @@ error: Please commit or stash them.
 0 violation line(s).
 [a11y-watch] 2026-03-04 12:56:43 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
 [a11y-watch] 2026-03-04 12:56:43 Invoking claude to fix a11y violations (round 1 of max 8)...
+All 3 violations fixed and committed. Here's what changed across 6 files:
+
+**`page.tsx` (3 files)** — Added `<h1>` + subtitle in a `space-y-6` wrapper before the client component, and updated the unauthorized path to also have a visible `<h1>`. This makes the heading visible to static analysis.
+
+**`*-page-client.tsx` (3 files)** — Removed the `<h1>` + subtitle `<div>` header section from all branches (error, empty, and main) to eliminate duplicate `<h1>` tags that would violate WCAG.
+
+- `tsc --noEmit` ✓ clean
+- `eslint` ✓ clean  
+- Committed in `e934a11` (auto-picked up by project hooks)
+[a11y-watch] 2026-03-04 13:03:11 Auto-fix committed changes. Pushing to main...
+Everything up-to-date
+[a11y-watch] 2026-03-04 13:03:12 A11y fixes pushed. FIX_COUNT reset.

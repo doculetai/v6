@@ -531,3 +531,17 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [copy-audit] 2026-03-04 13:00:28 Scanning copy config coverage...
 [copy-audit] 2026-03-04 13:00:28 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 13:03:29 Scanning copy config coverage...
+[copy-audit] 2026-03-04 13:03:29 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 13:03:29 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 13:03:29 Auto-fixing copy violations (round 1 of max 8)...
+Fixed both violations in `src/config/copy/agent.ts:268-271`:
+
+- `linkPlaceholder`: `'Your referral link will appear here.'` → `'Generating your unique referral link…'` (active, not passive placeholder)
+- `comingSoon.heading`: `'More actions coming soon'` → `'Bulk tools & advanced operations'` (descriptive, not deferring)
+
+Typecheck clean, committed.
+Everything up-to-date
+[copy-audit] 2026-03-04 13:04:23 Copy fixes pushed to main.

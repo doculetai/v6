@@ -1,1 +1,1 @@
-src/app/dashboard/[role]/disbursements/page.tsx(10,41): error TS2307: Cannot find module './disbursements-page-client' or its corresponding type declarations.
+src/app/dashboard/[role]/students/page.tsx(13,41): error TS2307: Cannot find module './agent-students-page-client' or its corresponding type declarations.

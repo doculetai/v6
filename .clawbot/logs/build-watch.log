@@ -637,3 +637,9 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [build-watch] 2026-03-04 13:01:27 Running typecheck...
 [build-watch] 2026-03-04 13:01:35 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 13:03:35 Running typecheck...
+[build-watch] 2026-03-04 13:03:45 Found 1 TypeScript error(s).
+[build-watch] 2026-03-04 13:03:45 Errors written to: /Users/gm/v6/.clawbot/logs/last-build-errors.txt
+[build-watch] 2026-03-04 13:03:45 Auto-fixing (round 1 of max 10)...
