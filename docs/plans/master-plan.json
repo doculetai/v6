@@ -1,0 +1,286 @@
+{
+  "project": "doculet-v6",
+  "description": "Doculet.ai V6 — proof-of-funds verification platform",
+  "waves": [
+    {
+      "wave": 1,
+      "name": "Foundation",
+      "description": "Bootstrap: Next.js 16 + Drizzle + tRPC + shadcn + env config",
+      "tasks": [
+        {
+          "id": "foundation-bootstrap",
+          "description": "Initialize Next.js 16 with tRPC, Drizzle, Supabase auth, Tailwind 4, shadcn/ui new-york. Set up folder structure per CLAUDE.md.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/foundation-bootstrap.txt",
+          "effort": "high",
+          "dependsOn": []
+        },
+        {
+          "id": "foundation-db-schema",
+          "description": "Write all Drizzle schema files (users, profiles, documents, sponsorships, disbursements, certificates, partner_api_keys). One file per domain in src/db/schema/.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/foundation-db-schema.txt",
+          "effort": "high",
+          "dependsOn": ["foundation-bootstrap"]
+        },
+        {
+          "id": "foundation-trpc-setup",
+          "description": "Wire tRPC context, root router, 6 stub routers (student/sponsor/university/admin/agent/partner), and server-side caller. Must typecheck clean.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/foundation-trpc-setup.txt",
+          "effort": "high",
+          "dependsOn": ["foundation-bootstrap"]
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "name": "Auth + Layout + Copy",
+      "description": "Authentication flows, dashboard shell, role routing, all 6 copy configs",
+      "tasks": [
+        {
+          "id": "auth-flows",
+          "description": "Build login, signup, password-reset, and email-confirm pages under src/app/(auth)/. Use Supabase SSR auth. Server-side redirect on session present.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/auth-flows.txt",
+          "effort": "high",
+          "dependsOn": ["foundation-bootstrap", "foundation-trpc-setup"]
+        },
+        {
+          "id": "dashboard-shell",
+          "description": "Build role-parameterized dashboard layout at src/app/dashboard/[role]/layout.tsx. Nav per role from src/config/nav/. Mobile-first sidebar, dark mode, WCAG AA.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/dashboard-shell.txt",
+          "effort": "high",
+          "dependsOn": ["foundation-bootstrap", "foundation-trpc-setup"]
+        },
+        {
+          "id": "copy-config",
+          "description": "Write all 6 role copy config files (student.ts, sponsor.ts, university.ts, admin.ts, agent.ts, partner.ts) in src/config/copy/. All UI strings. No JSX-level hardcoding.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/copy-config.txt",
+          "effort": "medium",
+          "dependsOn": ["foundation-bootstrap"]
+        }
+      ]
+    },
+    {
+      "wave": 3,
+      "name": "Student Persona",
+      "description": "All 5 student pages wired end-to-end with tRPC + Drizzle",
+      "tasks": [
+        {
+          "id": "student-onboarding",
+          "description": "4-step onboarding wizard: Welcome → Select School/Program → Funding Type → Action. Gate: students without completed onboarding redirect here. Server page + client wrapper.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/student-onboarding.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "student-verify",
+          "description": "KYC verification page: Dojah identity check + Mono bank account connect. Status tracker shows tier 1/2/3 progress. Server page + client wrapper.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/student-verify.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "student-documents",
+          "description": "Document upload page: upload to Supabase Storage via tRPC mutation. Document list with status badges (pending/approved/rejected). Rejection reason display.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/student-documents.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "student-proof",
+          "description": "Proof certificate page: progress checklist (KYC + bank + sponsor + documents). Certificate issued when all complete. Tamper-evident share link generation via tRPC.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/student-proof.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "student-sponsor-invite",
+          "description": "Sponsor invitation page: invite by email (triggers Resend email). Pending/accepted/declined status tracker per invite. Cancel invite mutation.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/student-sponsor-invite.txt",
+          "effort": "medium",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        }
+      ]
+    },
+    {
+      "wave": 4,
+      "name": "Sponsor Persona",
+      "description": "All sponsor pages wired end-to-end",
+      "tasks": [
+        {
+          "id": "sponsor-dashboard",
+          "description": "Sponsor overview: EarningsPanel (total committed, disbursed, remaining), student portfolio list, pending invitations. Corporate + parent/guardian copy variants.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/sponsor-dashboard.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "sponsor-student-detail",
+          "description": "Individual student view for sponsor: progress timeline, document review status, KYC status, disbursement schedule with ControlToolbar actions (approve/reject/request-more).",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/sponsor-student-detail.txt",
+          "effort": "high",
+          "dependsOn": ["sponsor-dashboard"]
+        },
+        {
+          "id": "sponsor-kyc",
+          "description": "Sponsor KYC page: identity verification (Dojah), bank account verification (Mono), affidavit signing. Corporate sub-type: CAC upload + compliance report download.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/sponsor-kyc.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "sponsor-disbursements",
+          "description": "DisbursementFlow page: scheduled disbursements timeline, manual disburse mutation, disbursement history. Amount in kobo integers, display in ₦. Paystack integration.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/sponsor-disbursements.txt",
+          "effort": "high",
+          "dependsOn": ["sponsor-dashboard", "foundation-db-schema"]
+        }
+      ]
+    },
+    {
+      "wave": 5,
+      "name": "University + Admin Personas",
+      "description": "University pipeline + admin operations",
+      "tasks": [
+        {
+          "id": "university-pipeline",
+          "description": "Application pipeline: paginated list of students by status (pending/verified/enrolled/rejected). Bulk approve/reject actions. Export CSV via tRPC query.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/university-pipeline.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "university-verify-cert",
+          "description": "Public certificate verification page at /certificate/[token]. No auth required. Shows: student name, school, program, funding amount, verification date, tamper-evident status.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/university-verify-cert.txt",
+          "effort": "medium",
+          "dependsOn": ["foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "admin-dashboard",
+          "description": "Admin overview: platform metrics (active students, pending reviews, revenue), recent activity feed, system health indicators (Sentry, webhook delivery rate, DB latency).",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/admin-dashboard.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "admin-document-review",
+          "description": "Document review queue: paginated list with document viewer, approve/reject/request-more actions. Status transition triggers email notification via Resend.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/admin-document-review.txt",
+          "effort": "high",
+          "dependsOn": ["admin-dashboard", "foundation-db-schema"]
+        }
+      ]
+    },
+    {
+      "wave": 6,
+      "name": "Agent + Partner Personas",
+      "description": "Agent portfolio management + partner API access",
+      "tasks": [
+        {
+          "id": "agent-dashboard",
+          "description": "Agent overview: student portfolio list, commission tracker (pending/paid), commission rate per student, referral link generator. EarningsPanel variant for agents.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/agent-dashboard.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "partner-dashboard",
+          "description": "Partner overview: API usage metrics, active integrations, white-label config (brand colors, logo, domain). Revenue sharing breakdown.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/partner-dashboard.txt",
+          "effort": "high",
+          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+        },
+        {
+          "id": "partner-api-keys",
+          "description": "API key management: generate/revoke keys, set scopes, view usage logs. REST API docs page (auto-generated from tRPC types). Rate limit display per key.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/partner-api-keys.txt",
+          "effort": "high",
+          "dependsOn": ["partner-dashboard", "foundation-db-schema"]
+        }
+      ]
+    },
+    {
+      "wave": 7,
+      "name": "Cross-Persona Wiring + Webhooks",
+      "description": "End-to-end cross-persona chains, email notifications, outbound webhooks",
+      "tasks": [
+        {
+          "id": "cross-sponsor-invite-chain",
+          "description": "Wire: student invite → Resend email sent → sponsor sees invite in dashboard → sponsor accepts → student sponsorship status updates (realtime via Supabase subscription).",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/cross-sponsor-invite-chain.txt",
+          "effort": "high",
+          "dependsOn": ["student-sponsor-invite", "sponsor-dashboard", "student-proof"]
+        },
+        {
+          "id": "cross-document-review-loop",
+          "description": "Wire: student uploads document → admin sees in queue → admin requests more info → Resend email to student → student re-uploads → admin re-reviews → approved/rejected.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/cross-document-review-loop.txt",
+          "effort": "high",
+          "dependsOn": ["student-documents", "admin-document-review"]
+        },
+        {
+          "id": "cross-university-pipeline",
+          "description": "Wire: student selects school → university sees in pipeline → university approves → student enrollment confirmed → proof certificate updated with enrollment status.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/cross-university-pipeline.txt",
+          "effort": "high",
+          "dependsOn": ["student-onboarding", "university-pipeline", "student-proof"]
+        },
+        {
+          "id": "webhook-delivery",
+          "description": "Build outbound webhook delivery system: Paystack, Mono, Dojah inbound handlers + idempotency via SHA-256 dedup. Email via Resend for all status transitions. /api/health endpoint.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/webhook-delivery.txt",
+          "effort": "high",
+          "dependsOn": ["foundation-bootstrap", "foundation-db-schema", "foundation-trpc-setup"]
+        }
+      ]
+    },
+    {
+      "wave": 8,
+      "name": "QA + Production",
+      "description": "E2E tests, Sentry wiring, Vercel deploy",
+      "tasks": [
+        {
+          "id": "e2e-tests",
+          "description": "Playwright smoke tests: auth flow (signup → login → redirect), student onboarding 4 steps, sponsor invite + accept chain, certificate public page loads. Seed data from tests/fixtures/.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/e2e-tests.txt",
+          "effort": "high",
+          "dependsOn": ["cross-sponsor-invite-chain", "cross-document-review-loop", "cross-university-pipeline"]
+        },
+        {
+          "id": "sentry-wiring",
+          "description": "Add Sentry.captureException to all API route handlers, tRPC middleware (error procedure), and cron handlers. No console.log. @sentry/nextjs configured per CLAUDE.md.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/sentry-wiring.txt",
+          "effort": "medium",
+          "dependsOn": ["webhook-delivery"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "project": "doculet-v6",
+  "description": "Doculet.ai V6 — proof-of-funds verification platform",
+  "waves": [
+    {
+      "wave": 1,
+      "name": "Foundation",
+      "description": "Bootstrap: Next.js + Drizzle + tRPC + shadcn + auth + DB schema",
+      "tasks": [
+        {
+          "id": "foundation-bootstrap",
+          "description": "Initialize Next.js 16 with tRPC, Drizzle, Supabase auth, Tailwind 4, shadcn/ui new-york. Set up folder structure per CLAUDE.md.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/foundation-bootstrap.txt",
+          "effort": "high",
+          "dependsOn": []
+        },
+        {
+          "id": "foundation-db-schema",
+          "description": "Port all Supabase migrations from V5, adapt for Drizzle schema files, generate TypeScript types.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/foundation-db-schema.txt",
+          "effort": "high",
+          "dependsOn": []
+        },
+        {
+          "id": "foundation-trpc-setup",
+          "description": "Set up tRPC app router, root router, context with Drizzle client and Supabase auth session, middleware for role-based access.",
+          "agent": "codex",
+          "promptFile": ".clawbot/prompts/foundation-trpc-setup.txt",
+          "effort": "high",
+          "dependsOn": ["foundation-bootstrap"]
+        }
+      ]
+    },
+    {
+      "wave": 2,
+      "name": "Auth + Layout",
+      "description": "Authentication flows, dashboard shell, role routing",
+      "tasks": []
+    },
+    {
+      "wave": 3,
+      "name": "Student Persona",
+      "description": "All student pages wired end-to-end",
+      "tasks": []
+    },
+    {
+      "wave": 4,
+      "name": "Sponsor Persona",
+      "description": "All sponsor pages wired end-to-end",
+      "tasks": []
+    },
+    {
+      "wave": 5,
+      "name": "University + Admin Personas",
+      "description": "University and admin pages",
+      "tasks": []
+    },
+    {
+      "wave": 6,
+      "name": "Agent + Partner Personas",
+      "description": "Agent and partner pages",
+      "tasks": []
+    },
+    {
+      "wave": 7,
+      "name": "Cross-Persona Wiring",
+      "description": "All cross-persona chains, notifications, webhooks",
+      "tasks": []
+    },
+    {
+      "wave": 8,
+      "name": "QA + Production",
+      "description": "E2E tests, CI/CD, deploy",
+      "tasks": []
+    }
+  ]
+}
