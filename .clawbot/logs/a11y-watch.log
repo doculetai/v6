@@ -286,3 +286,37 @@ error: Please commit or stash them.
 0 violation line(s).
 [a11y-watch] 2026-03-04 09:00:19 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
 [a11y-watch] 2026-03-04 09:00:19 Invoking claude to fix a11y violations (round 1 of max 8)...
+Both checks pass clean. No changes were made because **no violations exist** — `PageHeader` already renders the required `<h1>` for each page.
+
+**Root cause of the false positive:** The a11y-watch scanner uses source-level pattern matching (`/(<h1[\s>])/`) rather than component-aware analysis. It sees `<PageHeader>` and misses that it outputs `<h1>` internally.
+
+**Recommended fix for the scanner** (not the pages): Update the a11y-watch tool's allowlist to recognize `PageHeader`, `CardTitle`, or any component whose display name is in a known-h1-emitters set. Alternatively, annotate the component with a JSDoc `@emits-h1` comment that the scanner checks for.
+[a11y-watch] 2026-03-04 09:02:51 Auto-fix committed changes. Pushing to main...
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[a11y-watch] 2026-03-04 09:02:52 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[a11y-watch] 2026-03-04 09:02:52 ERROR: push failed again. Manual push required.
+[a11y-watch] 2026-03-04 09:02:52 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 09:06:54 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 09:06:54 Found 1 check category(ies), approx 0
+0 violation line(s).
+[a11y-watch] 2026-03-04 09:06:54 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
+[a11y-watch] 2026-03-04 09:06:54 Invoking claude to fix a11y violations (round 1 of max 8)...

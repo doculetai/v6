@@ -150,11 +150,16 @@ line_count='     190'
 line_count='      22'
 line_count='      21'
 line_count='      13'
+line_count='      46'
+line_count='      38'
+line_count='      32'
+line_count='      89'
+line_count='      16'
 line_count='       5'
 line_count='      47'
 line_count='      93'
 line_count='      67'
-line_count='     385'
+line_count='     294'
 line_count='     110'
 line_count='     262'
 line_count='      39'
@@ -172,7 +177,7 @@ line_count='      10'
 line_count='      28'
 line_count='     175'
 line_count='      64'
-line_count='      90'
+line_count='      93'
 line_count='     245'
 line_count='     173'
 line_count='     312'
@@ -188,22 +193,15 @@ line_count='       7'
 
 
 === INLINE STYLES (convert to Tailwind classes) ===
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:17:      <Skeleton className="h-44 w-full rounded-lg [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:18:      <Skeleton className="h-4 w-3/4 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 75}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:19:      <Skeleton className="h-4 w-1/2 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 150}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:27:      <Skeleton className="h-10 w-10 rounded-full [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:29:        <Skeleton className="h-4 w-full [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 75}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:30:        <Skeleton className="h-3 w-2/3 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 150}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:41:          <Skeleton className="h-3 w-24 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + i * 2 * 75}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:42:          <Skeleton className="h-10 w-full rounded-md [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + (i * 2 + 1) * 75}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:45:      <Skeleton className="h-10 w-32 rounded-md [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 6 * 75}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:54:        <Skeleton key={i} className="h-20 rounded-lg [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + i * 75}ms` } as React.CSSProperties} />
-/Users/gm/v6/src/components/ui/earnings-panel.tsx:46:          style={{ width: `${rate}%` }}
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:75:    <div style={wrapperStyle}>
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:76:      <div style={cardStyle}>
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:77:        <h1 style={headingStyle}>{emailCopy.sponsorInvitation.heading}</h1>
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:78:        <p style={bodyStyle}>{emailCopy.sponsorInvitation.body}</p>
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:79:        <p style={invitedByStyle}>
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:82:        {note ? <div style={noteStyle}>{note}</div> : null}
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:83:        <a href={dashboardUrl} style={ctaStyle}>
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:86:        <p style={footerStyle}>{emailCopy.sponsorInvitation.footer}</p>
+/Users/gm/v6/src/components/ui/earnings-panel.tsx:45:        style={{ '--progress': `${rate}%` } as React.CSSProperties}
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:78:    <div style={wrapperStyle}>
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:79:      <div style={cardStyle}>
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:80:        <h1 style={headingStyle}>{emailCopy.sponsorInvitation.heading}</h1>
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:81:        <p style={bodyStyle}>{emailCopy.sponsorInvitation.body}</p>
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:82:        <p style={invitedByStyle}>
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:85:        {note ? <div style={noteStyle}>{note}</div> : null}
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:86:        <a href={dashboardUrl} style={ctaStyle}>
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:89:        <p style={footerStyle}>{emailCopy.sponsorInvitation.footer}</p>
+
+=== ARBITRARY PIXEL SIZES (use Tailwind scale: text-sm, w-64, etc.) ===
+/Users/gm/v6/src/components/layout/Sidebar.tsx:262:          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">
