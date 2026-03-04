@@ -22,24 +22,18 @@ const copy = universityCopy.pipeline;
 
 const kycBadgeClass: Record<QueueItem['kycStatus'], string> = {
   verified: 'bg-primary/10 text-primary',
-  pending: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
+  pending: 'bg-warning/10 text-warning',
   failed: 'bg-destructive/10 text-destructive',
   not_started: 'bg-muted text-muted-foreground',
 };
 
-const kycLabel: Record<QueueItem['kycStatus'], string> = {
-  verified: 'Verified',
-  pending: 'Pending',
-  failed: 'Failed',
-  not_started: 'Not started',
-};
 
 function docCountClass(item: QueueItem): string {
   if (item.pendingDocumentCount > 0) {
-    return 'text-yellow-700 dark:text-yellow-400';
+    return 'text-warning';
   }
   if (item.documentCount > 0) {
-    return 'text-green-700 dark:text-green-400';
+    return 'text-success';
   }
   return 'text-muted-foreground';
 }
@@ -74,10 +68,10 @@ export function PipelinePageClient({ queue }: Props) {
               {copy.table.program}
             </th>
             <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              Documents
+              {copy.table.documents}
             </th>
             <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              KYC status
+              {copy.table.kycStatus}
             </th>
             <th className="px-4 py-3 text-left font-medium text-muted-foreground">
               {copy.table.submitted}
@@ -106,7 +100,7 @@ export function PipelinePageClient({ queue }: Props) {
                     kycBadgeClass[item.kycStatus],
                   )}
                 >
-                  {kycLabel[item.kycStatus]}
+                  {copy.kycLabels[item.kycStatus]}
                 </span>
               </td>
               <td className="px-4 py-3 text-muted-foreground">

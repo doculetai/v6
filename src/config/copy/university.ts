@@ -210,8 +210,17 @@ export const universityCopy = {
       schoolNameHint: "Contact support to change your linked school.",
       saveLabel: "Save changes",
       savingLabel: "Saving\u2026",
+      savedLabel: "Settings saved.",
+      validation: {
+        orgNameMin: "Organisation name must be at least 2 characters.",
+        orgNameMax: "Organisation name must be at most 120 characters.",
+      },
     },
-    errors: { saveError: "Failed to save settings. Please try again." },
+    errors: {
+      saveError: "Failed to save settings. Please try again.",
+      loadError: "Unable to load settings. Please try again.",
+      tryAgain: "Try again",
+    },
   },
 
   nav: {

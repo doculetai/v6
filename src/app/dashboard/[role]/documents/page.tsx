@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
 import type { DashboardRole } from '@/config/roles';
@@ -6,6 +7,8 @@ import { studentCopy } from '@/config/copy/student';
 import { universityCopy } from '@/config/copy/university';
 import { PageHeader } from '@/components/ui/page-header';
 import { api } from '@/trpc/server';
+
+export const metadata: Metadata = { title: 'Documents — Doculet' };
 
 import { DocumentsPageClient } from './documents-page-client';
 import { UniversityDocumentsPageClient } from './university-documents-page-client';

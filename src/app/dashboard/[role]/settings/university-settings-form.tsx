@@ -18,7 +18,9 @@ import { FormErrorBanner, FormSuccessBanner } from './settings-shared';
 const copy = universityCopy.settings;
 
 const universityProfileSchema = z.object({
-  organizationName: z.string().min(2).max(120),
+  organizationName: z.string()
+    .min(2, copy.profile.validation.orgNameMin)
+    .max(120, copy.profile.validation.orgNameMax),
 });
 
 type UniversityProfileFormValues = z.infer<typeof universityProfileSchema>;
@@ -107,7 +109,7 @@ export function UniversityProfileSettingsForm({ profile }: { profile: University
           </div>
 
           {submitError ? <FormErrorBanner message={submitError} /> : null}
-          {saved ? <FormSuccessBanner message="Settings saved." /> : null}
+          {saved ? <FormSuccessBanner message={copy.profile.savedLabel} /> : null}
 
           <div className="flex justify-end">
             <Button type="submit" className="min-h-11" disabled={isSubmitting}>

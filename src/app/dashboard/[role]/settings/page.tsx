@@ -100,13 +100,13 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
             <CardHeader className="space-y-3">
               <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />
               <CardTitle className="text-lg text-card-foreground">
-                {universityCopy.settings.errors.saveError}
+                {universityCopy.settings.errors.loadError}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <Button asChild variant="outline" className="min-h-11">
                 <Link href={`/dashboard/${role}/settings`}>
-                  {agentCopy.settings.errors.tryAgain}
+                  {universityCopy.settings.errors.tryAgain}
                 </Link>
               </Button>
             </CardContent>
@@ -140,12 +140,14 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
           <CardHeader className="space-y-3">
             <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />
             <CardTitle className="text-lg text-card-foreground">
-              Unable to load settings
+              {sponsorCopy.settings.errors.loadError}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline" className="min-h-11">
-              <Link href={`/dashboard/${role}/settings`}>Try again</Link>
+              <Link href={`/dashboard/${role}/settings`}>
+                {sponsorCopy.settings.errors.tryAgain}
+              </Link>
             </Button>
           </CardContent>
         </Card>

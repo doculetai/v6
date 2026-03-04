@@ -210,6 +210,8 @@ export const sponsorCopy = {
     },
     errors: {
       profileSaveError: 'Failed to save profile. Please try again.',
+      loadError: 'Unable to load settings. Please try again.',
+      tryAgain: 'Try again',
     },
   },
 

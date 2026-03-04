@@ -52,10 +52,13 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
 
   // University branch
   if (role === 'university') {
-    const [studentsResult] = await Promise.allSettled([
-      caller.university.listUniversityStudents(),
-    ]);
-    const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
+    let students: Awaited<ReturnType<typeof caller.university.listUniversityStudents>>;
+    try {
+      students = await caller.university.listUniversityStudents();
+    } catch (error) {
+      if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
+      students = [];
+    }
     return (
       <div className="space-y-6">
         <h1 className="sr-only">{universityCopy.students.title}</h1>
