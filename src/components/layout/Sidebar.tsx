@@ -259,7 +259,7 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       <span className="relative flex h-8 w-8 shrink-0 items-center justify-center transition-transform group-hover:scale-110 motion-reduce:group-hover:scale-100">
         <Icon className="h-5 w-5" aria-hidden="true" />
         {item.badge !== undefined && item.badge > 0 && isCollapsed && (
-          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">
+          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-xs font-bold leading-none text-destructive-foreground">
             {item.badge > 9 ? '9+' : item.badge}
           </span>
         )}
