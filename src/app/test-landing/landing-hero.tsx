@@ -144,13 +144,13 @@ export function Hero() {
             </Reveal>
 
             <Reveal delay={80}>
-              <h1 className="mt-6 font-serif text-5xl font-bold leading-[1.02] tracking-[-0.03em] text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+              <h2 className="mt-6 font-serif text-5xl font-bold leading-[1.02] tracking-[-0.03em] text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
                 {copy.hero.headline}
                 <br />
                 <span className="text-accent">
                   {copy.hero.headlineAccent}
                 </span>
-              </h1>
+              </h2>
             </Reveal>
 
             <Reveal delay={160}>

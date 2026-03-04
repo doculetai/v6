@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import type { inferRouterOutputs } from '@trpc/server';
 import { notFound, redirect } from 'next/navigation';
 
+import { studentCopy } from '@/config/copy/student';
 import type { AppRouter } from '@/server/root';
 import { api } from '@/trpc/server';
 import { TRPCReactProvider } from '@/trpc/provider';
@@ -40,8 +41,11 @@ export default async function VerifyRolePage({ params }: VerifyRolePageProps) {
   }
 
   return (
-    <TRPCReactProvider>
-      <VerifyPageClient initialData={initialData} />
-    </TRPCReactProvider>
+    <>
+      <h1 className="sr-only">{studentCopy.verify.title}</h1>
+      <TRPCReactProvider>
+        <VerifyPageClient initialData={initialData} />
+      </TRPCReactProvider>
+    </>
   );
 }

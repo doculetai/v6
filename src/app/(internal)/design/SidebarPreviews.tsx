@@ -33,7 +33,7 @@ export function SidebarPreviews() {
           <p className="border-b border-border/60 bg-muted/30 px-3 py-2 text-xs font-medium text-muted-foreground">
             Expanded (240px)
           </p>
-          <div className="h-[520px]">
+          <div className="h-[32.5rem]">
             <Sidebar role={activeRole} currentPath={`/dashboard/${activeRole}`} />
           </div>
         </div>
@@ -42,7 +42,7 @@ export function SidebarPreviews() {
           <p className="border-b border-border/60 bg-muted/30 px-3 py-2 text-xs font-medium text-muted-foreground">
             Collapsed (64px)
           </p>
-          <div className="h-[520px]">
+          <div className="h-[32.5rem]">
             <Sidebar
               role={activeRole}
               currentPath={`/dashboard/${activeRole}`}

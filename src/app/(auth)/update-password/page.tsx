@@ -17,5 +17,10 @@ export default async function UpdatePasswordPage() {
     redirect(authCopy.routes.login);
   }
 
-  return <UpdatePasswordPageClient />;
+  return (
+    <>
+      <h1 className="sr-only">{authCopy.updatePassword.title}</h1>
+      <UpdatePasswordPageClient />
+    </>
+  );
 }

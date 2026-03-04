@@ -42,9 +42,12 @@ export default async function DashboardProofPage({ params }: DashboardProofPageP
   }
 
   return (
-    <ProofPageClient
-      initialData={initialData}
-      generateProofShareLinkAction={generateProofShareLinkAction}
-    />
+    <>
+      <h1 className="sr-only">{studentCopy.proof.title}</h1>
+      <ProofPageClient
+        initialData={initialData}
+        generateProofShareLinkAction={generateProofShareLinkAction}
+      />
+    </>
   );
 }

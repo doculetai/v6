@@ -1,7 +1,7 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/sponsor.ts:45:      amountPlaceholder: "Enter the committed amount in naira",
+/Users/gm/v6/src/config/copy/sponsor.ts:45:      amountPlaceholder: "e.g. ₦500,000",
 /Users/gm/v6/src/config/copy/student.ts:75:        schoolPlaceholder: "Search for your university",
 /Users/gm/v6/src/config/copy/student.ts:77:        programPlaceholder: "Choose your degree program",
 /Users/gm/v6/src/config/copy/student.ts:143:    searchPlaceholder: "Search by university, program, or city…",
@@ -15,5 +15,5 @@
 /Users/gm/v6/src/config/copy/university.ts:51:      notesPlaceholder: "Share feedback or next steps with the applicant.",
 /Users/gm/v6/src/config/copy/university.ts:65:      placeholder: "e.g. DOC-2025-A1B2C3D4",
 /Users/gm/v6/src/config/copy/auth.ts:19:    emailPlaceholder: 'name@yourorganisation.com',
-/Users/gm/v6/src/config/copy/auth.ts:21:    passwordPlaceholder: 'Your secure password',
-/Users/gm/v6/src/config/copy/auth.ts:23:    confirmPasswordPlaceholder: 'Type your password again',
+/Users/gm/v6/src/config/copy/auth.ts:21:    passwordPlaceholder: 'Minimum 8 characters',
+/Users/gm/v6/src/config/copy/auth.ts:23:    confirmPasswordPlaceholder: 'Re-enter your password',

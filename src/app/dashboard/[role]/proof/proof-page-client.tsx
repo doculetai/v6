@@ -112,9 +112,9 @@ export function ProofPageClient({
   return (
     <section className="mx-auto w-full max-w-6xl space-y-6">
       <header className="space-y-3">
-        <h1 className="text-3xl font-semibold text-foreground dark:text-foreground md:text-5xl">
+        <h2 className="text-3xl font-semibold text-foreground dark:text-foreground md:text-5xl">
           {studentCopy.proof.title}
-        </h1>
+        </h2>
         <p className="max-w-2xl text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
           {studentCopy.proof.subtitle}
         </p>

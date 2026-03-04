@@ -11,5 +11,10 @@ export const metadata: Metadata = {
 
 export default async function ForgotPasswordPage() {
   await redirectIfAuthenticated();
-  return <ForgotPasswordPageClient />;
+  return (
+    <>
+      <h1 className="sr-only">{authCopy.forgotPassword.title}</h1>
+      <ForgotPasswordPageClient />
+    </>
+  );
 }

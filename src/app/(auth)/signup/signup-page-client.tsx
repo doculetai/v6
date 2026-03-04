@@ -92,9 +92,9 @@ export function SignupPageClient() {
           <div className="mx-auto inline-flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary dark:bg-primary/25">
             <CheckCircle2 className="size-4" aria-hidden="true" />
           </div>
-          <h1 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
+          <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
             {authCopy.signup.successTitle}
-          </h1>
+          </h2>
           <CardDescription className="text-sm text-muted-foreground">
             {authCopy.signup.successDescription}
           </CardDescription>
@@ -124,7 +124,7 @@ export function SignupPageClient() {
           <UserRoundPlus className="size-4" aria-hidden="true" />
           <span className="text-sm">{authCopy.signup.trustLabel}</span>
         </div>
-        <h1 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
+        <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.signup.title}
         </h1>
         <CardDescription className="text-sm text-muted-foreground">

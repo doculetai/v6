@@ -11,5 +11,10 @@ export const metadata: Metadata = {
 
 export default async function LoginPage() {
   await redirectIfAuthenticated();
-  return <LoginPageClient />;
+  return (
+    <>
+      <h1 className="sr-only">{authCopy.login.title}</h1>
+      <LoginPageClient />
+    </>
+  );
 }

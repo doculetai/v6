@@ -23,7 +23,7 @@ function EmptyState({ heading, body, action, illustration, className }: EmptySta
   return (
     <div className={cn("flex flex-col items-center text-center py-12 px-4", className)}>
       {illustration ? (
-        <div className="w-[120px] h-[120px] md:w-[160px] md:h-[160px] flex items-center justify-center">
+        <div className="flex h-30 w-30 items-center justify-center md:h-40 md:w-40">
           {illustration}
         </div>
       ) : (

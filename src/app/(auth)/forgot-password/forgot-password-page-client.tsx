@@ -58,9 +58,9 @@ export function ForgotPasswordPageClient() {
           <div className="mx-auto inline-flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary dark:bg-primary/25">
             <CheckCircle2 className="size-4" aria-hidden="true" />
           </div>
-          <h1 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
+          <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
             {authCopy.forgotPassword.successTitle}
-          </h1>
+          </h2>
           <CardDescription className="text-sm text-muted-foreground">
             {authCopy.forgotPassword.successDescription(resetSentEmail)}
           </CardDescription>
@@ -87,7 +87,7 @@ export function ForgotPasswordPageClient() {
           <Mail className="size-4" aria-hidden="true" />
           <span className="text-sm">{authCopy.forgotPassword.trustLabel}</span>
         </div>
-        <h1 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
+        <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.forgotPassword.title}
         </h1>
         <CardDescription className="text-sm text-muted-foreground">

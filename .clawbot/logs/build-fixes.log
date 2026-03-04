@@ -17,3 +17,7 @@ src/app/dashboard/[role]/page.tsx(52,13): error TS2304: Cannot find name 'CardTi
 src/app/dashboard/[role]/page.tsx(106,12): error TS2304: Cannot find name 'CardTitle'.
 src/app/dashboard/[role]/page.tsx(108,13): error TS2304: Cannot find name 'CardTitle'.
 2026-03-04 04:42:37 ---
+2026-03-04 07:45:11 Round 1: 2 errors
+2026-03-04 07:45:11 src/app/(auth)/forgot-password/forgot-password-page-client.tsx(92,11): error TS17002: Expected corresponding JSX closing tag for 'h2'.
+src/app/(auth)/signup/signup-page-client.tsx(129,11): error TS17002: Expected corresponding JSX closing tag for 'h2'.
+2026-03-04 07:45:11 ---

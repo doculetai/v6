@@ -152,9 +152,9 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
   return (
     <section className="mx-auto w-full max-w-5xl space-y-6">
       <header className="space-y-2">
-        <h1 className="text-3xl font-semibold text-foreground dark:text-foreground md:text-5xl">
+        <h2 className="text-3xl font-semibold text-foreground dark:text-foreground md:text-5xl">
           {copy.title}
-        </h1>
+        </h2>
         <p className="max-w-3xl text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
           {copy.subtitle}
         </p>

@@ -68,9 +68,9 @@ export function LoginPageClient() {
           <ShieldCheck className="size-4" aria-hidden="true" />
           <span className="text-sm">{authCopy.login.trustLabel}</span>
         </div>
-        <h1 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
+        <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.login.title}
-        </h1>
+        </h2>
         <CardDescription className="text-sm text-muted-foreground">
           {authCopy.login.description}
         </CardDescription>

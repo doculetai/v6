@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { notFound, redirect } from 'next/navigation';
 
 import type { DashboardRole } from '@/config/roles';
+import { studentCopy } from '@/config/copy/student';
 import { api } from '@/trpc/server';
 
 import { DocumentsPageClient } from './documents-page-client';
@@ -38,5 +39,10 @@ export default async function StudentDocumentsPage({ params }: StudentDocumentsP
     redirect('/dashboard/student');
   }
 
-  return <DocumentsPageClient />;
+  return (
+    <>
+      <h1 className="sr-only">{studentCopy.documents.title}</h1>
+      <DocumentsPageClient />
+    </>
+  );
 }
