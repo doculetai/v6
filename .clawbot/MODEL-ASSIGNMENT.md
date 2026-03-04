@@ -1,5 +1,50 @@
 # Model Assignment Strategy
 
+## Build Safety Architecture (MANDATORY READING)
+
+### Why build errors happen in a swarm
+
+Agents build in **isolated worktrees** from a base commit. When one agent modifies a
+shared file (e.g. exports a new function) and merges to main, other worktrees that
+already built against the old base don't know. The next merge can introduce broken
+imports — or worse, the merged file references something that was never defined.
+
+### Three-layer defence
+
+```
+Layer 1 — PREVENT (contract-first)
+  Before launching a wave, define all shared exports and types upfront.
+  Any file that multiple agents will import → stub it in main BEFORE agents start.
+  Agents inherit the stub; they build against a known contract.
+
+Layer 2 — DETECT + FIX (build-watch daemon)
+  scripts/swarm/build-watch.sh runs npx tsc --noEmit every 2 minutes on main.
+  When errors appear, it invokes claude --dangerously-skip-permissions to auto-fix.
+  Fixes are committed + pushed so worktrees can pull a clean base.
+
+  Launch once when starting a wave:
+    tmux new-session -d -s build-watch 'scripts/swarm/build-watch.sh'
+
+  Or with dry-run to just report:
+    scripts/swarm/build-watch.sh --dry-run
+
+Layer 3 — GATE (pre-merge typecheck)
+  check-agents.sh nudges idle agents to commit + PR.
+  Before any wave merges, run:
+    npx tsc --noEmit  ← must be clean before merging PRs
+  The build-watch daemon keeps main clean so this always passes.
+```
+
+### Rule: shared contracts ship before agents start
+
+If MULTIPLE agents will import from the SAME file:
+1. Write a complete (or stub) version of that file on main first
+2. Then launch agents — they all inherit the same base contract
+3. Individual agents only ADD their own exports, never remove shared ones
+
+Example: `src/server/routers/student.ts` — define the router shape on main,
+then each sub-feature agent adds its procedures. No merge conflict on shape.
+
 ## Available Agents (cost order: free → paid)
 
 | Agent flag | Model | Cost | Context | Best for |
