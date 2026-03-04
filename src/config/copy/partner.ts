@@ -107,6 +107,13 @@ export const partnerCopy = {
     title: "Branding",
     subtitle:
       "Customise your Doculet integration to match your institution's identity.",
+    states: {
+      loadingTitle: "Loading branding settings",
+      loadingDescription: "Fetching your current configuration.",
+      errorTitle: "Could not load branding settings",
+      errorDescription: "Refresh to try again.",
+      retryCta: "Try again",
+    },
     logoSection: {
       title: "Logo",
       description:
@@ -141,6 +148,9 @@ export const partnerCopy = {
       title: "Preview",
       description:
         "See how your branding looks on the certificate verification page.",
+      widgetLabel: "Certificate verification",
+      verifiedBy: "Verified by Doculet · Cert ID",
+      viewCta: "View full certificate",
     },
     saveCta: "Save branding",
     saveSuccess: "Branding updated successfully.",
