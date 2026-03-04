@@ -1,41 +1,71 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { Settings } from 'lucide-react';
-import { PageHeader } from '@/components/ui/page-header';
+import { TRPCError } from '@trpc/server';
+import { AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
+import { notFound, redirect } from 'next/navigation';
 
-export const metadata: Metadata = {
-  title: 'Settings — Doculet',
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { agentCopy } from '@/config/copy/agent';
+import { isDashboardRole } from '@/config/roles';
+import { api } from '@/trpc/server';
+
+import type { AgentSettings } from './settings-page-client';
+import { SettingsPageClient } from './settings-page-client';
+
+export const metadata = {
+  title: 'Settings — Doculet.ai',
 };
 
-type PageProps = { params: Promise<{ role: string }> };
-
-const subtitles: Record<string, string> = {
-  sponsor: 'Profile and preferences',
-  university: 'Institution settings',
-  admin: 'Platform configuration',
-  agent: 'Profile settings',
-  partner: 'Partner settings',
+type SettingsPageProps = {
+  params: Promise<{ role: string }>;
 };
 
-export default async function SettingsPage({ params }: PageProps) {
+export default async function SettingsPage({ params }: SettingsPageProps) {
   const { role } = await params;
 
-  if (!['sponsor', 'university', 'admin', 'agent', 'partner'].includes(role)) {
+  if (!isDashboardRole(role)) {
     notFound();
   }
 
-  const subtitle = (subtitles as Record<string, string>)[role] ?? '';
+  if (role !== 'agent') {
+    redirect(`/dashboard/${role}`);
+  }
 
-  return (
-    <section className="space-y-8">
-      <PageHeader title="Settings" subtitle={subtitle} />
-      <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
-        <Settings className="size-10 text-muted-foreground/40" aria-hidden="true" />
-        <p className="text-sm font-medium text-foreground">This page is being built</p>
-        <p className="max-w-xs text-xs text-muted-foreground">
-          Full functionality for <strong>Settings</strong> is coming soon. Your navigation and layout are fully wired.
-        </p>
+  let settings: AgentSettings | null = null;
+
+  try {
+    const caller = await api();
+    settings = await caller.agent.getSettings();
+  } catch (error) {
+    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
+      redirect('/login');
+    }
+    if (error instanceof TRPCError && error.code === 'FORBIDDEN') {
+      redirect(`/dashboard/${role}`);
+    }
+  }
+
+  if (!settings) {
+    return (
+      <div className="mx-auto w-full max-w-2xl">
+        <Card className="border-border bg-card dark:border-border dark:bg-card">
+          <CardHeader className="space-y-3">
+            <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />
+            <CardTitle className="text-lg text-card-foreground">
+              {agentCopy.settings.errors.loadError}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button asChild variant="outline" className="min-h-11">
+              <Link href={`/dashboard/${role}/settings`}>
+                {agentCopy.settings.errors.tryAgain}
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
-    </section>
-  );
+    );
+  }
+
+  return <SettingsPageClient settings={settings} />;
 }

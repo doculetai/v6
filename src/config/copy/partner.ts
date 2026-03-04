@@ -146,6 +146,37 @@ export const partnerCopy = {
     saveSuccess: "Branding updated successfully.",
   },
 
+  students: {
+    title: "Students",
+    subtitle: "Students verified through your API integration. Read-only.",
+    table: {
+      studentId: "Student ID",
+      university: "University",
+      tier: "Tier",
+      verifiedDate: "Verified",
+    },
+    tierLabels: {
+      1: "Tier 1",
+      2: "Tier 2",
+      3: "Tier 3",
+    },
+    tierDescriptions: {
+      1: "Identity verified",
+      2: "Bank linked",
+      3: "Fully verified",
+    },
+    empty: {
+      title: "No students yet",
+      description:
+        "Students verified through your API integration will appear here.",
+    },
+    error: {
+      title: "Failed to load students",
+      description:
+        "There was a problem loading your student list. Please refresh the page.",
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
     apiKeys: "API keys",

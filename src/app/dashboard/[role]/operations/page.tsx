@@ -1,32 +1,39 @@
+import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { Activity } from 'lucide-react';
-import { PageHeader } from '@/components/ui/page-header';
+import { notFound, redirect } from 'next/navigation';
+
+import { adminCopy } from '@/config/copy/admin';
+import { isDashboardRole } from '@/config/roles';
+import { api } from '@/trpc/server';
+
+import OperationsPageClient from './operations-page-client';
 
 export const metadata: Metadata = {
-  title: 'Operations — Doculet',
+  title: adminCopy.operations.title,
 };
 
-type PageProps = { params: Promise<{ role: string }> };
+type Props = {
+  params: Promise<{ role: string }>;
+};
 
-export default async function OperationsPage({ params }: PageProps) {
+export default async function OperationsPage({ params }: Props) {
   const { role } = await params;
 
-  if (!['admin'].includes(role)) {
+  if (!isDashboardRole(role) || role !== 'admin') {
     notFound();
   }
 
-  return (
-    <section className="space-y-8">
-      <h1 className="sr-only">Operations</h1>
-      <PageHeader title="Operations" subtitle="Live operational activity" />
-      <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
-        <Activity className="size-10 text-muted-foreground/40" aria-hidden="true" />
-        <p className="text-sm font-medium text-foreground">This page is being built</p>
-        <p className="max-w-xs text-xs text-muted-foreground">
-          Full functionality for <strong>Operations</strong> is coming soon. Your navigation and layout are fully wired.
-        </p>
-      </div>
-    </section>
-  );
+  const caller = await api();
+
+  const [queue, stats] = await Promise.all([
+    caller.admin.getOperationsQueue({ status: 'all' }),
+    caller.admin.getOperationsStats(),
+  ]).catch((error: unknown) => {
+    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
+      redirect('/login');
+    }
+    throw error;
+  });
+
+  return <OperationsPageClient initialQueue={queue} initialStats={stats} />;
 }

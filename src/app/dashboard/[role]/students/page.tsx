@@ -1,40 +1,48 @@
+import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { GraduationCap } from 'lucide-react';
-import { PageHeader } from '@/components/ui/page-header';
+import { notFound, redirect } from 'next/navigation';
+
+import { partnerCopy } from '@/config/copy/partner';
+import { isDashboardRole } from '@/config/roles';
+import { api } from '@/trpc/server';
+
+import { StudentsPageClient } from './students-page-client';
 
 export const metadata: Metadata = {
-  title: 'Students — Doculet',
+  title: 'Students — Doculet Partner',
 };
 
-type PageProps = { params: Promise<{ role: string }> };
-
-const subtitles: Record<string, string> = {
-  sponsor: 'Students you sponsor',
-  university: 'Enrolled and admitted students',
-  agent: 'Students you manage',
-  partner: 'Students on your platform',
+type StudentsPageProps = {
+  params: Promise<{ role: string }>;
 };
 
-export default async function StudentsPage({ params }: PageProps) {
+export default async function StudentsPage({ params }: StudentsPageProps) {
   const { role } = await params;
 
-  if (!['sponsor', 'university', 'agent', 'partner'].includes(role)) {
+  if (!isDashboardRole(role)) {
     notFound();
   }
 
-  const subtitle = (subtitles as Record<string, string>)[role] ?? '';
+  if (role !== 'partner') {
+    notFound();
+  }
 
-  return (
-    <section className="space-y-8">
-      <PageHeader title="Students" subtitle={subtitle} />
-      <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
-        <GraduationCap className="size-10 text-muted-foreground/40" aria-hidden="true" />
-        <p className="text-sm font-medium text-foreground">This page is being built</p>
-        <p className="max-w-xs text-xs text-muted-foreground">
-          Full functionality for <strong>Students</strong> is coming soon. Your navigation and layout are fully wired.
-        </p>
-      </div>
-    </section>
-  );
+  let students: { id: string; studentId: string; tier: number; verifiedAt: Date; schoolName: string | null }[];
+
+  try {
+    const caller = await api();
+    students = await caller.partner.listStudents();
+  } catch (error) {
+    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
+      redirect('/login');
+    }
+
+    if (error instanceof TRPCError && error.code === 'FORBIDDEN') {
+      notFound();
+    }
+
+    throw error;
+  }
+
+  return <StudentsPageClient students={students} copy={partnerCopy.students} />;
 }

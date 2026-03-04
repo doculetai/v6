@@ -4,4 +4,5 @@ export * from './sponsorships';
 export * from './documents';
 export * from './certificates';
 export * from './partner';
+export * from './agents';
 export * from './webhooks';
