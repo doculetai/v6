@@ -57,7 +57,7 @@
         {
           "id": "copy-config",
           "description": "Write all 6 role copy config files (student.ts, sponsor.ts, university.ts, admin.ts, agent.ts, partner.ts) in src/config/copy/. All UI strings. No JSX-level hardcoding.",
-          "agent": "codex",
+          "agent": "openrouter",
           "promptFile": ".clawbot/prompts/copy-config.txt",
           "effort": "medium",
           "dependsOn": ["foundation-bootstrap"]

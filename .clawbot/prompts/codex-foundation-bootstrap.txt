@@ -1,0 +1,169 @@
+You are bootstrapping Doculet.ai V6 at /Users/gm/v6.
+
+Read these first:
+1. /Users/gm/v6/CLAUDE.md — all conventions (MANDATORY)
+2. /Users/gm/v6/AGENTS.md — product context and protocol
+3. /Users/gm/v6/start.md — product brief
+
+Your task: initialize the Next.js 16 project with the full V6 stack.
+
+## What to install and configure
+
+Run these commands in /Users/gm/v6:
+
+```bash
+npx create-next-app@latest . --typescript --tailwind --app --src-dir --import-alias "@/*" --yes
+npm install drizzle-orm drizzle-kit @auth/drizzle-adapter
+npm install @trpc/server @trpc/client @trpc/react-query @trpc/next @tanstack/react-query
+npm install zod superjson
+npm install @supabase/supabase-js @supabase/ssr
+npm install @sentry/nextjs
+npm install resend react-email
+npm install lucide-react class-variance-authority clsx tailwind-merge
+npm install react-hook-form @hookform/resolvers
+npm install next-themes
+npm install -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom
+npm install -D @playwright/test
+npm install -D drizzle-kit
+npx shadcn@latest init --defaults
+npx shadcn@latest add button card input label badge skeleton dialog sheet tabs select tooltip avatar progress separator
+```
+
+## Directory structure to create
+
+Create all directories from CLAUDE.md file structure:
+- src/app/(auth)/
+- src/app/(marketing)/
+- src/app/dashboard/[role]/
+- src/app/certificate/[token]/
+- src/components/ui/ (shadcn lives here)
+- src/components/layout/
+- src/components/brand/
+- src/config/copy/
+- src/config/nav/
+- src/db/schema/
+- src/db/queries/
+- src/server/routers/
+- src/lib/auth/
+- src/lib/email/templates/
+- src/lib/hooks/
+- src/lib/utils/
+- src/trpc/
+- tests/unit/
+- tests/e2e/
+- tests/fixtures/
+
+## Files to create
+
+### src/db/index.ts
+Drizzle client singleton using Supabase connection string from env:
+```typescript
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from './schema';
+
+const connectionString = process.env.DATABASE_URL!;
+const client = postgres(connectionString, { prepare: false });
+export const db = drizzle(client, { schema });
+export type DrizzleDB = typeof db;
+```
+
+### src/server/trpc.ts
+tRPC init with Supabase auth context:
+- `createTRPCRouter`
+- `publicProcedure`
+- `protectedProcedure` — requires valid Supabase session, throws UNAUTHORIZED if missing
+- `roleProcedure(role)` — requires session + specific role from profiles table
+
+### src/server/context.ts
+tRPC context factory:
+- Creates Supabase server client
+- Gets session from Supabase
+- Returns: { db, supabase, session, user }
+
+### src/server/root.ts
+Root router — stub all 6 role routers (empty for now):
+```typescript
+export const appRouter = createTRPCRouter({
+  student: studentRouter,
+  sponsor: sponsorRouter,
+  university: universityRouter,
+  admin: adminRouter,
+  agent: agentRouter,
+  partner: partnerRouter,
+});
+export type AppRouter = typeof appRouter;
+```
+
+### src/trpc/client.tsx
+tRPC React client with React Query setup (App Router pattern using createTRPCNextAppDir or @trpc/react-query).
+
+### src/trpc/server.ts
+Server-side tRPC caller for use in Server Components.
+
+### src/lib/utils/index.ts
+```typescript
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+export function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
+export function formatCurrency(amount: number, currency = 'NGN'): string {
+  return new Intl.NumberFormat('en-NG', { style: 'currency', currency }).format(amount);
+}
+```
+
+### drizzle.config.ts
+```typescript
+import { defineConfig } from 'drizzle-kit';
+export default defineConfig({
+  schema: './src/db/schema',
+  out: './drizzle',
+  dialect: 'postgresql',
+  dbCredentials: { url: process.env.DATABASE_URL! },
+});
+```
+
+### vitest.config.ts
+Standard Vitest config with jsdom environment and path aliases.
+
+### .env.local (template only — do not fill values)
+```
+DATABASE_URL=
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+SENTRY_DSN=
+RESEND_API_KEY=
+MONO_SECRET_KEY=
+DOJAH_APP_ID=
+DOJAH_PRIVATE_KEY=
+PAYSTACK_SECRET_KEY=
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=
+```
+
+### package.json scripts to add/update:
+```json
+{
+  "db:generate": "drizzle-kit generate",
+  "db:migrate": "drizzle-kit migrate",
+  "db:push": "drizzle-kit push",
+  "db:studio": "drizzle-kit studio",
+  "test": "vitest run",
+  "test:watch": "vitest",
+  "test:e2e": "playwright test",
+  "check": "concurrently 'npm run lint' 'npm run typecheck' 'npm run test'",
+  "typecheck": "tsc --noEmit"
+}
+```
+
+## Acceptance gate
+Run: `npm run typecheck` — must pass with zero errors.
+Run: `npm run test` — must pass (no tests yet = pass by default).
+
+## Commit
+After all files are created and typecheck passes:
+`git add src/ drizzle.config.ts vitest.config.ts .env.local package.json tsconfig.json`
+`git commit -m "feat(foundation): initialize Next.js 16 + Drizzle + tRPC + shadcn stack"`
+
+Then open a PR to main.
+
+CONSTRAINTS: TypeScript strict throughout. No `any`. Follow CLAUDE.md exactly.
