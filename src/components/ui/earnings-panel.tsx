@@ -1,5 +1,6 @@
-// design-lint-ignore: dynamic percentage width — Tailwind JIT compiles at build time; runtime-computed widths require inline style
 "use client"
+
+import { useEffect, useRef } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -25,6 +26,13 @@ function EarningsPanel({
   className,
 }: EarningsPanelProps) {
   const rate = invitesSent > 0 ? Math.round((converted / invitesSent) * 100) : 0
+  const progressRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (progressRef.current) {
+      progressRef.current.style.width = `${rate}%`
+    }
+  }, [rate])
 
   return (
     <div className={cn("rounded-xl border bg-card p-6 shadow-sm", className)}>
@@ -42,7 +50,7 @@ function EarningsPanel({
         aria-valuemax={100}
         className="mb-6 h-2 w-full overflow-hidden rounded-full bg-muted"
       >
-        <div className="h-full rounded-full bg-primary transition-all duration-300 ease-out" style={{ width: `${rate}%` }} />
+        <div ref={progressRef} className="h-full rounded-full bg-primary transition-all duration-300 ease-out" />
       </div>
 
       <div className="space-y-3">

@@ -79,7 +79,7 @@ function ProgramRow({ program, schoolId, isSelected, isPending, onApply }: Progr
           onClick={() => {
             onApply(schoolId, program.id);
           }}
-          className="min-h-[44px] min-w-[72px] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="min-h-11 min-w-18 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-pressed={isSelected}
           aria-label={`${copy.card.apply} — ${program.name}`}
         >
