@@ -1035,3 +1035,11 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 12:54:17 Found 1 violation category(ies).
 [design-lint] 2026-03-04 12:54:17 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 12:54:17 Auto-fixing design violations (round 1)...
+Done. The only flagged violation (`src/lib/email/templates/sponsor-invitation-email.tsx`) is a **correct false positive** — the file has a `design-lint-ignore` comment at line 1 explicitly documenting why inline styles and `<a>` tags are required for email templates. No source changes were needed.
+
+- TypeScript: clean
+- ESLint `--fix`: no source changes (pre-existing JSX-in-try/catch warnings are unrelated)
+- Committed: `fix(design): enforce design system standards [design-lint]`
+To https://github.com/doculetai/v6.git
+   d4df2df..a5ba8dc  main -> main
+[design-lint] 2026-03-04 12:56:55 Design fixes pushed to main.
