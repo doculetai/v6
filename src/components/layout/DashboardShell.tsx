@@ -21,17 +21,17 @@ export function DashboardShell({ role, children, className }: DashboardShellProp
   return (
     <div
       className={cn(
-        'flex min-h-screen max-w-full overflow-x-hidden bg-background text-foreground',
+        'flex h-screen overflow-hidden bg-background text-foreground',
         className,
       )}
     >
-      {/* Desktop sidebar — sticky full-height, width managed by Sidebar itself */}
-      <aside className="hidden h-screen lg:sticky lg:top-0 lg:flex lg:flex-none">
+      {/* Desktop sidebar — locked to viewport height, never scrolls */}
+      <aside className="hidden lg:flex lg:flex-none">
         <Sidebar role={role} currentPath={pathname} />
       </aside>
 
       {/* Main content column */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Mobile topbar */}
         <TopBar role={role} currentPath={pathname} />
 

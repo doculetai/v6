@@ -146,3 +146,50 @@ hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 [a11y-watch] 2026-03-04 08:36:14 ERROR: push failed again. Manual push required.
 [a11y-watch] 2026-03-04 08:36:14 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 08:40:14 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 08:40:16 Found 1 check category(ies), approx 0
+0 violation line(s).
+[a11y-watch] 2026-03-04 08:40:16 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
+[a11y-watch] 2026-03-04 08:40:16 Invoking claude to fix a11y violations (round 1 of max 8)...
+`★ Insight ─────────────────────────────────────`
+`PageHeader` at line 32 already renders `<h1 className="text-2xl font-semibold ...">`. All 7 flagged pages use `PageHeader`, so they already have exactly one `<h1>` in the rendered DOM. The static analyzer performs **file-level text scanning** without resolving component imports — a classic false positive.
+`─────────────────────────────────────────────────`
+
+All 7 violations are **false positives**. Here's why:
+
+`src/components/ui/page-header.tsx:32` renders:
+```tsx
+<h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
+```
+
+Every flagged page calls `<PageHeader title="..." />`, which produces that `<h1>` at runtime. The static scanner checked for a literal `<h1>` string in the `.tsx` file rather than resolving the component tree.
+
+**Adding a second `<h1>` would introduce a real WCAG violation** — each page must have *exactly one* `<h1>`, and duplicate headings confuse screen readers.
+
+**No code changes are needed.** These pages are already WCAG 2.1 AA compliant for CHECK 2. The static analysis tool's pattern matching cannot see through component abstractions.
+
+If you want to suppress these false positives, the right fix is to configure the analyzer to recognize `PageHeader` as an `<h1>`-emitting component — not to modify the pages.
+[a11y-watch] 2026-03-04 08:42:04 Auto-fix committed changes. Pushing to main...
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[a11y-watch] 2026-03-04 08:42:05 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[a11y-watch] 2026-03-04 08:42:06 ERROR: push failed again. Manual push required.
+[a11y-watch] 2026-03-04 08:42:06 A11y fixes pushed. FIX_COUNT reset.

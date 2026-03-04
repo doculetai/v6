@@ -4,13 +4,10 @@
 Each page must have exactly one visible <h1> heading for screen reader navigation.
 Add <h1> as the first visible heading, or use your PageHeading component.
 
-/Users/gm/v6/src/app/dashboard/[role]/commissions/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/pipeline/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/kyc/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/disbursements/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/activity/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/operations/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/transactions/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/users/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/schools/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/risk/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/settings/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/branding/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/api-keys/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/students/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/actions/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/onboarding/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/analytics/page.tsx
