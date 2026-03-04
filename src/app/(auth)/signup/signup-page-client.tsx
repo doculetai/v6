@@ -1,13 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createBrowserClient } from '@supabase/ssr';
-import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { CheckCircle2, Loader2, UserRoundPlus } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import superjson from 'superjson';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -16,8 +13,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { authCopy, type AuthRoleKey } from '@/config/copy/auth';
+import { supabaseBrowserClient } from '@/lib/auth/browser-client';
 import { cn } from '@/lib/utils';
-import type { AppRouter } from '@/server/root';
+import { browserTrpcClient } from '@/trpc/client';
 
 const signupRoleSchema = z.enum(['student', 'sponsor', 'university', 'agent', 'partner']);
 
@@ -37,31 +35,11 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 
 type SignupRole = z.infer<typeof signupRoleSchema>;
 
-function createBrowserTrpcClient() {
-  return createTRPCClient<AppRouter>({
-    links: [
-      httpBatchLink({
-        transformer: superjson,
-        url: '/api/trpc',
-      }),
-    ],
-  });
-}
-
 const signupRoleOptions: SignupRole[] = signupRoleSchema.options;
 
 export function SignupPageClient() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [confirmationEmail, setConfirmationEmail] = useState<string | null>(null);
-  const trpcClient = useMemo(() => createBrowserTrpcClient(), []);
-  const supabase = useMemo(
-    () =>
-      createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      ),
-    [],
-  );
 
   const {
     register,
@@ -81,7 +59,7 @@ export function SignupPageClient() {
   const onSubmit = handleSubmit(async (values) => {
     setSubmitError(null);
 
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabaseBrowserClient.auth.signUp({
       email: values.email,
       password: values.password,
     });
@@ -97,7 +75,7 @@ export function SignupPageClient() {
     }
 
     try {
-      await trpcClient.student.createProfile.mutate({
+      await browserTrpcClient.student.createProfile.mutate({
         userId: data.user.id,
         role: values.role,
       });
@@ -109,18 +87,18 @@ export function SignupPageClient() {
 
   if (confirmationEmail) {
     return (
-      <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border dark:bg-card/95 dark:text-card-foreground">
+      <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border">
         <CardHeader className="space-y-3 text-center">
-          <div className="mx-auto inline-flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary dark:bg-primary/25 dark:text-primary">
+          <div className="mx-auto inline-flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary dark:bg-primary/25">
             <CheckCircle2 className="size-4" aria-hidden="true" />
           </div>
-          <CardTitle className="text-2xl tracking-tight text-card-foreground dark:text-card-foreground">
+          <CardTitle className="text-2xl tracking-tight text-card-foreground">
             {authCopy.signup.successTitle}
           </CardTitle>
-          <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground">
+          <CardDescription className="text-sm text-muted-foreground">
             {authCopy.signup.successDescription}
           </CardDescription>
-          <CardDescription className="font-medium text-foreground dark:text-foreground">
+          <CardDescription className="font-medium text-foreground">
             {confirmationEmail}
           </CardDescription>
         </CardHeader>
@@ -128,7 +106,7 @@ export function SignupPageClient() {
           <Link
             href={authCopy.routes.login}
             className={cn(
-              'inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors duration-150 hover:bg-primary/90 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90',
+              'inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors duration-150 hover:bg-primary/90',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             )}
           >
@@ -140,16 +118,16 @@ export function SignupPageClient() {
   }
 
   return (
-    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border dark:bg-card/95 dark:text-card-foreground">
+    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border">
       <CardHeader className="space-y-3">
-        <div className="inline-flex items-center gap-2 text-muted-foreground dark:text-muted-foreground">
+        <div className="inline-flex items-center gap-2 text-muted-foreground">
           <UserRoundPlus className="size-4" aria-hidden="true" />
           <span className="text-sm">{authCopy.signup.trustLabel}</span>
         </div>
-        <CardTitle className="text-2xl tracking-tight text-card-foreground dark:text-card-foreground">
+        <CardTitle className="text-2xl tracking-tight text-card-foreground">
           {authCopy.signup.title}
         </CardTitle>
-        <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground">
+        <CardDescription className="text-sm text-muted-foreground">
           {authCopy.signup.description}
         </CardDescription>
       </CardHeader>
@@ -162,12 +140,12 @@ export function SignupPageClient() {
               type="email"
               autoComplete="email"
               placeholder={authCopy.common.emailPlaceholder}
-              className="h-11 bg-background dark:bg-background"
+              className="h-11 bg-background"
               aria-invalid={Boolean(errors.email)}
               {...register('email')}
             />
             {errors.email?.message ? (
-              <p className="text-sm text-destructive dark:text-destructive">{errors.email.message}</p>
+              <p className="text-sm text-destructive">{errors.email.message}</p>
             ) : null}
           </div>
 
@@ -178,12 +156,12 @@ export function SignupPageClient() {
               type="password"
               autoComplete="new-password"
               placeholder={authCopy.common.passwordPlaceholder}
-              className="h-11 bg-background dark:bg-background"
+              className="h-11 bg-background"
               aria-invalid={Boolean(errors.password)}
               {...register('password')}
             />
             {errors.password?.message ? (
-              <p className="text-sm text-destructive dark:text-destructive">{errors.password.message}</p>
+              <p className="text-sm text-destructive">{errors.password.message}</p>
             ) : null}
           </div>
 
@@ -194,12 +172,12 @@ export function SignupPageClient() {
               type="password"
               autoComplete="new-password"
               placeholder={authCopy.common.confirmPasswordPlaceholder}
-              className="h-11 bg-background dark:bg-background"
+              className="h-11 bg-background"
               aria-invalid={Boolean(errors.confirmPassword)}
               {...register('confirmPassword')}
             />
             {errors.confirmPassword?.message ? (
-              <p className="text-sm text-destructive dark:text-destructive">
+              <p className="text-sm text-destructive">
                 {errors.confirmPassword.message}
               </p>
             ) : null}
@@ -214,7 +192,7 @@ export function SignupPageClient() {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger
                     id="signup-role"
-                    className="h-11 w-full bg-background dark:bg-background"
+                    className="h-11 w-full bg-background"
                     aria-invalid={Boolean(errors.role)}
                   >
                     <SelectValue placeholder={authCopy.common.roleLabel} />
@@ -230,12 +208,12 @@ export function SignupPageClient() {
               )}
             />
             {errors.role?.message ? (
-              <p className="text-sm text-destructive dark:text-destructive">{errors.role.message}</p>
+              <p className="text-sm text-destructive">{errors.role.message}</p>
             ) : null}
           </div>
 
           {submitError ? (
-            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/40 dark:bg-destructive/15 dark:text-destructive">
+            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/40 dark:bg-destructive/15">
               {submitError}
             </p>
           ) : null}
@@ -251,7 +229,7 @@ export function SignupPageClient() {
             )}
           </Button>
 
-          <p className="text-center text-sm text-muted-foreground dark:text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             {authCopy.signup.links.hasAccount}{' '}
             <Link
               href={authCopy.routes.login}
