@@ -100,6 +100,7 @@ run_checks() {
       -E 'style=\{[^}]*\}' \
       "$SRC_DIR" 2>/dev/null \
       | grep -v "node_modules" \
+      | grep -v "src/lib/email/templates" \
       | grep -v "// design-lint-disable" \
       | filter_file_ignored \
       || true
@@ -149,6 +150,7 @@ run_checks() {
       -E '<a href="/' \
       "$SRC_DIR" 2>/dev/null \
       | grep -v "node_modules" \
+      | grep -v "src/lib/email/templates" \
       | grep -v "// design-lint-disable" \
       | filter_file_ignored \
       || true
@@ -267,7 +269,7 @@ while true; do
   git -C "$ROOT_DIR" pull --rebase origin main >>"$LOG_FILE" 2>&1 || true
 
   log "Scanning for design violations..."
-  VIOLATIONS="$(run_checks)"
+  VIOLATIONS="$(run_checks | grep -v '^line_count=' || true)"
 
   if [[ -z "$VIOLATIONS" ]]; then
     log "All design standards clean."
