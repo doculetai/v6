@@ -8,10 +8,23 @@ import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { PageHeader } from '@/components/ui/page-header';
 import { universityCopy } from '@/config/copy/university';
-import type { UniversityOverviewOutput } from '@/server/routers/university';
+interface RecentDocument {
+  id: string;
+  status: 'pending' | 'approved' | 'rejected' | 'more_info_requested';
+  type: 'passport' | 'bank_statement' | 'offer_letter' | 'affidavit' | 'cac';
+  createdAt: string;
+}
+
+interface UniversityOverviewData {
+  pendingCount: number;
+  approvedTodayCount: number;
+  flaggedCount: number;
+  totalStudents: number;
+  recentActivity: RecentDocument[];
+}
 
 interface OverviewPageClientProps {
-  data: UniversityOverviewOutput;
+  data: UniversityOverviewData;
 }
 
 const copy = universityCopy.overview;
