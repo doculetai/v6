@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { dashboardOverviewCopy, dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import type { DashboardRole } from '@/config/roles';
 import { isDashboardRole } from '@/config/roles';
@@ -22,9 +22,9 @@ function EmptyState({ role }: { role: DashboardRole }) {
       <Card className="border-border bg-card dark:border-border dark:bg-card">
         <CardHeader className="space-y-3">
           <UserRoundSearch className="size-5 text-muted-foreground dark:text-muted-foreground" />
-          <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
+          <h1 className="leading-none font-semibold text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
             {dashboardShellCopy.overview.emptyTitle}
-          </CardTitle>
+          </h1>
           <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
             {dashboardShellCopy.overview.emptyDescription}
           </CardDescription>
@@ -47,9 +47,9 @@ function ErrorState({ role }: { role: DashboardRole }) {
       <Card className="border-border bg-card dark:border-border dark:bg-card">
         <CardHeader className="space-y-3">
           <AlertTriangle className="size-5 text-muted-foreground dark:text-muted-foreground" />
-          <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
+          <h1 className="leading-none font-semibold text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
             {dashboardShellCopy.overview.errorTitle}
-          </CardTitle>
+          </h1>
           <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
             {dashboardShellCopy.overview.errorDescription}
           </CardDescription>
@@ -103,9 +103,9 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
       <Card className="border-border bg-card dark:border-border dark:bg-card">
         <CardHeader className="space-y-3">
           <Sparkles className="size-5 text-muted-foreground dark:text-muted-foreground" />
-          <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-3xl">
+          <h1 className="leading-none font-semibold text-xl text-card-foreground dark:text-card-foreground md:text-3xl">
             {roleCopy.title}
-          </CardTitle>
+          </h1>
           <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
             {roleCopy.description}
           </CardDescription>

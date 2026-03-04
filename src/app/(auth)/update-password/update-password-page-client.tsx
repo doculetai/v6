@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { authCopy } from '@/config/copy/auth';
@@ -70,9 +70,9 @@ export function UpdatePasswordPageClient() {
           <LockKeyhole className="size-4" aria-hidden="true" />
           <span className="text-sm">{authCopy.updatePassword.trustLabel}</span>
         </div>
-        <CardTitle className="text-2xl tracking-tight text-card-foreground">
+        <h1 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.updatePassword.title}
-        </CardTitle>
+        </h1>
         <CardDescription className="text-sm text-muted-foreground">
           {authCopy.updatePassword.description}
         </CardDescription>

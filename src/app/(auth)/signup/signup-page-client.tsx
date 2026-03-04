@@ -8,7 +8,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -92,9 +92,9 @@ export function SignupPageClient() {
           <div className="mx-auto inline-flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary dark:bg-primary/25">
             <CheckCircle2 className="size-4" aria-hidden="true" />
           </div>
-          <CardTitle className="text-2xl tracking-tight text-card-foreground">
+          <h1 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
             {authCopy.signup.successTitle}
-          </CardTitle>
+          </h1>
           <CardDescription className="text-sm text-muted-foreground">
             {authCopy.signup.successDescription}
           </CardDescription>
@@ -124,9 +124,9 @@ export function SignupPageClient() {
           <UserRoundPlus className="size-4" aria-hidden="true" />
           <span className="text-sm">{authCopy.signup.trustLabel}</span>
         </div>
-        <CardTitle className="text-2xl tracking-tight text-card-foreground">
+        <h1 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.signup.title}
-        </CardTitle>
+        </h1>
         <CardDescription className="text-sm text-muted-foreground">
           {authCopy.signup.description}
         </CardDescription>
