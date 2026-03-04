@@ -134,13 +134,13 @@ run_checks() {
 
   # ── 2. Page files (page.tsx) missing h1 ─────────────────────────────────
   # Scan every page.tsx under src/. If the file contains no <h1, no role="heading"
-  # with aria-level="1", and no PageHeading (common wrapper component), flag it.
+  # with aria-level="1", no PageHeading, and no PageHeader (both render <h1>), flag it.
   local missing_h1_files=""
   while IFS= read -r page_file; do
     # Skip stories and layout files
     [[ "$page_file" == *".stories."* ]] && continue
-    # Check for h1 presence
-    if ! grep -qE '(<h1|role="heading".*aria-level="1"|<PageHeading)' "$page_file" 2>/dev/null; then
+    # Check for h1 presence — also recognise PageHeader which renders <h1> internally
+    if ! grep -qE '(<h1|role="heading".*aria-level="1"|<PageHeading|<PageHeader)' "$page_file" 2>/dev/null; then
       missing_h1_files+="${page_file}"$'\n'
     fi
   done < <(find "$SRC_DIR" -name "page.tsx" 2>/dev/null | grep -v node_modules)
@@ -148,7 +148,7 @@ run_checks() {
   if [[ -n "$missing_h1_files" ]]; then
     violations+=$'\n\n=== CHECK 2: PAGE FILES MISSING <h1> HEADING ===\n'
     violations+="Each page must have exactly one visible <h1> heading for screen reader navigation."$'\n'
-    violations+="Add <h1> as the first visible heading, or use your PageHeading component."$'\n\n'
+    violations+="Add <h1> as the first visible heading, or use your PageHeader or PageHeading component."$'\n\n'
     violations+="$missing_h1_files"
   fi
 
