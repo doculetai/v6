@@ -55,6 +55,8 @@ export const agentCopy = {
     },
     table: {
       student: "Student",
+      university: "University",
+      tier: "Tier",
       event: "Event",
       amount: "Amount (₦)",
       date: "Date",

@@ -5,3 +5,4 @@ export * from './documents';
 export * from './certificates';
 export * from './partner';
 export * from './webhooks';
+export * from './agents';
