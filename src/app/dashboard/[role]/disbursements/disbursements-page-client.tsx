@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import { EmptyState } from '@/components/ui/empty-state';
-import type { sponsorCopy } from '@/config/copy/sponsor';
+import { sponsorCopy } from '@/config/copy/sponsor';
 import { cn, formatNGN } from '@/lib/utils';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -20,7 +20,7 @@ type Disbursement = {
   paystackReference: string | null;
 };
 
-type Copy = typeof sponsorCopy.disbursements;
+type Copy = (typeof sponsorCopy)['disbursements'];
 
 type DisbursementsPageClientProps = {
   disbursements: Disbursement[];
@@ -31,19 +31,14 @@ type FilterStatus = 'all' | Disbursement['status'];
 
 // ── Status badge ──────────────────────────────────────────────────────────────
 
+const badgeLabels = sponsorCopy.disbursements.statusLabels;
+
 function StatusBadge({ status }: { status: Disbursement['status'] }) {
   const classes: Record<Disbursement['status'], string> = {
     scheduled: 'bg-primary/10 text-primary',
     processing: 'bg-muted text-muted-foreground',
     disbursed: 'bg-primary/10 text-primary',
     failed: 'bg-destructive/10 text-destructive',
-  };
-
-  const labels: Record<Disbursement['status'], string> = {
-    scheduled: 'Scheduled',
-    processing: 'Processing',
-    disbursed: 'Disbursed',
-    failed: 'Failed',
   };
 
   return (
@@ -53,7 +48,7 @@ function StatusBadge({ status }: { status: Disbursement['status'] }) {
         classes[status],
       )}
     >
-      {labels[status]}
+      {badgeLabels[status]}
     </span>
   );
 }

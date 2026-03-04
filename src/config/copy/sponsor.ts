@@ -105,6 +105,8 @@ export const sponsorCopy = {
     },
     startCta: "Start verification",
     retryLabel: "Try again",
+    overallStatusLabel: "KYC status",
+    comingSoon: "Coming soon",
   },
 
   disbursements: {
@@ -126,8 +128,10 @@ export const sponsorCopy = {
     statusLabels: {
       all: "All",
       pending: "Pending",
+      scheduled: "Scheduled",
       processing: "Processing",
       completed: "Completed",
+      disbursed: "Disbursed",
       failed: "Failed",
     },
     downloadStatement: "Download statement",

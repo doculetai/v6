@@ -48,7 +48,7 @@ function OverallStatusBanner({
 
   return (
     <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3">
-      <span className="text-sm font-medium text-foreground">KYC status:</span>
+      <span className="text-sm font-medium text-foreground">{copy.overallStatusLabel}:</span>
       <Badge className={badgeClass}>{label}</Badge>
     </div>
   );
@@ -62,10 +62,11 @@ type TierCardProps = {
   kycStatus: KycStatus['kycStatus'];
   startCta: string;
   retryLabel: string;
+  comingSoon: string;
   statusLabels: Copy['status'];
 };
 
-function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel, statusLabels }: TierCardProps) {
+function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel, comingSoon, statusLabels }: TierCardProps) {
   // Tier 1 (index 0) is always verified — auto-verified via email auth
   if (tierIndex === 0) {
     return (
@@ -133,12 +134,12 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel, statusLabe
             <Button
               size="sm"
               disabled
-              title="Coming soon"
+              title={comingSoon}
               className={cn('min-h-9', isFailed && 'mt-1')}
             >
               {isFailed ? retryLabel : startCta}
             </Button>
-            <p className="mt-1.5 text-xs text-muted-foreground">Coming soon</p>
+            <p className="mt-1.5 text-xs text-muted-foreground">{comingSoon}</p>
           </CardContent>
         ) : null}
       </Card>
@@ -160,10 +161,10 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel, statusLabe
         </div>
       </CardHeader>
       <CardContent className="pt-0">
-        <Button size="sm" disabled title="Coming soon" className="min-h-9">
+        <Button size="sm" disabled title={comingSoon} className="min-h-9">
           {startCta}
         </Button>
-        <p className="mt-1.5 text-xs text-muted-foreground">Coming soon</p>
+        <p className="mt-1.5 text-xs text-muted-foreground">{comingSoon}</p>
       </CardContent>
     </Card>
   );
@@ -185,6 +186,7 @@ export function KycPageClient({ kycStatus, copy }: KycPageClientProps) {
             kycStatus={kycStatus.kycStatus}
             startCta={copy.startCta}
             retryLabel={copy.retryLabel}
+            comingSoon={copy.comingSoon}
             statusLabels={copy.status}
           />
         ))}
