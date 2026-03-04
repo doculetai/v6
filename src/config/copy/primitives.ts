@@ -2,6 +2,9 @@ export const primitivesCopy = {
   labels: {
     invalidDate: "Invalid date",
     metricLoadError: "Unable to load metric",
+    clearFilters: "Clear filters",
+    loadingContent: "Loading content",
+    searchPlaceholder: "Search by name, reference, or status…",
   },
   storybook: {
     pageHeader: {
@@ -51,6 +54,9 @@ export const primitivesCopy = {
     },
     activityTimeline: {
       empty: "No activity recorded.",
+    },
+    commitmentTimeline: {
+      empty: "No commitment history",
     },
     filterBar: {
       queryPlaceholder: "Search applications, students, or case references…", // copy-audit-disable
