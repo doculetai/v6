@@ -103,3 +103,29 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 08:30:42 Found 1 violation category(ies).
 [design-lint] 2026-03-04 08:30:42 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 08:30:42 Auto-fixing design violations (round 1)...
+Done. Here's what was changed:
+
+**`earnings-panel.tsx`** — removed the Tailwind CSS 4 CSS-variable pattern (`w-(--progress)` + `style={{ '--progress': ... } as React.CSSProperties}`) in favor of `style={{ width: `${rate}%` }}` directly on the inner div. Also removed the now-unused `import type React from "react"`.
+
+**`sponsor-invitation-email.tsx`** — left unchanged. Email templates sent via Resend's `react:` property require inline styles for cross-client email rendering. `@react-email/components` is not installed, and `react-email` v5.2.9 is a preview CLI only. Removing the inline styles would break email rendering in Outlook, Gmail, and other clients.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[design-lint] 2026-03-04 08:37:06 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[design-lint] 2026-03-04 08:37:07 ERROR: manual push required.
+[design-lint] 2026-03-04 08:37:07 Design fixes pushed to main.
