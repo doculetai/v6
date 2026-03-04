@@ -164,7 +164,7 @@ if [[ -z "$MODEL" ]]; then
     codex)      MODEL="gpt-5.3-codex" ;;
     claude)     MODEL="claude-sonnet-4-6" ;;
     openclaw)   MODEL="groq/qwen/qwen3-32b" ;;
-    openrouter) MODEL="arcee-ai/trinity-large-preview:free" ;; # 400B MoE, agentic, free
+    openrouter) MODEL="minimax/minimax-m2.5" ;;                 # 80.2% SWE-Bench — best agentic coder
     deepseek)   MODEL="deepseek-coder" ;;                      # DeepSeek Coder — code tasks
     gemini)     MODEL="gemini-2.0-flash" ;;
     ollama)     MODEL="qwen2.5-coder:32b" ;;
