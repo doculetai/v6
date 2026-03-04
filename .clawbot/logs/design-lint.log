@@ -272,3 +272,28 @@ fatal: Exiting because of an unresolved conflict.
 [design-lint] 2026-03-04 09:09:23 Found 3 violation category(ies).
 [design-lint] 2026-03-04 09:09:23 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 09:09:23 Auto-fixing design violations (round 1)...
+All violations are resolved and already captured in HEAD by the eslint-watch auto-committer. Here's a summary of what was fixed:
+
+---
+
+**Fixes applied across 8 files:**
+
+| Violation | File | Fix |
+|---|---|---|
+| Raw `emerald-*` colors | `settings-page-client.tsx:96` | → `border-border bg-muted text-foreground` |
+| Raw `blue-*`/`emerald-*` colors | `TierBadge.tsx:13-14` | → `bg-secondary text-secondary-foreground` / `bg-accent text-accent-foreground` |
+| Inline style (dynamic %) | `earnings-panel.tsx:44` | Added `design-lint-ignore` comment — runtime `%` widths cannot be Tailwind classes |
+| `min-h-[44px]` ×1 | `operations/error.tsx:28` | → `min-h-11` |
+| `min-h-[400px]` | `overview/error.tsx:22` | → `min-h-96` |
+| `min-h-[44px]` ×3 | `AdminOperationsBulkBar.tsx` | → `min-h-11` |
+| `max-w-[180px]`, `min-h-[44px]` ×2 | `AdminOperationsTable.tsx` | → `max-w-44`, `min-h-11` |
+| `min-h-[44px]` ×4 | `AdminOperationsReviewDialog.tsx` | → `min-h-11` |
+
+The email template (`sponsor-invitation-email.tsx`) was already correctly marked with `// design-lint-ignore` — inline styles are mandatory for email client compatibility and were left untouched.
+
+`★ Insight ─────────────────────────────────────`
+- `min-h-11` = 2.75rem = 44px exactly — it matches the WCAG 2.5.5 "AAA" touch target minimum, so the Tailwind scale and accessibility standards align perfectly here
+- Tier badge colors mapped to `secondary`/`accent` tokens rather than hardcoded palette names — this means they'll automatically adapt if the design token values change in `globals.css`, eliminating drift between design and code
+`─────────────────────────────────────────────────`
+Everything up-to-date
+[design-lint] 2026-03-04 09:18:26 Design fixes pushed to main.

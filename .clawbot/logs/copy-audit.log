@@ -187,3 +187,9 @@ The eslint-watch auto-commit (`c679a65`) already captured my edits to both files
 TypeScript exits clean. Working tree is clean.
 Everything up-to-date
 [copy-audit] 2026-03-04 09:15:04 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 09:18:05 Scanning copy config coverage...
+[copy-audit] 2026-03-04 09:18:05 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 09:18:05 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 09:18:05 Auto-fixing copy violations (round 1 of max 8)...

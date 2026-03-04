@@ -1,9 +1,9 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/agent.ts:144:      fullNamePlaceholder: "Enter your full name",
-/Users/gm/v6/src/config/copy/agent.ts:146:      phonePlaceholder: "+234XXXXXXXXXX",
+/Users/gm/v6/src/config/copy/agent.ts:144:      fullNamePlaceholder: "e.g. Amara Okafor",
+/Users/gm/v6/src/config/copy/agent.ts:146:      phonePlaceholder: "+234 801 234 5678",
 /Users/gm/v6/src/config/copy/agent.ts:148:      regionPlaceholder: "e.g. Lagos, Abuja, Port Harcourt",
-/Users/gm/v6/src/config/copy/agent.ts:150:      accreditationPlaceholder: "Enter your accreditation number",
-/Users/gm/v6/src/config/copy/admin.ts:160:      searchPlaceholder: "Search by student…",
-/Users/gm/v6/src/config/copy/admin.ts:205:      notesPlaceholder: "Explain your decision (shown to student)…",
+/Users/gm/v6/src/config/copy/agent.ts:150:      accreditationPlaceholder: "e.g. AGT-2024-00123",
+/Users/gm/v6/src/config/copy/admin.ts:160:      searchPlaceholder: "Name, email, or student ID…",
+/Users/gm/v6/src/config/copy/admin.ts:205:      notesPlaceholder: "Describe your decision clearly — this message is sent directly to the student…",
