@@ -14,6 +14,13 @@ import { TimestampLabel } from '@/components/ui/timestamp-label';
 import { SessionManagementDemo } from './SessionManagementDemo';
 import { Code, DataTableShellDemo, Section } from './_helpers';
 
+const now = new Date();
+const threeMinutesAgo = new Date(now.getTime() - 3 * 60 * 1000);
+const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000);
+const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+
 export function DesignDisplaySections() {
   return (
     <>
@@ -46,7 +53,7 @@ export function DesignDisplaySections() {
                 deltaValue="+12%"
                 deltaLabel="vs last month"
                 deltaDirection="up"
-                timestamp={new Date().toISOString()}
+                timestamp={now.toISOString()}
               />
               <MetricCard
                 label="Pending Reviews"
@@ -75,9 +82,9 @@ export function DesignDisplaySections() {
             <p className="font-medium text-foreground">TimestampLabel</p>
             <Code>{`import { TimestampLabel } from '@/components/ui/timestamp-label'`}</Code>
             <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-5">
-              <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="relative" />
-              <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="absolute" />
-              <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="both" />
+              <TimestampLabel value={threeMinutesAgo} mode="relative" />
+              <TimestampLabel value={threeMinutesAgo} mode="absolute" />
+              <TimestampLabel value={threeMinutesAgo} mode="both" />
               <TimestampLabel value="not-a-date" />
             </div>
           </div>
@@ -127,26 +134,26 @@ export function DesignDisplaySections() {
                   id: '1',
                   title: 'Proof of funds verified',
                   description: 'University of Lagos confirmed the document.',
-                  timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+                  timestamp: tenMinutesAgo.toISOString(),
                   tone: 'success',
                 },
                 {
                   id: '2',
                   title: 'Document flagged for review',
                   description: 'Admission letter requires re-upload.',
-                  timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                  timestamp: twoHoursAgo.toISOString(),
                   tone: 'warning',
                 },
                 {
                   id: '3',
                   title: 'Sponsorship disbursement scheduled',
-                  timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                  timestamp: oneDayAgo.toISOString(),
                   tone: 'info',
                 },
                 {
                   id: '4',
                   title: 'Identity verification submitted',
-                  timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                  timestamp: threeDaysAgo.toISOString(),
                   tone: 'neutral',
                 },
               ]}

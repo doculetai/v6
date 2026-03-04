@@ -90,8 +90,8 @@ export default function DesignPage() {
             {colorTokens.map((token) => (
               <div key={token.name} className="space-y-1.5">
                 <div
-                  className="h-14 w-full rounded-lg border border-border/60 shadow-sm bg-(--swatch)"
-                  style={{ '--swatch': `hsl(var(--${token.name}))` } as React.CSSProperties}
+                  className="h-14 w-full rounded-lg border border-border/60 shadow-sm"
+                  style={{ backgroundColor: `var(--${token.name})` } as React.CSSProperties} // design-lint-disable
                 />
                 <p className="text-xs font-medium text-foreground">{token.label}</p>
                 <Code>{`--${token.name}`}</Code>
