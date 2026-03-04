@@ -1,6 +1,6 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/agent.ts:268:      linkPlaceholder: 'Generating your referral link…',
-/Users/gm/v6/src/config/copy/partner.ts:226:      orgNamePlaceholder: 'Meridian Education Partners',
-/Users/gm/v6/src/config/copy/partner.ts:228:      webhookPlaceholder: 'https://api.partnerorg.com/webhooks/doculet',
+/Users/gm/v6/src/config/copy/agent.ts:268:      linkPlaceholder: 'Loading your unique referral link…',
+/Users/gm/v6/src/config/copy/partner.ts:226:      orgNamePlaceholder: 'Your organisation\'s registered name',
+/Users/gm/v6/src/config/copy/partner.ts:228:      webhookPlaceholder: 'https://yourserver.com/webhooks/doculet',
