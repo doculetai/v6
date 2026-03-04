@@ -183,8 +183,9 @@ case "$AGENT" in
     exec codex --full-auto --model "$MODEL" -c "model_reasoning_effort=$EFFORT" "\$(cat "\$PROMPT_FILE")"
     ;;
   claude)
-    # --dangerouslySkipPermissions: no tool-approval prompts — fully autonomous
-    exec claude --model "$MODEL" --dangerouslySkipPermissions -p "\$(cat "\$PROMPT_FILE")"
+    # --dangerously-skip-permissions: no tool-approval prompts — fully autonomous
+    unset CLAUDECODE
+    exec claude --model "$MODEL" --dangerously-skip-permissions -p "\$(cat "\$PROMPT_FILE")"
     ;;
   openclaw)
     exec openclaw agent --agent v6-factory --message "\$(cat "\$PROMPT_FILE")"
