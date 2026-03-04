@@ -37,11 +37,17 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
     redirect('/dashboard/student');
   }
 
-  const caller = await api();
-
   // ── Admin branch ──────────────────────────────────────────────────────────
   if (role === 'admin') {
     return <AdminSettingsPageClient copy={adminCopy.settings} />;
+  }
+
+  let caller: Awaited<ReturnType<typeof api>>;
+  try {
+    caller = await api();
+  } catch (error) {
+    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
+    throw error;
   }
 
   // ── Partner branch ────────────────────────────────────────────────────────

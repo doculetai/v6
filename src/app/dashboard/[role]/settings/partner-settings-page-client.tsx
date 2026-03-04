@@ -18,7 +18,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PageHeader } from '@/components/ui/page-header';
-import { partnerCopy } from '@/config/copy/partner';
 import { browserTrpcClient } from '@/trpc/client';
 
 import { FormErrorBanner, FormSuccessBanner } from './settings-shared';
@@ -32,14 +31,41 @@ type PartnerSettings = {
   brandLogoUrl: string | null;
 };
 
+type PartnerSettingsCopy = {
+  title: string;
+  subtitle: string;
+  profile: {
+    sectionTitle: string;
+    sectionDescription: string;
+    orgNameLabel: string;
+    orgNamePlaceholder: string;
+    webhookLabel: string;
+    webhookPlaceholder: string;
+    webhookDescription: string;
+    saveLabel: string;
+    savingLabel: string;
+    savedLabel: string;
+  };
+  validation: {
+    orgNameMin: string;
+    orgNameMax: string;
+    webhookInvalid: string;
+  };
+  errors: {
+    loadError: string;
+    saveError: string;
+    tryAgain: string;
+  };
+};
+
 type Props = {
   settings: PartnerSettings | null;
-  copy: typeof partnerCopy.settings;
+  copy: PartnerSettingsCopy;
 };
 
 // ── Zod schema ────────────────────────────────────────────────────────────────
 
-function buildSchema(copy: typeof partnerCopy.settings) {
+function buildSchema(copy: PartnerSettingsCopy) {
   return z.object({
     organizationName: z
       .string()
@@ -47,15 +73,16 @@ function buildSchema(copy: typeof partnerCopy.settings) {
       .max(120, copy.validation.orgNameMax),
     webhookUrl: z
       .string()
-      .url(copy.validation.webhookInvalid)
-      .or(z.literal(''))
-      .nullable(),
+      .refine(
+        (v) => v === '' || (v.startsWith('https://') && z.string().url().safeParse(v).success),
+        copy.validation.webhookInvalid,
+      ),
   });
 }
 
 type FormValues = {
   organizationName: string;
-  webhookUrl: string | null;
+  webhookUrl: string;
 };
 
 // ── Partner settings form ─────────────────────────────────────────────────────
@@ -65,7 +92,7 @@ function PartnerProfileForm({
   copy,
 }: {
   settings: PartnerSettings;
-  copy: typeof partnerCopy.settings;
+  copy: PartnerSettingsCopy;
 }) {
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -142,7 +169,12 @@ function PartnerProfileForm({
               placeholder={copy.profile.webhookPlaceholder}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.webhookUrl)}
-              aria-describedby="partner-webhook-description partner-webhook-url-error"
+              aria-describedby={[
+                'partner-webhook-description',
+                errors.webhookUrl ? 'partner-webhook-url-error' : undefined,
+              ]
+                .filter(Boolean)
+                .join(' ')}
               {...register('webhookUrl')}
             />
             <p
