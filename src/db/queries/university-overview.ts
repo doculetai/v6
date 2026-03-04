@@ -1,10 +1,15 @@
-import { and, count, desc, eq, gte, isNotNull, or } from 'drizzle-orm';
+import { and, count, desc, eq, gte, or } from 'drizzle-orm';
 
 import type { DrizzleDB } from '@/db';
 import { documents } from '@/db/schema/documents';
 import { profiles } from '@/db/schema/users';
 
-/** Returns the start of today in WAT (UTC+1) as a UTC Date. */
+/**
+ * Returns the start of today in WAT (UTC+1) as a UTC Date.
+ * Assumes documents.reviewedAt was inserted without an explicit timezone offset
+ * (timezone-naive Postgres timestamp), meaning it stores UTC wall-clock time.
+ * This boundary must be compared against reviewedAt UTC values consistently.
+ */
 function startOfDayWAT(): Date {
   const watOffsetMs = 60 * 60 * 1000; // WAT = UTC+1
   const watNow = new Date(Date.now() + watOffsetMs);
@@ -27,6 +32,13 @@ export type UniversityOverviewData = {
   recentActivity: RecentDocumentItem[];
 };
 
+/**
+ * Returns aggregate overview data for the university dashboard.
+ *
+ * MVP scope: queries are global (all universities). Scoping to a specific
+ * university requires a universityProfiles table with a schoolId FK — that
+ * schema addition is tracked separately and will unlock per-university filtering.
+ */
 export async function getUniversityOverview(db: DrizzleDB): Promise<UniversityOverviewData> {
   const todayStart = startOfDayWAT();
 
@@ -48,7 +60,6 @@ export async function getUniversityOverview(db: DrizzleDB): Promise<UniversityOv
       .where(
         and(
           eq(documents.status, 'approved'),
-          isNotNull(documents.reviewedAt),
           gte(documents.reviewedAt, todayStart),
         ),
       ),

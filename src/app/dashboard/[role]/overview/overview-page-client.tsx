@@ -17,11 +17,7 @@ interface OverviewPageClientProps {
 const copy = universityCopy.overview;
 
 export function OverviewPageClient({ data }: OverviewPageClientProps) {
-  const isEmpty =
-    data.pendingCount === 0 &&
-    data.approvedTodayCount === 0 &&
-    data.flaggedCount === 0 &&
-    data.totalStudents === 0;
+  const hasNoData = data.totalStudents === 0 && data.recentActivity.length === 0;
 
   return (
     <div className="space-y-6">
@@ -42,7 +38,7 @@ export function OverviewPageClient({ data }: OverviewPageClientProps) {
         totalStudents={data.totalStudents}
       />
 
-      {isEmpty ? (
+      {hasNoData ? (
         <EmptyState
           heading={copy.empty.heading}
           body={copy.empty.body}

@@ -2,7 +2,6 @@ import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
-import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 
 import { OverviewPageClient } from './overview-page-client';
@@ -21,7 +20,10 @@ async function fetchOverviewData() {
     const caller = await api();
     return await caller.university.getOverview();
   } catch (error) {
-    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
+    if (
+      error instanceof TRPCError &&
+      (error.code === 'UNAUTHORIZED' || error.code === 'FORBIDDEN')
+    ) {
       redirect('/login');
     }
     throw error;
@@ -31,7 +33,7 @@ async function fetchOverviewData() {
 export default async function UniversityOverviewPage({ params }: PageProps) {
   const { role } = await params;
 
-  if (!isDashboardRole(role)) {
+  if (role !== 'university') {
     notFound();
   }
 
