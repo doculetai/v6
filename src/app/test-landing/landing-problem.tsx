@@ -9,7 +9,7 @@ export function Problem() {
     <section className="relative overflow-hidden bg-primary py-20 md:py-28">
       {/* Radial glow — requires inline style for complex CSS gradient */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-1/2 top-0 h-[37.5rem] w-[56.25rem] -translate-x-1/2 -translate-y-1/4 rounded-full bg-accent/20 blur-[120px]" />
+        <div className="absolute left-1/2 top-0 h-96 w-full max-w-4xl -translate-x-1/2 -translate-y-1/4 rounded-full bg-accent/20 blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-5 md:px-8">

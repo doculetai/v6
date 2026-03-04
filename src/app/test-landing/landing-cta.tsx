@@ -10,7 +10,7 @@ export function FinalCta() {
     >
       {/* Single subtle glow */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-1/2 top-0 h-[31.25rem] w-[50rem] -translate-x-1/2 -translate-y-1/3 rounded-full bg-accent/15 blur-[120px]" />
+        <div className="absolute left-1/2 top-0 h-80 w-full max-w-4xl -translate-x-1/2 -translate-y-1/3 rounded-full bg-accent/15 blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-5 text-center md:px-8">
