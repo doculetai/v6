@@ -77,7 +77,7 @@ export const adminCopy = {
       submittedBy: "Submitted by",
       submittedOn: "Submitted on",
       notesLabel: "Decision notes",
-      notesPlaceholder: "Describe your decision clearly — the student will see this note.",
+      notesHint: "Describe your decision clearly — the student will see this note.",
       approveCta: "Approve document",
       rejectCta: "Reject document",
       requestInfoCta: "Request more info",
@@ -99,7 +99,7 @@ export const adminCopy = {
     title: "User management",
     subtitle: "View, search, and manage all platform users.",
     search: {
-      placeholder: "Find a user by name, email, or role",
+      inputHint: "Find a user by name, email, or role",
       filterByRole: "Filter by role",
       filterByStatus: "Filter by status",
     },
@@ -137,7 +137,7 @@ export const adminCopy = {
       description:
         "The user will lose access immediately. You can reinstate them at any time.",
       reasonLabel: "Reason (internal, not shown to user)",
-      reasonPlaceholder: "Summarise the reason — stored in the internal audit log.",
+      reasonHint: "Summarise the reason — stored in the internal audit log.",
       confirmCta: "Suspend account",
       cancel: "Cancel",
     },

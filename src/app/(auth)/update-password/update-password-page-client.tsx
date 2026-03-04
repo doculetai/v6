@@ -85,7 +85,7 @@ export function UpdatePasswordPageClient() {
               id="update-password-new"
               type="password"
               autoComplete="new-password"
-              placeholder={authCopy.common.passwordPlaceholder}
+              placeholder={authCopy.common.passwordHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.newPassword)}
               {...register('newPassword')}
@@ -103,7 +103,7 @@ export function UpdatePasswordPageClient() {
               id="update-password-confirm"
               type="password"
               autoComplete="new-password"
-              placeholder={authCopy.common.confirmPasswordPlaceholder}
+              placeholder={authCopy.common.confirmPasswordHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.confirmPassword)}
               {...register('confirmPassword')}

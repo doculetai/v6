@@ -72,9 +72,9 @@ export const studentCopy = {
         description:
           "Choose the exact institution and course so your funding target is accurate.",
         schoolLabel: "School",
-        schoolPlaceholder: "Search for your university",
+        schoolHint: "Search for your university",
         programLabel: "Program",
-        programPlaceholder: "Choose your degree program",
+        programHint: "Choose your degree program",
         programEmptyTitle: "No programs for this school yet",
         programEmptyDescription:
           "Try another school while we update this institution's program list.",
@@ -140,7 +140,7 @@ export const studentCopy = {
   schools: {
     title: "Find your school",
     subtitle: "Search thousands of programs. Select one to set your funding target.",
-    searchPlaceholder: "Search by university, program, or city…",
+    searchHint: "Search by university, program, or city…",
     empty: {
       title: "No programs found",
       description: "Try a different search term or broaden your filters.",
@@ -250,7 +250,7 @@ export const studentCopy = {
       title: "Upload a new document",
       description: "Accepted formats: PDF, PNG, or JPG. Maximum size: 8MB.",
       documentTypeLabel: "Document type",
-      documentTypePlaceholder: "Choose the document type",
+      documentTypeHint: "Choose the document type",
       fileLabel: "Document file",
       fileHelp: "Your file is encrypted in transit and reviewed by the Doculet verification team.",
       selectedFileLabel: "Selected file",
@@ -376,7 +376,7 @@ export const studentCopy = {
       "A sponsor commits funds toward your education. They'll complete a brief verification before their funds count toward your proof.",
     inviteByEmail: {
       label: "Sponsor's email address",
-      placeholder: "Enter your sponsor's email address",
+      inputHint: "Enter your sponsor's email address",
       sendCta: "Send invitation",
     },
     status: {

@@ -102,7 +102,7 @@ export function ForgotPasswordPageClient() {
               id="forgot-password-email"
               type="email"
               autoComplete="email"
-              placeholder={authCopy.common.emailPlaceholder}
+              placeholder={authCopy.common.emailHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.email)}
               {...register('email')}

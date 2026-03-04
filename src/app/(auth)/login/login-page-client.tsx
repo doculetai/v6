@@ -83,7 +83,7 @@ export function LoginPageClient() {
               id="login-email"
               type="email"
               autoComplete="email"
-              placeholder={authCopy.common.emailPlaceholder}
+              placeholder={authCopy.common.emailHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.email)}
               {...register('email')}
@@ -99,7 +99,7 @@ export function LoginPageClient() {
               id="login-password"
               type="password"
               autoComplete="current-password"
-              placeholder={authCopy.common.passwordPlaceholder}
+              placeholder={authCopy.common.passwordHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.password)}
               {...register('password')}

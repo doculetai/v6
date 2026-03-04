@@ -42,7 +42,7 @@ export const sponsorCopy = {
     commitFunds: {
       title: "Commit funds",
       amountLabel: "Amount (₦)",
-      amountPlaceholder: "e.g. ₦500,000",
+      amountHint: "e.g. ₦500,000",
       cta: "Commit funds",
       confirmTitle: "Confirm your commitment",
       confirmDescription:

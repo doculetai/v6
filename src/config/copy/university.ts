@@ -48,7 +48,7 @@ export const universityCopy = {
     reviewDialog: {
       title: "Review application",
       notesLabel: "Reviewer notes",
-      notesPlaceholder: "Share feedback or next steps with the applicant.",
+      notesHint: "Share feedback or next steps with the applicant.",
       approveCta: "Approve",
       rejectCta: "Reject",
       requestInfoCta: "Request more info",
@@ -62,7 +62,7 @@ export const universityCopy = {
       "Enter a certificate token or scan a QR code to instantly verify authenticity.",
     tokenInput: {
       label: "Certificate token",
-      placeholder: "e.g. DOC-2025-A1B2C3D4",
+      inputHint: "e.g. DOC-2025-A1B2C3D4",
       verifyCta: "Verify now",
     },
     qrScan: {

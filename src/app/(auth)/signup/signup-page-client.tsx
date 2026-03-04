@@ -139,7 +139,7 @@ export function SignupPageClient() {
               id="signup-email"
               type="email"
               autoComplete="email"
-              placeholder={authCopy.common.emailPlaceholder}
+              placeholder={authCopy.common.emailHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.email)}
               {...register('email')}
@@ -155,7 +155,7 @@ export function SignupPageClient() {
               id="signup-password"
               type="password"
               autoComplete="new-password"
-              placeholder={authCopy.common.passwordPlaceholder}
+              placeholder={authCopy.common.passwordHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.password)}
               {...register('password')}
@@ -171,7 +171,7 @@ export function SignupPageClient() {
               id="signup-confirm-password"
               type="password"
               autoComplete="new-password"
-              placeholder={authCopy.common.confirmPasswordPlaceholder}
+              placeholder={authCopy.common.confirmPasswordHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.confirmPassword)}
               {...register('confirmPassword')}

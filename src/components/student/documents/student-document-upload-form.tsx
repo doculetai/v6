@@ -65,7 +65,7 @@ export function StudentDocumentUploadForm({
                     className="h-11 w-full bg-background dark:bg-background"
                     aria-invalid={Boolean(documentTypeError)}
                   >
-                    <SelectValue placeholder={copy.upload.documentTypePlaceholder} />
+                    <SelectValue placeholder={copy.upload.documentTypeHint} />
                   </SelectTrigger>
                   <SelectContent>
                     {copy.typeOptions.map((option) => (
