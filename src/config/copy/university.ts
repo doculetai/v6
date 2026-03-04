@@ -1,6 +1,45 @@
 import { commonErrors } from "./shared";
 
 export const universityCopy = {
+  overview: {
+    title: "Overview",
+    subtitle: "Here's what needs your attention today.",
+    metrics: {
+      pending: "Pending verifications",
+      approvedToday: "Approved today",
+      flagged: "Flagged items",
+      totalStudents: "Total students",
+    },
+    activity: {
+      sectionTitle: "Recent activity",
+      emptyLabel: "No recent activity.",
+      eventTitles: {
+        pending: "Document submitted",
+        approved: "Document approved",
+        rejected: "Document rejected",
+        more_info_requested: "More info requested",
+      } as Record<string, string>,
+      documentTypes: {
+        passport: "Passport",
+        bank_statement: "Bank statement",
+        offer_letter: "Offer letter",
+        affidavit: "Affidavit",
+        cac: "CAC document",
+      } as Record<string, string>,
+    },
+    empty: {
+      heading: "No verifications yet",
+      body: "Student proof-of-funds submissions will appear here once they submit their documents.",
+      action: "Review pipeline",
+      actionHref: "/dashboard/university/pipeline",
+    },
+    error: {
+      heading: "Failed to load overview",
+      body: "We couldn't load the dashboard data. Please try again.",
+      retry: "Retry",
+    },
+  },
+
   pipeline: {
     title: "Application pipeline",
     subtitle: "Process applications at scale. Verify in seconds.",

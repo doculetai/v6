@@ -255,6 +255,26 @@ export function DashboardOverviewSkeleton() {
   );
 }
 
+// ─── University Overview Skeleton (full page) ─────────────
+export function UniversityOverviewSkeleton() {
+  return (
+    <div className="space-y-6">
+      {/* Page header */}
+      <div className="space-y-2 border-b border-border pb-4">
+        <Skeleton className="h-8 w-40" />
+        <Skeleton className="h-4 w-72" />
+      </div>
+      {/* Metric cards */}
+      <StatsRowSkeleton />
+      {/* Activity section */}
+      <div className="space-y-4">
+        <Skeleton className="h-5 w-32" />
+        <TimelineSkeleton items={5} />
+      </div>
+    </div>
+  );
+}
+
 // ─── Document List Skeleton ───────────────────────────────
 export function DocumentListSkeleton({ items = 6 }: { items?: number }) {
   return (
