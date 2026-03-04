@@ -577,3 +577,7 @@ The `[role]` directory uses literal square brackets (Next.js dynamic segment), w
 `─────────────────────────────────────────────────`
 [build-watch] 2026-03-04 12:29:53 Auto-fix committed changes.
 Everything up-to-date
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 12:31:54 Running typecheck...
+[build-watch] 2026-03-04 12:31:59 Build clean. No errors found.

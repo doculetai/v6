@@ -932,3 +932,27 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 12:30:22 Found 3 violation category(ies).
 [design-lint] 2026-03-04 12:30:22 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 12:30:22 Auto-fixing design violations (round 1)...
+Done. All violations fixed across 4 files (12 changes):
+
+**kyc-page-client.tsx** — 7 raw color fixes:
+- `bg-yellow-500/10 text-yellow-700 dark:text-yellow-400` → `bg-muted text-muted-foreground`
+- `bg-green-500/10 text-green-700 dark:text-green-400` → `bg-primary/10 text-primary` (×3 badge instances)
+- `text-green-600 dark:text-green-400` → `text-primary` (×2 icon instances)
+
+**disbursements-page-client.tsx** — 3 fixes:
+- `processing` color → `bg-muted text-muted-foreground`
+- `disbursed` color → `bg-primary/10 text-primary`
+- `min-w-[640px]` → `min-w-160` (Tailwind v4 scale)
+
+**transactions-page-client.tsx** — `min-w-[560px]` → `min-w-140`
+
+**sponsor-students-page-client.tsx** — `min-w-[480px]` → `min-w-120`
+
+**Email template skipped** — already has `design-lint-ignore` comment documenting the intentional exception (email clients strip CSS classes, inline styles are required for Gmail/Outlook compatibility).
+
+`★ Insight ─────────────────────────────────────`
+The `min-w-[Npx]` → `min-w-N` migration works cleanly in Tailwind v4 because the default spacing scale is `0.25rem` per unit — so 640px = 40rem = `min-w-160`. No arbitrary values needed. This keeps the design system constraint-based rather than pixel-based.
+`─────────────────────────────────────────────────`
+To https://github.com/doculetai/v6.git
+   e20bfa9..0f4e2ea  main -> main
+[design-lint] 2026-03-04 12:32:52 Design fixes pushed to main.
