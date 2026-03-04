@@ -275,7 +275,7 @@ export const adminCopy = {
       notifications: {
         title: 'System notifications',
         description: 'Configure where critical platform alerts are sent.',
-        comingSoon: 'Notification routing configuration coming soon.',
+        comingSoon: 'Alert routing to email, Slack, or webhooks is managed by the Doculet operations team. Contact support to configure notification channels.',
       },
     },
   },
