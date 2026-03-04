@@ -555,3 +555,13 @@ Fixed. Changed `'Generating your unique referral link…'` to `'Loading your ref
 To https://github.com/doculetai/v6.git
    f77da42..641d39a  main -> main
 [copy-audit] 2026-03-04 13:08:08 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 13:11:08 Scanning copy config coverage...
+[copy-audit] 2026-03-04 13:11:08 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 13:11:08 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 13:11:08 Auto-fixing copy violations (round 1 of max 8)...
+Fixed. Changed `'Referral link coming soon'` to `'Generating your referral link…'` — a loading-state placeholder that's warm and contextually accurate (shown while the referral URL is being computed), rather than an ambiguous "coming soon" that implies the feature doesn't exist yet.
+To https://github.com/doculetai/v6.git
+   cac34bf..a18b1ca  main -> main
+[copy-audit] 2026-03-04 13:11:54 Copy fixes pushed to main.
