@@ -555,3 +555,22 @@ All three flagged pages use `<PageHeader title={...} />`, which satisfies WCAG 2
 [a11y-watch] 2026-03-04 10:37:41 Auto-fix committed changes. Pushing to main...
 Everything up-to-date
 [a11y-watch] 2026-03-04 10:37:41 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 10:41:42 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 10:41:43 Found 1 check category(ies), approx 0
+0 violation line(s).
+[a11y-watch] 2026-03-04 10:41:43 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
+[a11y-watch] 2026-03-04 10:41:43 Invoking claude to fix a11y violations (round 1 of max 8)...
+`PageHeader` already renders an `<h1>` at line 32. The static analyzer is flagging the `page.tsx` files because it can't trace through component composition to see the `<h1>` inside `PageHeader`.
+
+The violation is a **false positive** — the `<h1>` is present via `PageHeader`. No changes are needed.
+
+`★ Insight ─────────────────────────────────────`
+Static a11y scanners often can't resolve `<h1>` headings that live inside reusable components like `PageHeader`. The rule fires on the file level, not the rendered DOM tree. This is a known limitation of AST-based linting vs. runtime analysis (e.g., axe-core in Playwright).
+`─────────────────────────────────────────────────`
+
+All three pages pass WCAG 2.1 AA CHECK 2 — each renders exactly one `<h1>` through `PageHeader` (line 32 of `page-header.tsx`). No code changes or commit needed.
+[a11y-watch] 2026-03-04 10:42:47 Auto-fix committed changes. Pushing to main...
+Everything up-to-date
+[a11y-watch] 2026-03-04 10:42:47 A11y fixes pushed. FIX_COUNT reset.
