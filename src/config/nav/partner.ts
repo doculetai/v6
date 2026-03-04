@@ -11,7 +11,7 @@ export const partnerNavConfig: NavConfig = {
   items: [
     {
       label: 'Overview',
-      href: '/dashboard/partner',
+      href: '/dashboard/partner/overview',
       icon: Home,
       description: 'Platform metrics',
       isPrimary: true,
