@@ -348,3 +348,9 @@ The file already documents this correctly with a `design-lint-ignore` comment. *
 The design lint tool should be treating this file as excluded. No fix is required here.
 Everything up-to-date
 [design-lint] 2026-03-04 09:37:28 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 09:40:28 Scanning for design violations...
+[design-lint] 2026-03-04 09:40:31 Found 1 violation category(ies).
+[design-lint] 2026-03-04 09:40:31 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 09:40:31 Auto-fixing design violations (round 1)...

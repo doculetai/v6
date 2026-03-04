@@ -356,3 +356,20 @@ error: Please commit or stash them.
 0 violation line(s).
 [a11y-watch] 2026-03-04 09:36:22 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
 [a11y-watch] 2026-03-04 09:36:22 Invoking claude to fix a11y violations (round 1 of max 8)...
+The fix was already committed in the last eslint-watch pass (`239ff0b`). Git confirms the file is clean — the changes I made were applied and already committed to the working tree by a prior automated run.
+
+All 4 flagged files have been analyzed:
+
+| Page | Status | Reason |
+|------|--------|--------|
+| `operations/page.tsx` | ✅ Already compliant | `PageHeader` renders `<h1>` at line 32 |
+| `students/page.tsx` | ✅ Already compliant | `PageHeader` renders `<h1>` at line 32 |
+| `overview/page.tsx` | ✅ Already compliant | `PageHeader` renders `<h1>` at line 32 |
+| `onboarding/page.tsx` | ✅ Fixed (committed `239ff0b`) | Added `<h1 className="sr-only">` — `OnboardingHero` used `CardTitle` (a `<div>`), not a semantic heading |
+
+`★ Insight ─────────────────────────────────────`
+The static scanner operates on file-level AST without tracing component internals — `<PageHeader title={...} />` is invisible to it even though `PageHeader` renders `<h1>` internally. This is a common false-positive pattern. The `sr-only` fix on the onboarding page is the right WCAG approach: it provides a page-level heading for screen readers without visually duplicating the `OnboardingHero`'s `CardTitle`.
+`─────────────────────────────────────────────────`
+[a11y-watch] 2026-03-04 09:40:44 Auto-fix committed changes. Pushing to main...
+Everything up-to-date
+[a11y-watch] 2026-03-04 09:40:45 A11y fixes pushed. FIX_COUNT reset.
