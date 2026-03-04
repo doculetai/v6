@@ -1,8 +1,7 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import { ChevronDown } from 'lucide-react';
-import Image from 'next/image';
+import { ChevronDown, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -75,7 +74,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false }: Sidebar
     <TooltipProvider delayDuration={300}>
       <aside
         className={cn(
-          'hidden md:flex flex-col border-r border-border/50 bg-muted/60 shadow-md print:hidden dark:bg-card',
+          'hidden md:flex flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-lg print:hidden',
           'transition-[width] duration-200 ease-out',
           isCollapsed ? 'w-16' : 'w-60',
         )}
@@ -85,37 +84,14 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false }: Sidebar
           <div className={cn('px-4', isCollapsed && 'flex justify-center px-3')}>
             <Link
               href={`/dashboard/${role}`}
-              className="inline-flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
               aria-label={dashboardShellCopy.logoAlt}
             >
-              {isCollapsed ? (
-                <Image
-                  src="/brand/logos/doculet-shield.svg"
-                  alt="Doculet"
-                  width={28}
-                  height={28}
-                  className="size-7"
-                  priority
-                />
-              ) : (
-                <>
-                  <Image
-                    src="/brand/logos/logo.svg"
-                    alt={dashboardShellCopy.logoAlt}
-                    width={120}
-                    height={28}
-                    priority
-                    className="h-7 w-auto dark:hidden"
-                  />
-                  <Image
-                    src="/brand/logos/logo-dark.svg"
-                    alt={dashboardShellCopy.logoAlt}
-                    width={120}
-                    height={28}
-                    priority
-                    className="hidden h-7 w-auto dark:block"
-                  />
-                </>
+              <Shield className="size-6 shrink-0 text-sidebar-foreground" aria-hidden="true" />
+              {!isCollapsed && (
+                <span className="text-base font-bold tracking-tight text-sidebar-foreground">
+                  Doculet
+                </span>
               )}
             </Link>
           </div>
@@ -157,7 +133,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false }: Sidebar
 
         {/* ── Bottom: Toggle + UserCard + Footer ── */}
         <div
-          className="flex shrink-0 flex-col gap-1.5 border-t border-border/50 pt-2"
+          className="flex shrink-0 flex-col gap-1.5 border-t border-sidebar-border pt-2"
           data-testid="sidebar-bottom"
         >
           <div className={cn('px-3', isCollapsed && 'px-2')}>
@@ -185,7 +161,7 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
   if (isCollapsed) {
     return (
       <div className="mb-0.5 py-0.5">
-        <div role="separator" className="mx-3 border-t border-border/50" />
+        <div role="separator" className="mx-3 border-t border-sidebar-border" />
         <ul className="mt-0.5 flex flex-col gap-0.5 px-3" role="list">
           {items.map((item) => (
             <li key={item.href}>
@@ -202,7 +178,7 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
       <button
         type="button"
         onClick={() => setIsOpen((p) => !p)}
-        className="flex w-full items-center justify-between px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-md"
+        className="flex w-full items-center justify-between px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50 hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:rounded-md"
         aria-expanded={isOpen}
       >
         {label}
@@ -244,9 +220,9 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       aria-current={isActive ? 'page' : undefined}
       title={isCollapsed ? item.label : undefined}
       className={cn(
-        'group relative flex h-8 items-center gap-3 rounded-lg px-3 text-sm transition-colors duration-150',
-        'hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-        isActive && 'bg-primary/15 font-semibold',
+        'group relative flex h-8 items-center gap-3 rounded-lg px-3 text-sm text-sidebar-foreground/80 transition-colors duration-150',
+        'hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring',
+        isActive && 'bg-sidebar-accent text-sidebar-foreground font-semibold',
         isCollapsed && 'justify-center px-0',
       )}
     >

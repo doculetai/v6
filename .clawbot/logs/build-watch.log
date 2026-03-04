@@ -298,3 +298,79 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [build-watch] 2026-03-04 09:40:33 Running typecheck...
 [build-watch] 2026-03-04 09:40:44 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 09:42:45 Running typecheck...
+[build-watch] 2026-03-04 09:42:53 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 09:44:53 Running typecheck...
+[build-watch] 2026-03-04 09:45:01 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 09:47:01 Running typecheck...
+[build-watch] 2026-03-04 09:47:08 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:04:59 Running typecheck...
+[build-watch] 2026-03-04 10:05:04 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:07:04 Running typecheck...
+[build-watch] 2026-03-04 10:07:08 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:09:09 Running typecheck...
+[build-watch] 2026-03-04 10:09:13 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:11:14 Running typecheck...
+[build-watch] 2026-03-04 10:11:33 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:13:33 Running typecheck...
+[build-watch] 2026-03-04 10:13:49 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:15:49 Running typecheck...
+[build-watch] 2026-03-04 10:15:55 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:17:55 Running typecheck...
+[build-watch] 2026-03-04 10:18:11 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:20:12 Running typecheck...
+[build-watch] 2026-03-04 10:20:20 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:22:20 Running typecheck...
+[build-watch] 2026-03-04 10:22:26 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:24:26 Running typecheck...
+[build-watch] 2026-03-04 10:24:31 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:26:31 Running typecheck...
+[build-watch] 2026-03-04 10:26:38 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:28:38 Running typecheck...
+[build-watch] 2026-03-04 10:28:49 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:30:49 Running typecheck...
+[build-watch] 2026-03-04 10:30:54 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:32:54 Running typecheck...
+[build-watch] 2026-03-04 10:33:00 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:35:00 Running typecheck...
+[build-watch] 2026-03-04 10:35:12 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 10:37:12 Running typecheck...
+[build-watch] 2026-03-04 10:37:28 Build clean. No errors found.

@@ -125,7 +125,7 @@ function SchoolCard({ school, selectedProgramId, pendingProgramId, onApply }: Sc
             </div>
           </div>
           <Badge variant="secondary" className="shrink-0 text-xs">
-            {`${school.programs.length} programs`}
+            {`${school.programs.length} ${school.programs.length === 1 ? 'program' : 'programs'}`}
           </Badge>
         </div>
       </CardHeader>
