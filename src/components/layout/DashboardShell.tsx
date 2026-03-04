@@ -1,7 +1,5 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
-
 import type { DashboardRole } from '@/config/roles';
 import { cn } from '@/lib/utils';
 
@@ -15,8 +13,6 @@ type DashboardShellProps = {
 };
 
 export function DashboardShell({ role, children, className }: DashboardShellProps) {
-  const pathname = usePathname();
-
   return (
     <div
       className={cn(
@@ -25,14 +21,14 @@ export function DashboardShell({ role, children, className }: DashboardShellProp
       )}
     >
       <aside className="hidden lg:block lg:h-screen lg:w-[240px] lg:flex-none">
-        <Sidebar role={role} currentPath={pathname} />
+        <Sidebar role={role} />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <main className="min-w-0 flex-1 overflow-y-auto p-4 pb-24 md:p-8 lg:pb-8">{children}</main>
       </div>
 
-      <BottomNav role={role} currentPath={pathname} />
+      <BottomNav role={role} />
     </div>
   );
 }

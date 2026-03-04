@@ -4,15 +4,11 @@ import { createBrowserClient } from '@supabase/ssr';
 import { LogOut } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-import {
-  dashboardShellCopy,
-  getFallbackUserName,
-  roleDisplayNames,
-} from '@/config/copy/dashboard-shell';
-import { getNavItems } from '@/config/nav';
+import { dashboardShellCopy, roleDisplayNames } from '@/config/copy/dashboard-shell';
+import { getNavItems, isActivePath } from '@/config/nav';
 import type { DashboardRole } from '@/config/roles';
 import { cn } from '@/lib/utils';
 
@@ -21,40 +17,26 @@ import { Button } from '../ui/button';
 
 type SidebarProps = {
   role: DashboardRole;
-  currentPath: string;
 };
 
-function isActivePath(itemHref: string, currentPath: string) {
-  return itemHref === currentPath || currentPath.startsWith(`${itemHref}/`);
-}
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+);
 
-export function Sidebar({ role, currentPath }: SidebarProps) {
+export function Sidebar({ role }: SidebarProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const navItems = getNavItems(role);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
-  const supabase = useMemo(() => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseAnonKey) {
-      return null;
-    }
-
-    return createBrowserClient(supabaseUrl, supabaseAnonKey);
-  }, []);
-
   const handleLogout = async () => {
-    if (isSigningOut) {
-      return;
-    }
+    if (isSigningOut) return;
 
     setIsSigningOut(true);
 
     try {
-      if (supabase) {
-        await supabase.auth.signOut();
-      }
+      await supabase.auth.signOut();
     } finally {
       router.push('/login');
       router.refresh();
@@ -92,7 +74,7 @@ export function Sidebar({ role, currentPath }: SidebarProps) {
         <ul className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = isActivePath(item.href, currentPath);
+            const isActive = isActivePath(item.href, pathname);
 
             return (
               <li key={item.href}>
@@ -122,7 +104,7 @@ export function Sidebar({ role, currentPath }: SidebarProps) {
 
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-foreground dark:text-foreground">
-              {getFallbackUserName(role)}
+              {`${roleDisplayNames[role]} ${dashboardShellCopy.sidebar.fallbackUserNameSuffix}`}
             </p>
             <p className="truncate text-xs text-muted-foreground dark:text-muted-foreground">
               {`${roleDisplayNames[role]} ${dashboardShellCopy.sidebar.accountLabel}`}
