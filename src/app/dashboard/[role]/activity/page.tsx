@@ -18,6 +18,7 @@ export default async function ActivityPage({ params }: PageProps) {
 
   return (
     <section className="space-y-8">
+      <h1 className="sr-only">Activity</h1>
       <PageHeader title="Activity" subtitle="Recent actions and events" />
       <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
         <Activity className="size-10 text-muted-foreground/40" aria-hidden="true" />

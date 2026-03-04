@@ -97,3 +97,9 @@ hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 [design-lint] 2026-03-04 08:27:37 ERROR: manual push required.
 [design-lint] 2026-03-04 08:27:37 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 08:30:37 Scanning for design violations...
+[design-lint] 2026-03-04 08:30:42 Found 1 violation category(ies).
+[design-lint] 2026-03-04 08:30:42 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 08:30:42 Auto-fixing design violations (round 1)...

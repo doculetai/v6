@@ -18,6 +18,7 @@ export default async function KycPage({ params }: PageProps) {
 
   return (
     <section className="space-y-8">
+      <h1 className="sr-only">KYC Verification</h1>
       <PageHeader title="KYC Verification" subtitle="Identity verification status" />
       <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
         <Shield className="size-10 text-muted-foreground/40" aria-hidden="true" />

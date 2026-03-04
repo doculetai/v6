@@ -551,3 +551,48 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [eslint-watch] 2026-03-04 08:29:54 Linting 4 changed file(s)...
 [eslint-watch] 2026-03-04 08:30:01 ESLint auto-fixed some issues. Committing...
+[main d76a7a6] fix(lint): eslint --fix pass [eslint-watch]
+ Committer: GM <gm@GMs-MacBook-Pro.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 27 files changed, 791 insertions(+), 17 deletions(-)
+ create mode 100644 src/app/dashboard/[role]/actions/page.tsx
+ create mode 100644 src/app/dashboard/[role]/activity/page.tsx
+ create mode 100644 src/app/dashboard/[role]/analytics/page.tsx
+ create mode 100644 src/app/dashboard/[role]/api-keys/page.tsx
+ create mode 100644 src/app/dashboard/[role]/branding/page.tsx
+ create mode 100644 src/app/dashboard/[role]/commissions/page.tsx
+ create mode 100644 src/app/dashboard/[role]/disbursements/page.tsx
+ create mode 100644 src/app/dashboard/[role]/kyc/page.tsx
+ create mode 100644 src/app/dashboard/[role]/onboarding/page.tsx
+ create mode 100644 src/app/dashboard/[role]/operations/page.tsx
+ create mode 100644 src/app/dashboard/[role]/pipeline/page.tsx
+ create mode 100644 src/app/dashboard/[role]/risk/page.tsx
+ create mode 100644 src/app/dashboard/[role]/schools/page.tsx
+ create mode 100644 src/app/dashboard/[role]/settings/page.tsx
+ create mode 100644 src/app/dashboard/[role]/students/page.tsx
+ create mode 100644 src/app/dashboard/[role]/transactions/page.tsx
+ create mode 100644 src/app/dashboard/[role]/users/page.tsx
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[eslint-watch] 2026-03-04 08:30:05 Lint clean after auto-fix.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[eslint-watch] 2026-03-04 08:32:36 Linting 17 changed file(s)...
+[eslint-watch] 2026-03-04 08:32:50 ESLint auto-fixed some issues. Committing...

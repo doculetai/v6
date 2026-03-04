@@ -18,6 +18,7 @@ export default async function DisbursementsPage({ params }: PageProps) {
 
   return (
     <section className="space-y-8">
+      <h1 className="sr-only">Disbursements</h1>
       <PageHeader title="Disbursements" subtitle="Fund transfers and schedules" />
       <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
         <HandCoins className="size-10 text-muted-foreground/40" aria-hidden="true" />
