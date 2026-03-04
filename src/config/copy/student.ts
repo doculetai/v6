@@ -291,25 +291,82 @@ export const studentCopy = {
   },
 
   proof: {
-    title: "Your certificate",
-    subtitle:
-      "Your tamper-evident proof of funds, ready to share with universities and embassies.",
-    checklist: [
-      { label: "Identity verified" },
-      { label: "School selected" },
-      { label: "Bank account connected" },
-      { label: "Documents uploaded" },
-      { label: "Sponsor committed" },
-    ],
+    title: "Proof certificate",
+    subtitle: "Track the four trust checks that unlock your tamper-evident certificate.",
+    progress: {
+      title: "Verification checklist",
+      description: "Your certificate issues when all four checks are complete.",
+      progressLabel: "{completed} of {total} complete",
+      completeBadge: "Complete",
+      pendingBadge: "Pending",
+      items: {
+        kyc: {
+          label: "KYC verification",
+          completeDetail: "Identity verified with Doculet KYC.",
+          pendingDetail: "Finish KYC verification to unlock certificate issuance.",
+        },
+        bank: {
+          label: "Bank account verification",
+          completeDetail: "Bank account linked and verified.",
+          pendingDetail: "Link and verify your bank account.",
+        },
+        sponsor: {
+          label: "Sponsor commitment",
+          completeDetail: "Sponsor has an active commitment.",
+          pendingDetail: "Invite and activate at least one sponsor.",
+        },
+        documents: {
+          label: "Supporting documents",
+          completeDetail: "At least one document has been approved.",
+          pendingDetail: "Upload documents and wait for approval.",
+        },
+      },
+    },
     certificate: {
-      title: "Proof of funds certificate",
-      shareCta: "Share certificate",
-      downloadCta: "Download PDF",
+      title: "Tamper-evident certificate",
+      description:
+        "Each certificate link includes a signed token and immutable audit trail metadata.",
+      issuedBadge: "Issued",
+      lockedBadge: "Locked",
+      idLabel: "Certificate ID",
+      issuedAtLabel: "Issued at",
+      shareLinkLabel: "Secure share link",
+      noShareLink: "No share link generated yet.",
+      generateShareCta: "Generate secure share link",
+      regenerateShareCta: "Regenerate secure share link",
+      generatingCta: "Generating secure link...",
+      copyLinkCta: "Copy link",
+      copiedLinkCta: "Copied",
+      trustTitle: "Trust signals",
+      unavailableValue: "Unavailable",
+      trust: {
+        sponsorCountLabel: "Verified sponsors",
+        committedAmountLabel: "Committed amount",
+        approvedDocumentsLabel: "Approved documents",
+        pendingDocumentsLabel: "Pending documents",
+        lastAuditLabel: "Last audit update",
+      },
     },
     locked: {
       title: "Certificate not ready yet",
       description:
-        "Complete all checklist items above to unlock your proof of funds certificate.",
+        "Complete KYC, bank, sponsor, and document checks to unlock your proof certificate.",
+      helper: "Secure sharing becomes available as soon as all checklist items are complete.",
+    },
+    empty: {
+      title: "Start your proof checklist",
+      description:
+        "Your proof journey has not started yet. Begin verification to move toward certificate issuance.",
+      cta: "Continue verification",
+      illustrationLabel: "Shield and document checklist illustration",
+    },
+    states: {
+      loadingTitle: "Loading proof certificate",
+      loadingDescription: "Fetching your latest verification and audit records.",
+      errorTitle: "We could not load this certificate view",
+      errorDescription: "Please refresh in a moment to try again.",
+      shareError: "Unable to generate a secure share link right now. Please try again.",
+      retryCta: "Try again",
     },
   },
 
