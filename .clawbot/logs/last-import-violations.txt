@@ -19,6 +19,5 @@ hits=''
 hits=''
 
 
-=== SERVER-ONLY IMPORTS IN CLIENT COMPONENTS (remove server-only imports from use-client files) ===
-  [@/server/ import in client component]:
-    src/app/dashboard/[role]/overview/overview-page-client.tsx
+=== REACT HOOKS USED WITHOUT "use client" DIRECTIVE (add "use client" at top of file) ===
+  src/components/ui/earnings-panel.tsx

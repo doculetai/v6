@@ -223,3 +223,10 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 09:23:25 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 09:23:25 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 09:23:25 Auto-fixing copy violations (round 1 of max 8)...
+All 6 violations fixed and committed. The changes:
+
+- **`agent.ts`** — Replaced 4 `"e.g. ..."` placeholders with instructive copy (what to enter, not example values)
+- **`admin.ts`** — Made search placeholder direct (`"Search by name..."`) and notes placeholder more decisive (`"Write a clear decision note..."`)
+To https://github.com/doculetai/v6.git
+   4c3f008..cb8c8de  main -> main
+[copy-audit] 2026-03-04 09:26:45 Copy fixes pushed to main.

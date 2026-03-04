@@ -4,10 +4,6 @@
 Each page must have exactly one visible <h1> heading for screen reader navigation.
 Add <h1> as the first visible heading, or use your PageHeading component.
 
-/Users/gm/v6/src/app/dashboard/[role]/settings/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/branding/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/api-keys/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/operations/page.tsx
 /Users/gm/v6/src/app/dashboard/[role]/students/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/actions/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/onboarding/page.tsx
-/Users/gm/v6/src/app/dashboard/[role]/analytics/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/overview/page.tsx
