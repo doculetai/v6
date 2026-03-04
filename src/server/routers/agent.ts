@@ -103,4 +103,130 @@ export const agentRouter = createTRPCRouter({
         })
         .where(eq(agentProfiles.userId, ctx.user.id));
     }),
+
+  getAgentOverview: roleProcedure('agent')
+    .output(
+      z.object({
+        totalAssignedStudents: z.number(),
+        activeStudents: z.number(),
+        pendingCommissionsKobo: z.number(),
+        totalEarnedKobo: z.number(),
+      }),
+    )
+    .query(async ({ ctx }) => {
+      const [assignments, commissions] = await Promise.all([
+        ctx.db.query.agentStudentAssignments.findMany({
+          where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
+          columns: { id: true },
+        }),
+        ctx.db.query.agentCommissions.findMany({
+          where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
+          columns: { status: true, amountKobo: true },
+        }),
+      ]);
+
+      return {
+        totalAssignedStudents: assignments.length,
+        activeStudents: assignments.length,
+        pendingCommissionsKobo: commissions
+          .filter((c) => c.status === 'pending')
+          .reduce((sum, c) => sum + c.amountKobo, 0),
+        totalEarnedKobo: commissions
+          .filter((c) => c.status === 'paid')
+          .reduce((sum, c) => sum + c.amountKobo, 0),
+      };
+    }),
+
+  listAgentStudents: roleProcedure('agent')
+    .output(
+      z.array(
+        z.object({
+          assignmentId: z.string(),
+          studentId: z.string(),
+          studentEmail: z.string().nullable(),
+          schoolName: z.string().nullable(),
+          programName: z.string().nullable(),
+          kycStatus: z.enum(['not_started', 'pending', 'verified', 'failed']),
+          documentCount: z.number(),
+          assignedAt: z.date(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      const assignments = await ctx.db.query.agentStudentAssignments.findMany({
+        where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
+        orderBy: (t, { desc }) => [desc(t.assignedAt)],
+      });
+
+      if (assignments.length === 0) return [];
+
+      const studentIds = assignments.map((a) => a.studentId);
+
+      const [studentProfiles, docRows, userRows] = await Promise.all([
+        ctx.db.query.studentProfiles.findMany({
+          where: (t, { inArray: inArrayFn }) => inArrayFn(t.userId, studentIds),
+          with: { school: true, program: true },
+        }),
+        ctx.db.query.documents.findMany({
+          where: (t, { inArray: inArrayFn }) => inArrayFn(t.userId, studentIds),
+          columns: { userId: true },
+        }),
+        ctx.db.query.users.findMany({
+          where: (t, { inArray: inArrayFn }) => inArrayFn(t.id, studentIds),
+          columns: { id: true, email: true },
+        }),
+      ]);
+
+      const emailMap = new Map(userRows.map((u) => [u.id, u.email]));
+      const profileMap = new Map(studentProfiles.map((p) => [p.userId, p]));
+      const docCountMap = new Map<string, number>();
+      for (const doc of docRows) {
+        docCountMap.set(doc.userId, (docCountMap.get(doc.userId) ?? 0) + 1);
+      }
+
+      return assignments.map((a) => {
+        const profile = profileMap.get(a.studentId);
+        return {
+          assignmentId: a.id,
+          studentId: a.studentId,
+          studentEmail: emailMap.get(a.studentId) ?? null,
+          schoolName: profile?.school?.name ?? null,
+          programName: profile?.program?.name ?? null,
+          kycStatus: profile?.kycStatus ?? 'not_started',
+          documentCount: docCountMap.get(a.studentId) ?? 0,
+          assignedAt: a.assignedAt,
+        };
+      });
+    }),
+
+  listAgentCommissions: roleProcedure('agent')
+    .output(
+      z.array(
+        z.object({
+          id: z.string(),
+          amountKobo: z.number(),
+          currency: z.string(),
+          status: z.enum(['pending', 'processing', 'paid', 'cancelled']),
+          description: z.string().nullable(),
+          paidAt: z.date().nullable(),
+          createdAt: z.date(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      const rows = await ctx.db.query.agentCommissions.findMany({
+        where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
+        orderBy: (t, { desc }) => [desc(t.createdAt)],
+      });
+
+      return rows.map((r) => ({
+        id: r.id,
+        amountKobo: r.amountKobo,
+        currency: r.currency,
+        status: r.status,
+        description: r.description ?? null,
+        paidAt: r.paidAt ?? null,
+        createdAt: r.createdAt,
+      }));
+    }),
 });
