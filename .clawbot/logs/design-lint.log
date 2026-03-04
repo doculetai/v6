@@ -1114,3 +1114,17 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 13:11:23 Found 1 violation category(ies).
 [design-lint] 2026-03-04 13:11:23 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 13:11:23 Auto-fixing design violations (round 1)...
+Done. Here's what was fixed:
+
+**Real violations fixed:**
+- `disbursements/page.tsx`, `kyc/page.tsx`, `transactions/page.tsx` — JSX moved outside `try` blocks
+- `students/page.tsx` — Sponsor branch JSX moved outside `try`, using `Promise.allSettled` results directly
+- `api-keys/api-keys-page-client.tsx` + `branding/branding-page-client.tsx` — wrong import `@/trpc/react` → `@/trpc/client` (daemon had already started fixing these)
+
+**False positive — no change needed:**
+- `sponsor-invitation-email.tsx` — inline styles are intentional and correct; email clients (Gmail, Outlook) strip CSS classes. The `// design-lint-ignore` comment at the top is the right suppression. The `last-design-violations.txt` output was corrupted (line counts without filenames at the top are a broken scanner artifact).
+
+**Result:** `tsc --noEmit` clean, ESLint 0 errors (12 pre-existing warnings in router stubs).
+To https://github.com/doculetai/v6.git
+   79d0629..1bf5222  main -> main
+[design-lint] 2026-03-04 13:19:20 Design fixes pushed to main.

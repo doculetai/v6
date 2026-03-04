@@ -567,3 +567,13 @@ To https://github.com/doculetai/v6.git
 [copy-audit] 2026-03-04 13:11:54 Copy fixes pushed to main.
 Everything up-to-date
 [copy-audit] 2026-03-04 13:16:22 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 13:19:22 Scanning copy config coverage...
+[copy-audit] 2026-03-04 13:19:22 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 13:19:22 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 13:19:22 Auto-fixing copy violations (round 1 of max 8)...
+Fixed `linkPlaceholder` in `agent.ts:268` — changed the generic "will appear here" phrasing to `'Generating your unique referral link…'`, which is warmer, action-oriented, and reads as a loading state rather than a placeholder comment. TypeScript exits clean.
+To https://github.com/doculetai/v6.git
+   1bf5222..f94f709  main -> main
+[copy-audit] 2026-03-04 13:20:09 Copy fixes pushed to main.
