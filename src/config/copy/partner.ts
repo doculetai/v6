@@ -79,6 +79,7 @@ export const partnerCopy = {
         studentsRead: "Students — read",
       },
       confirmCta: "Create key",
+      creatingCta: "Creating…",
       cancel: "Cancel",
     },
     newKeyCreated: {
@@ -87,6 +88,7 @@ export const partnerCopy = {
         "Copy your secret key now. For security reasons, it will not be shown again.",
       copyLabel: "Secret key",
       copyCta: "Copy secret key",
+      copied: "Copied!",
       doneCta: "I've saved my key",
     },
     table: {
@@ -103,6 +105,7 @@ export const partnerCopy = {
     },
     actions: {
       revoke: "Revoke",
+      revoking: "Revoking…",
       rotate: "Rotate",
     },
     revokeDialog: {
@@ -161,6 +164,10 @@ export const partnerCopy = {
     },
     saveCta: "Save branding",
     saveSuccess: "Branding updated successfully.",
+    error: {
+      title: "Failed to load branding",
+      description: "Please refresh the page to try again.",
+    },
   },
 
   students: {

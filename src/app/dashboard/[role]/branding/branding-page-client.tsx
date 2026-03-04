@@ -70,8 +70,8 @@ export function BrandingPageClient({ branding, copy }: Props) {
 
       {branding === null ? (
         <div className="rounded-xl border border-border bg-card p-10 text-center">
-          <p className="text-sm font-medium text-foreground">{partnerCopy.errors.generic}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{partnerCopy.students.error.description}</p>
+          <p className="text-sm font-medium text-foreground">{partnerCopy.branding.error.title}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{partnerCopy.branding.error.description}</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
@@ -81,18 +81,18 @@ export function BrandingPageClient({ branding, copy }: Props) {
             <p className="mt-1 text-sm text-muted-foreground">{copy.colorSection.description}</p>
 
             <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-              <label
-                htmlFor="brandColor"
-                className="text-sm font-medium text-foreground"
-              >
-                {copy.colorSection.primaryLabel}
-              </label>
               <div className="flex items-center gap-2">
-                <span
-                  className="h-10 w-10 shrink-0 rounded-lg border border-border"
-                  style={{ backgroundColor: watch('brandColor') ?? '#3B82F6' }}
-                  aria-hidden="true"
-                />
+                <label
+                  htmlFor="brandColor"
+                  className="text-sm font-medium text-foreground"
+                >
+                  {copy.colorSection.primaryLabel}
+                </label>
+                <span className="rounded-full border border-border bg-card px-2 py-0.5 font-mono text-xs text-foreground">
+                  {watch('brandColor') ?? '—'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
                 <input
                   id="brandColor"
                   type="text"
@@ -142,11 +142,11 @@ export function BrandingPageClient({ branding, copy }: Props) {
               {updateMutation.isPending ? '...' : copy.saveCta}
             </button>
             {saveSuccess && (
-              <p className="text-sm text-emerald-600 dark:text-emerald-400">{copy.saveSuccess}</p>
+              <p className="text-sm text-primary">{copy.saveSuccess}</p>
             )}
             {updateMutation.isError && (
               <p className="text-sm text-destructive">
-                Something went wrong. Please try again.
+                {partnerCopy.branding.error.title}. {partnerCopy.branding.error.description}
               </p>
             )}
           </div>
