@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { partnerCopy } from '@/config/copy/partner';
 import { api } from '@/trpc/server';
 
 import { StatCard } from './overview-shared';
@@ -21,6 +22,7 @@ export async function PartnerOverview({ email, caller }: PartnerOverviewProps) {
   const firstName = getFirstName(email);
   const [overviewResult] = await Promise.allSettled([caller.partner.getPartnerOverview()]);
   const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+  const copy = partnerCopy.dashboard.overview;
 
   return (
     <section className="mx-auto w-full max-w-5xl space-y-6">
@@ -29,32 +31,30 @@ export async function PartnerOverview({ email, caller }: PartnerOverviewProps) {
           Welcome back, {firstName}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {overview?.organizationName
-            ? `${overview.organizationName} — integration performance at a glance.`
-            : 'Monitor your integration performance.'}
+          {copy.subtitle(overview?.organizationName ?? null)}
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
           icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
-          label="Total Students"
+          label={copy.stats.totalStudents.label}
           value={overview ? String(overview.totalStudents) : '—'}
-          sub="enrolled via your integration"
+          sub={copy.stats.totalStudents.sub}
           accent={Boolean(overview?.totalStudents)}
         />
         <StatCard
           icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
-          label="Verified Students"
+          label={copy.stats.verifiedStudents.label}
           value={overview ? String(overview.verifiedStudents) : '—'}
-          sub="KYC complete"
+          sub={copy.stats.verifiedStudents.sub}
           accent={Boolean(overview?.verifiedStudents)}
         />
         <StatCard
           icon={<FileStack className="size-4.5" aria-hidden="true" />}
-          label="Active API Keys"
+          label={copy.stats.activeApiKeys.label}
           value={overview ? String(overview.activeApiKeys) : '—'}
-          sub="in use"
+          sub={copy.stats.activeApiKeys.sub}
           accent={Boolean(overview?.activeApiKeys)}
         />
       </div>
@@ -63,14 +63,14 @@ export async function PartnerOverview({ email, caller }: PartnerOverviewProps) {
         <CardContent className="pt-5">
           <p className="text-sm text-muted-foreground">
             {overview?.totalStudents
-              ? `${overview.verifiedStudents} of ${overview.totalStudents} students have completed KYC verification.`
-              : 'No students enrolled yet. Use the API Keys page to get your integration started.'}
+              ? copy.summary.withStudents(overview.verifiedStudents, overview.totalStudents)
+              : copy.summary.empty}
           </p>
         </CardContent>
       </Card>
 
       <Button asChild className="min-h-11 w-full sm:w-auto">
-        <Link href="/dashboard/partner/students">View students</Link>
+        <Link href="/dashboard/partner/students">{copy.cta}</Link>
       </Button>
     </section>
   );
