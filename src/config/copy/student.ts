@@ -155,6 +155,18 @@ export const studentCopy = {
   verify: {
     title: "Verify your identity",
     subtitle: "We confirm who you are before issuing your certificate. Complete all three tiers for the strongest proof.",
+    tracker: {
+      title: "Verification progress",
+      subtitle: "Track completion across Tier 1, Tier 2, and Tier 3 before certificate release.",
+      completionLabel: "Completion",
+      lastUpdatedLabel: "Last update",
+    },
+    status: {
+      not_started: "Not started",
+      pending: "Pending",
+      verified: "Verified",
+      failed: "Failed",
+    },
     kycSection: {
       title: "Identity verification",
       tiers: [
@@ -171,12 +183,43 @@ export const studentCopy = {
           description: "Upload your passport and complete a selfie check to unlock certificate generation.",
         },
       ],
+      dojahForm: {
+        title: "Run Dojah identity check",
+        description: "Submit BVN, NIN, or passport details for secure identity verification via Dojah.",
+        tierLabel: "Tier",
+        identityTypeLabel: "Identity type",
+        identityNumberLabel: "Identity number",
+        submitCta: "Start Dojah check",
+        pendingReferenceLabel: "Current Dojah reference",
+      },
+      identityTypes: {
+        bvn: "BVN",
+        nin: "NIN",
+        passport: "Passport",
+      },
     },
     bankSection: {
       title: "Connect your bank",
       description:
         "Link your account via Mono for real-time balance verification. Your login credentials are never stored by Doculet.",
       connectCta: "Connect bank account",
+      monoForm: {
+        monoAccountIdLabel: "Mono account ID",
+        bankNameLabel: "Bank name",
+        accountNumberLabel: "Account number",
+        submitCta: "Save Mono connection",
+      },
+      connectedLabel: "Connected account",
+    },
+    actions: {
+      refresh: "Refresh status",
+    },
+    feedback: {
+      dojahStarted: "Dojah verification started. We will update your status after provider confirmation.",
+      monoConnected: "Mono connection saved. Tier tracker has been updated.",
+      loadError: "Unable to load verification status right now.",
+      dojahError: "Unable to start the Dojah check. Please try again.",
+      monoError: "Unable to save your Mono account right now.",
     },
   },
 
