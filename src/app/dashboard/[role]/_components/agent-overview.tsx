@@ -1,0 +1,85 @@
+import { Banknote, GraduationCap, ShieldCheck, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { agentCopy } from '@/config/copy/agent';
+import { formatNGN } from '@/lib/utils';
+import { api } from '@/trpc/server';
+
+import { StatCard } from './overview-shared';
+
+type AgentOverviewProps = {
+  email: string;
+  caller: Awaited<ReturnType<typeof api>>;
+};
+
+function getFirstName(email: string): string {
+  const raw = email.split('@')[0] ?? '';
+  return raw.charAt(0).toUpperCase() + raw.slice(1);
+}
+
+export async function AgentOverview({ email, caller }: AgentOverviewProps) {
+  const firstName = getFirstName(email);
+  const [overviewResult] = await Promise.allSettled([caller.agent.getAgentOverview()]);
+  const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+  const copy = agentCopy.dashboard.overview;
+
+  return (
+    <section className="mx-auto w-full max-w-5xl space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
+          Welcome back, {firstName}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">{copy.subtitle}</p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
+          label={copy.stats.assignedStudents.label}
+          value={overview ? String(overview.totalAssignedStudents) : '—'}
+          sub={copy.stats.assignedStudents.sub}
+          accent={Boolean(overview?.totalAssignedStudents)}
+        />
+        <StatCard
+          icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
+          label={copy.stats.activeStudents.label}
+          value={overview ? String(overview.activeStudents) : '—'}
+          sub={copy.stats.activeStudents.sub}
+          accent={Boolean(overview?.activeStudents)}
+        />
+        <StatCard
+          icon={<Banknote className="size-4.5" aria-hidden="true" />}
+          label={copy.stats.pendingCommissions.label}
+          value={overview ? formatNGN(overview.pendingCommissionsKobo) : '—'}
+          sub={copy.stats.pendingCommissions.sub}
+          accent={Boolean(overview?.pendingCommissionsKobo)}
+        />
+        <StatCard
+          icon={<Sparkles className="size-4.5" aria-hidden="true" />}
+          label={copy.stats.totalEarned.label}
+          value={overview ? formatNGN(overview.totalEarnedKobo) : '—'}
+          sub={copy.stats.totalEarned.sub}
+          accent={Boolean(overview?.totalEarnedKobo)}
+        />
+      </div>
+
+      <Card className="border-border bg-card">
+        <CardContent className="pt-5">
+          <p className="text-sm text-muted-foreground">
+            {overview?.totalAssignedStudents
+              ? overview.totalAssignedStudents === 1
+                ? copy.caseload.filledSingle(overview.totalAssignedStudents)
+                : copy.caseload.filledPlural(overview.totalAssignedStudents)
+              : copy.caseload.empty}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Button asChild className="min-h-11 w-full sm:w-auto">
+        <Link href="/dashboard/agent/students">{copy.cta}</Link>
+      </Button>
+    </section>
+  );
+}

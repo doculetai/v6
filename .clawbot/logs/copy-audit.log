@@ -459,3 +459,12 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [copy-audit] 2026-03-04 12:16:45 Scanning copy config coverage...
 [copy-audit] 2026-03-04 12:16:45 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 12:19:45 Scanning copy config coverage...
+[copy-audit] 2026-03-04 12:19:45 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: additionally, your index contains uncommitted changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 12:22:45 Scanning copy config coverage...
+[copy-audit] 2026-03-04 12:22:46 Copy config coverage complete. No violations found.
