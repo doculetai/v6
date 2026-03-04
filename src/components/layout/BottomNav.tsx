@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 
 type BottomNavProps = {
   role: DashboardRole;
+  currentPath?: string;
 };
 
 const gridColumnsByCount: Record<number, string> = {
@@ -20,8 +21,9 @@ const gridColumnsByCount: Record<number, string> = {
   5: 'grid-cols-5',
 };
 
-export function BottomNav({ role }: BottomNavProps) {
+export function BottomNav({ role, currentPath }: BottomNavProps) {
   const pathname = usePathname();
+  const activePath = currentPath ?? pathname;
   const items = getNavItems(role).slice(0, 5);
   const gridClass = gridColumnsByCount[items.length] ?? gridColumnsByCount[5];
 
@@ -37,7 +39,7 @@ export function BottomNav({ role }: BottomNavProps) {
       <ul className={cn('mx-auto grid max-w-screen-sm gap-1', gridClass)}>
         {items.map((item) => {
           const Icon = item.icon;
-          const isActive = isActivePath(item.href, pathname);
+          const isActive = isActivePath(item.href, activePath);
 
           return (
             <li key={item.href} className="min-w-0">

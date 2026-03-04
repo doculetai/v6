@@ -110,6 +110,38 @@ const DEMO_ROWS: DemoRow[] = [
   { id: '3', name: 'Amara Nwosu', school: 'Ahmadu Bello University', status: 'verified', amount: 2000000 },
 ]
 
+const TIMESTAMP_THREE_MINUTES_AGO = '2026-02-15T11:57:00.000Z';
+const ACTIVITY_TIMELINE_ITEMS: Array<
+  import('@/components/ui/activity-timeline').ActivityTimelineItem
+> = [
+  {
+    id: '1',
+    title: 'Proof of funds verified',
+    description: 'University of Lagos confirmed the document.',
+    timestamp: '2026-02-15T11:50:00.000Z',
+    tone: 'success',
+  },
+  {
+    id: '2',
+    title: 'Document flagged for review',
+    description: 'Admission letter requires re-upload.',
+    timestamp: '2026-02-15T10:00:00.000Z',
+    tone: 'warning',
+  },
+  {
+    id: '3',
+    title: 'Sponsorship disbursement scheduled',
+    timestamp: '2026-02-14T12:00:00.000Z',
+    tone: 'info',
+  },
+  {
+    id: '4',
+    title: 'Identity verification submitted',
+    timestamp: '2026-02-12T12:00:00.000Z',
+    tone: 'neutral',
+  },
+];
+
 function DataTableShellDemo() {
   return <DataTableShell columns={DEMO_COLUMNS} rows={DEMO_ROWS} />
 }
@@ -378,9 +410,9 @@ export default function DesignPage() {
               <p className="font-medium text-foreground">TimestampLabel</p>
               <Code>{`import { TimestampLabel } from '@/components/ui/timestamp-label'`}</Code>
               <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-5">
-                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="relative" />
-                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="absolute" />
-                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="both" />
+                <TimestampLabel value={TIMESTAMP_THREE_MINUTES_AGO} mode="relative" />
+                <TimestampLabel value={TIMESTAMP_THREE_MINUTES_AGO} mode="absolute" />
+                <TimestampLabel value={TIMESTAMP_THREE_MINUTES_AGO} mode="both" />
                 <TimestampLabel value="not-a-date" />
               </div>
             </div>
@@ -429,36 +461,7 @@ export default function DesignPage() {
             <div className="space-y-3">
               <p className="font-medium text-foreground">ActivityTimeline</p>
               <Code>{`import { ActivityTimeline } from '@/components/ui/activity-timeline'`}</Code>
-              <ActivityTimeline
-                items={[
-                  {
-                    id: '1',
-                    title: 'Proof of funds verified',
-                    description: 'University of Lagos confirmed the document.',
-                    timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-                    tone: 'success',
-                  },
-                  {
-                    id: '2',
-                    title: 'Document flagged for review',
-                    description: 'Admission letter requires re-upload.',
-                    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-                    tone: 'warning',
-                  },
-                  {
-                    id: '3',
-                    title: 'Sponsorship disbursement scheduled',
-                    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-                    tone: 'info',
-                  },
-                  {
-                    id: '4',
-                    title: 'Identity verification submitted',
-                    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                    tone: 'neutral',
-                  },
-                ]}
-              />
+              <ActivityTimeline items={ACTIVITY_TIMELINE_ITEMS} />
             </div>
 
             {/* PipelineStepper */}

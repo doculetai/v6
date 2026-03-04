@@ -4,22 +4,6 @@ import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { timestamps } from './_helpers';
 import { users } from './users';
 
-export const sponsorProfiles = pgTable('sponsor_profiles', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
-    .references(() => users.id, { onDelete: 'cascade' })
-    .notNull()
-    .unique(),
-  sponsorType: text('sponsor_type', { enum: ['individual', 'corporate', 'self'] }).notNull(),
-  kycStatus: text('kyc_status', {
-    enum: ['not_started', 'pending', 'verified', 'failed'],
-  })
-    .default('not_started')
-    .notNull(),
-  companyName: text('company_name'),
-  ...timestamps,
-});
-
 export const sponsorships = pgTable('sponsorships', {
   id: uuid('id').primaryKey().defaultRandom(),
   studentId: uuid('student_id')
@@ -50,13 +34,6 @@ export const disbursements = pgTable('disbursements', {
   paystackReference: text('paystack_reference'),
   ...timestamps,
 });
-
-export const sponsorProfilesRelations = relations(sponsorProfiles, ({ one }) => ({
-  user: one(users, {
-    fields: [sponsorProfiles.userId],
-    references: [users.id],
-  }),
-}));
 
 export const sponsorshipsRelations = relations(sponsorships, ({ one, many }) => ({
   student: one(users, {
