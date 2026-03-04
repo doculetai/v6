@@ -1,5 +1,4 @@
 import type { DashboardRole } from '@/config/roles';
-import { isDashboardRole } from '@/config/roles';
 
 import { adminNav } from './admin';
 import { agentNav } from './agent';
@@ -18,12 +17,12 @@ const navByRole: Record<DashboardRole, NavItem[]> = {
   partner: partnerNav,
 };
 
-export function getNavItems(role: string): NavItem[] {
-  if (!isDashboardRole(role)) {
-    return [];
-  }
-
+export function getNavItems(role: DashboardRole): NavItem[] {
   return navByRole[role];
+}
+
+export function isActivePath(itemHref: string, currentPath: string): boolean {
+  return itemHref === currentPath || currentPath.startsWith(`${itemHref}/`);
 }
 
 export type { NavItem } from './types';
