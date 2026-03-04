@@ -48,7 +48,7 @@ export const partnerCopy = {
       cta: "Create new key",
       title: "Create API key",
       nameLabel: "Key name",
-      namePlaceholder: "e.g. Production key",
+      namePlaceholder: "e.g. Admissions integration — production",
       environmentLabel: "Environment",
       environments: {
         production: "Production",
@@ -127,7 +127,7 @@ export const partnerCopy = {
       title: "Custom domain",
       description: "Host your verification portal on your own domain.",
       domainLabel: "Domain",
-      domainPlaceholder: "verify.yourinstitution.edu.ng",
+      domainPlaceholder: "verify.youruniversity.edu.ng",
       saveCta: "Save domain",
       status: {
         unverified: "Unverified",
