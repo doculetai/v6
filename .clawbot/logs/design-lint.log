@@ -956,3 +956,9 @@ The `min-w-[Npx]` → `min-w-N` migration works cleanly in Tailwind v4 because t
 To https://github.com/doculetai/v6.git
    e20bfa9..0f4e2ea  main -> main
 [design-lint] 2026-03-04 12:32:52 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 12:35:53 Scanning for design violations...
+[design-lint] 2026-03-04 12:35:55 Found 3 violation category(ies).
+[design-lint] 2026-03-04 12:35:55 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 12:35:55 Auto-fixing design violations (round 1)...

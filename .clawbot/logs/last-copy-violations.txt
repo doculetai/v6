@@ -1,11 +1,4 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/agent.ts:144:      fullNamePlaceholder: "e.g. Adeyemi, John O. — match your government-issued ID",
-/Users/gm/v6/src/config/copy/agent.ts:146:      phonePlaceholder: "+234 801 234 5678",
-/Users/gm/v6/src/config/copy/agent.ts:148:      regionPlaceholder: "e.g. Lagos Island, Abuja FCT, Accra Central",
-/Users/gm/v6/src/config/copy/agent.ts:150:      accreditationPlaceholder: "DOC-AG-2024-XXXXXX",
-/Users/gm/v6/src/config/copy/admin.ts:160:      searchPlaceholder: "Name, email address, or student ID",
-/Users/gm/v6/src/config/copy/admin.ts:205:      notesPlaceholder: "Be specific — this note goes directly to the student and becomes part of their permanent record",
-/Users/gm/v6/src/config/copy/student-onboarding.copy.ts:73:        schoolPlaceholder: "Type to find your university",
-/Users/gm/v6/src/config/copy/student-onboarding.copy.ts:76:        programPlaceholder: "Search your degree program",
+/Users/gm/v6/src/config/copy/sponsor.ts:194:      comingSoon: 'Notification settings coming soon.',
