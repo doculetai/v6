@@ -44,7 +44,7 @@ export function TransactionsPageClient({ transactions, copy }: TransactionsPageC
         </div>
         <div className="h-8 w-px bg-border" aria-hidden="true" />
         <div>
-          <p className="text-xs text-muted-foreground">Count</p>
+          <p className="text-xs text-muted-foreground">{copy.summary.countLabel}</p>
           <p className="text-lg font-semibold text-foreground">
             {copy.summary.count(transactions.length)}
           </p>

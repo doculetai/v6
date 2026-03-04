@@ -403,7 +403,7 @@ function SponsorProfileSettingsForm({ settings }: { settings: SponsorSettings })
       setSaved(true);
       setTimeout(() => setSaved(false), 4000);
     } catch {
-      setSubmitError('Failed to save profile. Please try again.');
+      setSubmitError(copy.errors.profileSaveError);
     }
   });
 
@@ -503,7 +503,7 @@ function SponsorProfileSettingsForm({ settings }: { settings: SponsorSettings })
               {isSubmitting ? (
                 <span className="inline-flex items-center gap-2">
                   <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                  Saving…
+                  {copy.profile.savingLabel}
                 </span>
               ) : (
                 copy.profile.saveLabel
@@ -535,11 +535,10 @@ function SponsorNotificationsCard() {
           {copy.notifications.title}
         </CardTitle>
         <CardDescription className="text-sm text-muted-foreground">
-          Notification settings coming soon.
+          {copy.notifications.comingSoon}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* TODO: wire up when sponsor.updateNotifications tRPC procedure is added */}
         <div className="divide-y divide-border/60">
           {notificationItems.map((item) => (
             <div

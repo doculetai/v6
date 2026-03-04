@@ -62,9 +62,10 @@ type TierCardProps = {
   kycStatus: KycStatus['kycStatus'];
   startCta: string;
   retryLabel: string;
+  statusLabels: Copy['status'];
 };
 
-function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel }: TierCardProps) {
+function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel, statusLabels }: TierCardProps) {
   // Tier 1 (index 0) is always verified — auto-verified via email auth
   if (tierIndex === 0) {
     return (
@@ -80,7 +81,7 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel }: TierCard
             </CardDescription>
           </div>
           <Badge className="ml-auto shrink-0 bg-primary/10 text-primary border-0">
-            Verified
+            {statusLabels.verified}
           </Badge>
         </CardHeader>
       </Card>
@@ -95,15 +96,15 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel }: TierCard
 
     const statusBadge = isVerified ? (
       <Badge className="ml-auto shrink-0 bg-primary/10 text-primary border-0">
-        Verified
+        {statusLabels.verified}
       </Badge>
     ) : isPending ? (
       <Badge className="ml-auto shrink-0 bg-muted text-muted-foreground border-0">
-        In progress
+        {statusLabels.inProgress}
       </Badge>
     ) : isFailed ? (
       <Badge className="ml-auto shrink-0 bg-destructive/10 text-destructive border-0">
-        Failed
+        {statusLabels.failed}
       </Badge>
     ) : null;
 
@@ -184,6 +185,7 @@ export function KycPageClient({ kycStatus, copy }: KycPageClientProps) {
             kycStatus={kycStatus.kycStatus}
             startCta={copy.startCta}
             retryLabel={copy.retryLabel}
+            statusLabels={copy.status}
           />
         ))}
       </div>

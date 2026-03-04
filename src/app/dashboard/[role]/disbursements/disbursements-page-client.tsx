@@ -64,7 +64,7 @@ export function DisbursementsPageClient({ disbursements, copy }: DisbursementsPa
   const [activeFilter, setActiveFilter] = useState<FilterStatus>('all');
 
   const filters: { value: FilterStatus; label: string }[] = [
-    { value: 'all', label: copy.filterByStatus },
+    { value: 'all', label: copy.statusLabels.all },
     { value: 'scheduled', label: copy.statusLabels.pending },
     { value: 'processing', label: copy.statusLabels.processing },
     { value: 'disbursed', label: copy.statusLabels.completed },
@@ -94,7 +94,7 @@ export function DisbursementsPageClient({ disbursements, copy }: DisbursementsPa
                 : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground',
             )}
           >
-            {filter.value === 'all' ? 'All' : filter.label}
+            {filter.label}
           </button>
         ))}
       </div>
@@ -114,7 +114,7 @@ export function DisbursementsPageClient({ disbursements, copy }: DisbursementsPa
                   {copy.table.amount}
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                  Scheduled
+                  {copy.table.scheduled}
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                   {copy.table.date}

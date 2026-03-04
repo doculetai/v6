@@ -192,6 +192,7 @@ export const sponsorCopy = {
     notifications: {
       title: 'Notifications',
       description: 'Choose which updates you receive by email and in-app alert.',
+      comingSoon: 'Notification settings coming soon.',
       items: {
         disbursement: { label: 'Disbursement updates', description: 'When a payment is processed or fails' },
         studentMilestone: { label: 'Student milestones', description: 'When your sponsored student completes a verification tier' },
