@@ -1,6 +1,5 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { inferRouterOutputs } from '@trpc/server';
 import {
   GraduationCap,
   LoaderCircle,
@@ -22,10 +21,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { studentCopy } from '@/config/copy/student';
-import type { AppRouter } from '@/server/root';
+import type { RouterOutputs } from '@/trpc/client';
 import { trpc } from '@/trpc/client';
-type RouterOutput = inferRouterOutputs<AppRouter>;
-type OnboardingData = RouterOutput['student']['getOnboardingWizard'];
+type OnboardingData = RouterOutputs['student']['getOnboardingWizard'];
 type FundingTypeValue = NonNullable<OnboardingData['fundingType']>;
 type SchoolProgramFormValues = { schoolId: string; programId: string };
 type FundingTypeFormValues = { fundingType: string };
