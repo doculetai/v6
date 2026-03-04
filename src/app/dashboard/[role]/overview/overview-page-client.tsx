@@ -1,12 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-
 import { UniversityOverviewActivity } from '@/components/university/UniversityOverviewActivity';
 import { UniversityOverviewMetrics } from '@/components/university/UniversityOverviewMetrics';
-import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
-import { PageHeader } from '@/components/ui/page-header';
 import { universityCopy } from '@/config/copy/university';
 interface RecentDocument {
   id: string;
@@ -38,16 +34,6 @@ export function OverviewPageClient({ data }: OverviewPageClientProps) {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title={copy.title}
-        subtitle={copy.subtitle}
-        actions={
-          <Button asChild size="sm" variant="outline" className="min-h-11">
-            <Link href="/dashboard/university/pipeline">{universityCopy.nav.pipeline}</Link>
-          </Button>
-        }
-      />
-
       <UniversityOverviewMetrics
         pendingCount={data.pendingCount}
         approvedTodayCount={data.approvedTodayCount}

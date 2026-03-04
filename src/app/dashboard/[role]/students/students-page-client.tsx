@@ -3,7 +3,6 @@
 import { TierBadge } from '@/components/partner/TierBadge';
 import { DataTableShell } from '@/components/ui/data-table-shell';
 import { EmptyState } from '@/components/ui/empty-state';
-import { PageHeader } from '@/components/ui/page-header';
 import { TimestampLabel } from '@/components/ui/timestamp-label';
 import type { partnerCopy } from '@/config/copy/partner';
 
@@ -57,18 +56,8 @@ export function StudentsPageClient({ students, copy }: StudentsPageClientProps) 
   ];
 
   if (students.length === 0) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title={copy.title} subtitle={copy.subtitle} />
-        <EmptyState heading={copy.empty.title} body={copy.empty.description} />
-      </div>
-    );
+    return <EmptyState heading={copy.empty.title} body={copy.empty.description} />;
   }
 
-  return (
-    <div className="space-y-6">
-      <PageHeader title={copy.title} subtitle={copy.subtitle} />
-      <DataTableShell columns={columns} rows={students} />
-    </div>
-  );
+  return <DataTableShell columns={columns} rows={students} />;
 }

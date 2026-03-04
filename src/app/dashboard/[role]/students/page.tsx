@@ -5,6 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 import { partnerCopy } from '@/config/copy/partner';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
+import { PageHeader } from '@/components/ui/page-header';
 
 import { StudentsPageClient } from './students-page-client';
 
@@ -44,5 +45,13 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
     throw error;
   }
 
-  return <StudentsPageClient students={students} copy={partnerCopy.students} />;
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title={partnerCopy.students.title}
+        subtitle={partnerCopy.students.subtitle}
+      />
+      <StudentsPageClient students={students} copy={partnerCopy.students} />
+    </div>
+  );
 }

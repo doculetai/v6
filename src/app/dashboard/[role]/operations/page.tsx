@@ -5,6 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 import { adminCopy } from '@/config/copy/admin';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
+import { PageHeader } from '@/components/ui/page-header';
 
 import OperationsPageClient from './operations-page-client';
 
@@ -35,5 +36,13 @@ export default async function OperationsPage({ params }: Props) {
     throw error;
   });
 
-  return <OperationsPageClient initialQueue={queue} initialStats={stats} />;
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title={adminCopy.operations.title}
+        subtitle={adminCopy.operations.subtitle}
+      />
+      <OperationsPageClient initialQueue={queue} initialStats={stats} />
+    </div>
+  );
 }

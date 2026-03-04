@@ -7,7 +7,6 @@ import { AdminOperationsReviewDialog } from '@/components/admin/AdminOperationsR
 import { AdminOperationsTable } from '@/components/admin/AdminOperationsTable';
 import { FilterBar } from '@/components/ui/filter-bar';
 import { MetricCard } from '@/components/ui/metric-card';
-import { PageHeader } from '@/components/ui/page-header';
 import { adminCopy } from '@/config/copy/admin';
 import type { DocumentStatus, OperationsQueueRow, OperationsStats, StatusFilter } from '@/db/queries/admin-operations';
 import { trpc } from '@/trpc/client';
@@ -111,8 +110,6 @@ export default function OperationsPageClient({
 
   return (
     <div className="space-y-6">
-      <PageHeader title={copy.title} subtitle={copy.subtitle} />
-
       {/* Stats row */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard label={copy.stats.pending} value={stats.pending} />
