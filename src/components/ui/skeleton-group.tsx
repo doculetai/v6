@@ -1,3 +1,5 @@
+import * as React from "react"
+
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
@@ -12,9 +14,9 @@ interface SkeletonGroupProps {
 function CardSkeleton({ groupDelay }: { groupDelay: number }) {
   return (
     <div className="flex flex-col gap-3">
-      <Skeleton className="h-[180px] w-full rounded-lg" aria-hidden="true" style={{ animationDelay: `${groupDelay}ms` }} />
-      <Skeleton className="h-4 w-3/4" aria-hidden="true" style={{ animationDelay: `${groupDelay + 75}ms` }} />
-      <Skeleton className="h-4 w-1/2" aria-hidden="true" style={{ animationDelay: `${groupDelay + 150}ms` }} />
+      <Skeleton className="h-44 w-full rounded-lg [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay}ms` } as React.CSSProperties} />
+      <Skeleton className="h-4 w-3/4 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 75}ms` } as React.CSSProperties} />
+      <Skeleton className="h-4 w-1/2 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 150}ms` } as React.CSSProperties} />
     </div>
   )
 }
@@ -22,10 +24,10 @@ function CardSkeleton({ groupDelay }: { groupDelay: number }) {
 function ListRowSkeleton({ groupDelay }: { groupDelay: number }) {
   return (
     <div className="flex items-center gap-3">
-      <Skeleton className="h-10 w-10 rounded-full" aria-hidden="true" style={{ animationDelay: `${groupDelay}ms` }} />
+      <Skeleton className="h-10 w-10 rounded-full [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay}ms` } as React.CSSProperties} />
       <div className="flex flex-1 flex-col gap-2">
-        <Skeleton className="h-4 w-full" aria-hidden="true" style={{ animationDelay: `${groupDelay + 75}ms` }} />
-        <Skeleton className="h-3 w-2/3" aria-hidden="true" style={{ animationDelay: `${groupDelay + 150}ms` }} />
+        <Skeleton className="h-4 w-full [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 75}ms` } as React.CSSProperties} />
+        <Skeleton className="h-3 w-2/3 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 150}ms` } as React.CSSProperties} />
       </div>
     </div>
   )
@@ -36,11 +38,11 @@ function FormSkeleton({ groupDelay }: { groupDelay: number }) {
     <div className="flex flex-col gap-4">
       {Array.from({ length: 3 }).map((_, i) => (
         <div key={i} className="flex flex-col gap-2">
-          <Skeleton className="h-3 w-24" aria-hidden="true" style={{ animationDelay: `${groupDelay + i * 2 * 75}ms` }} />
-          <Skeleton className="h-10 w-full rounded-md" aria-hidden="true" style={{ animationDelay: `${groupDelay + (i * 2 + 1) * 75}ms` }} />
+          <Skeleton className="h-3 w-24 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + i * 2 * 75}ms` } as React.CSSProperties} />
+          <Skeleton className="h-10 w-full rounded-md [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + (i * 2 + 1) * 75}ms` } as React.CSSProperties} />
         </div>
       ))}
-      <Skeleton className="h-10 w-32 rounded-md" aria-hidden="true" style={{ animationDelay: `${groupDelay + 6 * 75}ms` }} />
+      <Skeleton className="h-10 w-32 rounded-md [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 6 * 75}ms` } as React.CSSProperties} />
     </div>
   )
 }
@@ -49,7 +51,7 @@ function StatsSkeleton({ groupDelay }: { groupDelay: number }) {
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
-        <Skeleton key={i} className="h-20 rounded-lg" aria-hidden="true" style={{ animationDelay: `${groupDelay + i * 75}ms` }} />
+        <Skeleton key={i} className="h-20 rounded-lg [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + i * 75}ms` } as React.CSSProperties} />
       ))}
     </div>
   )
