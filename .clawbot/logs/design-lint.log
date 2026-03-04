@@ -1015,3 +1015,17 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 12:48:03 Found 2 violation category(ies).
 [design-lint] 2026-03-04 12:48:03 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 12:48:03 Auto-fixing design violations (round 1)...
+All raw color violations are gone. Here's a summary of what was fixed:
+
+**Raw Tailwind colors → semantic tokens** (3 files):
+
+| File | Before | After |
+|------|--------|-------|
+| `pipeline-page-client.tsx` | `bg-yellow-500/10 text-yellow-700 dark:text-yellow-400` | `bg-warning/10 text-warning` |
+| `pipeline-page-client.tsx` | `text-yellow-700 dark:text-yellow-400` / `text-green-700 dark:text-green-400` | `text-warning` / `text-success` |
+| `university-students-page-client.tsx` | `bg-yellow-500/10 text-yellow-700 dark:text-yellow-400` | `bg-warning/10 text-warning` |
+| `university-documents-page-client.tsx` | `bg-yellow-500/10 text-yellow-700 dark:text-yellow-400` | `bg-warning/10 text-warning` |
+
+**Email template** (`sponsor-invitation-email.tsx`): Left unchanged — it already has `// design-lint-ignore: email templates require inline styles` at line 1. Email clients (Gmail, Outlook) strip CSS classes, so inline styles are required there. Removing them would break email rendering, violating the "never change component behavior" rule.
+Everything up-to-date
+[design-lint] 2026-03-04 12:51:14 Design fixes pushed to main.
