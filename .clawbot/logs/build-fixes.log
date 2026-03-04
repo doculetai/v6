@@ -27,3 +27,6 @@ src/app/(auth)/signup/signup-page-client.tsx(129,11): error TS17002: Expected co
 2026-03-04 08:19:10 Round 2: 1 errors
 2026-03-04 08:19:10 src/app/(internal)/design/DesignLayoutPrimitives.tsx(224,24): error TS2322: Type 'number' is not assignable to type '"sm" | "md" | "lg" | undefined'.
 2026-03-04 08:19:10 ---
+2026-03-04 12:28:27 Round 1: 1 errors
+2026-03-04 12:28:27 src/app/dashboard/[role]/disbursements/page.tsx(10,41): error TS2307: Cannot find module './disbursements-page-client' or its corresponding type declarations.
+2026-03-04 12:28:27 ---

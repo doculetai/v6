@@ -899,3 +899,30 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 12:17:53 Found 2 violation category(ies).
 [design-lint] 2026-03-04 12:17:53 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 12:17:53 Auto-fixing design violations (round 1)...
+Done. Here's what was fixed:
+
+**Email template** (`sponsor-invitation-email.tsx`) — already had `// design-lint-ignore` comment at the top; inline styles there are intentional and required for email client compatibility. No change needed.
+
+**668-line `page.tsx`** — split into 5 focused modules under `_components/`:
+
+| File | Lines | Contents |
+|---|---|---|
+| `page.tsx` | 99 | Thin routing layer only |
+| `overview-shared.tsx` | 121 | `StatCard`, `NextStepCard`, `EmptyState`, `ErrorState` |
+| `student-overview.tsx` | 193 | `StudentOverview` async server component |
+| `sponsor-overview.tsx` | 126 | `SponsorOverview` async server component |
+| `agent-overview.tsx` | 85 | `AgentOverview` async server component |
+| `partner-overview.tsx` | 77 | `PartnerOverview` async server component |
+
+`tsc --noEmit` and `eslint --fix` both passed clean. Committed as `fix(design): enforce design system standards [design-lint]`.
+
+```
+★ Insight ─────────────────────────────────────
+The _components/ convention (underscore prefix) is Next.js's way of colocating
+private components without exposing them as routes. Each role's overview is now
+independently editable without touching the routing logic in page.tsx.
+─────────────────────────────────────────────────
+```
+To https://github.com/doculetai/v6.git
+   17bfb05..515b51e  main -> main
+[design-lint] 2026-03-04 12:27:20 Design fixes pushed to main.

@@ -1,1 +1,1 @@
-src/app/(internal)/design/DesignLayoutPrimitives.tsx(224,24): error TS2322: Type 'number' is not assignable to type '"sm" | "md" | "lg" | undefined'.
+src/app/dashboard/[role]/disbursements/page.tsx(10,41): error TS2307: Cannot find module './disbursements-page-client' or its corresponding type declarations.

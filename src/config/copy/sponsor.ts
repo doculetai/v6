@@ -132,6 +132,70 @@ export const sponsorCopy = {
     filterByStatus: "Filter by status",
   },
 
+  students: {
+    title: 'Your students',
+    subtitle: 'Manage your sponsorships and pending student requests.',
+    tabs: {
+      pending: 'Pending requests',
+      active: 'Active sponsorships',
+    },
+    pending: {
+      empty: { title: 'No pending requests', description: 'Student invitation requests will appear here.' },
+      accept: 'Accept',
+      decline: 'Decline',
+      message: 'Message',
+      noMessage: 'No message provided',
+      receivedLabel: 'Received',
+    },
+    active: {
+      empty: { title: 'No active sponsorships', description: 'Accept a student request to get started.' },
+      amount: 'Amount',
+      status: 'Status',
+      since: 'Since',
+    },
+    statusLabels: {
+      pending: 'Pending',
+      active: 'Active',
+      completed: 'Completed',
+      cancelled: 'Cancelled',
+    },
+  },
+
+  transactions: {
+    title: 'Transactions',
+    subtitle: 'Completed fund transfers to students.',
+    empty: { title: 'No transactions yet', description: 'Completed disbursements will appear here.' },
+    table: { student: 'Student', amount: 'Amount', disbursedAt: 'Date', reference: 'Reference' },
+    summary: {
+      totalDisbursed: 'Total disbursed',
+      count: (n: number) => `${n} transaction${n === 1 ? '' : 's'}`,
+    },
+  },
+
+  settings: {
+    title: 'Settings',
+    subtitle: 'Manage your sponsor profile and notification preferences.',
+    profile: {
+      title: 'Sponsor profile',
+      sponsorTypeLabel: 'Sponsor type',
+      sponsorTypes: { individual: 'Individual', corporate: 'Corporate', self: 'Self-funded' },
+      companyNameLabel: 'Company name',
+      companyNameHint: 'Required for corporate sponsors',
+      kycStatusLabel: 'KYC status',
+      saveLabel: 'Save changes',
+      savedLabel: 'Saved',
+    },
+    notifications: {
+      title: 'Notifications',
+      items: {
+        disbursement: { label: 'Disbursement updates', description: 'When a payment is processed or fails' },
+        studentMilestone: { label: 'Student milestones', description: 'When your sponsored student completes a verification tier' },
+        inviteResponse: { label: 'Invite responses', description: 'When a student accepts or declines your invite' },
+        security: { label: 'Account security', description: 'Login alerts and account changes' },
+      },
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
     students: "Students",
