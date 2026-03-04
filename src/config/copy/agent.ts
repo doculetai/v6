@@ -265,7 +265,7 @@ export const agentCopy = {
       copyLinkLabel: 'Your referral link',
       copyLinkCta: 'Copy link',
       copied: 'Copied!',
-      linkPlaceholder: 'Your referral link will appear here',
+      linkPlaceholder: 'Generating your unique referral link…',
     },
     comingSoon: {
       heading: 'Bulk tools & advanced operations',
