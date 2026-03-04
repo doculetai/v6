@@ -2,11 +2,13 @@
 
 import { Search } from "lucide-react";
 
+import { primitivesCopy } from "@/config/copy/primitives";
 import { cn } from "@/lib/utils";
 
 interface ControlToolbarProps {
   query: string;
   onQueryChange: (value: string) => void;
+  searchPlaceholder?: string;
   sortOptions: { value: string; label: string }[];
   sortValue: string;
   onSortChange: (value: string) => void;
@@ -16,6 +18,7 @@ interface ControlToolbarProps {
 export function ControlToolbar({
   query,
   onQueryChange,
+  searchPlaceholder,
   sortOptions,
   sortValue,
   onSortChange,
@@ -29,7 +32,7 @@ export function ControlToolbar({
           type="text"
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
-          placeholder="Search..."
+          placeholder={searchPlaceholder}
           className="min-h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
       </div>
