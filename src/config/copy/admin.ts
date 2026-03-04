@@ -157,7 +157,7 @@ export const adminCopy = {
       moreInfo: "More info needed",
     },
     filters: {
-      searchPlaceholder: "Name, email, or student ID…",
+      searchPlaceholder: "Search by name, email or student ID",
       all: "All",
       pending: "Pending",
       approved: "Approved",
@@ -202,7 +202,7 @@ export const adminCopy = {
       universityLabel: "University",
       submittedLabel: "Submitted",
       notesLabel: "Decision notes",
-      notesPlaceholder: "Describe your decision clearly — this message is sent directly to the student…",
+      notesPlaceholder: "Write a clear decision note — this message goes directly to the student",
       approveCta: "Approve document",
       rejectCta: "Reject document",
       requestInfoCta: "Request more info",
