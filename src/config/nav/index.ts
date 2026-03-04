@@ -1,3 +1,5 @@
+import { Home } from 'lucide-react';
+
 import type { DashboardRole } from '@/config/roles';
 import { isDashboardRole } from '@/config/roles';
 
@@ -20,7 +22,7 @@ const navConfigByRole: Record<DashboardRole, NavConfig> = {
 
 export function getNavConfig(role: string): NavConfig {
   if (!isDashboardRole(role)) {
-    return { groups: [], items: [] };
+    return { groups: [], items: [], quickAction: { label: 'Home', icon: Home, href: '/' } };
   }
   return navConfigByRole[role];
 }

@@ -1,4 +1,4 @@
-import { HandCoins, Home, ReceiptText, Settings, Shield, Users } from 'lucide-react';
+import { ClipboardCheck, HandCoins, Home, ReceiptText, Settings, Shield, Users } from 'lucide-react';
 
 import type { NavConfig } from './types';
 
@@ -52,6 +52,11 @@ export const sponsorNavConfig: NavConfig = {
       mobileHidden: true,
     },
   ],
+  quickAction: {
+    label: 'Review requests',
+    icon: ClipboardCheck,
+    href: '/dashboard/sponsor/students',
+  },
 };
 
 // Backward compat

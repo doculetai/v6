@@ -1,24 +1,24 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import { ChevronDown, LogOut, PanelLeftClose } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
-import {
-  dashboardShellCopy,
-  getFallbackUserName,
-  roleDisplayNames,
-} from '@/config/copy/dashboard-shell';
+import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
 import type { DashboardRole } from '@/config/roles';
 import { cn } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { Avatar, AvatarFallback } from '../ui/avatar';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { RoleIndicator } from './sidebar/RoleIndicator';
+import { SidebarFooter } from './sidebar/SidebarFooter';
+import { SidebarQuickAction } from './sidebar/SidebarQuickAction';
+import { SidebarToggle } from './sidebar/SidebarToggle';
+import { SidebarUserCard } from './sidebar/SidebarUserCard';
 
 type SidebarProps = {
   role: DashboardRole;
@@ -26,19 +26,11 @@ type SidebarProps = {
   defaultCollapsed?: boolean;
 };
 
-// Longest-prefix-wins active matching
 function findBestMatch(items: NavItem[], currentPath: string): string | null {
   let best: NavItem | null = null;
   for (const item of items) {
     if (currentPath === item.href || currentPath.startsWith(`${item.href}/`)) {
       if (!best || item.href.length > best.href.length) best = item;
-    }
-    if (item.children) {
-      for (const child of item.children) {
-        if (currentPath === child.href || currentPath.startsWith(`${child.href}/`)) {
-          if (!best || child.href.length > best.href.length) best = child;
-        }
-      }
     }
   }
   return best?.href ?? null;
@@ -74,95 +66,84 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false }: Sidebar
     }
   };
 
-  const ungroupedItems = navConfig.items.filter((item) => !item.group);
+  const ungroupedItems = navConfig.items.filter((i) => !i.group);
   const groupedItems = navConfig.groups
-    .map((group) => ({
-      group,
-      items: navConfig.items.filter((item) => item.group === group.id),
-    }))
+    .map((group) => ({ group, items: navConfig.items.filter((i) => i.group === group.id) }))
     .filter((g) => g.items.length > 0);
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div
+      <aside
         className={cn(
-          'flex h-full flex-col border-r border-border/50 bg-muted/60 transition-[width] duration-200 ease-out dark:bg-card',
+          'hidden md:flex flex-col border-r border-border/50 bg-muted/60 shadow-md print:hidden dark:bg-card',
+          'transition-[width] duration-200 ease-out',
           isCollapsed ? 'w-16' : 'w-60',
         )}
       >
-        {/* ── Header: Logo + Collapse Toggle ── */}
-        <div className="flex shrink-0 items-center border-b border-border/50 px-3 h-16">
-          {!isCollapsed && (
+        {/* ── Top: Logo + RoleIndicator + QuickAction ── */}
+        <div className="flex shrink-0 flex-col gap-1.5 pb-2 pt-3">
+          <div className={cn('px-4', isCollapsed && 'flex justify-center px-3')}>
             <Link
               href={`/dashboard/${role}`}
               className="inline-flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label={dashboardShellCopy.logoAlt}
             >
-              <Image
-                src="/brand/logos/logo.svg"
-                alt={dashboardShellCopy.logoAlt}
-                width={140}
-                height={32}
-                priority
-                className="h-8 w-auto dark:hidden"
-              />
-              <Image
-                src="/brand/logos/logo-dark.svg"
-                alt={dashboardShellCopy.logoAlt}
-                width={140}
-                height={32}
-                priority
-                className="hidden h-8 w-auto dark:block"
-              />
+              {isCollapsed ? (
+                <Image
+                  src="/brand/logos/doculet-shield.svg"
+                  alt="Doculet"
+                  width={28}
+                  height={28}
+                  className="size-7"
+                  priority
+                />
+              ) : (
+                <>
+                  <Image
+                    src="/brand/logos/logo.svg"
+                    alt={dashboardShellCopy.logoAlt}
+                    width={120}
+                    height={28}
+                    priority
+                    className="h-7 w-auto dark:hidden"
+                  />
+                  <Image
+                    src="/brand/logos/logo-dark.svg"
+                    alt={dashboardShellCopy.logoAlt}
+                    width={120}
+                    height={28}
+                    priority
+                    className="hidden h-7 w-auto dark:block"
+                  />
+                </>
+              )}
             </Link>
-          )}
-          {isCollapsed && (
-            <Link
-              href={`/dashboard/${role}`}
-              className="mx-auto rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Image
-                src="/brand/logos/doculet-shield.svg"
-                alt="Doculet"
-                width={36}
-                height={36}
-                className="size-9"
-              />
-            </Link>
-          )}
-          {!isCollapsed && (
-            <button
-              type="button"
-              onClick={() => setIsCollapsed(true)}
-              aria-label="Collapse sidebar"
-              className="ml-auto rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <PanelLeftClose className="size-4" />
-            </button>
-          )}
+          </div>
+
+          <RoleIndicator role={role} isCollapsed={isCollapsed} />
+          <SidebarQuickAction
+            label={navConfig.quickAction.label}
+            icon={navConfig.quickAction.icon}
+            href={navConfig.quickAction.href}
+            isCollapsed={isCollapsed}
+          />
         </div>
 
-        {/* ── Navigation ── */}
+        {/* ── Nav ── */}
         <nav
           aria-label={dashboardShellCopy.sidebar.navAriaLabel}
-          className="flex-1 overflow-hidden py-2"
+          className="flex-1 overflow-y-auto py-1"
         >
-          {/* Ungrouped items (e.g. Overview) */}
           {ungroupedItems.length > 0 && (
-            <ul className="flex flex-col gap-0.5 px-3 pb-1" role="list">
+            <ul className="flex flex-col gap-0.5 px-3" role="list">
               {ungroupedItems.map((item) => (
                 <li key={item.href}>
-                  <NavItemLink
-                    item={item}
-                    isActive={activeHref === item.href}
-                    isCollapsed={isCollapsed}
-                    activeHref={activeHref}
-                  />
+                  <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={isCollapsed} />
                 </li>
               ))}
             </ul>
           )}
 
-          {/* Grouped items — V5 style: separator + collapsible label */}
           {groupedItems.map(({ group, items }) => (
             <NavGroup
               key={group.id}
@@ -174,81 +155,23 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false }: Sidebar
           ))}
         </nav>
 
-        {/* ── Footer: User + Logout ── */}
+        {/* ── Bottom: Toggle + UserCard + Footer ── */}
         <div
-          className="flex shrink-0 flex-col gap-1.5 border-t border-border/50 pt-2 pb-3"
+          className="flex shrink-0 flex-col gap-1.5 border-t border-border/50 pt-2"
           data-testid="sidebar-bottom"
         >
-          {isCollapsed ? (
-            <>
-              <div className="flex justify-center px-3">
-                <Avatar size="sm">
-                  <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
-                    {dashboardShellCopy.sidebar.avatarFallback}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    disabled={isSigningOut}
-                    className="mx-3 flex items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    aria-label={dashboardShellCopy.sidebar.logoutLabel}
-                  >
-                    <LogOut className="size-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right">{dashboardShellCopy.sidebar.logoutLabel}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={() => setIsCollapsed(false)}
-                    aria-label="Expand sidebar"
-                    className="mx-3 flex items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <PanelLeftClose className="size-4 rotate-180" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right">Expand sidebar</TooltipContent>
-              </Tooltip>
-            </>
-          ) : (
-            <div className="flex items-center gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-muted/30">
-              <Avatar size="sm">
-                <AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">
-                  {dashboardShellCopy.sidebar.avatarFallback}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate text-sm font-semibold text-foreground">
-                  {getFallbackUserName(role)}
-                </span>
-                <span className="truncate text-xs text-muted-foreground">
-                  {roleDisplayNames[role]}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleLogout}
-                disabled={isSigningOut}
-                aria-label={dashboardShellCopy.sidebar.logoutLabel}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <LogOut className="size-4" />
-              </button>
-            </div>
-          )}
+          <div className={cn('px-3', isCollapsed && 'px-2')}>
+            <SidebarToggle isCollapsed={isCollapsed} onToggle={() => setIsCollapsed((v) => !v)} />
+          </div>
+          <SidebarUserCard role={role} isCollapsed={isCollapsed} onSignOut={handleLogout} />
+          <SidebarFooter isCollapsed={isCollapsed} />
         </div>
-      </div>
+      </aside>
     </TooltipProvider>
   );
 }
 
-// ── NavGroup — collapsible group section (V5 style) ──────────────────────────
+// ── NavGroup ──────────────────────────────────────────────────────────────────
 type NavGroupProps = {
   label: string;
   items: NavItem[];
@@ -257,17 +180,16 @@ type NavGroupProps = {
 };
 
 function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
-  const hasActive = items.some((i) => i.href === activeHref);
   const [isOpen, setIsOpen] = useState(true);
 
   if (isCollapsed) {
     return (
-      <div className="py-0.5">
+      <div className="mb-0.5 py-0.5">
         <div role="separator" className="mx-3 border-t border-border/50" />
         <ul className="mt-0.5 flex flex-col gap-0.5 px-3" role="list">
           {items.map((item) => (
             <li key={item.href}>
-              <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={true} activeHref={activeHref} />
+              <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={true} />
             </li>
           ))}
         </ul>
@@ -285,19 +207,19 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
       >
         {label}
         <ChevronDown
-          className={cn('h-3.5 w-3.5 transition-transform duration-200', !isOpen && '-rotate-90')}
+          className={cn('h-3.5 w-3.5 transition-transform', !isOpen && '-rotate-90')}
         />
       </button>
       <ul
         className={cn(
-          'flex flex-col gap-0.5 overflow-hidden px-3 transition-all duration-200',
-          isOpen ? 'max-h-96 opacity-100' : 'invisible max-h-0 opacity-0',
+          'flex flex-col gap-0.5 overflow-hidden px-3 transition-all',
+          isOpen ? 'max-h-[500px] opacity-100' : 'invisible max-h-0 opacity-0',
         )}
         role="list"
       >
         {items.map((item) => (
           <li key={item.href}>
-            <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={false} activeHref={activeHref} />
+            <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={false} />
           </li>
         ))}
       </ul>
@@ -305,18 +227,14 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
   );
 }
 
-void NavGroup; // suppress unused warning if linter complains — it's used above
-
-// ── NavItemLink — compact h-8 item with left accent bar (V5 style) ───────────
+// ── NavItemLink ───────────────────────────────────────────────────────────────
 type NavItemLinkProps = {
   item: NavItem;
   isActive: boolean;
   isCollapsed: boolean;
-  activeHref: string | null;
 };
 
-function NavItemLink({ item, isActive, isCollapsed, activeHref }: NavItemLinkProps) {
-  void activeHref;
+function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
   const Icon = item.icon;
 
   const link = (
@@ -332,30 +250,21 @@ function NavItemLink({ item, isActive, isCollapsed, activeHref }: NavItemLinkPro
         isCollapsed && 'justify-center px-0',
       )}
     >
-      {/* Left accent bar */}
       <span
         className={cn(
           'absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full bg-primary transition-all duration-200',
           isActive ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0',
         )}
       />
-
-      {/* Icon wrapper */}
       <span className="relative flex h-8 w-8 shrink-0 items-center justify-center transition-transform group-hover:scale-110 motion-reduce:group-hover:scale-100">
         <Icon className="h-5 w-5" aria-hidden="true" />
         {item.badge !== undefined && item.badge > 0 && isCollapsed && (
-          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-xs font-bold text-destructive-foreground">
+          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">
             {item.badge > 9 ? '9+' : item.badge}
           </span>
         )}
       </span>
-
-      {/* Label */}
-      {!isCollapsed && (
-        <span className="truncate">{item.label}</span>
-      )}
-
-      {/* Badge (expanded) */}
+      {!isCollapsed && <span className="truncate">{item.label}</span>}
       {item.badge !== undefined && item.badge > 0 && !isCollapsed && (
         <span className={cn(
           'ml-auto flex items-center justify-center rounded-full bg-destructive text-xs font-bold text-destructive-foreground',

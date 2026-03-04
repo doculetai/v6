@@ -5,6 +5,12 @@ export type NavGroup = {
   label: string;
 };
 
+export type NavQuickAction = {
+  label: string;
+  icon: LucideIcon;
+  href: string;
+};
+
 export type NavItem = {
   label: string;
   href: string;
@@ -20,4 +26,5 @@ export type NavItem = {
 export type NavConfig = {
   groups: NavGroup[];
   items: NavItem[];
+  quickAction: NavQuickAction;
 };

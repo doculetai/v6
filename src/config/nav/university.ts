@@ -1,4 +1,4 @@
-import { Building2, FileCheck2, Home, KanbanSquare, Settings } from 'lucide-react';
+import { Building2, FileCheck2, Home, KanbanSquare, ListChecks, Settings } from 'lucide-react';
 
 import type { NavConfig } from './types';
 
@@ -45,6 +45,11 @@ export const universityNavConfig: NavConfig = {
       mobileHidden: true,
     },
   ],
+  quickAction: {
+    label: 'Review queue',
+    icon: ListChecks,
+    href: '/dashboard/university/pipeline',
+  },
 };
 
 // Backward compat

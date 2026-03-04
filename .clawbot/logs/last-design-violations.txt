@@ -75,14 +75,14 @@ line_count='     109'
 line_count='      80'
 line_count='      14'
 line_count='       2'
-line_count='      58'
-line_count='      51'
-line_count='      58'
-line_count='      58'
-line_count='      23'
-line_count='      59'
-line_count='      38'
-line_count='      51'
+line_count='      63'
+line_count='      56'
+line_count='      63'
+line_count='      63'
+line_count='      30'
+line_count='      64'
+line_count='      40'
+line_count='      56'
 line_count='      90'
 line_count='     150'
 line_count='      12'
@@ -138,11 +138,11 @@ line_count='      71'
 line_count='     159'
 line_count='      92'
 line_count='      48'
-line_count='      77'
+line_count='      79'
 line_count='      28'
 line_count='      64'
 line_count='      44'
-line_count='      71'
+line_count='      69'
 line_count='      50'
 line_count='      32'
 line_count='     201'
@@ -188,17 +188,17 @@ line_count='       7'
 
 
 === INLINE STYLES (convert to Tailwind classes) ===
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:15:      <Skeleton className="h-[180px] w-full rounded-lg" aria-hidden="true" style={{ animationDelay: `${groupDelay}ms` }} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:16:      <Skeleton className="h-4 w-3/4" aria-hidden="true" style={{ animationDelay: `${groupDelay + 75}ms` }} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:17:      <Skeleton className="h-4 w-1/2" aria-hidden="true" style={{ animationDelay: `${groupDelay + 150}ms` }} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:25:      <Skeleton className="h-10 w-10 rounded-full" aria-hidden="true" style={{ animationDelay: `${groupDelay}ms` }} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:27:        <Skeleton className="h-4 w-full" aria-hidden="true" style={{ animationDelay: `${groupDelay + 75}ms` }} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:28:        <Skeleton className="h-3 w-2/3" aria-hidden="true" style={{ animationDelay: `${groupDelay + 150}ms` }} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:39:          <Skeleton className="h-3 w-24" aria-hidden="true" style={{ animationDelay: `${groupDelay + i * 2 * 75}ms` }} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:40:          <Skeleton className="h-10 w-full rounded-md" aria-hidden="true" style={{ animationDelay: `${groupDelay + (i * 2 + 1) * 75}ms` }} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:43:      <Skeleton className="h-10 w-32 rounded-md" aria-hidden="true" style={{ animationDelay: `${groupDelay + 6 * 75}ms` }} />
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:52:        <Skeleton key={i} className="h-20 rounded-lg" aria-hidden="true" style={{ animationDelay: `${groupDelay + i * 75}ms` }} />
-/Users/gm/v6/src/components/ui/earnings-panel.tsx:45:        style={{ '--progress-width': `${rate}%` } as React.CSSProperties}
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:17:      <Skeleton className="h-44 w-full rounded-lg [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:18:      <Skeleton className="h-4 w-3/4 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 75}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:19:      <Skeleton className="h-4 w-1/2 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 150}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:27:      <Skeleton className="h-10 w-10 rounded-full [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:29:        <Skeleton className="h-4 w-full [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 75}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:30:        <Skeleton className="h-3 w-2/3 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 150}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:41:          <Skeleton className="h-3 w-24 [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + i * 2 * 75}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:42:          <Skeleton className="h-10 w-full rounded-md [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + (i * 2 + 1) * 75}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:45:      <Skeleton className="h-10 w-32 rounded-md [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + 6 * 75}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:54:        <Skeleton key={i} className="h-20 rounded-lg [animation-delay:var(--delay)]" aria-hidden="true" style={{ '--delay': `${groupDelay + i * 75}ms` } as React.CSSProperties} />
+/Users/gm/v6/src/components/ui/earnings-panel.tsx:46:          style={{ width: `${rate}%` }}
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:75:    <div style={wrapperStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:76:      <div style={cardStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:77:        <h1 style={headingStyle}>{emailCopy.sponsorInvitation.heading}</h1>
@@ -207,7 +207,3 @@ line_count='       7'
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:82:        {note ? <div style={noteStyle}>{note}</div> : null}
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:83:        <a href={dashboardUrl} style={ctaStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:86:        <p style={footerStyle}>{emailCopy.sponsorInvitation.footer}</p>
-
-=== ARBITRARY PIXEL SIZES (use Tailwind scale: text-sm, w-64, etc.) ===
-/Users/gm/v6/src/components/ui/skeleton-group.tsx:15:      <Skeleton className="h-[180px] w-full rounded-lg" aria-hidden="true" style={{ animationDelay: `${groupDelay}ms` }} />
-/Users/gm/v6/src/components/layout/Sidebar.tsx:347:          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">

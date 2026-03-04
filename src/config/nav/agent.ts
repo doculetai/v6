@@ -1,4 +1,4 @@
-import { Activity, Coins, Home, Settings, Users, Zap } from 'lucide-react';
+import { Activity, Coins, Home, Settings, UserPlus, Users, Zap } from 'lucide-react';
 
 import type { NavConfig } from './types';
 
@@ -52,6 +52,11 @@ export const agentNavConfig: NavConfig = {
       mobileHidden: true,
     },
   ],
+  quickAction: {
+    label: 'Invite student',
+    icon: UserPlus,
+    href: '/dashboard/agent/students',
+  },
 };
 
 // Backward compat

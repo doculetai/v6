@@ -1,4 +1,4 @@
-import { Activity, BarChart3, Home, Settings, ShieldAlert, Users } from 'lucide-react';
+import { Activity, BarChart3, ClipboardCheck, Home, Settings, ShieldAlert, Users } from 'lucide-react';
 
 import type { NavConfig } from './types';
 
@@ -52,6 +52,11 @@ export const adminNavConfig: NavConfig = {
       mobileHidden: true,
     },
   ],
+  quickAction: {
+    label: 'Review queue',
+    icon: ClipboardCheck,
+    href: '/dashboard/admin/operations',
+  },
 };
 
 // Backward compat

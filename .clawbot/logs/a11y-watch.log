@@ -232,3 +232,50 @@ hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 [a11y-watch] 2026-03-04 08:49:10 ERROR: push failed again. Manual push required.
 [a11y-watch] 2026-03-04 08:49:10 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 08:53:10 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 08:53:11 Found 1 check category(ies), approx 0
+0 violation line(s).
+[a11y-watch] 2026-03-04 08:53:11 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
+[a11y-watch] 2026-03-04 08:53:11 Invoking claude to fix a11y violations (round 1 of max 8)...
+Both TypeScript (`--noEmit`) and ESLint are clean with **zero errors**. No changes are needed.
+
+---
+
+**These 7 violations are false positives.** Here's the evidence:
+
+`PageHeader` (`src/components/ui/page-header.tsx:32`) renders:
+```tsx
+<h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
+```
+
+Every flagged page calls `<PageHeader title="..." />`, which means each page already has **exactly one `<h1>`** — satisfying WCAG 2.1 AA Check 2.
+
+The static analyzer scanned `page.tsx` files for a literal `<h1>` tag in the raw source, but didn't resolve component imports. That's a tool limitation, not a real violation.
+
+**Fixing these would introduce the actual WCAG violation** — duplicate `<h1>` landmarks on a single page.
+
+If the a11y-watch tool supports it, you can allowlist `PageHeader` as an `h1`-providing component to eliminate the false positives. Otherwise, the pages are already compliant and no code changes should be made.
+[a11y-watch] 2026-03-04 08:56:15 Auto-fix committed changes. Pushing to main...
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[a11y-watch] 2026-03-04 08:56:16 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[a11y-watch] 2026-03-04 08:56:18 ERROR: push failed again. Manual push required.
+[a11y-watch] 2026-03-04 08:56:18 A11y fixes pushed. FIX_COUNT reset.

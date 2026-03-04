@@ -1,4 +1,4 @@
-import { Award, FileText, GraduationCap, Home, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Award, FileText, GraduationCap, Home, ShieldCheck } from 'lucide-react';
 
 import type { NavConfig } from './types';
 
@@ -45,6 +45,11 @@ export const studentNavConfig: NavConfig = {
       isPrimary: true,
     },
   ],
+  quickAction: {
+    label: 'Continue application',
+    icon: ArrowRight,
+    href: '/dashboard/student/schools',
+  },
 };
 
 // Backward compat

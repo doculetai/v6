@@ -1,4 +1,4 @@
-import { BarChart3, Home, Key, Palette, Settings, Users } from 'lucide-react';
+import { BarChart3, FileText, Home, Key, Palette, Settings, Users } from 'lucide-react';
 
 import type { NavConfig } from './types';
 
@@ -53,6 +53,11 @@ export const partnerNavConfig: NavConfig = {
       mobileHidden: true,
     },
   ],
+  quickAction: {
+    label: 'View students',
+    icon: FileText,
+    href: '/dashboard/partner/students',
+  },
 };
 
 // Backward compat
