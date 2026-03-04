@@ -179,7 +179,7 @@ function ActiveStudentsList({
 
   return (
     <div className="overflow-x-auto rounded-lg border border-border">
-      <table className="w-full min-w-[480px] text-sm">
+      <table className="w-full min-w-120 text-sm">
         <thead>
           <tr className="border-b border-border bg-muted/40">
             <th className="px-4 py-3 text-left font-medium text-muted-foreground">

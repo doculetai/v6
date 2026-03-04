@@ -41,8 +41,8 @@ function OverallStatusBanner({
 
   const badgeClass = {
     not_started: 'bg-muted text-muted-foreground border-0',
-    pending: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-0',
-    verified: 'bg-green-500/10 text-green-700 dark:text-green-400 border-0',
+    pending: 'bg-muted text-muted-foreground border-0',
+    verified: 'bg-primary/10 text-primary border-0',
     failed: 'bg-destructive/10 text-destructive border-0',
   }[status];
 
@@ -70,7 +70,7 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel }: TierCard
     return (
       <Card className="border-border bg-card">
         <CardHeader className="flex flex-row items-start gap-3 pb-2">
-          <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
+          <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
           <div className="min-w-0">
             <CardTitle className="text-base font-semibold text-card-foreground">
               Tier 1 — {tier.label}
@@ -79,7 +79,7 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel }: TierCard
               {tier.description}
             </CardDescription>
           </div>
-          <Badge className="ml-auto shrink-0 bg-green-500/10 text-green-700 dark:text-green-400 border-0">
+          <Badge className="ml-auto shrink-0 bg-primary/10 text-primary border-0">
             Verified
           </Badge>
         </CardHeader>
@@ -94,11 +94,11 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel }: TierCard
     const isPending = kycStatus === 'pending';
 
     const statusBadge = isVerified ? (
-      <Badge className="ml-auto shrink-0 bg-green-500/10 text-green-700 dark:text-green-400 border-0">
+      <Badge className="ml-auto shrink-0 bg-primary/10 text-primary border-0">
         Verified
       </Badge>
     ) : isPending ? (
-      <Badge className="ml-auto shrink-0 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-0">
+      <Badge className="ml-auto shrink-0 bg-muted text-muted-foreground border-0">
         In progress
       </Badge>
     ) : isFailed ? (
@@ -111,7 +111,7 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel }: TierCard
       <Card className="border-border bg-card">
         <CardHeader className="flex flex-row items-start gap-3 pb-2">
           {isVerified ? (
-            <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
+            <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
           ) : isFailed ? (
             <XCircle className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden="true" />
           ) : (

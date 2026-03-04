@@ -34,8 +34,8 @@ type FilterStatus = 'all' | Disbursement['status'];
 function StatusBadge({ status }: { status: Disbursement['status'] }) {
   const classes: Record<Disbursement['status'], string> = {
     scheduled: 'bg-primary/10 text-primary',
-    processing: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
-    disbursed: 'bg-green-500/10 text-green-700 dark:text-green-400',
+    processing: 'bg-muted text-muted-foreground',
+    disbursed: 'bg-primary/10 text-primary',
     failed: 'bg-destructive/10 text-destructive',
   };
 
@@ -104,7 +104,7 @@ export function DisbursementsPageClient({ disbursements, copy }: DisbursementsPa
         <EmptyState heading={copy.empty.title} body={copy.empty.description} />
       ) : (
         <div className="overflow-x-auto rounded-lg border border-border">
-          <table className="w-full min-w-[640px] text-sm">
+          <table className="w-full min-w-160 text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/40">
                 <th className="px-4 py-3 text-left font-medium text-muted-foreground">
