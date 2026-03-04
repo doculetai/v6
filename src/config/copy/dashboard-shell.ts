@@ -43,6 +43,67 @@ export function getFallbackUserName(role: DashboardRole): string {
   return `${roleDisplayNames[role]} ${dashboardShellCopy.sidebar.fallbackUserNameSuffix}`;
 }
 
+export const studentHomeCopy = {
+  journeySubtitle: 'Your proof-of-funds journey at a glance.',
+  stats: {
+    verification: {
+      label: 'Verification',
+      percent: (n: number) => `${n}%`,
+      completionSuffix: 'complete',
+      tierPassed: (n: number) => `Tier ${n} passed`,
+      notStartedLabel: 'Not started',
+    },
+    documents: {
+      label: 'Documents',
+      countLabel: (submitted: number, total: number) => `${submitted} of ${total} submitted`,
+      allApprovedLabel: 'All approved',
+    },
+    bankAccount: {
+      label: 'Bank Account',
+      linkedLabel: 'Linked',
+      notLinkedLabel: 'Not linked',
+    },
+  },
+  school: {
+    sectionLabel: 'Selected School',
+    notSelectedTitle: 'No school selected yet',
+    notSelectedDescription: 'Browse partner institutions to set your funding target.',
+    ctaLabel: 'Browse schools',
+    ctaHref: '/dashboard/student/schools',
+    programLabel: 'Program',
+    durationLabel: (months: number) => `${months} months`,
+  },
+  nextSteps: {
+    heading: 'Next Steps',
+    items: {
+      selectSchool: {
+        label: 'Choose your school',
+        description: 'Browse partner institutions and set your funding target.',
+        cta: 'Browse schools',
+        href: '/dashboard/student/schools',
+      },
+      verifyIdentity: {
+        label: 'Verify your identity',
+        description: 'Complete identity checks to unlock higher funding tiers.',
+        cta: 'Continue verification',
+        href: '/dashboard/student/verify',
+      },
+      uploadDocuments: {
+        label: 'Upload your documents',
+        description: 'Submit required documents for sponsor review.',
+        cta: 'Upload now',
+        href: '/dashboard/student/documents',
+      },
+      linkBankAccount: {
+        label: 'Link your bank account',
+        description: 'Connect your account to receive disbursements.',
+        cta: 'Link account',
+        href: '/dashboard/student/verify',
+      },
+    },
+  },
+} as const;
+
 export const dashboardOverviewCopy: Record<DashboardRole, OverviewCopy> = {
   student: {
     title: 'Welcome back, Student',

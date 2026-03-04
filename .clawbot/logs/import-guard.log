@@ -869,3 +869,84 @@ error: Please commit or stash them.
 TypeScript exits clean. No import boundary violations exist and no changes are needed.
 Everything up-to-date
 [import-guard] 2026-03-04 11:00:41 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:03:41 Scanning import boundaries...
+[import-guard] 2026-03-04 11:03:42 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:03:42 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:03:42 Auto-fixing import violations (round 1 of max 8)...
+All 19 violation entries are empty (`hits=''`) — there are no actual import boundary violations to fix. The import guard scan found nothing.
+
+No changes needed.
+Everything up-to-date
+[import-guard] 2026-03-04 11:04:31 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:07:32 Scanning import boundaries...
+[import-guard] 2026-03-04 11:07:34 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:07:34 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:07:34 Auto-fixing import violations (round 1 of max 8)...
+The import guard already resolved everything automatically at 07:38. The codebase is clean — **0 violations** remain. All the previous fixes were committed and pushed:
+
+- `src/trpc/client.tsx` — `'use client'` removed, `TRPCReactProvider` extracted to `src/trpc/provider.tsx`
+- `verify-page-client.tsx` — `@/server/root` import replaced with `@/trpc/client`
+- `landing-nav.tsx`, `_shared.tsx`, `masked-value.tsx` — quote style normalized
+- `student-document-list.tsx` — `'use client'` added for locale-safe rendering
+
+Nothing to do here.
+Everything up-to-date
+[import-guard] 2026-03-04 11:08:34 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:11:34 Scanning import boundaries...
+[import-guard] 2026-03-04 11:11:36 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:11:36 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:11:36 Auto-fixing import violations (round 1 of max 8)...
+No violations to fix. The import-guard log shows **0 violation categories** found in the most recent scan (07:38:29) — all `hits=''` in the violations list confirms the codebase is clean.
+
+The earlier violations from the 04:36 scan were already resolved automatically by a previous agent run:
+- `src/trpc/client.tsx` — extracted `TRPCReactProvider` to `src/trpc/provider.tsx`, removed `'use client'`
+- `verify-page-client.tsx` — replaced `@/server/root` import with `@/trpc/client`
+- `landing-nav.tsx`, `_shared.tsx`, `masked-value.tsx` — quote style normalized
+- `student-document-list.tsx` — `'use client'` added for locale-safe rendering
+
+Nothing to commit.
+Everything up-to-date
+[import-guard] 2026-03-04 11:13:12 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:16:12 Scanning import boundaries...
+[import-guard] 2026-03-04 11:16:14 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:16:14 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:16:14 Auto-fixing import violations (round 1 of max 8)...
+The import-guard has already run and fixed all violations automatically. The log shows:
+
+- **Round 1** (04:37): Fixed 3 violation categories — server imports in client components, `TRPCReactProvider` extraction, and `'use client'` directive style normalization.
+- **Round 2** (04:46): Fixed 1 remaining violation — added `'use client'` to `student-document-list.tsx` for locale-safe `Intl.DateTimeFormat`.
+
+All fixes were committed and pushed to `main` (commit `1772aa2`). The codebase is clean — no action needed.
+Everything up-to-date
+[import-guard] 2026-03-04 11:17:15 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:20:15 Scanning import boundaries...
+[import-guard] 2026-03-04 11:20:16 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:20:16 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:20:16 Auto-fixing import violations (round 1 of max 8)...
+The violations list is empty — all `hits=''` entries have no content. There are no import boundary violations to fix.
+
+No action needed.
+Everything up-to-date
+[import-guard] 2026-03-04 11:21:47 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:24:47 Scanning import boundaries...
+[import-guard] 2026-03-04 11:24:49 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:24:49 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:24:49 Auto-fixing import violations (round 1 of max 8)...
