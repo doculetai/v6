@@ -1,3 +1,5 @@
+import { commonErrors } from "./shared";
+
 export const universityCopy = {
   pipeline: {
     title: "Application pipeline",
@@ -54,7 +56,7 @@ export const universityCopy = {
     },
   },
 
-  verifycert: {
+  verifyCert: {
     title: "Verify a certificate",
     subtitle:
       "Enter a certificate token or scan a QR code to instantly verify authenticity.",
@@ -101,11 +103,7 @@ export const universityCopy = {
     settings: "Settings",
   },
 
-  errors: {
-    generic: "Something went wrong. Please try again.",
-    sessionExpired: "Your session has expired. Please sign in again.",
-    unauthorized: "You don't have permission to access this page.",
-  },
+  errors: commonErrors,
 } as const;
 
 export type UniversityCopy = typeof universityCopy;
