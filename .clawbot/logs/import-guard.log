@@ -1370,3 +1370,13 @@ error: Please commit or stash them.
 All 19 violation entries show `hits=''` — there are no import boundary violations to fix. The import guard scan came back clean.
 Everything up-to-date
 [import-guard] 2026-03-04 13:32:52 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 13:35:52 Scanning import boundaries...
+[import-guard] 2026-03-04 13:35:52 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 13:35:52 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 13:35:52 Auto-fixing import violations (round 1 of max 8)...
+TypeScript is already clean. The import guard scan found no violations (all `hits=''`), and `tsc --noEmit` exits clean. No changes needed.
+Everything up-to-date
+[import-guard] 2026-03-04 13:36:26 Import fixes pushed to main.

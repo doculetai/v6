@@ -614,3 +614,19 @@ All 4 violations fixed and committed:
 To https://github.com/doculetai/v6.git
    a591474..c5122e4  main -> main
 [copy-audit] 2026-03-04 13:31:57 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 13:34:58 Scanning copy config coverage...
+[copy-audit] 2026-03-04 13:34:58 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 13:34:58 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 13:34:58 Auto-fixing copy violations (round 1 of max 8)...
+Done. Three changes across two files:
+
+- `agent.ts:268` — `'Fetching your referral link — this takes just a moment.'` → `'Generating your referral link…'`
+- `partner.ts:226` — `'e.g. Meridian Education Partners'` → `'Meridian Education Partners'`
+- `partner.ts:228` — `'https://api.yourplatform.com/doculet/events'` → `'https://api.partnerorg.com/webhooks/doculet'`
+
+TypeScript passes clean, committed as `fix(copy): complete copy config coverage [copy-audit]`.
+To https://github.com/doculetai/v6.git
+   4313183..bcd2911  main -> main
+[copy-audit] 2026-03-04 13:36:11 Copy fixes pushed to main.
