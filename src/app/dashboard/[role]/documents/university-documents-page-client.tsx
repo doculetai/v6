@@ -47,7 +47,7 @@ type Props = {
 };
 
 const statusBadgeClass: Record<DocumentQueueItem['status'], string> = {
-  pending: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
+  pending: 'bg-warning/10 text-warning',
   approved: 'bg-primary/10 text-primary',
   rejected: 'bg-destructive/10 text-destructive',
   more_info_requested: 'bg-muted text-muted-foreground',

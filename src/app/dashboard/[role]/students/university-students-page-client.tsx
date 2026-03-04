@@ -38,7 +38,7 @@ type Props = {
 
 const kycBadgeClass: Record<Student['kycStatus'], string> = {
   verified: 'bg-primary/10 text-primary',
-  pending: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
+  pending: 'bg-warning/10 text-warning',
   failed: 'bg-destructive/10 text-destructive',
   not_started: 'bg-muted text-muted-foreground',
 };
