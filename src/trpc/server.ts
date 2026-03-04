@@ -1,11 +1,11 @@
-import { createCallerFactory } from "@trpc/server";
+import 'server-only';
 
-import { createContext } from "@/server/context";
-import { appRouter } from "@/server/root";
+import { cache } from 'react';
 
-const createCaller = createCallerFactory(appRouter);
+import { createTRPCContext } from '@/server/context';
+import { appRouter } from '@/server/root';
 
-export const api = async () => {
-  const ctx = await createContext();
-  return createCaller(ctx);
-};
+export const api = cache(async () => {
+  const context = await createTRPCContext();
+  return appRouter.createCaller(context);
+});
