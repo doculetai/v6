@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 import { timestamps } from './_helpers';
 import { users } from './users';
@@ -30,17 +30,43 @@ export const partnerApiKeys = pgTable('partner_api_keys', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+// Records which students were verified through a specific partner's API.
+export const partnerStudents = pgTable('partner_students', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  partnerId: uuid('partner_id')
+    .references(() => partnerProfiles.id, { onDelete: 'cascade' })
+    .notNull(),
+  studentId: uuid('student_id')
+    .references(() => users.id, { onDelete: 'cascade' })
+    .notNull(),
+  tier: integer('tier').notNull(),
+  verifiedAt: timestamp('verified_at').defaultNow().notNull(),
+  ...timestamps,
+});
+
 export const partnerProfilesRelations = relations(partnerProfiles, ({ one, many }) => ({
   user: one(users, {
     fields: [partnerProfiles.userId],
     references: [users.id],
   }),
   apiKeys: many(partnerApiKeys),
+  students: many(partnerStudents),
 }));
 
 export const partnerApiKeysRelations = relations(partnerApiKeys, ({ one }) => ({
   partner: one(partnerProfiles, {
     fields: [partnerApiKeys.partnerId],
     references: [partnerProfiles.id],
+  }),
+}));
+
+export const partnerStudentsRelations = relations(partnerStudents, ({ one }) => ({
+  partner: one(partnerProfiles, {
+    fields: [partnerStudents.partnerId],
+    references: [partnerProfiles.id],
+  }),
+  student: one(users, {
+    fields: [partnerStudents.studentId],
+    references: [users.id],
   }),
 }));
