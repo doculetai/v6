@@ -264,3 +264,11 @@ hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 [design-lint] 2026-03-04 09:06:13 ERROR: manual push required.
 [design-lint] 2026-03-04 09:06:13 Design fixes pushed to main.
+error: Pulling is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: Exiting because of an unresolved conflict.
+[design-lint] 2026-03-04 09:09:13 Scanning for design violations...
+[design-lint] 2026-03-04 09:09:23 Found 3 violation category(ies).
+[design-lint] 2026-03-04 09:09:23 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 09:09:23 Auto-fixing design violations (round 1)...
