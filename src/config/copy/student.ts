@@ -1,3 +1,5 @@
+import { commonErrors } from "./shared";
+
 export const studentCopy = {
   onboarding: {
     title: "Start your proof journey",
@@ -138,11 +140,7 @@ export const studentCopy = {
     invite: "Invite sponsor",
   },
 
-  errors: {
-    generic: "Something went wrong. Please try again.",
-    sessionExpired: "Your session has expired. Please sign in again.",
-    unauthorized: "You don't have permission to access this page.",
-  },
+  errors: commonErrors,
 } as const;
 
 export type StudentCopy = typeof studentCopy;
