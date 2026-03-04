@@ -123,3 +123,32 @@ error: Please commit or stash them.
 0 violation category(ies).
 [import-guard] 2026-03-04 08:07:34 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
 [import-guard] 2026-03-04 08:07:34 Auto-fixing import violations (round 1 of max 8)...
+No action needed. The codebase is clean — the import guard has reported **0 violation categories** on every scan since 07:38. The earlier violations (from the 04:36–04:46 scans) were already auto-fixed and committed:
+
+- `src/trpc/client.tsx` — `'use client'` removed, `TRPCReactProvider` extracted to `src/trpc/provider.tsx`
+- `verify-page-client.tsx` — replaced `@/server/root` import with `@/trpc/client`
+- `landing-nav.tsx`, `_shared.tsx`, `masked-value.tsx` — quote style normalized
+- `student-document-list.tsx` — `'use client'` added
+
+Nothing to commit.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[import-guard] 2026-03-04 08:09:32 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[import-guard] 2026-03-04 08:09:33 ERROR: manual push required.
+[import-guard] 2026-03-04 08:09:33 Import fixes pushed to main.
