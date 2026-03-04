@@ -23,11 +23,11 @@ import { MetricCard } from '@/components/ui/metric-card';
 import { MoneyValue } from '@/components/ui/money-value';
 import { PageHeader } from '@/components/ui/page-header';
 import { PipelineStepper } from '@/components/ui/pipeline-stepper';
-import { SessionManagement } from '@/components/ui/session-management';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { SurfacePanel } from '@/components/ui/surface-panel';
 import { TimestampLabel } from '@/components/ui/timestamp-label';
 
+import { SessionManagementDemo } from './SessionManagementDemo';
 import { SidebarPreviews } from './SidebarPreviews';
 
 export const metadata: Metadata = {
@@ -566,39 +566,7 @@ export default function DesignPage() {
           <div className="space-y-3">
             <Code>{`import { SessionManagement } from '@/components/ui/session-management'`}</Code>
             <div className="max-w-xl">
-              <SessionManagement
-                showIpAddress
-                sessions={[
-                  {
-                    id: 'sess-1',
-                    browser: 'Chrome',
-                    deviceType: 'desktop',
-                    location: 'Lagos, NG',
-                    lastActive: '2 minutes ago',
-                    isCurrent: true,
-                    ipAddress: '197.210.54.12',
-                  },
-                  {
-                    id: 'sess-2',
-                    browser: 'Safari',
-                    deviceType: 'mobile',
-                    location: 'Abuja, NG',
-                    lastActive: '1 hour ago',
-                    isCurrent: false,
-                    ipAddress: '41.58.23.199',
-                  },
-                  {
-                    id: 'sess-3',
-                    browser: 'Firefox',
-                    deviceType: 'tablet',
-                    location: 'Port Harcourt, NG',
-                    lastActive: '3 days ago',
-                    isCurrent: false,
-                  },
-                ]}
-                onRevoke={(id) => console.info('Revoke session', id)}
-                onRevokeAll={() => console.info('Revoke all sessions')}
-              />
+              <SessionManagementDemo />
             </div>
           </div>
         </Section>
