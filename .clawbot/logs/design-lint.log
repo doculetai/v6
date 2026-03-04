@@ -1255,3 +1255,46 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 13:44:13 Found 1 violation category(ies).
 [design-lint] 2026-03-04 13:44:13 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 13:44:13 Auto-fixing design violations (round 1)...
+The scanner already **double-excludes** the email template file for inline styles — at line 103 and via `filter_file_ignored` at line 105:
+
+```bash
+| grep -v "src/lib/email/templates" \   # line 103 — path exclusion
+| grep -v "// design-lint-disable" \
+| filter_file_ignored \                  # line 105 — checks line 1 for design-lint-ignore
+```
+
+**There are no actionable violations.** The prompt you received appears to be stale — generated before these two exclusions were in place. The current `design-lint.sh` correctly skips `src/lib/email/templates/` entirely.
+
+The `line_count='     243'` lines at the top of the violations block are also a red herring: line 272 of the scanner filters them out with `grep -v '^line_count='` before building the fix prompt, and all those counts are well under 400 anyway.
+
+**Summary of current state:**
+
+| File | Status |
+|------|--------|
+| `src/lib/email/templates/sponsor-invitation-email.tsx` | Correct — inline styles required for email clients, excluded from scanner at `design-lint.sh:103` and via `// design-lint-ignore` comment on line 1 |
+
+Nothing to fix, nothing to commit. The design system is clean.
+Everything up-to-date
+[design-lint] 2026-03-04 13:46:46 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 13:49:47 Scanning for design violations...
+[design-lint] 2026-03-04 13:49:50 Found 1 violation category(ies).
+[design-lint] 2026-03-04 13:49:50 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 13:49:50 Auto-fixing design violations (round 1)...
+The file already has a `// design-lint-ignore` comment at the top (lines 1–3) explaining that inline styles are **required** for email templates — email clients like Gmail and Outlook strip CSS classes and external stylesheets. The `<a>` tag is also correct here since `next/link` can't be used in email HTML.
+
+This is a legitimate exception. The design-lint tool flagged it, but the suppression comment is already in place and the reasoning is sound.
+
+`★ Insight ─────────────────────────────────────`
+Email templates are a canonical exception to the "no inline styles" rule. React email renderers (like `react-email` or `@react-email/components`) serialize JSX to static HTML that gets sent over SMTP — there's no runtime CSS engine, so Tailwind classes would produce no styling at all in most email clients (especially Outlook, which uses Word's rendering engine).
+`─────────────────────────────────────────────────`
+
+No changes needed here — the file is correctly structured with:
+- Named style constants (not inline object literals in JSX)
+- A `design-lint-ignore` suppression comment with justification
+- All copy sourced from `@/config/copy/email`
+
+If you're seeing this file flagged repeatedly by the design-lint watcher, the fix is to update the watcher's ignore logic to respect `// design-lint-ignore` comments rather than suppressing them per-file. Would you like me to check the design-lint watcher script instead?
+Everything up-to-date
+[design-lint] 2026-03-04 13:50:30 Design fixes pushed to main.
