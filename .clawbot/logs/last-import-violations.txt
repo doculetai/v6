@@ -2,7 +2,3 @@ hits=''
 hits=''
 hits=''
 hits=''
-
-
-=== BROWSER API USAGE WITHOUT "use client" (add "use client" or move to a client component) ===
-  src/components/student/documents/student-document-list.tsx

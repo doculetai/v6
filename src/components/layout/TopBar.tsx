@@ -22,8 +22,7 @@ export function TopBar({ role, currentPath }: TopBarProps) {
   return (
     <>
       <header
-        className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-border/60 bg-background/90 px-4 backdrop-blur-xl lg:hidden"
-        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+        className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-border/60 bg-background/90 px-4 pt-[env(safe-area-inset-top)] backdrop-blur-xl lg:hidden"
       >
         <Link
           href={`/dashboard/${role}`}

@@ -21,8 +21,8 @@ function Progress({
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
-        className="h-full w-full flex-1 bg-primary transition-all"
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+        className="h-full w-full flex-1 bg-primary transition-all [transform:translateX(var(--p-offset))]"
+        style={{ "--p-offset": `-${100 - (value || 0)}%` } as React.CSSProperties}
       />
     </ProgressPrimitive.Root>
   )

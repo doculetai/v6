@@ -16,25 +16,25 @@ export function Footer() {
               height={20}
               aria-hidden="true"
             />
-            <span className="text-[13px] font-bold text-foreground">
+            <span className="text-sm font-bold text-foreground">
               {copy.nav.brand}
             </span>
           </Link>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {copy.footer.copyright} &middot; {copy.footer.address}
           </p>
         </div>
 
         {/* Regulatory + links */}
         <div className="flex flex-wrap items-center justify-center gap-4 md:justify-end">
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {copy.footer.regulatory}
           </p>
           {copy.footer.links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="inline-flex min-h-[44px] items-center text-[12px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              className="inline-flex min-h-11 items-center text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               {link.label}
             </Link>

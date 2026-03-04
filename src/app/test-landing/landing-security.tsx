@@ -19,21 +19,21 @@ export function Security() {
               <h2 className="font-serif text-3xl font-bold tracking-tight text-foreground md:text-5xl">
                 {copy.security.headline}
               </h2>
-              <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground md:text-[17px]">
+              <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
                 {copy.security.subtitle}
               </p>
 
               {/* Trust shield card */}
               <div className="mt-10 hidden rounded-2xl border border-border bg-muted/30 p-6 md:block">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#000080]">
-                    <Shield className="h-5 w-5 text-white" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
+                    <Shield className="h-5 w-5 text-primary-foreground" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-foreground">
+                    <p className="text-sm font-bold text-foreground">
                       {copy.trustShield.title}
                     </p>
-                    <p className="text-[12px] text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       {copy.trustShield.subtitle}
                     </p>
                   </div>
@@ -42,10 +42,10 @@ export function Security() {
                 <div className="mt-5 grid grid-cols-2 gap-4">
                   {copy.trustShield.stats.map((stat) => (
                     <div key={stat.label}>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+                      <p className="text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground">
                         {stat.label}
                       </p>
-                      <p className="mt-0.5 text-[15px] font-bold tabular-nums text-foreground">
+                      <p className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
                         {stat.value}
                       </p>
                     </div>
@@ -53,7 +53,7 @@ export function Security() {
                 </div>
 
                 <div className="mt-5 border-t border-border pt-4">
-                  <p className="text-[11px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {copy.security.regulatory}
                   </p>
                 </div>
@@ -67,12 +67,12 @@ export function Security() {
               const Icon = securityIcons[i];
               return (
                 <Reveal key={item.label} delay={i * 100}>
-                  <div className="flex gap-4 rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:border-[#4747D4]/30 hover:bg-muted/30 md:p-6">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#000080]">
-                      <Icon className="h-4 w-4 text-white" />
+                  <div className="flex gap-4 rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:border-accent/30 hover:bg-muted/30 md:p-6">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary">
+                      <Icon className="h-4 w-4 text-primary-foreground" />
                     </div>
                     <div>
-                      <h3 className="text-[15px] font-bold text-foreground">
+                      <h3 className="text-sm font-bold text-foreground">
                         {item.label}
                       </h3>
                       <p className="mt-1 text-sm leading-relaxed text-muted-foreground">

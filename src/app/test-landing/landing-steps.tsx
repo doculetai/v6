@@ -10,7 +10,7 @@ export function Steps() {
       <div className="mx-auto max-w-6xl px-5 md:px-8">
         <Reveal>
           <div className="mx-auto max-w-xl text-center">
-            <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-[#4747D4]">
+            <span className="text-xs font-bold uppercase tracking-[0.15em] text-accent">
               {copy.steps.eyebrow}
             </span>
             <h2 className="mt-3 font-serif text-3xl font-bold tracking-tight text-foreground md:text-5xl">
@@ -24,13 +24,13 @@ export function Steps() {
 
         <div className="mt-16 md:mt-20">
           <div className="relative">
-            {/* Connector line — desktop */}
+            {/* Connector line — desktop. Requires inline style for dashed background pattern */}
             <div
               className="pointer-events-none absolute left-[calc(12.5%+24px)] right-[calc(12.5%+24px)] top-6 hidden h-px md:block"
               aria-hidden="true"
               style={{
                 backgroundImage:
-                  "repeating-linear-gradient(90deg, transparent, transparent 4px, #DDDEE8 4px, #DDDEE8 12px)",
+                  "repeating-linear-gradient(90deg, transparent, transparent 4px, var(--border) 4px, var(--border) 12px)",
               }}
             />
 
@@ -39,7 +39,7 @@ export function Steps() {
                 <Reveal key={step.number} delay={i * 120}>
                   <div className="relative md:px-6">
                     {/* Step number bubble */}
-                    <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#000080] text-[13px] font-bold text-white ring-4 ring-[#000080]/10">
+                    <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-sm font-bold text-primary-foreground ring-4 ring-primary/10">
                       {step.number}
                     </div>
 

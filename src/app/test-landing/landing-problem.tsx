@@ -6,10 +6,10 @@ const icons = [FileWarning, PhoneOff, FileX];
 
 export function Problem() {
   return (
-    <section className="relative overflow-hidden bg-[#000080] py-20 md:py-28">
-      {/* Radial glow */}
+    <section className="relative overflow-hidden bg-primary py-20 md:py-28">
+      {/* Radial glow — requires inline style for complex CSS gradient */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-1/2 top-0 h-[600px] w-[900px] -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#4747D4]/20 blur-[120px]" />
+        <div className="absolute left-1/2 top-0 h-[37.5rem] w-[56.25rem] -translate-x-1/2 -translate-y-1/4 rounded-full bg-accent/20 blur-[120px]" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-5 md:px-8">
@@ -17,9 +17,9 @@ export function Problem() {
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="font-serif text-3xl font-bold tracking-tight text-white md:text-5xl">
               {copy.problem.headline}{" "}
-              <span className="text-[#8080FF]">{copy.problem.headlineAccent}</span>
+              <span className="text-accent">{copy.problem.headlineAccent}</span>
             </h2>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/70 md:mt-6 md:text-[17px]">
+            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/70 md:mt-6">
               {copy.problem.body}
             </p>
           </div>
@@ -36,7 +36,7 @@ export function Problem() {
                   <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
                   {/* Watermark stat */}
-                  <div className="absolute bottom-4 right-5 font-serif text-[2.5rem] font-bold leading-none text-white/[0.05] md:right-6 md:text-[3rem]">
+                  <div className="absolute bottom-4 right-5 font-serif text-4xl font-bold leading-none text-white/[0.05] md:right-6 md:text-5xl">
                     {card.stat}
                   </div>
 
@@ -44,7 +44,7 @@ export function Problem() {
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/[0.08]">
                       <Icon className="h-5 w-5 text-white/90" />
                     </div>
-                    <h3 className="mt-5 text-[16px] font-bold text-white">
+                    <h3 className="mt-5 text-base font-bold text-white">
                       {card.title}
                     </h3>
                     <p className="mt-2 text-sm leading-relaxed text-white/60">
