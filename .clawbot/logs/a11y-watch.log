@@ -673,3 +673,31 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [a11y-watch] 2026-03-04 11:36:26 Scanning for accessibility violations...
 [a11y-watch] 2026-03-04 11:36:26 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 11:40:27 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 11:40:27 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 11:44:28 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 11:44:28 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 11:48:29 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 11:48:30 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 11:52:30 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 11:52:31 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 11:56:31 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 11:56:32 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 12:00:32 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 12:00:33 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 12:04:33 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 12:04:34 All accessibility checks passed. No violations found.

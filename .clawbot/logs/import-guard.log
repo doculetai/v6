@@ -979,3 +979,107 @@ The violations list is empty — all `hits=''` entries contain no actual violati
 Skipping the TypeScript check and commit since no import boundary violations were provided.
 Everything up-to-date
 [import-guard] 2026-03-04 11:36:21 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:39:21 Scanning import boundaries...
+[import-guard] 2026-03-04 11:39:21 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:39:21 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:39:21 Auto-fixing import violations (round 1 of max 8)...
+All 19 violation entries show `hits=''` — there are no actual import boundary violations to fix. The import guard ran clean.
+Everything up-to-date
+[import-guard] 2026-03-04 11:39:39 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:42:39 Scanning import boundaries...
+[import-guard] 2026-03-04 11:42:40 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:42:40 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:42:40 Auto-fixing import violations (round 1 of max 8)...
+All 19 violation entries are empty (`hits=''`) — there are no import boundary violations to fix. The import guard scan found nothing to report.
+
+No changes needed.
+Everything up-to-date
+[import-guard] 2026-03-04 11:43:22 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:46:23 Scanning import boundaries...
+[import-guard] 2026-03-04 11:46:24 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:46:24 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:46:24 Auto-fixing import violations (round 1 of max 8)...
+All `hits=''` — the violations file is empty. The import-guard already auto-fixed everything in a prior run (visible in the log: "All violations fixed and committed"). There's nothing to do here.
+
+**Current state:** No import boundary violations exist in the codebase.
+Everything up-to-date
+[import-guard] 2026-03-04 11:47:01 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:50:01 Scanning import boundaries...
+[import-guard] 2026-03-04 11:50:03 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:50:03 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:50:03 Auto-fixing import violations (round 1 of max 8)...
+All violations listed show `hits=''` — there are no actual import boundary violations to fix. The import-guard scan came back empty.
+
+No changes needed. The codebase is clean.
+Everything up-to-date
+[import-guard] 2026-03-04 11:51:11 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:54:11 Scanning import boundaries...
+[import-guard] 2026-03-04 11:54:13 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:54:13 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:54:13 Auto-fixing import violations (round 1 of max 8)...
+All 19 violation entries are empty (`hits=''`) — there are no actual import boundary violations to fix.
+
+No changes needed, no commit required.
+Everything up-to-date
+[import-guard] 2026-03-04 11:55:07 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 11:58:07 Scanning import boundaries...
+[import-guard] 2026-03-04 11:58:08 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 11:58:08 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 11:58:08 Auto-fixing import violations (round 1 of max 8)...
+All violations are already resolved. The `hits=''` entries mean no violations were found — the import guard's previous auto-fix pass already addressed everything (the log shows it fixed server imports in client components, updated `TRPCReactProvider` import sites, and corrected `'use client'` directive formatting).
+
+No changes needed. The codebase is clean.
+Everything up-to-date
+[import-guard] 2026-03-04 11:59:31 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 12:02:32 Scanning import boundaries...
+[import-guard] 2026-03-04 12:02:33 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 12:02:33 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 12:02:33 Auto-fixing import violations (round 1 of max 8)...
+Looking at the violations list, all entries are `hits=''` — meaning the import guard scan found **no actual violations**. There's nothing to fix.
+
+```
+★ Insight ─────────────────────────────────────
+All 19 violation checks returned empty hits, which means the codebase
+currently satisfies all import boundary rules. The guard script ran
+successfully but found zero infractions to report.
+─────────────────────────────────────────────────
+```
+
+No changes needed — the import architecture is clean.
+Everything up-to-date
+[import-guard] 2026-03-04 12:03:21 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: additionally, your index contains uncommitted changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 12:06:21 Scanning import boundaries...
+[import-guard] 2026-03-04 12:06:22 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 12:06:22 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 12:06:22 Auto-fixing import violations (round 1 of max 8)...
+All 19 violations listed are empty (`hits=''`) — there are no actual import boundary violations to fix. The import guard scan found nothing.
+
+No changes needed, no commit required.
+To https://github.com/doculetai/v6.git
+   863cb83..b7b19e6  main -> main
+[import-guard] 2026-03-04 12:06:48 Import fixes pushed to main.
