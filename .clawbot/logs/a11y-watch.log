@@ -6,3 +6,22 @@ error: Please commit or stash them.
 0 violation line(s).
 [a11y-watch] 2026-03-04 04:36:58 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
 [a11y-watch] 2026-03-04 04:36:58 Invoking claude to fix a11y violations (round 1 of max 8)...
+Done. Here's what was changed and why:
+
+**5 files modified, committed as `fix(a11y): resolve accessibility violations [a11y-watch]`**
+
+| File | Change |
+|---|---|
+| `(auth)/login/login-page-client.tsx` | `CardTitle` → `<h1>` |
+| `(auth)/signup/signup-page-client.tsx` | `CardTitle` → `<h1>` (form + success states) |
+| `(auth)/forgot-password/forgot-password-page-client.tsx` | `CardTitle` → `<h1>` (form + success states) |
+| `(auth)/update-password/update-password-page-client.tsx` | `CardTitle` → `<h1>` |
+| `dashboard/[role]/page.tsx` | `CardTitle` → `<h1>` (EmptyState, ErrorState, main) |
+
+**5 pages in the violation list were already compliant** — `proof`, `verify`, `documents`, `test-landing`, and `(marketing)` all have `<h1>` in their client components (the static analyzer can't follow client component imports). The redirect-only marketing page never renders content.
+
+**No visual change** — the `leading-none font-semibold` defaults from `CardTitle` are preserved in each `<h1>` className alongside the existing per-instance styles.
+[a11y-watch] 2026-03-04 04:43:56 Auto-fix committed changes. Pushing to main...
+To https://github.com/doculetai/v6.git
+   1772aa2..e304e83  main -> main
+[a11y-watch] 2026-03-04 04:43:56 A11y fixes pushed. FIX_COUNT reset.

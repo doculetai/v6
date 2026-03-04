@@ -1,3 +1,12 @@
-src/components/layout/BottomNav.tsx(7,23): error TS2305: Module '"@/config/nav"' has no exported member 'isActivePath'.
-src/components/layout/DashboardShell.tsx(44,30): error TS2322: Type '{ role: "student" | "sponsor" | "university" | "admin" | "agent" | "partner"; currentPath: string; }' is not assignable to type 'IntrinsicAttributes & BottomNavProps'.
-  Property 'currentPath' does not exist on type 'IntrinsicAttributes & BottomNavProps'.
+src/app/(auth)/forgot-password/forgot-password-page-client.tsx(61,12): error TS2304: Cannot find name 'CardTitle'.
+src/app/(auth)/forgot-password/forgot-password-page-client.tsx(63,13): error TS2304: Cannot find name 'CardTitle'.
+src/app/(auth)/forgot-password/forgot-password-page-client.tsx(90,10): error TS2304: Cannot find name 'CardTitle'.
+src/app/(auth)/forgot-password/forgot-password-page-client.tsx(92,11): error TS2304: Cannot find name 'CardTitle'.
+src/app/(auth)/update-password/update-password-page-client.tsx(73,10): error TS2304: Cannot find name 'CardTitle'.
+src/app/(auth)/update-password/update-password-page-client.tsx(75,11): error TS2304: Cannot find name 'CardTitle'.
+src/app/dashboard/[role]/page.tsx(25,12): error TS2304: Cannot find name 'CardTitle'.
+src/app/dashboard/[role]/page.tsx(27,13): error TS2304: Cannot find name 'CardTitle'.
+src/app/dashboard/[role]/page.tsx(50,12): error TS2304: Cannot find name 'CardTitle'.
+src/app/dashboard/[role]/page.tsx(52,13): error TS2304: Cannot find name 'CardTitle'.
+src/app/dashboard/[role]/page.tsx(106,12): error TS2304: Cannot find name 'CardTitle'.
+src/app/dashboard/[role]/page.tsx(108,13): error TS2304: Cannot find name 'CardTitle'.

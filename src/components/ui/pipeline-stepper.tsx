@@ -17,7 +17,7 @@ interface PipelineStepperProps {
 
 function statusIcon(status: PipelineStepStatus): React.ReactNode {
   if (status === "completed") {
-    return <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+    return <CheckCircle2 className="size-4 text-success" aria-hidden="true" />
   }
   if (status === "current") {
     return <Circle className="size-4 text-primary" aria-hidden="true" />
@@ -26,7 +26,7 @@ function statusIcon(status: PipelineStepStatus): React.ReactNode {
     return <XCircle className="size-4 text-destructive" aria-hidden="true" />
   }
   if (status === "blocked") {
-    return <CircleDashed className="size-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+    return <CircleDashed className="size-4 text-warning" aria-hidden="true" />
   }
   return <Circle className="size-4 text-muted-foreground" aria-hidden="true" />
 }
