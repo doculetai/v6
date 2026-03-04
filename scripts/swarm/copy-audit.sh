@@ -204,7 +204,7 @@ WHEN FIXING PLACEHOLDER STRINGS:
 
 After fixing ALL violations:
 1. Run: npx tsc --noEmit --pretty false  (must exit clean)
-2. Commit: git add -A && git commit -m "fix(copy): complete copy config coverage [copy-audit]"
+2. Commit: git add src/ && git commit -m "fix(copy): complete copy config coverage [copy-audit]"
 
 VIOLATIONS TO FIX:
 $violations

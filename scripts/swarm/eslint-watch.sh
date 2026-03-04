@@ -120,7 +120,7 @@ RULES:
 - 'react/display-name': add displayName or convert to named function
 - 'import/no-cycle': refactor the import to break the cycle (move shared types to a types file)
 - After fixing: run npx eslint src --ext .ts,.tsx --format compact to verify 0 errors
-- If clean: git add -A && git commit -m "fix(lint): resolve ESLint violations [eslint-watch]"
+- If clean: git add src/ && git commit -m "fix(lint): resolve ESLint violations [eslint-watch]"
 
 ERRORS:
 $errors
@@ -155,7 +155,7 @@ while true; do
   if ! git -C "$ROOT_DIR" diff --quiet 2>/dev/null; then
     if [[ "$DRY_RUN" != "true" ]]; then
       log "ESLint auto-fixed some issues. Committing..."
-      git -C "$ROOT_DIR" add -A
+      git -C "$ROOT_DIR" add src/
       git -C "$ROOT_DIR" commit -m "fix(lint): eslint --fix pass [eslint-watch]" \
         >>"$LOG_FILE" 2>&1 || true
       git -C "$ROOT_DIR" push origin main >>"$LOG_FILE" 2>&1 || true

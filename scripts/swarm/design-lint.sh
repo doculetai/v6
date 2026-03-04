@@ -237,7 +237,7 @@ DESIGN RULES:
 After fixing ALL violations:
 1. Run: npx tsc --noEmit  (must be clean)
 2. Run: npx eslint src --ext .ts,.tsx --fix (auto-fix what can be fixed)
-3. Commit: git add -A && git commit -m "fix(design): enforce design system standards [design-lint]"
+3. Commit: git add src/ && git commit -m "fix(design): enforce design system standards [design-lint]"
 
 VIOLATIONS TO FIX:
 $violations

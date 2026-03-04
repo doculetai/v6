@@ -111,7 +111,7 @@ RULES:
 - If a type is wrong, correct the type — do not use 'any' or 'as unknown'
 - Respect the existing file patterns (copy from config, semantic tokens only, no emojis, no inline styles)
 - After fixing, run: npx tsc --noEmit --pretty false
-- If typecheck is clean, commit with: git add -A && git commit -m "fix(types): auto-fix TypeScript build errors [build-watch]"
+- If typecheck is clean, commit with: git add src/ && git commit -m "fix(types): auto-fix TypeScript build errors [build-watch]"
 - If errors remain, fix them too before committing
 
 ERRORS TO FIX:

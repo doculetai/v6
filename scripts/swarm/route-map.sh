@@ -227,7 +227,7 @@ RULES:
 
 After fixing ALL violations:
 1. Run: npx tsc --noEmit --pretty false  (must exit clean)
-2. Commit: git add -A && git commit -m "fix(routes): add missing loading/error boundaries [route-map]"
+2. Commit: git add src/ && git commit -m "fix(routes): add missing loading/error boundaries [route-map]"
 
 VIOLATIONS TO FIX:
 $violations

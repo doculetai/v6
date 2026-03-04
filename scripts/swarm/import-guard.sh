@@ -277,7 +277,7 @@ NEVER:
 
 After fixing ALL violations:
 1. Run: npx tsc --noEmit --pretty false  (must exit clean)
-2. Commit: git add -A && git commit -m "fix(imports): resolve import boundary violations [import-guard]"
+2. Commit: git add src/ && git commit -m "fix(imports): resolve import boundary violations [import-guard]"
 
 VIOLATIONS TO FIX:
 $violations
