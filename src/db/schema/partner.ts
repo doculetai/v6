@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
+import { timestamps } from './_helpers';
 import { users } from './users';
 
 export const partnerProfiles = pgTable('partner_profiles', {
@@ -13,8 +14,7 @@ export const partnerProfiles = pgTable('partner_profiles', {
   webhookUrl: text('webhook_url'),
   brandLogoUrl: text('brand_logo_url'),
   brandColor: text('brand_color'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const partnerApiKeys = pgTable('partner_api_keys', {

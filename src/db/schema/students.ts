@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
+import { timestamps } from './_helpers';
 import { users } from './users';
 
 export const schools = pgTable('schools', {
@@ -8,8 +9,7 @@ export const schools = pgTable('schools', {
   name: text('name').notNull(),
   country: text('country').notNull(),
   logoUrl: text('logo_url'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const programs = pgTable('programs', {
@@ -21,8 +21,7 @@ export const programs = pgTable('programs', {
   tuitionAmount: integer('tuition_amount').notNull(),
   currency: text('currency').notNull(),
   durationMonths: integer('duration_months').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const studentProfiles = pgTable('student_profiles', {
@@ -47,8 +46,7 @@ export const studentProfiles = pgTable('student_profiles', {
     .default('not_started')
     .notNull(),
   onboardingStep: integer('onboarding_step').default(1).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const kycVerifications = pgTable('kyc_verifications', {
@@ -63,8 +61,7 @@ export const kycVerifications = pgTable('kyc_verifications', {
   tier: integer('tier').notNull(),
   verifiedAt: timestamp('verified_at'),
   referenceId: text('reference_id').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const bankAccounts = pgTable('bank_accounts', {
@@ -77,8 +74,7 @@ export const bankAccounts = pgTable('bank_accounts', {
   bankName: text('bank_name').notNull(),
   monoAccountId: text('mono_account_id').notNull(),
   linkedAt: timestamp('linked_at').defaultNow().notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const schoolsRelations = relations(schools, ({ many }) => ({

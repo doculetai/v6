@@ -1,6 +1,8 @@
 import { relations } from 'drizzle-orm';
 import { boolean, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
+import { timestamps } from './_helpers';
+
 export const users = pgTable('users', {
   id: uuid('id').primaryKey(),
   email: text('email').notNull().unique(),
@@ -17,8 +19,7 @@ export const profiles = pgTable('profiles', {
     enum: ['student', 'sponsor', 'university', 'admin', 'agent', 'partner'],
   }).notNull(),
   onboardingComplete: boolean('onboarding_complete').default(false).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const usersRelations = relations(users, ({ one }) => ({
@@ -28,7 +29,7 @@ export const usersRelations = relations(users, ({ one }) => ({
   }),
 }));
 
-export const profileRelations = relations(profiles, ({ one }) => ({
+export const profilesRelations = relations(profiles, ({ one }) => ({
   user: one(users, {
     fields: [profiles.userId],
     references: [users.id],
