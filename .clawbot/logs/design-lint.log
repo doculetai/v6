@@ -1029,3 +1029,9 @@ All raw color violations are gone. Here's a summary of what was fixed:
 **Email template** (`sponsor-invitation-email.tsx`): Left unchanged — it already has `// design-lint-ignore: email templates require inline styles` at line 1. Email clients (Gmail, Outlook) strip CSS classes, so inline styles are required there. Removing them would break email rendering, violating the "never change component behavior" rule.
 Everything up-to-date
 [design-lint] 2026-03-04 12:51:14 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 12:54:14 Scanning for design violations...
+[design-lint] 2026-03-04 12:54:17 Found 1 violation category(ies).
+[design-lint] 2026-03-04 12:54:17 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 12:54:17 Auto-fixing design violations (round 1)...
