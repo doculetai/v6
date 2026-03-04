@@ -495,3 +495,9 @@ TypeScript is clean, ESLint shows only 3 pre-existing warnings (no errors), comm
 To https://github.com/doculetai/v6.git
    6a3778c..0581aef  main -> main
 [design-lint] 2026-03-04 10:36:42 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 10:39:42 Scanning for design violations...
+[design-lint] 2026-03-04 10:39:45 Found 1 violation category(ies).
+[design-lint] 2026-03-04 10:39:45 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 10:39:45 Auto-fixing design violations (round 1)...

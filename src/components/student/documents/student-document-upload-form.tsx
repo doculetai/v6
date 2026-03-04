@@ -1,10 +1,11 @@
 'use client';
 
+import { UploadCloud } from 'lucide-react';
+import { useState } from 'react';
 import { Controller, type UseFormReturn } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -13,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import type { StudentCopy } from '@/config/copy/student';
 
 import type {
@@ -35,6 +37,7 @@ export function StudentDocumentUploadForm({
   isUploading,
   onSubmit,
 }: StudentDocumentUploadFormProps) {
+  const [isDragging, setIsDragging] = useState(false);
   const selectedFile = form.watch('file');
   const documentTypeError = form.formState.errors.documentType?.message;
   const fileError = form.formState.errors.file?.message;
@@ -86,34 +89,63 @@ export function StudentDocumentUploadForm({
 
           <div className="space-y-2">
             <Label htmlFor="document-file">{copy.upload.fileLabel}</Label>
-            <Input
+            {/* Hidden native input — label click triggers it */}
+            <input
               key={fileInputKey}
               id="document-file"
               type="file"
-              className="h-11 bg-background dark:bg-background"
+              className="sr-only"
               accept={copy.upload.fileAccept}
               aria-invalid={Boolean(fileError)}
               onChange={(event) => {
                 const file = event.target.files?.[0];
-
                 if (file) {
                   form.setValue('file', file, { shouldTouch: true, shouldValidate: true });
                   return;
                 }
-
                 form.resetField('file');
               }}
             />
-
-            <p className="text-xs text-muted-foreground dark:text-muted-foreground">
-              {copy.upload.fileHelp}
-            </p>
-
-            {selectedFile ? (
-              <p className="text-sm text-foreground dark:text-foreground">
-                {`${copy.upload.selectedFileLabel}: ${selectedFile.name}`}
-              </p>
-            ) : null}
+            {/* Styled dropzone */}
+            <label
+              htmlFor="document-file"
+              onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                const file = e.dataTransfer.files?.[0];
+                if (file) form.setValue('file', file, { shouldTouch: true, shouldValidate: true });
+              }}
+              className={cn(
+                'flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed px-6 py-8 text-center transition-colors duration-150',
+                isDragging
+                  ? 'border-primary bg-primary/5'
+                  : selectedFile
+                    ? 'border-primary/40 bg-primary/5'
+                    : 'border-border bg-background/60 hover:border-primary/40 hover:bg-primary/5',
+              )}
+            >
+              <UploadCloud
+                className={cn('size-8 transition-colors', selectedFile ? 'text-primary' : 'text-muted-foreground')}
+                aria-hidden="true"
+              />
+              {selectedFile ? (
+                <div className="space-y-0.5">
+                  <p className="text-sm font-medium text-foreground">{selectedFile.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {`${(selectedFile.size / 1024 / 1024).toFixed(2)} MB — click to change`}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-0.5">
+                  <p className="text-sm font-medium text-foreground">
+                    Drag and drop your file, or <span className="text-primary underline-offset-2 hover:underline">browse</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">{copy.upload.fileHelp}</p>
+                </div>
+              )}
+            </label>
 
             {fileError ? (
               <p className="text-sm text-destructive dark:text-destructive" role="alert">

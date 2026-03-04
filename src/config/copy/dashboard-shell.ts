@@ -22,7 +22,7 @@ export const dashboardShellCopy = {
     accountLabel: 'Account',
     logoutLabel: 'Log out',
     navAriaLabel: 'Dashboard navigation',
-    fallbackUserNameSuffix: 'workspace',
+    fallbackUserNameSuffix: 'account',
     avatarFallback: 'DU',
   },
   bottomNav: {

@@ -168,7 +168,7 @@ line_count='      88'
 line_count='      15'
 line_count='       5'
 line_count='      47'
-line_count='      93'
+line_count='      71'
 line_count='      67'
 line_count='     270'
 line_count='      46'
@@ -181,7 +181,7 @@ line_count='      42'
 line_count='      49'
 line_count='     102'
 line_count='      86'
-line_count='     138'
+line_count='     170'
 line_count='      45'
 line_count='      78'
 line_count='     205'
@@ -216,9 +216,6 @@ line_count='      38'
 line_count='      37'
 line_count='       8'
 
-
-=== RAW TAILWIND COLORS (use semantic tokens: bg-primary, bg-card, text-foreground, etc.) ===
-/Users/gm/v6/src/components/layout/sidebar/SidebarFooter.tsx:10:        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-green-400" />
 
 === INLINE STYLES (convert to Tailwind classes) ===
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:78:    <div style={wrapperStyle}>
