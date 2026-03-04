@@ -1,10 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createBrowserClient } from '@supabase/ssr';
 import { CheckCircle2, Loader2, Mail } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -13,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { authCopy } from '@/config/copy/auth';
+import { supabaseBrowserClient } from '@/lib/auth/browser-client';
 import { cn } from '@/lib/utils';
 
 const forgotPasswordSchema = z.object({
@@ -24,14 +24,6 @@ type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 export function ForgotPasswordPageClient() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [resetSentEmail, setResetSentEmail] = useState<string | null>(null);
-  const supabase = useMemo(
-    () =>
-      createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      ),
-    [],
-  );
 
   const {
     register,
@@ -47,7 +39,7 @@ export function ForgotPasswordPageClient() {
   const onSubmit = handleSubmit(async (values) => {
     setSubmitError(null);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
+    const { error } = await supabaseBrowserClient.auth.resetPasswordForEmail(values.email, {
       redirectTo: authCopy.routes.updatePassword,
     });
 
@@ -61,15 +53,15 @@ export function ForgotPasswordPageClient() {
 
   if (resetSentEmail) {
     return (
-      <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border dark:bg-card/95 dark:text-card-foreground">
+      <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border">
         <CardHeader className="space-y-3 text-center">
-          <div className="mx-auto inline-flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary dark:bg-primary/25 dark:text-primary">
+          <div className="mx-auto inline-flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary dark:bg-primary/25">
             <CheckCircle2 className="size-4" aria-hidden="true" />
           </div>
-          <CardTitle className="text-2xl tracking-tight text-card-foreground dark:text-card-foreground">
+          <CardTitle className="text-2xl tracking-tight text-card-foreground">
             {authCopy.forgotPassword.successTitle}
           </CardTitle>
-          <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground">
+          <CardDescription className="text-sm text-muted-foreground">
             {authCopy.forgotPassword.successDescription(resetSentEmail)}
           </CardDescription>
         </CardHeader>
@@ -77,7 +69,7 @@ export function ForgotPasswordPageClient() {
           <Link
             href={authCopy.routes.login}
             className={cn(
-              'inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors duration-150 hover:bg-primary/90 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90',
+              'inline-flex min-h-11 w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors duration-150 hover:bg-primary/90',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             )}
           >
@@ -89,16 +81,16 @@ export function ForgotPasswordPageClient() {
   }
 
   return (
-    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border dark:bg-card/95 dark:text-card-foreground">
+    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border">
       <CardHeader className="space-y-3">
-        <div className="inline-flex items-center gap-2 text-muted-foreground dark:text-muted-foreground">
+        <div className="inline-flex items-center gap-2 text-muted-foreground">
           <Mail className="size-4" aria-hidden="true" />
           <span className="text-sm">{authCopy.forgotPassword.trustLabel}</span>
         </div>
-        <CardTitle className="text-2xl tracking-tight text-card-foreground dark:text-card-foreground">
+        <CardTitle className="text-2xl tracking-tight text-card-foreground">
           {authCopy.forgotPassword.title}
         </CardTitle>
-        <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground">
+        <CardDescription className="text-sm text-muted-foreground">
           {authCopy.forgotPassword.description}
         </CardDescription>
       </CardHeader>
@@ -111,17 +103,17 @@ export function ForgotPasswordPageClient() {
               type="email"
               autoComplete="email"
               placeholder={authCopy.common.emailPlaceholder}
-              className="h-11 bg-background dark:bg-background"
+              className="h-11 bg-background"
               aria-invalid={Boolean(errors.email)}
               {...register('email')}
             />
             {errors.email?.message ? (
-              <p className="text-sm text-destructive dark:text-destructive">{errors.email.message}</p>
+              <p className="text-sm text-destructive">{errors.email.message}</p>
             ) : null}
           </div>
 
           {submitError ? (
-            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/40 dark:bg-destructive/15 dark:text-destructive">
+            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/40 dark:bg-destructive/15">
               {submitError}
             </p>
           ) : null}
@@ -137,7 +129,7 @@ export function ForgotPasswordPageClient() {
             )}
           </Button>
 
-          <p className="text-center text-sm text-muted-foreground dark:text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             <Link
               href={authCopy.routes.login}
               className={cn(
