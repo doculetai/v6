@@ -28,25 +28,26 @@ export default async function TransactionsPage({ params }: TransactionsPageProps
 
   const caller = await api();
 
+  let allDisbursements: Awaited<ReturnType<typeof caller.sponsor.listDisbursements>>;
   try {
-    const allDisbursements = await caller.sponsor.listDisbursements();
-    // Filter to completed transactions only
-    const transactions = allDisbursements.filter((d) => d.status === 'disbursed');
-
-    return (
-      <div className="space-y-6">
-        <h1 className="sr-only">{sponsorCopy.transactions.title}</h1>
-        <PageHeader
-          title={sponsorCopy.transactions.title}
-          subtitle={sponsorCopy.transactions.subtitle}
-        />
-        <TransactionsPageClient transactions={transactions} copy={sponsorCopy.transactions} />
-      </div>
-    );
+    allDisbursements = await caller.sponsor.listDisbursements();
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
       redirect('/login');
     }
     throw error;
   }
+  // Filter to completed transactions only
+  const transactions = allDisbursements.filter((d) => d.status === 'disbursed');
+
+  return (
+    <div className="space-y-6">
+      <h1 className="sr-only">{sponsorCopy.transactions.title}</h1>
+      <PageHeader
+        title={sponsorCopy.transactions.title}
+        subtitle={sponsorCopy.transactions.subtitle}
+      />
+      <TransactionsPageClient transactions={transactions} copy={sponsorCopy.transactions} />
+    </div>
+  );
 }

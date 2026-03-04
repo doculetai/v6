@@ -28,20 +28,21 @@ export default async function KycPage({ params }: KycPageProps) {
 
   const caller = await api();
 
+  let kycStatus: Awaited<ReturnType<typeof caller.sponsor.getSponsorKycStatus>>;
   try {
-    const kycStatus = await caller.sponsor.getSponsorKycStatus();
-
-    return (
-      <div className="space-y-6">
-        <h1 className="sr-only">{sponsorCopy.kyc.title}</h1>
-        <PageHeader title={sponsorCopy.kyc.title} subtitle={sponsorCopy.kyc.subtitle} />
-        <KycPageClient kycStatus={kycStatus} copy={sponsorCopy.kyc} />
-      </div>
-    );
+    kycStatus = await caller.sponsor.getSponsorKycStatus();
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
       redirect('/login');
     }
     throw error;
   }
+
+  return (
+    <div className="space-y-6">
+      <h1 className="sr-only">{sponsorCopy.kyc.title}</h1>
+      <PageHeader title={sponsorCopy.kyc.title} subtitle={sponsorCopy.kyc.subtitle} />
+      <KycPageClient kycStatus={kycStatus} copy={sponsorCopy.kyc} />
+    </div>
+  );
 }

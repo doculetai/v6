@@ -43,6 +43,7 @@ export function BrandingPageClient({ branding, copy }: Props) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isDirty },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -69,10 +70,8 @@ export function BrandingPageClient({ branding, copy }: Props) {
 
       {branding === null ? (
         <div className="rounded-xl border border-border bg-card p-10 text-center">
-          <p className="text-sm font-medium text-foreground">{copy.saveCta}</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Unable to load branding settings. Please refresh the page.
-          </p>
+          <p className="text-sm font-medium text-foreground">{partnerCopy.errors.generic}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{partnerCopy.students.error.description}</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
@@ -89,14 +88,13 @@ export function BrandingPageClient({ branding, copy }: Props) {
                 {copy.colorSection.primaryLabel}
               </label>
               <div className="flex items-center gap-2">
-                <input
-                  id="brandColor"
-                  type="color"
-                  {...register('brandColor')}
-                  defaultValue={branding.brandColor ?? '#3B82F6'}
-                  className="h-10 w-16 cursor-pointer rounded-lg border border-border bg-background p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                <span
+                  className="h-10 w-10 shrink-0 rounded-lg border border-border"
+                  style={{ backgroundColor: watch('brandColor') ?? '#3B82F6' }}
+                  aria-hidden="true"
                 />
                 <input
+                  id="brandColor"
                   type="text"
                   {...register('brandColor')}
                   placeholder="#3B82F6"

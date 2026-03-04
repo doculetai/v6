@@ -32,24 +32,26 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
 
   // Sponsor branch
   if (role === 'sponsor') {
-    try {
-      const [invitesResult, studentsResult] = await Promise.allSettled([
-        caller.sponsor.listPendingInvites(),
-        caller.sponsor.listSponsoredStudents(),
-      ]);
-      const invites = invitesResult.status === 'fulfilled' ? invitesResult.value : [];
-      const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
-      return (
-        <div className="space-y-6">
-          <h1 className="sr-only">{sponsorCopy.students.title}</h1>
-          <PageHeader title={sponsorCopy.students.title} subtitle={sponsorCopy.students.subtitle} />
-          <SponsorStudentsPageClient invites={invites} students={students} copy={sponsorCopy.students} />
-        </div>
-      );
-    } catch (error) {
-      if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
-      throw error;
+    const [invitesResult, studentsResult] = await Promise.allSettled([
+      caller.sponsor.listPendingInvites(),
+      caller.sponsor.listSponsoredStudents(),
+    ]);
+    if (
+      invitesResult.status === 'rejected' &&
+      invitesResult.reason instanceof TRPCError &&
+      invitesResult.reason.code === 'UNAUTHORIZED'
+    ) {
+      redirect('/login');
     }
+    const invites = invitesResult.status === 'fulfilled' ? invitesResult.value : [];
+    const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
+    return (
+      <div className="space-y-6">
+        <h1 className="sr-only">{sponsorCopy.students.title}</h1>
+        <PageHeader title={sponsorCopy.students.title} subtitle={sponsorCopy.students.subtitle} />
+        <SponsorStudentsPageClient invites={invites} students={students} copy={sponsorCopy.students} />
+      </div>
+    );
   }
 
   // University branch

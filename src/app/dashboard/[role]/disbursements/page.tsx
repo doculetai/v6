@@ -28,23 +28,24 @@ export default async function DisbursementsPage({ params }: DisbursementsPagePro
 
   const caller = await api();
 
+  let disbursements: Awaited<ReturnType<typeof caller.sponsor.listDisbursements>>;
   try {
-    const disbursements = await caller.sponsor.listDisbursements();
-
-    return (
-      <div className="space-y-6">
-        <h1 className="sr-only">{sponsorCopy.disbursements.title}</h1>
-        <PageHeader
-          title={sponsorCopy.disbursements.title}
-          subtitle={sponsorCopy.disbursements.subtitle}
-        />
-        <DisbursementsPageClient disbursements={disbursements} copy={sponsorCopy.disbursements} />
-      </div>
-    );
+    disbursements = await caller.sponsor.listDisbursements();
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
       redirect('/login');
     }
     throw error;
   }
+
+  return (
+    <div className="space-y-6">
+      <h1 className="sr-only">{sponsorCopy.disbursements.title}</h1>
+      <PageHeader
+        title={sponsorCopy.disbursements.title}
+        subtitle={sponsorCopy.disbursements.subtitle}
+      />
+      <DisbursementsPageClient disbursements={disbursements} copy={sponsorCopy.disbursements} />
+    </div>
+  );
 }
