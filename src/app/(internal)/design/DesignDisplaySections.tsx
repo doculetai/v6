@@ -1,3 +1,5 @@
+'use client'
+
 import { ActivityTimeline } from '@/components/ui/activity-timeline';
 import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
