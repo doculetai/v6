@@ -630,3 +630,19 @@ TypeScript passes clean, committed as `fix(copy): complete copy config coverage 
 To https://github.com/doculetai/v6.git
    4313183..bcd2911  main -> main
 [copy-audit] 2026-03-04 13:36:11 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 13:39:11 Scanning copy config coverage...
+[copy-audit] 2026-03-04 13:39:12 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 13:39:12 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 13:39:12 Auto-fixing copy violations (round 1 of max 8)...
+All 3 violations fixed:
+
+- `agent.ts:268` — `'Generating your referral link…'` → `'Loading your unique referral link…'`
+- `partner.ts:226` — `'Meridian Education Partners'` (fake company name) → `'Your organisation's registered name'`
+- `partner.ts:228` — `'https://api.partnerorg.com/webhooks/doculet'` (fake domain) → `'https://yourserver.com/webhooks/doculet'`
+
+TypeScript is clean. Committed.
+To https://github.com/doculetai/v6.git
+   67ccf05..4746c22  main -> main
+[copy-audit] 2026-03-04 13:40:37 Copy fixes pushed to main.

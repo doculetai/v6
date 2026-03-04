@@ -1223,3 +1223,9 @@ Email HTML is fundamentally different from web HTML: it's rendered by dozens of 
 If the design linter keeps flagging this file despite the ignore comment, the linter configuration needs to be updated to recognize the `design-lint-ignore` directive — not the email template changed.
 Everything up-to-date
 [design-lint] 2026-03-04 13:37:22 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 13:40:22 Scanning for design violations...
+[design-lint] 2026-03-04 13:40:26 Found 1 violation category(ies).
+[design-lint] 2026-03-04 13:40:26 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 13:40:26 Auto-fixing design violations (round 1)...
