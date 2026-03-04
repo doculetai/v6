@@ -27,3 +27,40 @@ error: Please commit or stash them.
 [design-lint] 2026-03-04 08:07:29 Found 3 violation category(ies).
 [design-lint] 2026-03-04 08:07:29 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
 [design-lint] 2026-03-04 08:07:29 Auto-fixing design violations (round 1)...
+All violations fixed and committed. Summary of what was done:
+
+**Inline styles removed:**
+- `_shared.tsx`: Replaced `style={{ "--reveal-delay": ... }}` + CSS var class with direct `[transition-delay:${delay}ms]` Tailwind class
+- `progress.tsx`: Dropped `--p-offset` custom variable entirely; now uses `--radix-progress-indicator-transform` set automatically by Radix UI, and removed the unused `value` destructuring so it flows through `...props` to Radix
+- `sponsor-invitation-email.tsx`: Added `// design-lint-disable` to 4 flagged lines — email clients require inline styles, making removal impossible without `@react-email/tailwind`
+
+**Arbitrary pixel values replaced:**
+- `landing-problem.tsx`: `h-[37.5rem] w-[56.25rem] blur-[120px]` → `h-96 w-full max-w-4xl blur-3xl`
+- `landing-cta.tsx`: `h-[31.25rem] w-[50rem] blur-[120px]` → `h-80 w-full max-w-4xl blur-3xl`
+
+**File split:**
+- `DesignDisplaySections.tsx` reduced from 587 → 362 lines (Interactive + Display + Data sections)
+- `DesignLayoutPrimitives.tsx` created (243 lines) holding Layout + Form Controls + Finance + Session sections
+
+`tsc --noEmit` and `eslint --fix` both clean.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[design-lint] 2026-03-04 08:21:58 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[design-lint] 2026-03-04 08:21:58 ERROR: manual push required.
+[design-lint] 2026-03-04 08:21:58 Design fixes pushed to main.
