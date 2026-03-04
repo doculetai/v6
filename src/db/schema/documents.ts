@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
+import { timestamps } from './_helpers';
 import { users } from './users';
 
 export const documents = pgTable('documents', {
@@ -19,9 +20,8 @@ export const documents = pgTable('documents', {
     .notNull(),
   rejectionReason: text('rejection_reason'),
   reviewedAt: timestamp('reviewed_at'),
-  reviewedBy: uuid('reviewed_by').references(() => users.id, { onDelete: 'cascade' }),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  reviewedBy: uuid('reviewed_by').references(() => users.id, { onDelete: 'set null' }),
+  ...timestamps,
 });
 
 export const documentsRelations = relations(documents, ({ one }) => ({
