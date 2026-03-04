@@ -30,8 +30,6 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
   const [revokeConfirmId, setRevokeConfirmId] = useState<string | null>(null);
   const [selectedScopes, setSelectedScopes] = useState<ScopeKey[]>([]);
   const [copiedKey, setCopiedKey] = useState(false);
-  const [keyName, setKeyName] = useState('');
-  const [environment, setEnvironment] = useState<'production' | 'sandbox'>('production');
 
   const createMutation = trpc.partner.createApiKey.useMutation({
     onSuccess(result) {
@@ -42,8 +40,6 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
       setCreatedKey(result.rawKey);
       setShowCreateDialog(false);
       setSelectedScopes([]);
-      setKeyName('');
-      setEnvironment('production');
     },
   });
 
@@ -208,47 +204,13 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
       {/* Create key dialog */}
       {showCreateDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl">
-            <h2 className="text-lg font-semibold text-foreground">{copy.createKey.title}</h2>
-
-            <div className="mt-4 flex flex-col gap-4">
-              {/* Key name */}
-              <div>
-                <label
-                  htmlFor="keyName"
-                  className="mb-1 block text-sm font-medium text-foreground"
-                >
-                  {copy.createKey.nameLabel}
-                </label>
-                <input
-                  id="keyName"
-                  type="text"
-                  value={keyName}
-                  onChange={(e) => setKeyName(e.target.value)}
-                  placeholder={copy.createKey.nameHint}
-                  className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                />
-              </div>
-
-              {/* Environment */}
-              <div>
-                <label
-                  htmlFor="environment"
-                  className="mb-1 block text-sm font-medium text-foreground"
-                >
-                  {copy.createKey.environmentLabel}
-                </label>
-                <select
-                  id="environment"
-                  value={environment}
-                  onChange={(e) => setEnvironment(e.target.value as 'production' | 'sandbox')}
-                  className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <option value="production">{copy.createKey.environments.production}</option>
-                  <option value="sandbox">{copy.createKey.environments.sandbox}</option>
-                </select>
-              </div>
-            </div>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="create-key-dialog-title"
+            className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl"
+          >
+            <h2 id="create-key-dialog-title" className="text-lg font-semibold text-foreground">{copy.createKey.title}</h2>
 
             <p className="mt-4 text-sm text-muted-foreground">{copy.createKey.scopesLabel}</p>
 
@@ -275,8 +237,6 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
                 onClick={() => {
                   setShowCreateDialog(false);
                   setSelectedScopes([]);
-                  setKeyName('');
-                  setEnvironment('production');
                 }}
                 className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
@@ -298,8 +258,13 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
       {/* Newly created key reveal */}
       {createdKey !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl">
-            <h2 className="text-lg font-semibold text-foreground">{copy.newKeyCreated.title}</h2>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="new-key-dialog-title"
+            className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl"
+          >
+            <h2 id="new-key-dialog-title" className="text-lg font-semibold text-foreground">{copy.newKeyCreated.title}</h2>
             <p className="mt-1 text-sm text-muted-foreground">{copy.newKeyCreated.description}</p>
 
             <div className="mt-4 rounded-lg border border-border bg-muted p-3">
@@ -330,8 +295,13 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
       {/* Revoke confirm dialog */}
       {revokeConfirmId !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl">
-            <h2 className="text-lg font-semibold text-foreground">{copy.revokeDialog.title}</h2>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="revoke-dialog-title"
+            className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl"
+          >
+            <h2 id="revoke-dialog-title" className="text-lg font-semibold text-foreground">{copy.revokeDialog.title}</h2>
             <p className="mt-2 text-sm text-muted-foreground">{copy.revokeDialog.description}</p>
 
             <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">

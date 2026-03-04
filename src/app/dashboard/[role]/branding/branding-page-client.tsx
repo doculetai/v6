@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { partnerCopy } from '@/config/copy/partner';
+import { type partnerCopy } from '@/config/copy/partner';
 import { trpc } from '@/trpc/client';
 
 const schema = z.object({
@@ -70,8 +70,8 @@ export function BrandingPageClient({ branding, copy }: Props) {
 
       {branding === null ? (
         <div className="rounded-xl border border-border bg-card p-10 text-center">
-          <p className="text-sm font-medium text-foreground">{partnerCopy.branding.error.title}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{partnerCopy.branding.error.description}</p>
+          <p className="text-sm font-medium text-foreground">{copy.error.title}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{copy.error.description}</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
@@ -139,14 +139,14 @@ export function BrandingPageClient({ branding, copy }: Props) {
               disabled={!isDirty || updateMutation.isPending}
               className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              {updateMutation.isPending ? '...' : copy.saveCta}
+              {updateMutation.isPending ? copy.savingCta : copy.saveCta}
             </button>
             {saveSuccess && (
               <p className="text-sm text-primary">{copy.saveSuccess}</p>
             )}
             {updateMutation.isError && (
               <p className="text-sm text-destructive">
-                {partnerCopy.branding.error.title}. {partnerCopy.branding.error.description}
+                {copy.error.title}. {copy.error.description}
               </p>
             )}
           </div>

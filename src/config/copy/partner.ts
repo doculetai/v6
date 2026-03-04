@@ -163,6 +163,7 @@ export const partnerCopy = {
         "See how your branding looks on the certificate verification page.",
     },
     saveCta: "Save branding",
+    savingCta: "Saving…",
     saveSuccess: "Branding updated successfully.",
     error: {
       title: "Failed to load branding",
