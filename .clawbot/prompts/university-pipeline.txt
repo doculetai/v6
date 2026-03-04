@@ -1,0 +1,65 @@
+Build the university application pipeline at src/app/dashboard/university/pipeline/page.tsx (Server) + pipeline-page-client.tsx (Client).
+
+## Page Purpose
+University admissions officers review students who have selected their school/program and have funding verified.
+
+## Pipeline View
+
+A Kanban-style board with 4 columns (scroll horizontally on mobile, tabs on small screens):
+
+| Pending Review | Under Review | Approved | Rejected |
+|---------------|-------------|---------|---------|
+| Student cards | Student cards | Student cards | Student cards |
+
+Each student card shows:
+- Student name + photo placeholder (initials avatar)
+- Program applied to
+- Funding tier badge (Tier 1 / Tier 2 / Tier 3)
+- Funding amount (₦)
+- Days in current status
+- Quick action: Move to next status
+
+## Alternative: List View (toggle button top-right)
+
+Paginated table (20 per page):
+| Student | Program | Funding Tier | Funding Amount | Status | Applied Date | Actions |
+
+Mobile: stacked cards (NOT a table).
+
+Status filter tabs: All | Pending | Under Review | Approved | Rejected | Enrolled
+
+## Bulk Actions
+Select mode (checkbox per card/row):
+- Bulk Approve → confirmation modal → tRPC.university.bulkApprove(studentIds)
+- Bulk Reject → modal with rejection reason field → tRPC.university.bulkReject(studentIds, reason)
+- Export Selected → tRPC.university.exportCSV(studentIds) → CSV download
+
+## Individual Actions (per card)
+- Approve → tRPC.university.approveStudent(studentId) + triggers email via Resend
+- Reject → modal: reason field → tRPC.university.rejectStudent(studentId, reason)
+- Request Documents → tRPC.university.requestDocuments(studentId, message)
+- View Full Profile → /dashboard/university/students/[studentId]
+
+## CSV Export
+tRPC.university.exportCSV() returns:
+Student Name, Program, Funding Amount, Funding Tier, Status, Application Date, KYC Status, Sponsor Name
+
+## Stats Bar (top of page)
+Four stat chips: Total Applicants | Pending | Approved | Enrolled
+
+## Search + Filter
+- Search: by student name or email (client-side debounce)
+- Filter: by program (dropdown), by funding tier (1/2/3)
+
+## Copy Config
+Import from src/config/copy/university.ts — keys: universityPipeline.*
+
+## Data (tRPC)
+- trpc.university.getPipeline(filters, page) → PaginatedStudentApplications
+- trpc.university.approveStudent(studentId) → void
+- trpc.university.rejectStudent(studentId, reason) → void
+- trpc.university.bulkApprove(ids) → BulkResult
+- trpc.university.bulkReject(ids, reason) → BulkResult
+- trpc.university.exportCSV(filters) → CSVString
+
+npm run typecheck → commit: feat(university): application pipeline with kanban + list view → PR to main

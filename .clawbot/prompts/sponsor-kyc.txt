@@ -1,0 +1,73 @@
+Build the sponsor KYC verification page at src/app/dashboard/sponsor/kyc/page.tsx (Server) + kyc-page-client.tsx (Client).
+
+## Page Purpose
+Sponsors must verify their identity before disbursing funds. Two sponsor types have different requirements.
+
+## KYC Flow (Individual: parent/guardian sponsor)
+
+3 steps shown as a stepper:
+1. **Identity Verification** — Dojah ID check
+   - Full name, BVN, NIN, or passport number fields
+   - Calls tRPC.sponsor.submitIdentityCheck() → polls Dojah widget status
+   - Status: pending / verified / failed
+   - Show step as complete with green checkmark when verified
+
+2. **Bank Account Verification** — Mono bank connect
+   - Button: "Connect Your Bank" → opens Mono widget (NEXT_PUBLIC_MONO_PUBLIC_KEY)
+   - On success: shows account name + last 4 digits + bank name
+   - Calls tRPC.sponsor.connectBankAccount() with Mono account ID
+   - Status: connected / failed
+
+3. **Affidavit Signing** — Legal acknowledgment
+   - Display affidavit text (from copy config: sponsorKyc.affidavitText)
+   - Checkbox: "I confirm I am the authorized account holder..."
+   - "Sign & Submit" button → calls tRPC.sponsor.submitAffidavit()
+   - Generates an audit log entry
+
+## KYC Flow (Corporate sponsor)
+
+Same 3 steps as individual PLUS:
+
+4. **CAC Document Upload** — Corporate Affairs Commission registration
+   - File upload (PDF, max 10MB) → Supabase Storage
+   - tRPC.sponsor.uploadCACDocument()
+   - Status: uploaded / reviewing / approved
+
+5. **Compliance Report Download** (after all steps complete)
+   - Button: "Download Compliance Summary (PDF)"
+   - tRPC.sponsor.downloadComplianceReport() → returns signed URL
+
+## Overall KYC Status Display
+At top of page: progress indicator showing overall KYC tier:
+- Not Started → gray
+- In Progress → amber, shows which step is next
+- Tier 1 Complete (identity only) → blue
+- Fully Verified (all steps) → green
+
+## Stepper Component (src/components/kyc/KycStepper.tsx)
+Vertical stepper (mobile-first). Each step:
+- Circle with step number (or checkmark if complete)
+- Step title + description
+- Expand/collapse content
+- Current step: expanded + blue border
+- Complete steps: collapsed + green checkmark
+- Future steps: locked + gray
+
+## Copy Config
+Import from src/config/copy/sponsor.ts — keys: sponsorKyc.*
+
+## Data (tRPC)
+- trpc.sponsor.getKycStatus() → { identityStatus, bankStatus, affidavitStatus, cacStatus, tier }
+- trpc.sponsor.submitIdentityCheck(data) → DojahVerificationResult
+- trpc.sponsor.connectBankAccount(monoAccountId) → BankAccount
+- trpc.sponsor.submitAffidavit() → void
+- trpc.sponsor.uploadCACDocument(file) → StorageUrl
+
+## Requirements
+- Each step: loading state + error state with retry button
+- Sentry.captureException on all errors
+- Amount display: ₦ format
+- WCAG 2.1 AA
+- Dark mode
+
+npm run typecheck → commit: feat(sponsor): KYC verification page → PR to main

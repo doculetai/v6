@@ -1,0 +1,93 @@
+URGENT: Port the Doculet V5 Obsidian Blues design system to V6. The current V6 has generic shadcn/ui defaults — it must match V5's premium fintech visual identity.
+
+## What To Do
+
+### 1. Replace src/app/globals.css entirely
+
+The new globals.css must:
+- Keep: `@import "tailwindcss"`, `@import "tw-animate-css"`, `@import "shadcn/tailwind.css"`
+- Fix dark variant: `@custom-variant dark (&:where(.dark, .dark *));` — the V6 version is wrong
+- Remove: generic shadcn @theme defaults
+- Add: full Obsidian Blues @theme below
+
+Read /Users/gm/v5/src/app/globals.css as the source of truth. Copy it faithfully, adapting as follows:
+- Keep all @theme tokens, .dark overrides, shadow scale, spacing scale, motion tokens, radius scale
+- Keep all body/html/typography base styles
+- Remove V5-specific things: @import "tailwindcss" is already at top, keep it, but don't duplicate
+- Make sure the @custom-variant dark line comes BEFORE @theme
+
+### 2. Update src/app/layout.tsx fonts
+
+Replace Geist font with IBM Plex:
+```typescript
+import { IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
+
+const plexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-plex-sans",
+  display: "swap",
+});
+
+const plexSerif = IBM_Plex_Serif({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plex-serif",
+  display: "swap",
+});
+```
+
+In the body element, use: `className={`${plexSans.variable} ${plexSerif.variable} antialiased font-sans`}`
+
+In globals.css @theme, add:
+```css
+--font-sans: var(--font-plex-sans);
+--font-serif: var(--font-plex-serif);
+```
+
+### 3. Create src/lib/fonts.ts
+
+```typescript
+import { IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
+
+export const plexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-plex-sans",
+  display: "swap",
+});
+
+export const plexSerif = IBM_Plex_Serif({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plex-serif",
+  display: "swap",
+});
+```
+
+Import from here in layout.tsx: `import { plexSans, plexSerif } from "@/lib/fonts";`
+
+### 4. Update src/app/page.tsx
+
+Replace the default Next.js placeholder with a Doculet-branded placeholder:
+- Clean, centered layout on `bg-background`
+- Doculet.ai logo text (no image needed — just styled text)
+- Headline: "Proof of Funds — Coming Soon"
+- Subtitle: "The V6 platform is being built. Check back shortly."
+- Uses bg-primary, text-foreground semantic tokens
+
+### 5. Verify
+
+Run: `npm run typecheck`
+If it passes, commit: `feat(design): port Obsidian Blues design system from V5, IBM Plex fonts`
+Push and open PR to main.
+
+## Key Color Palette (from V5)
+Primary navy: #000080
+Primary mid: #4747D4
+Primary light: #8080FF
+Neutral dark: #14152A
+Background light: #FAFAFA
+Success green: #10B981
+
+The full token set is in /Users/gm/v5/src/app/globals.css — read it and copy faithfully.

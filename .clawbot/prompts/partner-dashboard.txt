@@ -1,0 +1,60 @@
+Build the partner overview dashboard at src/app/dashboard/partner/page.tsx (Server) + partner-dashboard-client.tsx (Client).
+
+## What Is A Partner?
+A partner is a white-label or API integration customer — typically another fintech, bank, or educational institution that embeds Doculet's proof-of-funds capabilities into their own product via our API.
+
+## Page Layout
+
+### API Usage Metrics (top row, 4 stat cards)
+- API Calls This Month: count + sparkline
+- Success Rate: X% + trend
+- Avg Response Time: Xms
+- Active Integrations: count
+
+### Active Integrations Panel
+
+List of configured integrations. Each integration card:
+- Integration name (e.g., "Student Verify Webhook")
+- Type badge: REST API | Webhook | Embedded Widget
+- Status: active / paused / error
+- Last activity timestamp
+- API calls today
+- Link to view logs
+
+### White-Label Config Panel
+
+Card showing partner's current brand configuration:
+- Logo: current logo preview + "Upload Logo" button
+- Brand Primary Color: color swatch + hex input + preview button
+- Brand Domain: e.g., verify.partnerbank.com
+- Legal Entity Name (shown on certificates)
+
+"Save Brand Config" button → tRPC.partner.updateBrandConfig(config)
+"Preview Certificate" button → opens modal showing what their white-labeled certificate looks like
+
+### Revenue Sharing Panel
+
+Shows the partner's revenue split arrangement:
+- Platform Fee Rate: X% (set by Doculet admin)
+- Partner Revenue Share: X%
+- This Month's Revenue Share: ₦X
+- Total Revenue Share Paid: ₦X
+
+Table: monthly revenue share history
+
+## Copy Config
+Import from src/config/copy/partner.ts — keys: partnerDashboard.*
+
+## Data (tRPC)
+- trpc.partner.getApiMetrics() → { callsThisMonth, successRate, avgResponseTime, integrations }
+- trpc.partner.getBrandConfig() → { logo, primaryColor, domain, legalName }
+- trpc.partner.updateBrandConfig(config) → void
+- trpc.partner.getRevenueShare() → { rate, thisMonth, total, history }
+
+## States
+- Metrics: 4 skeleton stat cards
+- Integrations: skeleton list
+- Brand config: form with loading state
+- Empty integrations: illustration + "No integrations set up" + link to API Keys page
+
+npm run typecheck → commit: feat(partner): partner dashboard with API metrics + white-label config + revenue → PR to main

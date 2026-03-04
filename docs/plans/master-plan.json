@@ -23,7 +23,9 @@
           "persona": "architect",
           "promptFile": ".clawbot/prompts/foundation-db-schema.txt",
           "effort": "high",
-          "dependsOn": ["foundation-bootstrap"]
+          "dependsOn": [
+            "foundation-bootstrap"
+          ]
         },
         {
           "id": "foundation-trpc-setup",
@@ -32,7 +34,9 @@
           "persona": "architect",
           "promptFile": ".clawbot/prompts/foundation-trpc-setup.txt",
           "effort": "high",
-          "dependsOn": ["foundation-bootstrap"]
+          "dependsOn": [
+            "foundation-bootstrap"
+          ]
         }
       ]
     },
@@ -48,7 +52,10 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/auth-flows.txt",
           "effort": "high",
-          "dependsOn": ["foundation-bootstrap", "foundation-trpc-setup"]
+          "dependsOn": [
+            "foundation-bootstrap",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "dashboard-shell",
@@ -57,7 +64,10 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/dashboard-shell.txt",
           "effort": "high",
-          "dependsOn": ["foundation-bootstrap", "foundation-trpc-setup"]
+          "dependsOn": [
+            "foundation-bootstrap",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "copy-config",
@@ -66,7 +76,9 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/copy-config.txt",
           "effort": "medium",
-          "dependsOn": ["foundation-bootstrap"]
+          "dependsOn": [
+            "foundation-bootstrap"
+          ]
         }
       ]
     },
@@ -82,7 +94,12 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/student-onboarding.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "student-verify",
@@ -91,7 +108,12 @@
           "persona": "backend-lead",
           "promptFile": ".clawbot/prompts/student-verify.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "student-documents",
@@ -100,7 +122,12 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/student-documents.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "student-proof",
@@ -109,7 +136,12 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/student-proof.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "student-sponsor-invite",
@@ -118,7 +150,12 @@
           "persona": "backend-lead",
           "promptFile": ".clawbot/prompts/student-sponsor-invite.txt",
           "effort": "medium",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         }
       ]
     },
@@ -134,7 +171,12 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/sponsor-dashboard.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "sponsor-student-detail",
@@ -143,7 +185,9 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/sponsor-student-detail.txt",
           "effort": "high",
-          "dependsOn": ["sponsor-dashboard"]
+          "dependsOn": [
+            "sponsor-dashboard"
+          ]
         },
         {
           "id": "sponsor-kyc",
@@ -152,7 +196,12 @@
           "persona": "backend-lead",
           "promptFile": ".clawbot/prompts/sponsor-kyc.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "sponsor-disbursements",
@@ -161,7 +210,10 @@
           "persona": "backend-lead",
           "promptFile": ".clawbot/prompts/sponsor-disbursements.txt",
           "effort": "high",
-          "dependsOn": ["sponsor-dashboard", "foundation-db-schema"]
+          "dependsOn": [
+            "sponsor-dashboard",
+            "foundation-db-schema"
+          ]
         }
       ]
     },
@@ -177,7 +229,12 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/university-pipeline.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "university-verify-cert",
@@ -186,7 +243,10 @@
           "persona": "architect",
           "promptFile": ".clawbot/prompts/university-verify-cert.txt",
           "effort": "medium",
-          "dependsOn": ["foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "admin-dashboard",
@@ -195,7 +255,12 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/admin-dashboard.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "admin-document-review",
@@ -204,7 +269,10 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/admin-document-review.txt",
           "effort": "high",
-          "dependsOn": ["admin-dashboard", "foundation-db-schema"]
+          "dependsOn": [
+            "admin-dashboard",
+            "foundation-db-schema"
+          ]
         }
       ]
     },
@@ -220,7 +288,12 @@
           "persona": "frontend-lead",
           "promptFile": ".clawbot/prompts/agent-dashboard.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "partner-dashboard",
@@ -229,7 +302,12 @@
           "persona": "architect",
           "promptFile": ".clawbot/prompts/partner-dashboard.txt",
           "effort": "high",
-          "dependsOn": ["dashboard-shell", "copy-config", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "dashboard-shell",
+            "copy-config",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         },
         {
           "id": "partner-api-keys",
@@ -238,7 +316,10 @@
           "persona": "backend-lead",
           "promptFile": ".clawbot/prompts/partner-api-keys.txt",
           "effort": "high",
-          "dependsOn": ["partner-dashboard", "foundation-db-schema"]
+          "dependsOn": [
+            "partner-dashboard",
+            "foundation-db-schema"
+          ]
         }
       ]
     },
@@ -254,7 +335,11 @@
           "persona": "backend-lead",
           "promptFile": ".clawbot/prompts/cross-sponsor-invite-chain.txt",
           "effort": "high",
-          "dependsOn": ["student-sponsor-invite", "sponsor-dashboard", "student-proof"]
+          "dependsOn": [
+            "student-sponsor-invite",
+            "sponsor-dashboard",
+            "student-proof"
+          ]
         },
         {
           "id": "cross-document-review-loop",
@@ -263,7 +348,10 @@
           "persona": "backend-lead",
           "promptFile": ".clawbot/prompts/cross-document-review-loop.txt",
           "effort": "high",
-          "dependsOn": ["student-documents", "admin-document-review"]
+          "dependsOn": [
+            "student-documents",
+            "admin-document-review"
+          ]
         },
         {
           "id": "cross-university-pipeline",
@@ -272,7 +360,11 @@
           "persona": "backend-lead",
           "promptFile": ".clawbot/prompts/cross-university-pipeline.txt",
           "effort": "high",
-          "dependsOn": ["student-onboarding", "university-pipeline", "student-proof"]
+          "dependsOn": [
+            "student-onboarding",
+            "university-pipeline",
+            "student-proof"
+          ]
         },
         {
           "id": "webhook-delivery",
@@ -281,7 +373,11 @@
           "persona": "backend-lead",
           "promptFile": ".clawbot/prompts/webhook-delivery.txt",
           "effort": "high",
-          "dependsOn": ["foundation-bootstrap", "foundation-db-schema", "foundation-trpc-setup"]
+          "dependsOn": [
+            "foundation-bootstrap",
+            "foundation-db-schema",
+            "foundation-trpc-setup"
+          ]
         }
       ]
     },
@@ -297,7 +393,11 @@
           "persona": "qa-lead",
           "promptFile": ".clawbot/prompts/e2e-tests.txt",
           "effort": "high",
-          "dependsOn": ["cross-sponsor-invite-chain", "cross-document-review-loop", "cross-university-pipeline"]
+          "dependsOn": [
+            "cross-sponsor-invite-chain",
+            "cross-document-review-loop",
+            "cross-university-pipeline"
+          ]
         },
         {
           "id": "sentry-wiring",
@@ -306,7 +406,9 @@
           "persona": "devops",
           "promptFile": ".clawbot/prompts/sentry-wiring.txt",
           "effort": "medium",
-          "dependsOn": ["webhook-delivery"]
+          "dependsOn": [
+            "webhook-delivery"
+          ]
         }
       ]
     }

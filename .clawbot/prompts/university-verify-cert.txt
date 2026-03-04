@@ -1,0 +1,95 @@
+Build the public certificate verification page at src/app/certificate/[token]/page.tsx (Server Component, NO auth required).
+
+## Page Purpose
+Anyone (university admissions, employers, visa officers) can verify a student's proof-of-funds certificate using a unique token. No login required.
+
+## URL
+/certificate/[token] where token is a UUID generated when the certificate is issued.
+
+## Page Design
+
+Premium, trust-inspiring design:
+
+```
+┌─────────────────────────────────────────────────────┐
+│  🔒  VERIFIED                              doculet.ai │
+│                                                      │
+│  Proof of Funds Certificate                          │
+│  ─────────────────────────────────                   │
+│                                                      │
+│  Student Name:    Kemi Adesanya                      │
+│  University:      University of Lagos                │
+│  Program:         Computer Science (BSc)             │
+│  Funding Amount:  ₦2,400,000                         │
+│  Funding Tier:    Tier 3 (Fully Verified)            │
+│  Sponsor:         FundEd Corporate Ltd               │
+│  Valid Until:     March 31, 2026                     │
+│                                                      │
+│  Verified:  ✅ March 4, 2026 at 14:32 WAT            │
+│                                                      │
+│  Certificate ID:  CERT-2026-KA-001                   │
+│                                                      │
+│  [Print Certificate]  [Download PDF]                 │
+│                                                      │
+│  ────────────────────────────────────                │
+│  Tamper-evident: This certificate is cryptographically│
+│  secured. Any modification renders it invalid.      │
+└─────────────────────────────────────────────────────┘
+```
+
+## Visual Design
+- White card on dark navy background (even in light mode — looks official)
+- Green "VERIFIED" badge top-left with shield/lock icon
+- Doculet.ai logo top-right (text logo, no image dependency)
+- All data in a clean label/value grid
+- Bottom: security disclaimer text
+- Print button (window.print()) and Download PDF button
+
+## Invalid Certificate State
+If token not found or certificate revoked:
+```
+❌  Certificate Not Found
+
+This certificate could not be verified. It may have been
+revoked or the link may be invalid.
+
+If you believe this is an error, contact:
+support@doculet.ai
+```
+
+## Metadata (for sharing)
+```typescript
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // Server-side fetch to get certificate data
+  const cert = await getCertificateByToken(params.token);
+  return {
+    title: cert ? `Proof of Funds — ${cert.studentName} | doculet.ai` : 'Certificate Not Found | doculet.ai',
+    description: cert ? `Verified proof of funds certificate for ${cert.studentName}` : 'Certificate not found',
+    robots: 'noindex', // Don't index individual certificate pages
+  };
+}
+```
+
+## Data (Direct Drizzle, no tRPC auth needed)
+
+Create a server-side helper: src/lib/certificates.ts
+```typescript
+export async function getCertificateByToken(token: string): Promise<Certificate | null> {
+  // Direct DB query — no auth context needed
+  // Return null if not found or revoked
+}
+```
+
+## Print CSS
+Add print-specific styles: hide nav, hide buttons, show certificate full-page, force light mode for printing.
+
+## Requirements
+- No auth middleware — this route MUST be public
+- Fast: static-like rendering (ISR or full SSR with caching)
+- Mobile friendly: certificate fits 375px width
+- Accessibility: all data readable by screen readers
+
+## Tamper-evident Display
+Show the SHA-256 hash of the certificate data (first 16 chars) as a visual "seal" at the bottom.
+
+npm run typecheck → commit: feat(university): public certificate verification page → PR to main

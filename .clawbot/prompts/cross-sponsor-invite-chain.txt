@@ -1,0 +1,80 @@
+Wire the full sponsor invite chain end-to-end across student and sponsor personas.
+
+## Chain to Wire:
+
+1. **Student sends invite** → `/dashboard/student/sponsors` page
+   - Student enters sponsor email + optional message
+   - tRPC.student.sendSponsorInvite(email, message)
+   - Creates record in `sponsor_invites` table: { studentId, sponsorEmail, message, status: 'pending', token: uuid() }
+   - Triggers Resend email to sponsor (use src/lib/email/templates.ts)
+
+2. **Sponsor receives email** → Email contains:
+   - "Kemi Adesanya has invited you to be their sponsor on Doculet.ai"
+   - CTA button: "View Invitation" → https://app.doculet.ai/invite/[token]
+
+3. **Invite landing page** → `/invite/[token]/page.tsx` (public, no auth)
+   - Shows student name, school, program, funding amount requested
+   - Two buttons: "Accept as Sponsor" → /signup?invite=[token] or /dashboard/sponsor?invite=[token]
+   - "Decline" → POST /api/invites/[token]/decline
+
+4. **Sponsor accepts invite** → tRPC.sponsor.acceptInvite(token)
+   - Updates sponsor_invites status → 'accepted'
+   - Creates/links sponsorship record
+   - Triggers: Resend email to student "Your sponsor [name] has accepted!"
+
+5. **Student sees updated status** → Real-time via Supabase Realtime subscription
+   - Student's invite list updates without page refresh
+   - Status badge changes: pending → accepted (green checkmark)
+
+6. **Sponsor dashboard updates** → New student appears in portfolio
+
+## Real-time Subscription (Supabase)
+
+In the student sponsor-invite client component:
+```typescript
+useEffect(() => {
+  const subscription = supabase
+    .channel('sponsor-invites')
+    .on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'sponsor_invites',
+      filter: `student_id=eq.${studentId}`
+    }, (payload) => {
+      // Update local state with new invite status
+      refetchInvites();
+    })
+    .subscribe();
+  return () => supabase.removeChannel(subscription);
+}, [studentId]);
+```
+
+## API Route (for public invite actions)
+
+### /app/api/invites/[token]/decline/route.ts
+- No auth required
+- Validate token exists + is pending
+- Update status → 'declined'
+- Return 200
+
+## tRPC Procedures to Implement
+
+In src/server/routers/student.ts:
+- `sendSponsorInvite(email, message)` → void
+- `getInvites()` → SponsorInvite[]
+- `cancelInvite(inviteId)` → void
+
+In src/server/routers/sponsor.ts:
+- `acceptInvite(token)` → Sponsorship
+- `getPendingInvites()` → SponsorInvite[]
+
+## Email Templates (src/lib/email/templates.ts)
+- `sendSponsorInviteEmail(sponsorEmail, studentName, school, inviteUrl)` → Resend
+
+## Requirements
+- Token must be cryptographically random (uuid v4 or crypto.randomUUID())
+- Invites expire after 30 days (check created_at + 30 days)
+- No duplicate invites to same email (check unique constraint)
+- All Sentry.captureException on failures
+
+npm run typecheck → commit: feat(cross): wire sponsor invite chain: student send → email → accept → realtime update → PR to main

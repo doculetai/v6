@@ -1,0 +1,61 @@
+Build the agent overview dashboard at src/app/dashboard/agent/page.tsx (Server) + agent-dashboard-client.tsx (Client).
+
+## What Is An Agent?
+An "agent" is a referral partner — an individual or company that refers students to Doculet in exchange for a commission per successful sponsorship.
+
+## Page Layout
+
+### EarningsPanel (Agent Variant)
+Three stat cards:
+- Total Commission Earned (₦): sum of all paid commissions
+- Pending Commission (₦): sum of commissions awaiting payment
+- Commission This Month (₦): for current calendar month
+
+Below stats: a line chart showing commission earnings over last 12 months.
+
+### Student Portfolio List
+
+Table/card grid of all referred students:
+| Student | School | Sponsor | Funding Amount | Commission Rate | Commission (₦) | Status |
+
+Commission Rate is stored per-agent-student relationship (e.g., 2.5%).
+Commission amount = Funding Amount × Commission Rate.
+Status: pending (funding not yet disbursed) / earned (disbursed) / paid (paid to agent).
+
+Mobile: stacked cards with key info.
+
+**Sort:** by date added (default), by commission amount
+**Filter:** by status (all/pending/earned/paid)
+
+### Referral Link Generator
+
+Card with:
+- Agent's unique referral URL: `https://app.doculet.ai/signup?ref=[agentCode]`
+- Copy button (copies to clipboard with toast feedback)
+- Share button (Web Share API on mobile)
+- Stats: "X students signed up via your link" + conversion rate
+
+## Commission Detail (click on a student row)
+
+Sheet/modal shows:
+- Student name + school + program
+- Sponsorship amount (₦)
+- Commission rate (%)
+- Commission due (₦)
+- Commission status + payment date (if paid)
+- Payment reference (if paid via Paystack)
+
+## Copy Config
+Import from src/config/copy/agent.ts — keys: agentDashboard.*
+
+## Data (tRPC)
+- trpc.agent.getEarningsSummary() → { totalEarned, pending, thisMonth, monthlyTrend }
+- trpc.agent.getStudentPortfolio(filters, page) → PaginatedStudentCommissions
+- trpc.agent.getReferralStats() → { signups, conversions, agentCode }
+
+## States
+- Earnings panel: skeleton cards + chart skeleton
+- Portfolio: table/card skeleton
+- Empty: "No students referred yet" + illustration + referral link prominently displayed
+
+npm run typecheck → commit: feat(agent): agent dashboard with earnings panel + portfolio + referral link → PR to main

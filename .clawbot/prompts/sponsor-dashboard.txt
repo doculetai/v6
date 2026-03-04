@@ -1,0 +1,65 @@
+Build the sponsor overview dashboard at src/app/dashboard/sponsor/page.tsx (Server Component) + src/app/dashboard/sponsor/sponsor-dashboard-client.tsx (Client Component).
+
+## Page Structure
+Three sections stacked vertically:
+1. **EarningsPanel** — financial summary strip
+2. **Student Portfolio** — list of sponsored students
+3. **Pending Invitations** — invites awaiting acceptance
+
+## EarningsPanel Component (src/components/sponsor/EarningsPanel.tsx)
+Three stat cards in a row (stack on mobile):
+- Total Committed (₦) — sum of all active sponsorships
+- Total Disbursed (₦) — sum of confirmed disbursements
+- Remaining (₦) — committed minus disbursed
+All amounts stored as integers in kobo, display as ₦ with comma formatting (e.g., ₦1,200,000).
+Add a subtle progress bar showing disbursed/committed ratio.
+
+## Student Portfolio List
+Card grid (1 col mobile, 2 col md, 3 col lg). Each card shows:
+- Student name + school + program
+- Verification status badge (unverified/tier1/tier2/tier3)
+- Funding amount committed (₦)
+- Last activity timestamp (relative: "3 days ago")
+- Quick actions: View Details → /dashboard/sponsor/students/[studentId]
+
+Empty state: illustration + "No students sponsored yet" + CTA "View pending invites".
+
+## Pending Invitations Section
+List of invite rows. Each row:
+- Student name + email
+- Date invited (relative)
+- Status badge: pending / declined
+- Cancel button (tRPC mutation: sponsor.cancelInvite)
+
+Empty state: "No pending invitations"
+
+## Copy Config
+Import from src/config/copy/sponsor.ts — use keys: sponsorDashboard.headline, sponsorDashboard.earningsPanel.*, sponsorDashboard.portfolio.*, sponsorDashboard.invitations.*
+
+## Data (tRPC)
+Server page calls:
+- trpc.sponsor.getSummary() → { totalCommitted, totalDisbursed, students: [...] }
+- trpc.sponsor.getPendingInvites() → invite[]
+
+Wire to Drizzle: sponsorships + student_profiles + sponsor_invites tables.
+
+## States Required
+- Loading: EarningsPanel skeleton (3 shimmering stat boxes) + 6 card skeletons
+- Error: retry button + Sentry.captureException
+- Empty: illustration + CTA
+- Populated: full data
+
+## Copy Variants
+Sponsor type is stored on the profile. Two variants from copy config:
+- Corporate sponsor: "Portfolio" label, formal tone
+- Parent/guardian: "My Student" label, personal tone
+Read sponsor_type from profile and pass to copy selector.
+
+## Technical Requirements
+- All amounts: kobo integers from DB, display with ₦ formatting util
+- Relative timestamps via date-fns
+- Mobile-first layout (375px default)
+- Dark mode: dark: variants on all colors
+- WCAG 2.1 AA contrast
+
+Run npm run typecheck after building. Commit as feat(sponsor): sponsor overview dashboard and open PR to main.

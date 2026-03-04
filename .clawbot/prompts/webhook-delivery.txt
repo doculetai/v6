@@ -1,0 +1,101 @@
+Build the outbound webhook delivery system and inbound webhook handlers.
+
+## Inbound Webhook Handlers (receiving events FROM Paystack/Mono/Dojah)
+
+### src/app/api/webhooks/paystack/route.ts
+- Verify HMAC-SHA512 signature: `crypto.createHmac('sha512', PAYSTACK_WEBHOOK_SECRET).update(rawBody).digest('hex')`
+- Idempotency: SHA-256 hash of `x-paystack-signature` header → check `webhook_events` table before processing
+- Handle events: `charge.success`, `transfer.success`, `transfer.failed`
+- On success: update sponsorship/disbursement status via Drizzle
+- On failure: log to Sentry, return 200 (Paystack retries on non-200)
+
+### src/app/api/webhooks/mono/route.ts
+- Verify signature: `mono-webhook-secret` header matches MONO_WEBHOOK_SECRET
+- Idempotency: hash the event ID
+- Handle events: `mono.events.account_updated`, `mono.events.account_reauthorized`
+- On account updated: refresh bank account data via Mono API
+
+### src/app/api/webhooks/dojah/route.ts
+- Verify signature: `x-dojah-signature` header
+- Handle events: `identity.verification.completed`, `identity.verification.failed`
+- Update KYC status in student_profiles table
+
+### All Handlers Share:
+```typescript
+// Idempotency check pattern
+const eventHash = crypto.createHash('sha256').update(rawBody).digest('hex');
+const existing = await db.query.webhookEvents.findFirst({ where: eq(webhookEvents.hash, eventHash) });
+if (existing) return NextResponse.json({ ok: true }); // Already processed
+
+// Insert to webhook_events before processing
+await db.insert(webhookEvents).values({ hash: eventHash, provider, eventType, payload: rawBody, processedAt: null });
+
+// Process event
+// ...
+
+// Mark processed
+await db.update(webhookEvents).set({ processedAt: new Date() }).where(eq(webhookEvents.hash, eventHash));
+```
+
+## Health Endpoint
+
+### src/app/api/health/route.ts
+Returns JSON with system health status:
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-03-04T14:32:00Z",
+  "version": "v6.0.0",
+  "checks": {
+    "database": { "status": "ok", "latencyMs": 12 },
+    "env": { "status": "ok", "missing": [] }
+  }
+}
+```
+- Database check: simple `SELECT 1` with timing
+- Env check: verify critical env vars are set (DATABASE_URL, NEXT_PUBLIC_SUPABASE_URL, etc.)
+- No auth required
+- Returns 503 if any check fails
+
+## Email Notifications (Resend)
+
+Create src/lib/email/templates.ts with:
+- `sendDocumentApprovedEmail(studentEmail, documentType)` → Resend
+- `sendDocumentRejectedEmail(studentEmail, documentType, reason)` → Resend
+- `sendSponsorInviteEmail(sponsorEmail, studentName, inviteUrl)` → Resend
+- `sendDisbursementConfirmedEmail(studentEmail, amount)` → Resend
+- `sendCertificateIssuedEmail(studentEmail, certUrl)` → Resend
+
+All emails use react-email templates. Create simple HTML templates:
+- Doculet.ai header (text logo, navy background)
+- Body text
+- CTA button
+- Footer with unsubscribe link
+
+## Cron Handlers
+
+### src/app/api/cron/retry-webhooks/route.ts
+Re-processes failed webhook events (unprocessed after 15 minutes).
+Vercel cron: `*/15 * * * *` (every 15 minutes).
+Auth: vercel cron secret header check.
+
+### src/app/api/cron/certificate-expiry/route.ts
+Marks certificates as expired if valid_until < now.
+Vercel cron: `0 0 * * *` (daily at midnight).
+
+## vercel.json Crons
+```json
+{
+  "crons": [
+    { "path": "/api/cron/retry-webhooks", "schedule": "*/15 * * * *" },
+    { "path": "/api/cron/certificate-expiry", "schedule": "0 0 * * *" }
+  ]
+}
+```
+
+## Sentry Integration
+- All webhook handlers: wrap in try/catch, `Sentry.captureException(err)` on failure
+- All email sends: `Sentry.captureException` if Resend throws
+- No console.log anywhere — use Sentry or structured logs only
+
+npm run typecheck → commit: feat(backend): webhook handlers with idempotency, health endpoint, Resend email templates → PR to main

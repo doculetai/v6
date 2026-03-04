@@ -1,0 +1,85 @@
+Build partner API key management at src/app/dashboard/partner/api-keys/page.tsx (Server) + api-keys-client.tsx (Client).
+
+## Page Layout
+
+### Active API Keys Table
+
+| Name | Key (masked) | Scopes | Created | Last Used | Requests | Actions |
+|------|-------------|--------|---------|-----------|----------|---------|
+
+- Key shown as: `dk_live_••••••••••••abc123` (last 6 chars visible)
+- "Copy Key" button (only shown once at creation)
+- Scopes shown as chips: read:students | write:certificates | webhook
+- Actions: Revoke (red, with confirmation modal)
+
+Mobile: stacked cards.
+
+### Generate New Key
+
+Card/form at top of page:
+- Key name: text input ("Production API" or "Staging Webhook")
+- Scopes: multi-select checkboxes:
+  - `read:students` — Read student profile + verification status
+  - `read:certificates` — Read certificate data
+  - `write:certificates` — Issue certificates via API
+  - `webhook` — Configure webhook endpoints
+  - `read:analytics` — Access usage analytics
+- Rate limit tier: standard (100/min) | pro (1000/min) | enterprise (10000/min)
+- Button: "Generate Key" → tRPC.partner.generateApiKey(name, scopes, rateTier)
+
+On success: Show the full key ONCE in a modal (can't be shown again):
+```
+Your new API key:
+
+dk_live_a1b2c3d4e5f6g7h8i9j0...
+
+⚠️ Copy this key now — it won't be shown again.
+
+[Copy to Clipboard]  [I've copied it, close]
+```
+
+### Usage Logs
+
+Table showing recent API calls:
+| Timestamp | Endpoint | Method | Status | Latency | Key Used |
+|-----------|---------|--------|--------|---------|---------|
+
+Filter: by key, by endpoint, by status (success/error)
+Pagination: 50 per page
+
+### Rate Limit Display
+
+Per-key usage gauge:
+- X / 100 requests used in current minute
+- Visual progress bar (green → amber → red as limit approaches)
+- Resets in: Xs
+
+### Auto-generated REST API Docs
+
+Static page /dashboard/partner/api-docs with:
+- OpenAPI-style endpoint documentation (hardcoded, not runtime-generated)
+- Endpoints covered:
+  - GET /api/v2/students/:id — Get student verification status
+  - GET /api/v2/certificates/:token — Get certificate by token
+  - POST /api/v2/certificates — Issue a certificate
+  - POST /api/v2/webhooks — Configure a webhook endpoint
+- Each endpoint: description, request params, response schema, curl example
+- Authentication: "Include your API key as Bearer token: Authorization: Bearer dk_live_..."
+- Copy button per curl example
+
+## Copy Config
+Import from src/config/copy/partner.ts — keys: partnerApiKeys.*
+
+## Data (tRPC)
+- trpc.partner.getApiKeys() → ApiKey[]
+- trpc.partner.generateApiKey(name, scopes, rateTier) → { key: string, id: string }
+- trpc.partner.revokeApiKey(keyId) → void
+- trpc.partner.getUsageLogs(keyId, filters, page) → PaginatedUsageLogs
+- trpc.partner.getRateLimitStatus(keyId) → { used, limit, resetIn }
+
+## Security Notes
+- API keys stored as bcrypt hash in DB — raw key shown only once
+- All key operations logged to audit trail
+- Revoked keys immediately invalidated (no grace period)
+
+npm run typecheck → commit: feat(partner): API key management + usage logs + docs → PR to main
