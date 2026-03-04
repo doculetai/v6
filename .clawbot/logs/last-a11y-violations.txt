@@ -1,0 +1,16 @@
+
+
+=== CHECK 2: PAGE FILES MISSING <h1> HEADING ===
+Each page must have exactly one visible <h1> heading for screen reader navigation.
+Add <h1> as the first visible heading, or use your PageHeading component.
+
+/Users/gm/v6/src/app/test-landing/page.tsx
+/Users/gm/v6/src/app/(marketing)/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/proof/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/verify/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/documents/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/page.tsx
+/Users/gm/v6/src/app/(auth)/signup/page.tsx
+/Users/gm/v6/src/app/(auth)/update-password/page.tsx
+/Users/gm/v6/src/app/(auth)/forgot-password/page.tsx
+/Users/gm/v6/src/app/(auth)/login/page.tsx

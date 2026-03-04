@@ -1,0 +1,7 @@
+[copy-audit] 2026-03-04 04:36:58 Copy-audit started. Scanning src/config/copy/ and src/ every 180s
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 04:36:58 Scanning copy config coverage...
+[copy-audit] 2026-03-04 04:36:59 Found 2 violation category(ies).
+[copy-audit] 2026-03-04 04:36:59 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 04:36:59 Auto-fixing copy violations (round 1 of max 8)...

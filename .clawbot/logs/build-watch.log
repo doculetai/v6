@@ -1,0 +1,34 @@
+[build-watch] 2026-03-04 04:24:58 Build-watch started. Watching branch: main, interval: 120s
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 04:24:58 Running typecheck...
+[build-watch] 2026-03-04 04:25:04 Found 2 TypeScript error(s).
+[build-watch] 2026-03-04 04:25:04 Errors written to: /Users/gm/v6/.clawbot/logs/last-build-errors.txt
+[build-watch] 2026-03-04 04:25:04 Auto-fixing (round 1 of max 10)...
+Fixed and committed. Two changes:
+
+1. **`src/config/nav/index.ts`** — added `isActivePath(href, pathname)` export (used internally by `BottomNav` to detect active links)
+2. **`src/components/layout/DashboardShell.tsx`** — removed the spurious `currentPath` prop from `<BottomNav>` since the component already calls `usePathname()` itself
+[build-watch] 2026-03-04 04:26:02 Auto-fix committed changes.
+To https://github.com/doculetai/v6.git
+   e25a62c..8c7178a  main -> main
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 04:28:03 Running typecheck...
+[build-watch] 2026-03-04 04:28:08 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 04:30:08 Running typecheck...
+[build-watch] 2026-03-04 04:30:10 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 04:32:11 Running typecheck...
+[build-watch] 2026-03-04 04:32:15 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 04:34:15 Running typecheck...
+[build-watch] 2026-03-04 04:34:20 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 04:36:20 Running typecheck...
+[build-watch] 2026-03-04 04:36:23 Build clean. No errors found.

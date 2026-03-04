@@ -1,0 +1,4 @@
+[route-map] 2026-03-04 04:36:58 Route-map started. Scanning src/app/dashboard/ every 180s
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[route-map] 2026-03-04 04:36:58 Scanning route completeness...

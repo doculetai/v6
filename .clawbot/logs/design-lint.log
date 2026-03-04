@@ -1,0 +1,7 @@
+[design-lint] 2026-03-04 04:36:57 Design-lint started. Scanning src/ every 180s
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 04:36:57 Scanning for design violations...
+[design-lint] 2026-03-04 04:36:58 Found 7 violation category(ies).
+[design-lint] 2026-03-04 04:36:58 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 04:36:58 Auto-fixing design violations (round 1)...

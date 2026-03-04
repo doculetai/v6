@@ -1,0 +1,20 @@
+hits=''
+hits=''
+hits=''
+hits=''
+
+
+=== SERVER-ONLY IMPORTS IN CLIENT COMPONENTS (remove server-only imports from use-client files) ===
+  [@/server/ import in client component]:
+    src/app/dashboard/[role]/verify/verify-page-client.tsx
+    src/trpc/client.tsx
+
+=== REACT HOOKS USED WITHOUT "use client" DIRECTIVE (add "use client" at top of file) ===
+  src/app/test-landing/landing-nav.tsx
+  src/app/test-landing/_shared.tsx
+  src/components/ui/masked-value.tsx
+
+=== BROWSER API USAGE WITHOUT "use client" (add "use client" or move to a client component) ===
+  src/app/test-landing/landing-nav.tsx
+  src/app/test-landing/_shared.tsx
+  src/components/student/documents/student-document-list.tsx
