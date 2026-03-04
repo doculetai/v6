@@ -119,12 +119,14 @@ line_count='      96'
 line_count='      89'
 line_count='      55'
 line_count='      24'
+line_count='      31'
 line_count='      57'
 line_count='      57'
 line_count='      83'
 line_count='      49'
 line_count='      40'
 line_count='      85'
+line_count='      29'
 line_count='      56'
 line_count='      91'
 line_count='      45'
@@ -136,20 +138,23 @@ line_count='      71'
 line_count='     159'
 line_count='      92'
 line_count='      48'
+line_count='      77'
 line_count='      28'
 line_count='      64'
 line_count='      44'
-line_count='      69'
+line_count='      71'
+line_count='      50'
 line_count='      32'
 line_count='     201'
 line_count='     190'
+line_count='      22'
 line_count='      21'
 line_count='      13'
 line_count='       5'
 line_count='      47'
 line_count='      93'
 line_count='      67'
-line_count='     400'
+line_count='     385'
 line_count='     110'
 line_count='     262'
 line_count='      39'
@@ -183,7 +188,17 @@ line_count='       7'
 
 
 === INLINE STYLES (convert to Tailwind classes) ===
-/Users/gm/v6/src/components/ui/earnings-panel.tsx:46:          style={{ width: `${rate}%` }}
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:15:      <Skeleton className="h-[180px] w-full rounded-lg" aria-hidden="true" style={{ animationDelay: `${groupDelay}ms` }} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:16:      <Skeleton className="h-4 w-3/4" aria-hidden="true" style={{ animationDelay: `${groupDelay + 75}ms` }} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:17:      <Skeleton className="h-4 w-1/2" aria-hidden="true" style={{ animationDelay: `${groupDelay + 150}ms` }} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:25:      <Skeleton className="h-10 w-10 rounded-full" aria-hidden="true" style={{ animationDelay: `${groupDelay}ms` }} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:27:        <Skeleton className="h-4 w-full" aria-hidden="true" style={{ animationDelay: `${groupDelay + 75}ms` }} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:28:        <Skeleton className="h-3 w-2/3" aria-hidden="true" style={{ animationDelay: `${groupDelay + 150}ms` }} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:39:          <Skeleton className="h-3 w-24" aria-hidden="true" style={{ animationDelay: `${groupDelay + i * 2 * 75}ms` }} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:40:          <Skeleton className="h-10 w-full rounded-md" aria-hidden="true" style={{ animationDelay: `${groupDelay + (i * 2 + 1) * 75}ms` }} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:43:      <Skeleton className="h-10 w-32 rounded-md" aria-hidden="true" style={{ animationDelay: `${groupDelay + 6 * 75}ms` }} />
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:52:        <Skeleton key={i} className="h-20 rounded-lg" aria-hidden="true" style={{ animationDelay: `${groupDelay + i * 75}ms` }} />
+/Users/gm/v6/src/components/ui/earnings-panel.tsx:45:        style={{ '--progress-width': `${rate}%` } as React.CSSProperties}
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:75:    <div style={wrapperStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:76:      <div style={cardStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:77:        <h1 style={headingStyle}>{emailCopy.sponsorInvitation.heading}</h1>
@@ -192,3 +207,7 @@ line_count='       7'
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:82:        {note ? <div style={noteStyle}>{note}</div> : null}
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:83:        <a href={dashboardUrl} style={ctaStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:86:        <p style={footerStyle}>{emailCopy.sponsorInvitation.footer}</p>
+
+=== ARBITRARY PIXEL SIZES (use Tailwind scale: text-sm, w-64, etc.) ===
+/Users/gm/v6/src/components/ui/skeleton-group.tsx:15:      <Skeleton className="h-[180px] w-full rounded-lg" aria-hidden="true" style={{ animationDelay: `${groupDelay}ms` }} />
+/Users/gm/v6/src/components/layout/Sidebar.tsx:347:          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">
