@@ -25,18 +25,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check if app is bootstrapped
+        id: bootstrap
+        run: |
+          if [ -f "package.json" ] && [ -f "package-lock.json" ]; then
+            echo "ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "ready=false" >> $GITHUB_OUTPUT
+            echo "No package.json or lock file yet — skipping quality checks (Wave 1 in progress)"
+          fi
+
       - uses: actions/setup-node@v4
+        if: steps.bootstrap.outputs.ready == 'true'
         with:
           node-version: 22
           cache: npm
 
       - name: Install dependencies
+        if: steps.bootstrap.outputs.ready == 'true'
         run: npm ci
 
       - name: Typecheck
+        if: steps.bootstrap.outputs.ready == 'true'
         run: npm run typecheck
 
       - name: Unit tests
+        if: steps.bootstrap.outputs.ready == 'true'
         run: npm run test
 
   auto-merge:
