@@ -568,3 +568,12 @@ error: Please commit or stash them.
 [build-watch] 2026-03-04 12:28:27 Found 1 TypeScript error(s).
 [build-watch] 2026-03-04 12:28:27 Errors written to: /Users/gm/v6/.clawbot/logs/last-build-errors.txt
 [build-watch] 2026-03-04 12:28:27 Auto-fixing (round 1 of max 10)...
+The typecheck is already clean — `npx tsc --noEmit` exits with no errors. The file `disbursements-page-client.tsx` exists and is already tracked by git. The reported error is stale (already resolved in a previous commit or worktree merge).
+
+Nothing to commit — the build is passing.
+
+`★ Insight ─────────────────────────────────────`
+The `[role]` directory uses literal square brackets (Next.js dynamic segment), which causes glob tools to misinterpret it as a character class pattern — that's why `Glob` reported "no files found" even though `find` located the file correctly. Always fall back to `Bash`/`find` when globbing paths with bracket segments.
+`─────────────────────────────────────────────────`
+[build-watch] 2026-03-04 12:29:53 Auto-fix committed changes.
+Everything up-to-date

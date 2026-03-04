@@ -23,24 +23,36 @@ line_count='       8'
 line_count='      27'
 line_count='      14'
 line_count='     366'
-line_count='      72'
+line_count='     114'
 line_count='     158'
 line_count='      34'
 line_count='      48'
 line_count='      53'
 line_count='      35'
+line_count='     192'
+line_count='      47'
 line_count='      24'
 line_count='     372'
 line_count='      51'
+line_count='     165'
+line_count='      50'
 line_count='      35'
 line_count='     174'
 line_count='      33'
 line_count='      30'
 line_count='      49'
+line_count='     249'
 line_count='      63'
 line_count='      19'
 line_count='      14'
-line_count='      58'
+line_count='      80'
+line_count='     107'
+line_count='      52'
+line_count='      85'
+line_count='     121'
+line_count='     126'
+line_count='     193'
+line_count='      77'
 line_count='      32'
 line_count='      32'
 line_count='      35'
@@ -54,7 +66,7 @@ line_count='      13'
 line_count='       5'
 line_count='      61'
 line_count='     311'
-line_count='     668'
+line_count='      99'
 line_count='      32'
 line_count='     388'
 line_count='      50'
@@ -71,14 +83,14 @@ line_count='     158'
 line_count='      20'
 line_count='      23'
 line_count='     168'
-line_count='     126'
+line_count='     210'
 line_count='     269'
-line_count='     205'
+line_count='     222'
 line_count='      13'
 line_count='     145'
 line_count='     234'
 line_count='       9'
-line_count='     191'
+line_count='     208'
 line_count='     139'
 line_count='     227'
 line_count='     148'
@@ -194,7 +206,7 @@ line_count='     297'
 line_count='      15'
 line_count='      18'
 line_count='       6'
-line_count='      14'
+line_count='      21'
 line_count='      28'
 line_count='     175'
 line_count='      64'
@@ -219,6 +231,17 @@ line_count='      10'
 line_count='      28'
 
 
+=== RAW TAILWIND COLORS (use semantic tokens: bg-primary, bg-card, text-foreground, etc.) ===
+/Users/gm/v6/src/app/dashboard/[role]/kyc/kyc-page-client.tsx:44:    pending: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-0',
+/Users/gm/v6/src/app/dashboard/[role]/kyc/kyc-page-client.tsx:45:    verified: 'bg-green-500/10 text-green-700 dark:text-green-400 border-0',
+/Users/gm/v6/src/app/dashboard/[role]/kyc/kyc-page-client.tsx:73:          <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
+/Users/gm/v6/src/app/dashboard/[role]/kyc/kyc-page-client.tsx:82:          <Badge className="ml-auto shrink-0 bg-green-500/10 text-green-700 dark:text-green-400 border-0">
+/Users/gm/v6/src/app/dashboard/[role]/kyc/kyc-page-client.tsx:97:      <Badge className="ml-auto shrink-0 bg-green-500/10 text-green-700 dark:text-green-400 border-0">
+/Users/gm/v6/src/app/dashboard/[role]/kyc/kyc-page-client.tsx:101:      <Badge className="ml-auto shrink-0 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-0">
+/Users/gm/v6/src/app/dashboard/[role]/kyc/kyc-page-client.tsx:114:            <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400" aria-hidden="true" />
+/Users/gm/v6/src/app/dashboard/[role]/disbursements/disbursements-page-client.tsx:37:    processing: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
+/Users/gm/v6/src/app/dashboard/[role]/disbursements/disbursements-page-client.tsx:38:    disbursed: 'bg-green-500/10 text-green-700 dark:text-green-400',
+
 === INLINE STYLES (convert to Tailwind classes) ===
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:78:    <div style={wrapperStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:79:      <div style={cardStyle}>
@@ -229,5 +252,7 @@ line_count='      28'
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:86:        <a href={dashboardUrl} style={ctaStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:89:        <p style={footerStyle}>{emailCopy.sponsorInvitation.footer}</p>
 
-=== FILES OVER 400 LINES (split into focused modules) ===
-/Users/gm/v6/src/app/dashboard/[role]/page.tsx (     668 lines)
+=== ARBITRARY PIXEL SIZES (use Tailwind scale: text-sm, w-64, etc.) ===
+/Users/gm/v6/src/app/dashboard/[role]/disbursements/disbursements-page-client.tsx:107:          <table className="w-full min-w-[640px] text-sm">
+/Users/gm/v6/src/app/dashboard/[role]/students/sponsor-students-page-client.tsx:182:      <table className="w-full min-w-[480px] text-sm">
+/Users/gm/v6/src/app/dashboard/[role]/transactions/transactions-page-client.tsx:56:        <table className="w-full min-w-[560px] text-sm">

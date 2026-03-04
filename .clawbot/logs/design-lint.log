@@ -926,3 +926,9 @@ independently editable without touching the routing logic in page.tsx.
 To https://github.com/doculetai/v6.git
    17bfb05..515b51e  main -> main
 [design-lint] 2026-03-04 12:27:20 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 12:30:20 Scanning for design violations...
+[design-lint] 2026-03-04 12:30:22 Found 3 violation category(ies).
+[design-lint] 2026-03-04 12:30:22 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 12:30:22 Auto-fixing design violations (round 1)...
