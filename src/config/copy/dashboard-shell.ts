@@ -36,6 +36,7 @@ export const dashboardShellCopy = {
       'Finish your onboarding details to unlock your personalized dashboard experience.',
     errorTitle: 'We could not load your dashboard',
     errorDescription: 'Please refresh this page in a moment to try again.',
+    errorRetryCta: 'Try again',
   },
 } as const;
 
