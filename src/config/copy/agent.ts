@@ -87,11 +87,16 @@ export const agentCopy = {
       pending: "Pending",
       processing: "Processing",
       paid: "Paid",
+      cancelled: "Cancelled",
     },
     empty: {
       title: "No commissions yet",
       description:
         "Your commission history will appear here as students complete milestones.",
+    },
+    error: {
+      title: "Failed to load commissions",
+      description: "Please refresh the page.",
     },
     requestPayout: "Request payout",
     payoutDialog: {
@@ -205,6 +210,66 @@ export const agentCopy = {
         "Failed to save notification preferences. Please try again.",
       loadError: "Could not load settings. Please refresh the page.",
       tryAgain: "Try again",
+    },
+  },
+
+  students: {
+    title: 'Your students',
+    subtitle: 'Track every student you manage through their funding journey.',
+    table: {
+      email: 'Email',
+      school: 'School',
+      program: 'Program',
+      kycStatus: 'KYC',
+      documents: 'Docs',
+      assignedAt: 'Assigned',
+    },
+    kycLabels: {
+      not_started: 'Not started',
+      pending: 'Pending',
+      verified: 'Verified',
+      failed: 'Failed',
+    },
+    empty: {
+      title: 'No students assigned',
+      description: 'Share your referral link to onboard your first student.',
+    },
+    error: {
+      title: 'Failed to load students',
+      description: 'Please refresh the page to try again.',
+    },
+  },
+
+  activity: {
+    title: 'Activity',
+    subtitle: 'Recent events from your students and commission updates.',
+    empty: {
+      title: 'No activity yet',
+      description: 'Student events and commission updates will appear here.',
+    },
+    error: {
+      title: 'Failed to load activity',
+      description: 'Please refresh the page to try again.',
+    },
+    commissionLabel: 'Commission update',
+    studentLabel: 'Student assignment',
+    dateLabel: 'Date',
+  },
+
+  actions: {
+    title: 'Quick actions',
+    subtitle: 'Shortcuts to common operations.',
+    invite: {
+      heading: 'Invite a student',
+      description: 'Share your referral link with prospective students. They sign up, you earn commissions when they verify.',
+      copyLinkLabel: 'Your referral link',
+      copyLinkCta: 'Copy link',
+      copied: 'Copied!',
+      linkPlaceholder: 'Generating your unique referral link…',
+    },
+    comingSoon: {
+      heading: 'Bulk tools & advanced operations',
+      description: 'Bulk operations and advanced tools will be available here as your portfolio grows.',
     },
   },
 
