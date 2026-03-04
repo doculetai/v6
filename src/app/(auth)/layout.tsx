@@ -7,8 +7,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div
       className={cn(
-        'relative flex min-h-screen items-center justify-center overflow-x-hidden bg-background px-4 py-10 text-foreground dark:bg-background dark:text-foreground',
-        'bg-gradient-to-b from-background via-background to-muted dark:from-background dark:via-background dark:to-muted',
+        'relative flex min-h-screen items-center justify-center overflow-x-hidden bg-background px-4 py-10 text-foreground',
+        'bg-gradient-to-b from-background via-background to-muted',
       )}
     >
       <div className="pointer-events-none absolute -top-32 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl dark:bg-primary/20" />

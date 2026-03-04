@@ -1,13 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createBrowserClient } from '@supabase/ssr';
-import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { Loader2, LockKeyhole } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import superjson from 'superjson';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -15,7 +12,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { authCopy } from '@/config/copy/auth';
-import type { AppRouter } from '@/server/root';
+import { supabaseBrowserClient } from '@/lib/auth/browser-client';
+import { browserTrpcClient } from '@/trpc/client';
 
 const updatePasswordSchema = z
   .object({
@@ -29,29 +27,9 @@ const updatePasswordSchema = z
 
 type UpdatePasswordFormValues = z.infer<typeof updatePasswordSchema>;
 
-function createBrowserTrpcClient() {
-  return createTRPCClient<AppRouter>({
-    links: [
-      httpBatchLink({
-        transformer: superjson,
-        url: '/api/trpc',
-      }),
-    ],
-  });
-}
-
 export function UpdatePasswordPageClient() {
   const router = useRouter();
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const trpcClient = useMemo(() => createBrowserTrpcClient(), []);
-  const supabase = useMemo(
-    () =>
-      createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      ),
-    [],
-  );
 
   const {
     register,
@@ -68,7 +46,7 @@ export function UpdatePasswordPageClient() {
   const onSubmit = handleSubmit(async (values) => {
     setSubmitError(null);
 
-    const { error } = await supabase.auth.updateUser({
+    const { error } = await supabaseBrowserClient.auth.updateUser({
       password: values.newPassword,
     });
 
@@ -78,7 +56,7 @@ export function UpdatePasswordPageClient() {
     }
 
     try {
-      const profile = await trpcClient.student.getCurrentProfile.query();
+      const profile = await browserTrpcClient.student.getCurrentProfile.query();
       router.push(`/dashboard/${profile.role}`);
     } catch {
       setSubmitError(authCopy.updatePassword.genericError);
@@ -86,16 +64,16 @@ export function UpdatePasswordPageClient() {
   });
 
   return (
-    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border dark:bg-card/95 dark:text-card-foreground">
+    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border">
       <CardHeader className="space-y-3">
-        <div className="inline-flex items-center gap-2 text-muted-foreground dark:text-muted-foreground">
+        <div className="inline-flex items-center gap-2 text-muted-foreground">
           <LockKeyhole className="size-4" aria-hidden="true" />
           <span className="text-sm">{authCopy.updatePassword.trustLabel}</span>
         </div>
-        <CardTitle className="text-2xl tracking-tight text-card-foreground dark:text-card-foreground">
+        <CardTitle className="text-2xl tracking-tight text-card-foreground">
           {authCopy.updatePassword.title}
         </CardTitle>
-        <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground">
+        <CardDescription className="text-sm text-muted-foreground">
           {authCopy.updatePassword.description}
         </CardDescription>
       </CardHeader>
@@ -108,12 +86,12 @@ export function UpdatePasswordPageClient() {
               type="password"
               autoComplete="new-password"
               placeholder={authCopy.common.passwordPlaceholder}
-              className="h-11 bg-background dark:bg-background"
+              className="h-11 bg-background"
               aria-invalid={Boolean(errors.newPassword)}
               {...register('newPassword')}
             />
             {errors.newPassword?.message ? (
-              <p className="text-sm text-destructive dark:text-destructive">
+              <p className="text-sm text-destructive">
                 {errors.newPassword.message}
               </p>
             ) : null}
@@ -126,19 +104,19 @@ export function UpdatePasswordPageClient() {
               type="password"
               autoComplete="new-password"
               placeholder={authCopy.common.confirmPasswordPlaceholder}
-              className="h-11 bg-background dark:bg-background"
+              className="h-11 bg-background"
               aria-invalid={Boolean(errors.confirmPassword)}
               {...register('confirmPassword')}
             />
             {errors.confirmPassword?.message ? (
-              <p className="text-sm text-destructive dark:text-destructive">
+              <p className="text-sm text-destructive">
                 {errors.confirmPassword.message}
               </p>
             ) : null}
           </div>
 
           {submitError ? (
-            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/40 dark:bg-destructive/15 dark:text-destructive">
+            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/40 dark:bg-destructive/15">
               {submitError}
             </p>
           ) : null}
