@@ -34,6 +34,4 @@ export async function createTRPCContext() {
   return { db, supabase, session, user: session?.user ?? null };
 }
 
-export const createContext = createTRPCContext;
-
 export type Context = Awaited<ReturnType<typeof createTRPCContext>>;

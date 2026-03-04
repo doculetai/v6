@@ -1,9 +1,7 @@
 import { TRPCError } from '@trpc/server';
-import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { dashboardRoles } from '@/config/roles';
-import { profiles } from '@/db/schema';
 
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 
@@ -23,7 +21,7 @@ export const dashboardRouter = createTRPCRouter({
     .output(dashboardSessionOutputSchema)
     .query(async ({ ctx, input }) => {
       const profile = await ctx.db.query.profiles.findFirst({
-        where: eq(profiles.userId, ctx.user.id),
+        where: (table, { eq }) => eq(table.userId, ctx.user.id),
       });
 
       if (profile && profile.role !== input.role) {
