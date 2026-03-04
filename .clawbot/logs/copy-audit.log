@@ -490,3 +490,9 @@ Replaced the placeholder `'Notification settings coming soon.'` with `'Choose wh
 To https://github.com/doculetai/v6.git
    833698c..79c5b08  main -> main
 [copy-audit] 2026-03-04 12:35:33 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 12:38:33 Scanning copy config coverage...
+[copy-audit] 2026-03-04 12:38:33 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 12:38:33 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 12:38:33 Auto-fixing copy violations (round 1 of max 8)...

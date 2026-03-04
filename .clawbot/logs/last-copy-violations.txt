@@ -1,4 +1,5 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/sponsor.ts:194:      comingSoon: 'Notification settings coming soon.',
+/Users/gm/v6/src/config/copy/sponsor.ts:109:    comingSoon: "Coming soon",
+/Users/gm/v6/src/config/copy/sponsor.ts:199:      comingSoon: 'Notification settings coming soon.',
