@@ -1,11 +1,51 @@
-import { ClipboardCheck, FileBadge2, GraduationCap, Home, LineChart } from 'lucide-react';
+import { Building2, FileCheck2, Home, KanbanSquare, Settings } from 'lucide-react';
 
-import type { NavItem } from './types';
+import type { NavConfig } from './types';
 
-export const universityNav: NavItem[] = [
-  { label: 'Overview', href: '/dashboard/university', icon: Home },
-  { label: 'Applications', href: '/dashboard/university/applications', icon: GraduationCap },
-  { label: 'Verification', href: '/dashboard/university/verification', icon: ClipboardCheck },
-  { label: 'Certificates', href: '/dashboard/university/certificates', icon: FileBadge2 },
-  { label: 'Reports', href: '/dashboard/university/reports', icon: LineChart },
-];
+export const universityNavConfig: NavConfig = {
+  groups: [
+    { id: 'admissions', label: 'Admissions' },
+    { id: 'account', label: 'Account' },
+  ],
+  items: [
+    {
+      label: 'Overview',
+      href: '/dashboard/university',
+      icon: Home,
+      description: 'Admissions summary',
+      isPrimary: true,
+    },
+    {
+      label: 'Pipeline',
+      href: '/dashboard/university/pipeline',
+      icon: KanbanSquare,
+      description: 'Applicant review pipeline',
+      group: 'admissions',
+    },
+    {
+      label: 'Students',
+      href: '/dashboard/university/students',
+      icon: Building2,
+      description: 'Enrolled and admitted students',
+      group: 'admissions',
+    },
+    {
+      label: 'Documents',
+      href: '/dashboard/university/documents',
+      icon: FileCheck2,
+      description: 'Document review queue',
+      group: 'admissions',
+    },
+    {
+      label: 'Settings',
+      href: '/dashboard/university/settings',
+      icon: Settings,
+      description: 'Institution settings',
+      group: 'account',
+      mobileHidden: true,
+    },
+  ],
+};
+
+// Backward compat
+export const universityNav = universityNavConfig.items;
