@@ -126,7 +126,7 @@ export function SignupPageClient() {
         </div>
         <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.signup.title}
-        </h1>
+        </h2>
         <CardDescription className="text-sm text-muted-foreground">
           {authCopy.signup.description}
         </CardDescription>

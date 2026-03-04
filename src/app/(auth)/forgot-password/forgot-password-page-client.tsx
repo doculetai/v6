@@ -89,7 +89,7 @@ export function ForgotPasswordPageClient() {
         </div>
         <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.forgotPassword.title}
-        </h1>
+        </h2>
         <CardDescription className="text-sm text-muted-foreground">
           {authCopy.forgotPassword.description}
         </CardDescription>
