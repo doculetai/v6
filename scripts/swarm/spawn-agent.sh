@@ -133,7 +133,7 @@ if [[ -z "$MODEL" ]]; then
     codex)      MODEL="gpt-5.3-codex" ;;
     claude)     MODEL="claude-sonnet-4-6" ;;
     openclaw)   MODEL="groq/qwen/qwen3-32b" ;;
-    openrouter) MODEL="google/gemma-3-4b-it:free" ;; # free tier; use --model to override
+    openrouter) MODEL="arcee-ai/trinity-large-preview:free" ;; # 400B MoE, agentic, free
     gemini)     MODEL="gemini-2.0-flash" ;;
     ollama)     MODEL="qwen2.5-coder:32b" ;;
     *)
