@@ -1,29 +1,33 @@
 import type { DashboardRole } from '@/config/roles';
 import { isDashboardRole } from '@/config/roles';
 
-import { adminNav } from './admin';
-import { agentNav } from './agent';
-import { partnerNav } from './partner';
-import { sponsorNav } from './sponsor';
-import { studentNav } from './student';
-import type { NavItem } from './types';
-import { universityNav } from './university';
+import { adminNavConfig } from './admin';
+import { agentNavConfig } from './agent';
+import { partnerNavConfig } from './partner';
+import { sponsorNavConfig } from './sponsor';
+import { studentNavConfig } from './student';
+import type { NavConfig, NavItem } from './types';
+import { universityNavConfig } from './university';
 
-const navByRole: Record<DashboardRole, NavItem[]> = {
-  student: studentNav,
-  sponsor: sponsorNav,
-  university: universityNav,
-  admin: adminNav,
-  agent: agentNav,
-  partner: partnerNav,
+const navConfigByRole: Record<DashboardRole, NavConfig> = {
+  student: studentNavConfig,
+  sponsor: sponsorNavConfig,
+  university: universityNavConfig,
+  admin: adminNavConfig,
+  agent: agentNavConfig,
+  partner: partnerNavConfig,
 };
 
-export function getNavItems(role: string): NavItem[] {
+export function getNavConfig(role: string): NavConfig {
   if (!isDashboardRole(role)) {
-    return [];
+    return { groups: [], items: [] };
   }
-
-  return navByRole[role];
+  return navConfigByRole[role];
 }
 
-export type { NavItem } from './types';
+// Backward compat — returns flat item list
+export function getNavItems(role: string): NavItem[] {
+  return getNavConfig(role).items;
+}
+
+export type { NavConfig, NavItem } from './types';
