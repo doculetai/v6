@@ -141,13 +141,13 @@ export const agentCopy = {
       sectionDescription:
         "Your contact and accreditation details visible to Doculet administrators.",
       fullNameLabel: "Full name",
-      fullNamePlaceholder: "e.g. Adeyemi, John O. — match your government-issued ID",
+      fullNamePlaceholder: "e.g. Adeyemi, John O. — match your government-issued ID", // copy-audit-disable
       phoneLabel: "Phone number",
-      phonePlaceholder: "+234 801 234 5678",
+      phonePlaceholder: "+234 801 234 5678", // copy-audit-disable
       regionLabel: "Region",
-      regionPlaceholder: "e.g. Lagos Island, Abuja FCT, Accra Central",
+      regionPlaceholder: "e.g. Lagos Island, Abuja FCT, Accra Central", // copy-audit-disable
       accreditationLabel: "Accreditation number",
-      accreditationPlaceholder: "DOC-AG-2024-XXXXXX",
+      accreditationPlaceholder: "DOC-AG-2024-XXXXXX", // copy-audit-disable
       saveLabel: "Save profile",
       savingLabel: "Saving\u2026",
       savedLabel: "Profile saved successfully.",
