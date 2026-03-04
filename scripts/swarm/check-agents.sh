@@ -328,7 +328,75 @@ if (activeWaveIndex >= 0) {
   }
 }
 
-// ── 4. WAVE SUMMARY ──
+// ── 4. CODE SIMPLIFIER PASS: run after each task merges ──
+const tasksNeedingSimplify = registry.filter(
+  (t) => t.status === "done" && !t.simplifiedAt && t.pr
+);
+
+for (const task of tasksNeedingSimplify) {
+  const simplifyId = `simplify-${task.id}`;
+  const alreadyQueued = registry.find((t) => t.id === simplifyId);
+  if (alreadyQueued) {
+    task.simplifiedAt = alreadyQueued.completedAt || alreadyQueued.startedAt;
+    continue;
+  }
+
+  const simplifyPrompt = `You are a code quality specialist. A PR was just merged for task "${task.id}" (${task.description}).
+
+Your job: review the files changed in that PR branch and simplify them for clarity, consistency, and maintainability — WITHOUT changing behavior.
+
+Branch that was merged: ${task.branch}
+
+Steps:
+1. Run: git log --oneline origin/main...HEAD~5 -- to find recently merged files
+2. Run: git diff origin/main~1 origin/main --name-only to get changed files from the last merge
+3. For each changed .ts/.tsx file:
+   - Remove redundant comments that just repeat what the code says
+   - Simplify overly verbose logic (long chains, unnecessary intermediates)
+   - Ensure consistent naming conventions (camelCase vars, PascalCase components)
+   - Remove dead code (unused vars, unreachable branches)
+   - Consolidate duplicate logic into shared utils if used 2+ times
+   - Do NOT change behavior, interfaces, or export signatures
+4. If you made improvements: commit as "refactor(${task.id}): simplify and clean up post-merge"
+5. Open a PR to main
+
+If no meaningful improvements found, exit without committing.`;
+
+  const promptFile = path.join(rootDir, ".clawbot/prompts", `simplify-${task.id}.txt`);
+  fs.writeFileSync(promptFile, simplifyPrompt);
+
+  console.log(`[simplify] spawning simplifier for ${task.id} (PR #${task.pr})`);
+  const spawnArgs = [
+    "--id", simplifyId,
+    "--description", `Code simplifier pass for ${task.id}`,
+    "--agent", "claude",
+    "--message", simplifyPrompt,
+    "--effort", "medium",
+  ];
+
+  try {
+    execFileSync("/bin/zsh", [spawnScript, ...spawnArgs], {
+      cwd: rootDir,
+      stdio: "inherit",
+      encoding: "utf8"
+    });
+    task.simplifiedAt = Date.now();
+  } catch (err) {
+    console.error(`[simplify-error] ${task.id}: ${err.message}`);
+  }
+}
+
+// Persist simplifiedAt updates
+const updatedData = JSON.parse(fs.readFileSync(taskFile, "utf8"));
+for (const t of updatedData.tasks) {
+  const updated = registry.find((r) => r.id === t.id);
+  if (updated && updated.simplifiedAt && !t.simplifiedAt) {
+    t.simplifiedAt = updated.simplifiedAt;
+  }
+}
+fs.writeFileSync(taskFile, JSON.stringify(updatedData, null, 2) + "\n");
+
+// ── 5. WAVE SUMMARY ──
 console.log("");
 console.log("Wave Progress:");
 for (const ws of waveStatuses) {
