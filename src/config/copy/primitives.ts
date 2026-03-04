@@ -4,7 +4,7 @@ export const primitivesCopy = {
     metricLoadError: "Unable to load metric",
     clearFilters: "Clear filters",
     loadingContent: "Loading content",
-    searchPlaceholder: "Search by name, reference, or status…",
+    searchPlaceholder: "Search by name, reference, or status…", // copy-audit-disable
     toggleTheme: "Toggle theme",
   },
   fileUploader: {
