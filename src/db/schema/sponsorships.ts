@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
+import { timestamps } from './_helpers';
 import { users } from './users';
 
 export const sponsorProfiles = pgTable('sponsor_profiles', {
@@ -16,8 +17,7 @@ export const sponsorProfiles = pgTable('sponsor_profiles', {
     .default('not_started')
     .notNull(),
   companyName: text('company_name'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const sponsorships = pgTable('sponsorships', {
@@ -33,8 +33,7 @@ export const sponsorships = pgTable('sponsorships', {
     .notNull(),
   amountKobo: integer('amount_kobo').notNull(),
   currency: text('currency').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const disbursements = pgTable('disbursements', {
@@ -49,8 +48,7 @@ export const disbursements = pgTable('disbursements', {
     .default('scheduled')
     .notNull(),
   paystackReference: text('paystack_reference'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
 
 export const sponsorProfilesRelations = relations(sponsorProfiles, ({ one }) => ({

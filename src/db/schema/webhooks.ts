@@ -1,5 +1,6 @@
-import { relations } from 'drizzle-orm';
 import { jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+
+import { timestamps } from './_helpers';
 
 export const webhookEvents = pgTable('webhook_events', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -11,8 +12,5 @@ export const webhookEvents = pgTable('webhook_events', {
   status: text('status', { enum: ['received', 'processed', 'failed'] })
     .default('received')
     .notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  ...timestamps,
 });
-
-export const webhookEventsRelations = relations(webhookEvents, () => ({}));
