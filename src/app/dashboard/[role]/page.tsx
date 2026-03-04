@@ -404,7 +404,7 @@ async function SponsorOverview({
                 <CardContent className="flex items-center justify-between pt-4">
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      {s.studentEmail ?? 'Unknown'}
+                      {s.studentEmail ?? copy.recentStudents.unknownStudentLabel}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {formatNGN(s.amountKobo)} · {s.status}
