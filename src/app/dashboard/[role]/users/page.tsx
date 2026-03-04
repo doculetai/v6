@@ -17,7 +17,12 @@ export default async function UsersPage({ params }: PageProps) {
   const { role } = await params;
 
   if (role !== 'admin') {
-    return <p className="text-muted-foreground">{adminCopy.errors.unauthorized}</p>;
+    return (
+      <div>
+        <h1 className="text-2xl font-semibold text-foreground">{adminCopy.users.title}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{adminCopy.errors.unauthorized}</p>
+      </div>
+    );
   }
 
   let result: Awaited<ReturnType<Awaited<ReturnType<typeof api>>['admin']['listAllUsers']>> | null = null;
@@ -30,9 +35,15 @@ export default async function UsersPage({ params }: PageProps) {
   }
 
   return (
-    <UsersPageClient
-      data={result}
-      copy={adminCopy.users}
-    />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold text-foreground">{adminCopy.users.title}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{adminCopy.users.subtitle}</p>
+      </div>
+      <UsersPageClient
+        data={result}
+        copy={adminCopy.users}
+      />
+    </div>
   );
 }
