@@ -10,7 +10,9 @@ import { sponsorCopy } from '@/config/copy/sponsor';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 
-import type { AgentSettings, SponsorSettings } from './settings-page-client';
+import { universityCopy } from '@/config/copy/university';
+
+import type { AgentSettings, SponsorSettings, UniversityProfile } from './settings-page-client';
 import { SettingsPageClient } from './settings-page-client';
 
 export const metadata = {
@@ -28,7 +30,7 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
     notFound();
   }
 
-  if (role !== 'agent' && role !== 'sponsor') {
+  if (role !== 'agent' && role !== 'sponsor' && role !== 'university') {
     redirect(`/dashboard/${role}`);
   }
 
@@ -73,6 +75,47 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
     }
 
     return <SettingsPageClient role="agent" settings={settings} />;
+  }
+
+  // ── University branch ─────────────────────────────────────────────────────
+  if (role === 'university') {
+    let uniProfile: UniversityProfile | null = null;
+
+    try {
+      uniProfile = await caller.university.getUniversityProfile();
+    } catch (error) {
+      if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
+        redirect('/login');
+      }
+      if (error instanceof TRPCError && error.code === 'FORBIDDEN') {
+        redirect(`/dashboard/${role}`);
+      }
+    }
+
+    if (!uniProfile) {
+      return (
+        <div className="mx-auto w-full max-w-2xl">
+          <h1 className="sr-only">{universityCopy.settings.title}</h1>
+          <Card className="border-border bg-card dark:border-border dark:bg-card">
+            <CardHeader className="space-y-3">
+              <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />
+              <CardTitle className="text-lg text-card-foreground">
+                {universityCopy.settings.errors.saveError}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button asChild variant="outline" className="min-h-11">
+                <Link href={`/dashboard/${role}/settings`}>
+                  {agentCopy.settings.errors.tryAgain}
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    return <SettingsPageClient role="university" profile={uniProfile} />;
   }
 
   // ── Sponsor branch ───────────────────────────────────────────────────────

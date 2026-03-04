@@ -3,9 +3,12 @@ import { notFound, redirect } from 'next/navigation';
 
 import type { DashboardRole } from '@/config/roles';
 import { studentCopy } from '@/config/copy/student';
+import { universityCopy } from '@/config/copy/university';
+import { PageHeader } from '@/components/ui/page-header';
 import { api } from '@/trpc/server';
 
 import { DocumentsPageClient } from './documents-page-client';
+import { UniversityDocumentsPageClient } from './university-documents-page-client';
 
 type StudentDocumentsPageProps = {
   params: Promise<{ role: string }>;
@@ -13,6 +16,25 @@ type StudentDocumentsPageProps = {
 
 export default async function StudentDocumentsPage({ params }: StudentDocumentsPageProps) {
   const { role } = await params;
+
+  // University branch
+  if (role === 'university') {
+    const caller = await api();
+    const [docsResult] = await Promise.allSettled([
+      caller.university.getUniversityDocumentQueue(),
+    ]);
+    const docs = docsResult.status === 'fulfilled' ? docsResult.value : [];
+    return (
+      <div className="space-y-6">
+        <h1 className="sr-only">{universityCopy.documents.title}</h1>
+        <PageHeader
+          title={universityCopy.documents.title}
+          subtitle={universityCopy.documents.subtitle}
+        />
+        <UniversityDocumentsPageClient documents={docs} copy={universityCopy.documents} />
+      </div>
+    );
+  }
 
   if (role !== 'student') {
     notFound();

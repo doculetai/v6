@@ -4,12 +4,14 @@ import { notFound, redirect } from 'next/navigation';
 
 import { partnerCopy } from '@/config/copy/partner';
 import { sponsorCopy } from '@/config/copy/sponsor';
+import { universityCopy } from '@/config/copy/university';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 import { PageHeader } from '@/components/ui/page-header';
 
 import { StudentsPageClient } from './students-page-client';
 import { SponsorStudentsPageClient } from './sponsor-students-page-client';
+import { UniversityStudentsPageClient } from './university-students-page-client';
 
 export const metadata: Metadata = { title: 'Students — Doculet' };
 
@@ -46,6 +48,24 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
       if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
       throw error;
     }
+  }
+
+  // University branch
+  if (role === 'university') {
+    const [studentsResult] = await Promise.allSettled([
+      caller.university.listUniversityStudents(),
+    ]);
+    const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
+    return (
+      <div className="space-y-6">
+        <h1 className="sr-only">{universityCopy.students.title}</h1>
+        <PageHeader
+          title={universityCopy.students.title}
+          subtitle={universityCopy.students.subtitle}
+        />
+        <UniversityStudentsPageClient students={students} copy={universityCopy.students} />
+      </div>
+    );
   }
 
   // Partner branch (existing)

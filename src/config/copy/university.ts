@@ -136,6 +136,76 @@ export const universityCopy = {
     verifyAnother: "Verify another certificate",
   },
 
+  students: {
+    title: "Students",
+    subtitle: "All students enrolled at your institution.",
+    table: {
+      student: "Student",
+      program: "Program",
+      kycStatus: "KYC status",
+      documents: "Documents",
+      enrolled: "Enrolled",
+    },
+    kycLabels: {
+      not_started: "Not started",
+      pending: "Pending",
+      verified: "Verified",
+      failed: "Failed",
+    },
+    empty: {
+      title: "No students enrolled",
+      description: "Students who apply to your institution will appear here.",
+    },
+  },
+
+  documents: {
+    title: "Document queue",
+    subtitle: "Review and approve student document submissions.",
+    table: {
+      student: "Student",
+      type: "Document type",
+      uploaded: "Uploaded",
+      status: "Status",
+      actions: "Actions",
+    },
+    typeLabels: {
+      passport: "Passport",
+      bank_statement: "Bank statement",
+      offer_letter: "Offer letter",
+      affidavit: "Affidavit",
+      cac: "CAC document",
+    },
+    statusLabels: {
+      pending: "Pending",
+      approved: "Approved",
+      rejected: "Rejected",
+      more_info_requested: "More info needed",
+    },
+    actions: { view: "View", approve: "Approve", reject: "Reject" },
+    rejectReasonLabel: "Reason for rejection",
+    rejectReasonHint: "Briefly explain why this document was rejected.",
+    rejectConfirm: "Confirm rejection",
+    rejectCancel: "Cancel",
+    empty: {
+      title: "No documents in queue",
+      description: "Student document submissions will appear here for review.",
+    },
+  },
+
+  settings: {
+    title: "Settings",
+    subtitle: "Manage your institution profile.",
+    profile: {
+      title: "Institution profile",
+      organizationNameLabel: "Organisation name",
+      schoolNameLabel: "Linked school",
+      schoolNameHint: "Contact support to change your linked school.",
+      saveLabel: "Save changes",
+      savingLabel: "Saving\u2026",
+    },
+    errors: { saveError: "Failed to save settings. Please try again." },
+  },
+
   nav: {
     pipeline: "Pipeline",
     verify: "Verify certificate",
