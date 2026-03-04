@@ -30,4 +30,9 @@ export function getNavItems(role: string): NavItem[] {
   return getNavConfig(role).items;
 }
 
+/** Returns true when `pathname` matches or is nested under `href`. */
+export function isActivePath(href: string, pathname: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export type { NavConfig, NavItem } from './types';

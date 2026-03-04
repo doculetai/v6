@@ -39,6 +39,10 @@ export const dashboardShellCopy = {
   },
 } as const;
 
+export function getFallbackUserName(role: DashboardRole): string {
+  return `${roleDisplayNames[role]} ${dashboardShellCopy.sidebar.fallbackUserNameSuffix}`;
+}
+
 export const dashboardOverviewCopy: Record<DashboardRole, OverviewCopy> = {
   student: {
     title: 'Welcome back, Student',

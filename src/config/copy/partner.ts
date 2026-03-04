@@ -146,8 +146,23 @@ export const partnerCopy = {
     saveSuccess: "Branding updated successfully.",
   },
 
+  analytics: {
+    title: "Analytics",
+    subtitle: "Usage and conversion data for your integration.",
+    chart: {
+      title: "API calls \u2014 last 30 days",
+      empty: "No API calls recorded yet.",
+    },
+    error: {
+      title: "Failed to load analytics",
+      description: "Could not retrieve analytics data. Please try again.",
+      retry: "Retry",
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
+    analytics: "Analytics",
     apiKeys: "API keys",
     branding: "Branding",
     webhooks: "Webhooks",

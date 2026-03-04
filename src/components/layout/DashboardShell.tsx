@@ -41,7 +41,7 @@ export function DashboardShell({ role, children, className }: DashboardShellProp
       </div>
 
       {/* Mobile bottom nav (5 primary items) */}
-      <BottomNav role={role} currentPath={pathname} />
+      <BottomNav role={role} />
     </div>
   );
 }

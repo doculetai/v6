@@ -104,6 +104,9 @@ const DEMO_COLUMNS: ReadonlyArray<import('@/components/ui/data-table-shell').Dat
   },
 ]
 
+// Fixed reference time for demo timestamps — avoids calling DEMO_NOW during render.
+const DEMO_NOW = new Date('2026-03-04T12:00:00.000Z').getTime();
+
 const DEMO_ROWS: DemoRow[] = [
   { id: '1', name: 'Kemi Adesanya', school: 'University of Lagos', status: 'verified', amount: 1500000 },
   { id: '2', name: 'Emeka Obi', school: 'Covenant University', status: 'pending', amount: 750000 },
@@ -378,9 +381,9 @@ export default function DesignPage() {
               <p className="font-medium text-foreground">TimestampLabel</p>
               <Code>{`import { TimestampLabel } from '@/components/ui/timestamp-label'`}</Code>
               <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-5">
-                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="relative" />
-                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="absolute" />
-                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="both" />
+                <TimestampLabel value={new Date(DEMO_NOW - 3 * 60 * 1000)} mode="relative" />
+                <TimestampLabel value={new Date(DEMO_NOW - 3 * 60 * 1000)} mode="absolute" />
+                <TimestampLabel value={new Date(DEMO_NOW - 3 * 60 * 1000)} mode="both" />
                 <TimestampLabel value="not-a-date" />
               </div>
             </div>
@@ -435,26 +438,26 @@ export default function DesignPage() {
                     id: '1',
                     title: 'Proof of funds verified',
                     description: 'University of Lagos confirmed the document.',
-                    timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+                    timestamp: new Date(DEMO_NOW - 10 * 60 * 1000).toISOString(),
                     tone: 'success',
                   },
                   {
                     id: '2',
                     title: 'Document flagged for review',
                     description: 'Admission letter requires re-upload.',
-                    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+                    timestamp: new Date(DEMO_NOW - 2 * 60 * 60 * 1000).toISOString(),
                     tone: 'warning',
                   },
                   {
                     id: '3',
                     title: 'Sponsorship disbursement scheduled',
-                    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                    timestamp: new Date(DEMO_NOW - 24 * 60 * 60 * 1000).toISOString(),
                     tone: 'info',
                   },
                   {
                     id: '4',
                     title: 'Identity verification submitted',
-                    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                    timestamp: new Date(DEMO_NOW - 3 * 24 * 60 * 60 * 1000).toISOString(),
                     tone: 'neutral',
                   },
                 ]}
