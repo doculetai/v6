@@ -51,6 +51,19 @@ log() {
   echo "[design-lint] $(date '+%Y-%m-%d %H:%M:%S') $*" | tee -a "$LOG_FILE"
 }
 
+# Filter grep output lines belonging to files that carry a file-level
+# "// design-lint-ignore:" directive on their first line.
+# Usage: some_grep_command | filter_file_ignored
+filter_file_ignored() {
+  while IFS= read -r line; do
+    local file="${line%%:*}"
+    if [[ -f "$file" ]] && head -1 "$file" 2>/dev/null | grep -q "design-lint-ignore"; then
+      continue
+    fi
+    printf '%s\n' "$line"
+  done
+}
+
 # ── Violation patterns ────────────────────────────────────────────────────────
 # Each check: (label, grep_pattern, grep_flags, file_glob, severity)
 # severity: ERROR = must fix, WARN = report only
@@ -88,6 +101,7 @@ run_checks() {
       "$SRC_DIR" 2>/dev/null \
       | grep -v "node_modules" \
       | grep -v "// design-lint-disable" \
+      | filter_file_ignored \
       || true
   )
   if [[ -n "$inline_style_hits" ]]; then
@@ -136,6 +150,7 @@ run_checks() {
       "$SRC_DIR" 2>/dev/null \
       | grep -v "node_modules" \
       | grep -v "// design-lint-disable" \
+      | filter_file_ignored \
       || true
   )
   if [[ -n "$anchor_hits" ]]; then
