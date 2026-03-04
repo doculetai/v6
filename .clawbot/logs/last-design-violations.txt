@@ -1,15 +1,16 @@
+line_count='     243'
 line_count='      16'
 line_count='      56'
 line_count='      55'
-line_count='     248'
-line_count='     420'
+line_count='     250'
+line_count='     362'
 line_count='      43'
 line_count='       4'
 line_count='      73'
 line_count='      62'
 line_count='     168'
 line_count='      33'
-line_count='     163'
+line_count='     164'
 line_count='     183'
 line_count='      61'
 line_count='      46'
@@ -92,7 +93,8 @@ line_count='      41'
 line_count='      89'
 line_count='      91'
 line_count='      92'
-line_count='      31'
+line_count='      33'
+line_count='      29'
 line_count='      65'
 line_count='     143'
 line_count='      96'
@@ -101,17 +103,28 @@ line_count='      89'
 line_count='      55'
 line_count='      24'
 line_count='      57'
+line_count='      57'
+line_count='      83'
+line_count='      49'
 line_count='      40'
+line_count='      85'
+line_count='      56'
 line_count='      91'
 line_count='      45'
 line_count='     109'
+line_count='     224'
 line_count='     194'
+line_count='      46'
+line_count='      71'
 line_count='     159'
 line_count='      92'
 line_count='      48'
 line_count='      28'
 line_count='      64'
 line_count='      44'
+line_count='      69'
+line_count='      32'
+line_count='     201'
 line_count='     190'
 line_count='      21'
 line_count='      13'
@@ -153,16 +166,13 @@ line_count='       7'
 
 
 === INLINE STYLES (convert to Tailwind classes) ===
-/Users/gm/v6/src/app/test-landing/_shared.tsx:53:      style={shouldAnimate && delay > 0 ? { "--reveal-delay": `${delay}ms` } as React.CSSProperties : undefined}
-/Users/gm/v6/src/components/ui/progress.tsx:25:        style={{ "--p-offset": `-${100 - (value || 0)}%` } as React.CSSProperties}
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:35:        <h1 style={{ marginTop: 0, fontSize: '24px', lineHeight: '32px' }}>
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:38:        <p style={{ fontSize: '16px', lineHeight: '24px' }}>{emailCopy.sponsorInvitation.body}</p>
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:39:        <p style={{ fontSize: '14px', lineHeight: '22px', marginBottom: '24px' }}>
-/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:71:        <p style={{ marginTop: '24px', fontSize: '12px', color: '#4b5563', lineHeight: '18px' }}>
+/Users/gm/v6/src/components/ui/earnings-panel.tsx:46:          style={{ width: `${rate}%` }}
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:35:        <h1 style={{ marginTop: 0, fontSize: '24px', lineHeight: '32px' }} /* design-lint-disable: email client requires inline styles */>
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:38:        <p style={{ fontSize: '16px', lineHeight: '24px' }} /* design-lint-disable: email client requires inline styles */>{emailCopy.sponsorInvitation.body}</p>
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:39:        <p style={{ fontSize: '14px', lineHeight: '22px', marginBottom: '24px' }} /* design-lint-disable: email client requires inline styles */>
+/Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:71:        <p style={{ marginTop: '24px', fontSize: '12px', color: '#4b5563', lineHeight: '18px' }} /* design-lint-disable: email client requires inline styles */>
 
 === ARBITRARY PIXEL SIZES (use Tailwind scale: text-sm, w-64, etc.) ===
-/Users/gm/v6/src/app/test-landing/landing-problem.tsx:12:        <div className="absolute left-1/2 top-0 h-[37.5rem] w-[56.25rem] -translate-x-1/2 -translate-y-1/4 rounded-full bg-accent/20 blur-[120px]" />
-/Users/gm/v6/src/app/test-landing/landing-cta.tsx:13:        <div className="absolute left-1/2 top-0 h-[31.25rem] w-[50rem] -translate-x-1/2 -translate-y-1/3 rounded-full bg-accent/15 blur-[120px]" />
-
-=== FILES OVER 400 LINES (split into focused modules) ===
-/Users/gm/v6/src/app/(internal)/design/DesignDisplaySections.tsx (     420 lines)
+/Users/gm/v6/src/components/ui/control-toolbar.tsx:33:          className="min-h-[44px] w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+/Users/gm/v6/src/components/ui/control-toolbar.tsx:39:        className="min-h-[44px] rounded-lg border border-border bg-card px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+/Users/gm/v6/src/components/ui/error-state.tsx:61:        <div className="mx-auto max-w-[160px] mb-6">{illustration}</div>

@@ -236,3 +236,59 @@ hint: 'git pull' before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 [import-guard] 2026-03-04 08:21:35 ERROR: manual push required.
 [import-guard] 2026-03-04 08:21:35 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 08:24:35 Scanning import boundaries...
+[import-guard] 2026-03-04 08:24:35 Found 1 violation category(ies).
+[import-guard] 2026-03-04 08:24:35 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 08:24:35 Auto-fixing import violations (round 1 of max 8)...
+TypeScript exits clean. Since the files already comply, there are no actual changes to commit — the violations were already resolved in a prior commit. No action needed.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[import-guard] 2026-03-04 08:25:20 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[import-guard] 2026-03-04 08:25:20 ERROR: manual push required.
+[import-guard] 2026-03-04 08:25:20 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 08:28:21 Scanning import boundaries...
+[import-guard] 2026-03-04 08:28:22 Found 1 violation category(ies).
+[import-guard] 2026-03-04 08:28:22 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 08:28:22 Auto-fixing import violations (round 1 of max 8)...
+TypeScript check passes clean. Both `qr-code-svg.tsx` and `file-uploader.tsx` already have `'use client'` — the import-guard scan produced stale/false-positive results. No changes required.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[import-guard] 2026-03-04 08:29:50 Push failed — pulling and retrying.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To https://github.com/doculetai/v6.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/doculetai/v6.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[import-guard] 2026-03-04 08:29:51 ERROR: manual push required.
+[import-guard] 2026-03-04 08:29:51 Import fixes pushed to main.
