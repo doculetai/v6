@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -40,18 +41,16 @@ export function Reveal({
   }, [instant]);
 
   const shouldAnimate = !instant;
-  const transitionDelay =
-    shouldAnimate && delay > 0 ? `${delay}ms` : undefined;
 
   return (
     <div
       ref={ref}
       className={cn(
-        shouldAnimate ? "transition-all duration-700 ease-out" : "",
+        shouldAnimate ? "transition-all duration-700 ease-out [transition-delay:var(--reveal-delay,0ms)]" : "",
         visible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0",
         className,
       )}
-      style={transitionDelay ? { transitionDelay } : undefined}
+      style={shouldAnimate && delay > 0 ? { "--reveal-delay": `${delay}ms` } as React.CSSProperties : undefined}
     >
       {children}
     </div>
@@ -75,30 +74,30 @@ export function CtaButtons({
       <Button
         asChild
         className={cn(
-          "min-h-[52px] rounded-xl px-7 text-[15px] font-bold",
+          "min-h-13 rounded-xl px-7 text-sm font-bold",
           isDark
-            ? "bg-white text-[#000080] hover:bg-white/90"
-            : "bg-[#000080] text-white hover:bg-[#00006a]",
+            ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+            : "bg-primary text-primary-foreground hover:bg-primary/90",
         )}
       >
-        <a href="/signup">
+        <Link href="/signup">
           {primary}
           <ArrowRight className="ml-1.5 h-4 w-4" />
-        </a>
+        </Link>
       </Button>
       <Button
         asChild
         variant="ghost"
         className={cn(
-          "min-h-[52px] rounded-xl px-7 text-[15px] font-semibold",
+          "min-h-13 rounded-xl px-7 text-sm font-semibold",
           isDark
-            ? "text-white/80 hover:bg-white/10 hover:text-white"
-            : "text-[#000080]/70 hover:bg-[#000080]/5 hover:text-[#000080]",
+            ? "text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground"
+            : "text-primary/70 hover:bg-primary/5 hover:text-primary",
         )}
       >
-        <a href="/verify">
+        <Link href="/verify">
           {secondary}
-        </a>
+        </Link>
       </Button>
     </div>
   );
@@ -119,21 +118,9 @@ export function EmailCapture({
 
   if (submitted) {
     return (
-      <div className="flex w-full max-w-md items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-5 py-4 dark:border-emerald-800 dark:bg-emerald-950/50">
-        <CheckCircle2
-          className={cn(
-            "h-5 w-5 shrink-0",
-            isDark ? "text-emerald-400" : "text-emerald-600",
-          )}
-        />
-        <p
-          className={cn(
-            "text-[14px] font-medium",
-            isDark
-              ? "text-emerald-200"
-              : "text-emerald-800 dark:text-emerald-200",
-          )}
-        >
+      <div className="flex w-full max-w-md items-center gap-3 rounded-xl border border-success/20 bg-success/10 px-5 py-4">
+        <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
+        <p className="text-sm font-medium text-success">
           Thank you. We will be in touch shortly.
         </p>
       </div>
@@ -153,19 +140,19 @@ export function EmailCapture({
         placeholder={placeholder}
         required
         className={cn(
-          "min-h-[52px] flex-1 rounded-xl border px-4 text-[15px] transition-all focus:outline-none focus:ring-2 focus:ring-[#8080FF] focus:ring-offset-2",
+          "min-h-13 flex-1 rounded-xl border px-4 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
           isDark
-            ? "border-white/15 bg-white/[0.07] text-white placeholder:text-white/50 focus:ring-offset-[#000080]"
+            ? "border-white/15 bg-white/[0.07] text-white placeholder:text-white/50 focus:ring-offset-primary"
             : "border-border bg-card text-foreground placeholder:text-muted-foreground",
         )}
       />
       <Button
         type="submit"
         className={cn(
-          "min-h-[52px] shrink-0 rounded-xl px-6 text-[14px] font-bold",
+          "min-h-13 shrink-0 rounded-xl px-6 text-sm font-bold",
           isDark
-            ? "bg-white text-[#000080] hover:bg-white/90"
-            : "bg-[#000080] text-white hover:bg-[#00006a]",
+            ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+            : "bg-primary text-primary-foreground hover:bg-primary/90",
         )}
       >
         {buttonText}

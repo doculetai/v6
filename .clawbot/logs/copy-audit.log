@@ -5,3 +5,20 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 04:36:59 Found 2 violation category(ies).
 [copy-audit] 2026-03-04 04:36:59 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 04:36:59 Auto-fixing copy violations (round 1 of max 8)...
+All violations fixed and committed (`48089c4`). Here's what was done:
+
+**Placeholder strings** — replaced generic form hints with warm, Doculet-specific copy across 6 files:
+- `sponsor.ts`: `"e.g. 5,000,000"` → `"Enter the committed amount in naira"`
+- `student.ts`: `"Select a school"` → `"Search for your university"`, `"Select a program"` → `"Choose your degree program"`, `"Search schools, programs…"` → `"Search by university, program, or city…"`, `"Select a document type"` → `"Choose the document type"`, `"sponsor@example.com"` → `"Enter your sponsor's email address"`
+- `admin.ts`: decision notes and suspension reason placeholders made explicit and purposeful
+- `partner.ts`: API key name and domain examples made more concrete
+- `university.ts`: reviewer notes and cert token example updated
+- `auth.ts`: email/password placeholders made warmer
+
+**Hardcoded button label** — added `commonUi.close` to `shared.ts` and imported it in `dialog.tsx` to replace the hardcoded `"Close"` string in `DialogFooter`.
+
+`★ Insight ─────────────────────────────────────`
+The `dialog.tsx` label lives in `shared.ts` rather than any role copy file — UI primitives don't belong to a role. This keeps the import boundary clean: copy files only import from `@/config/copy/shared`, and components are free to import from any copy config.
+`─────────────────────────────────────────────────`
+Everything up-to-date
+[copy-audit] 2026-03-04 04:44:52 Copy fixes pushed to main.

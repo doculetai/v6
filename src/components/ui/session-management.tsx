@@ -69,7 +69,7 @@ function CurrentBadge() {
   return (
     <span
       aria-label="This device"
-      className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200"
+      className="inline-flex items-center rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success"
     >
       This device
     </span>
@@ -90,7 +90,7 @@ function SessionCard({ session, showIpAddress, onRevoke }: SessionCardProps) {
       aria-label="Active session"
       className={cn(
         "flex items-start gap-3 rounded-lg border border-border/50 p-3 transition-colors duration-150",
-        session.isCurrent && "border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/10",
+        session.isCurrent && "border-success/30 bg-success/5",
       )}
     >
       <DeviceIcon deviceType={session.deviceType} />
@@ -114,7 +114,7 @@ function SessionCard({ session, showIpAddress, onRevoke }: SessionCardProps) {
           type="button"
           onClick={() => onRevoke(session.id)}
           aria-label="Revoke session"
-          className="min-h-[44px] min-w-[44px] shrink-0 rounded-md px-3 text-sm font-medium text-destructive transition-colors duration-150 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="min-h-11 min-w-11 shrink-0 rounded-md px-3 text-sm font-medium text-destructive transition-colors duration-150 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Revoke
         </button>
@@ -181,7 +181,7 @@ export function SessionManagement({
           <button
             type="button"
             onClick={onRevokeAll}
-            className="min-h-[44px] w-full rounded-lg border border-destructive/30 px-4 py-2 text-sm font-medium text-destructive transition-colors duration-200 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="min-h-11 w-full rounded-lg border border-destructive/30 px-4 py-2 text-sm font-medium text-destructive transition-colors duration-200 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Sign out of all other sessions
           </button>

@@ -30,16 +30,16 @@ const STATUS_STYLES: Record<StatusBadgeStatus, { badge: string; dot: string }> =
     dot: "bg-muted-foreground",
   },
   verified: {
-    badge: "bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300",
-    dot: "bg-emerald-500",
+    badge: "bg-success/10 text-success",
+    dot: "bg-success",
   },
   rejected: {
-    badge: "bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300",
-    dot: "bg-red-500",
+    badge: "bg-destructive/10 text-destructive",
+    dot: "bg-destructive",
   },
   attention: {
-    badge: "bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300",
-    dot: "bg-amber-500",
+    badge: "bg-warning/10 text-warning",
+    dot: "bg-warning",
   },
   expired: {
     badge: "bg-muted text-muted-foreground",

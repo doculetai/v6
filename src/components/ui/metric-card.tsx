@@ -60,7 +60,7 @@ function MetricCard({
   const showDelta = Boolean(deltaValue)
   const deltaToneClass =
     deltaDirection === "up"
-      ? "text-emerald-600 dark:text-emerald-400"
+      ? "text-success"
       : deltaDirection === "down"
         ? "text-destructive"
         : "text-muted-foreground"

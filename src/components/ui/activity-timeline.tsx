@@ -22,15 +22,15 @@ interface ActivityTimelineProps {
 
 const toneDotClass: Record<ActivityTone, string> = {
   neutral: "bg-muted-foreground",
-  success: "bg-emerald-500",
-  warning: "bg-amber-500",
+  success: "bg-success",
+  warning: "bg-warning",
   error: "bg-destructive",
   info: "bg-primary",
 }
 
 function toneIcon(tone: ActivityTone): React.ReactNode {
-  if (tone === "success") return <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
-  if (tone === "warning") return <TriangleAlert className="size-4 text-amber-600 dark:text-amber-400" />
+  if (tone === "success") return <CheckCircle2 className="size-4 text-success" />
+  if (tone === "warning") return <TriangleAlert className="size-4 text-warning" />
   if (tone === "error") return <XCircle className="size-4 text-destructive" />
   if (tone === "info") return <Info className="size-4 text-primary" />
   return <Clock3 className="size-4 text-muted-foreground" />
