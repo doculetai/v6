@@ -80,9 +80,7 @@ function colorScaleVars(theme: Theme): string[] {
 
   for (const [scaleName, scale] of Object.entries(theme.colors)) {
     for (const [stop, value] of Object.entries(scale)) {
-      if (value !== undefined) {
-        lines.push(`  --color-${scaleName}-${stop}: ${value};`);
-      }
+      lines.push(`  --color-${scaleName}-${stop}: ${value};`);
     }
   }
 
@@ -135,8 +133,8 @@ function layoutVars(theme: Theme): string[] {
  * The output is injected by ThemeProvider at runtime, making theme swapping trivial.
  */
 export function themeToCss(theme: Theme): string {
-  const lightNeutral = theme.colors.neutral[500] ?? '#6B6F94';
-  const darkNeutral = theme.colors.neutral[400] ?? '#9295B3';
+  const lightNeutral = theme.colors.neutral[500];
+  const darkNeutral = theme.colors.neutral[400];
   const lightSuccess = theme.colors.success[500] ?? theme.light.success;
   const darkSuccess = theme.colors.success[400] ?? theme.dark.success;
   const lightWarning = theme.colors.warning[500] ?? theme.light.warning;

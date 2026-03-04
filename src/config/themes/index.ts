@@ -6,7 +6,7 @@ export const themes: Record<string, Theme> = {
 };
 
 export function getTheme(name: string): Theme {
-  return themes[name] ?? themes.doculet!;
+  return themes[name] ?? doculetTheme;
 }
 
 export const defaultTheme = doculetTheme;
