@@ -194,6 +194,20 @@ export const partnerCopy = {
     },
   },
 
+  analytics: {
+    title: 'Analytics',
+    subtitle: 'Integration performance and student verification metrics.',
+    stats: {
+      totalStudents: { label: 'Total students', sub: 'enrolled via your integration' },
+      verifiedStudents: { label: 'Verified students', sub: 'KYC complete' },
+      activeApiKeys: { label: 'Active API keys', sub: 'currently in use' },
+    },
+    error: {
+      title: 'Failed to load analytics',
+      description: 'Please refresh the page to try again.',
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
     apiKeys: "API keys",

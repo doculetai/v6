@@ -1,35 +1,28 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { Key } from 'lucide-react';
 
-export const metadata: Metadata = {
-  title: 'API Keys — Doculet',
-};
+import { partnerCopy } from '@/config/copy/partner';
+import { api } from '@/trpc/server';
+
+import { ApiKeysPageClient } from './api-keys-page-client';
+
+export const metadata: Metadata = { title: partnerCopy.apiKeys.title };
 
 type PageProps = { params: Promise<{ role: string }> };
 
 export default async function ApiKeysPage({ params }: PageProps) {
   const { role } = await params;
 
-  if (!['partner'].includes(role)) {
-    notFound();
+  if (role !== 'partner') {
+    return <p className="text-muted-foreground">{partnerCopy.errors.unauthorized}</p>;
   }
 
-  return (
-    <section className="space-y-8">
-      <header className="flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">API Keys</h1>
-          <p className="text-sm text-muted-foreground sm:text-base">Manage integration keys</p>
-        </div>
-      </header>
-      <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
-        <Key className="size-10 text-muted-foreground/40" aria-hidden="true" />
-        <p className="text-sm font-medium text-foreground">This page is being built</p>
-        <p className="max-w-xs text-xs text-muted-foreground">
-          Full functionality for <strong>API Keys</strong> is coming soon. Your navigation and layout are fully wired.
-        </p>
-      </div>
-    </section>
-  );
+  let keys: Awaited<ReturnType<Awaited<ReturnType<typeof api>>['partner']['listApiKeys']>> = [];
+  try {
+    const caller = await api();
+    keys = await caller.partner.listApiKeys();
+  } catch {
+    keys = [];
+  }
+
+  return <ApiKeysPageClient initialKeys={keys} copy={partnerCopy.apiKeys} />;
 }
