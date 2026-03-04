@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, createContext, useState } from 'react';
 
 import type { Theme } from '@/config/themes/types';
 import { themeToCss } from '@/lib/theme-to-css';
@@ -26,8 +26,15 @@ interface ThemeProviderProps {
   children: React.ReactNode;
 }
 
+function getInitialMode(): ThemeMode {
+  if (typeof window === 'undefined') return 'light';
+  const stored = localStorage.getItem('doculet-theme-mode');
+  if (stored === 'light' || stored === 'dark') return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 export function ThemeProvider({ theme, children }: ThemeProviderProps) {
-  const [mode, setMode] = useState<ThemeMode>('light');
+  const [mode, setMode] = useState<ThemeMode>(getInitialMode);
 
   // Inject theme CSS vars into <head> via style.textContent (XSS-safe, no innerHTML)
   useEffect(() => {
@@ -40,32 +47,22 @@ export function ThemeProvider({ theme, children }: ThemeProviderProps) {
     };
   }, [theme]);
 
-  // Read stored preference or system preference on mount
-  useEffect(() => {
-    const stored = localStorage.getItem('doculet-theme-mode') as ThemeMode | null;
-    if (stored === 'light' || stored === 'dark') {
-      setMode(stored);
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setMode(prefersDark ? 'dark' : 'light');
-    }
-  }, []);
-
   // Apply .dark class to <html> and persist preference
   useEffect(() => {
     document.documentElement.classList.toggle('dark', mode === 'dark');
     localStorage.setItem('doculet-theme-mode', mode);
   }, [mode]);
 
-  function toggleMode() {
+  const toggleMode = useCallback(() => {
     setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  }
+  }, []);
 
-  return (
-    <ThemeContext.Provider value={{ mode, toggleMode, isDark: mode === 'dark', theme }}>
-      {children}
-    </ThemeContext.Provider>
+  const value = useMemo(
+    () => ({ mode, toggleMode, isDark: mode === 'dark', theme }),
+    [mode, toggleMode, theme],
   );
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme(): ThemeContextValue {
