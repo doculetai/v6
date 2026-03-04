@@ -681,3 +681,48 @@ Consuming components updated to match, TypeScript exits clean.
 To https://github.com/doculetai/v6.git
    42f6b71..15376ee  main -> main
 [copy-audit] 2026-03-04 13:50:00 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 13:53:00 Scanning copy config coverage...
+[copy-audit] 2026-03-04 13:53:00 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 13:56:01 Scanning copy config coverage...
+[copy-audit] 2026-03-04 13:56:01 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 16:38:15 Scanning copy config coverage...
+[copy-audit] 2026-03-04 16:38:16 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 16:41:16 Scanning copy config coverage...
+[copy-audit] 2026-03-04 16:41:16 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 16:44:16 Scanning copy config coverage...
+[copy-audit] 2026-03-04 16:44:16 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 16:47:17 Scanning copy config coverage...
+[copy-audit] 2026-03-04 16:47:17 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 16:50:18 Scanning copy config coverage...
+[copy-audit] 2026-03-04 16:50:18 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 16:53:19 Scanning copy config coverage...
+[copy-audit] 2026-03-04 16:53:19 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 16:56:19 Scanning copy config coverage...
+[copy-audit] 2026-03-04 16:56:19 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 16:59:19 Scanning copy config coverage...
+[copy-audit] 2026-03-04 16:59:19 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 16:59:19 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 16:59:19 Auto-fixing copy violations (round 1 of max 8)...
+Fixed. The `queryPlaceholder` was a generic instruction-style string (`"Search by name or ID"`) — replaced with context-specific copy: `"Search applications, students, or case references…"` that matches the verification pipeline domain and fits the warm, fintech-grade tone. TypeScript check passed clean, committed.
+Everything up-to-date
+[copy-audit] 2026-03-04 17:00:10 Copy fixes pushed to main.

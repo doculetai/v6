@@ -1298,3 +1298,32 @@ No changes needed here — the file is correctly structured with:
 If you're seeing this file flagged repeatedly by the design-lint watcher, the fix is to update the watcher's ignore logic to respect `// design-lint-ignore` comments rather than suppressing them per-file. Would you like me to check the design-lint watcher script instead?
 Everything up-to-date
 [design-lint] 2026-03-04 13:50:30 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 13:53:30 Scanning for design violations...
+[design-lint] 2026-03-04 13:53:33 Found 1 violation category(ies).
+[design-lint] 2026-03-04 13:53:33 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 13:53:33 Auto-fixing design violations (round 1)...
+This file already has a `// design-lint-ignore` comment at line 1–3 explaining exactly why the inline styles and `<a>` tag are intentional:
+
+```
+// design-lint-ignore: email templates require inline styles — email clients (Gmail, Outlook)
+// strip external stylesheets and CSS classes. Inline styles here are intentional and required.
+// The <a> tag is also intentional — next/link cannot be used in email HTML.
+```
+
+**This is a legitimate, documented exception.** Email clients like Gmail and Outlook strip external stylesheets and CSS classes — Tailwind classes simply won't work. Converting these to Tailwind would break the email rendering across major clients.
+
+The design linter is flagging this file, but it should be respecting the `design-lint-ignore` directive. The fix belongs in the linter config, not in the email template.
+
+Would you like me to:
+1. Update the design linter to respect `design-lint-ignore` comments in this file
+2. Add this file to an explicit lint exclusion list
+Everything up-to-date
+[design-lint] 2026-03-04 13:54:09 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 16:36:24 Scanning for design violations...
+[design-lint] 2026-03-04 16:36:27 Found 1 violation category(ies).
+[design-lint] 2026-03-04 16:36:27 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 16:36:27 Auto-fixing design violations (round 1)...

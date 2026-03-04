@@ -1440,3 +1440,100 @@ All 19 violation entries show `hits=''` — the import-guard scan found **no vio
 The import boundaries are clean.
 Everything up-to-date
 [import-guard] 2026-03-04 13:50:19 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 13:53:19 Scanning import boundaries...
+[import-guard] 2026-03-04 13:53:20 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 13:53:20 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 13:53:20 Auto-fixing import violations (round 1 of max 8)...
+TypeScript exits clean. No import boundary violations exist and the codebase is type-error free — nothing to fix or commit.
+Everything up-to-date
+[import-guard] 2026-03-04 13:53:52 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 16:36:07 Scanning import boundaries...
+[import-guard] 2026-03-04 16:36:08 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 16:36:08 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 16:36:08 Auto-fixing import violations (round 1 of max 8)...
+Confirmed — the import guard has already scanned and found **0 violations**. All 19 `hits=''` entries in the prompt are empty, and the log shows the last three scans all reported "Found 0 violation category(ies)."
+
+No changes needed. The import boundaries are clean.
+Everything up-to-date
+[import-guard] 2026-03-04 16:36:44 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 16:39:45 Scanning import boundaries...
+[import-guard] 2026-03-04 16:39:46 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 16:39:46 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 16:39:46 Auto-fixing import violations (round 1 of max 8)...
+TypeScript exits clean with zero errors. Since there are no violations to fix and the typecheck passes, there is nothing to commit.
+Everything up-to-date
+[import-guard] 2026-03-04 16:40:33 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 16:43:33 Scanning import boundaries...
+[import-guard] 2026-03-04 16:43:33 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 16:43:33 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 16:43:33 Auto-fixing import violations (round 1 of max 8)...
+The violations list is empty — all 19 entries are `hits=''`. There are no import boundary violations to fix.
+
+No changes needed, no commit required.
+Everything up-to-date
+[import-guard] 2026-03-04 16:43:52 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 16:46:53 Scanning import boundaries...
+[import-guard] 2026-03-04 16:46:54 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 16:46:54 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 16:46:54 Auto-fixing import violations (round 1 of max 8)...
+No action needed. The import-guard already resolved all violations in an earlier automated pass:
+
+- **04:37** — Fixed 3 violation categories (server imports in client, `use client` extracted to `provider.tsx`, quote style normalized)
+- **04:47** — Fixed 1 remaining violation (`student-document-list.tsx` got `'use client'`)
+- **07:38** — **0 violations found** — codebase is clean
+
+The `hits=''` entries in the prompt reflect the current clean state, not new violations. Nothing to commit.
+Everything up-to-date
+[import-guard] 2026-03-04 16:48:35 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 16:51:35 Scanning import boundaries...
+[import-guard] 2026-03-04 16:51:39 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 16:51:39 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 16:51:39 Auto-fixing import violations (round 1 of max 8)...
+The violations list is empty — all 19 `hits=''` entries contain no actual violations. The import-guard log confirms the last scan found **0 violation categories**.
+
+No changes needed and nothing to commit. The import boundaries are already clean.
+Everything up-to-date
+[import-guard] 2026-03-04 16:53:21 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 16:56:21 Scanning import boundaries...
+[import-guard] 2026-03-04 16:56:21 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 16:56:21 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 16:56:21 Auto-fixing import violations (round 1 of max 8)...
+The violations list contains only empty `hits=''` entries — there are no actual import boundary violations to fix. The import-guard check ran clean with no hits detected.
+
+No changes needed, no commit required.
+Everything up-to-date
+[import-guard] 2026-03-04 16:56:45 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 16:59:45 Scanning import boundaries...
+[import-guard] 2026-03-04 16:59:45 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 16:59:45 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 16:59:45 Auto-fixing import violations (round 1 of max 8)...
+All violation entries show `hits=''` — there are no actual import boundary violations to fix. The import guard ran but found nothing actionable.
+
+No changes needed.
+To https://github.com/doculetai/v6.git
+   8ab25ca..afc63ac  main -> main
+[import-guard] 2026-03-04 17:00:08 Import fixes pushed to main.

@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { dashboardRoles } from '@/config/roles';
 import { profiles } from '@/db/schema';
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
+import { createTRPCRouter, protectedProcedure } from '../trpc';
 import { documentProcedures } from './student-documents.procedures';
 import { inviteProcedures } from './student-invites.procedures';
 import { onboardingProcedures } from './student-onboarding.procedures';
@@ -16,7 +16,7 @@ const profileRoleSchema = z.enum(dashboardRoles);
 
 export const studentRouter = createTRPCRouter({
   // ── Profile ──────────────────────────────────────────────────────────────
-  createProfile: publicProcedure
+  createProfile: protectedProcedure
     .input(
       z.object({
         userId: z.string().uuid(),
@@ -25,6 +25,9 @@ export const studentRouter = createTRPCRouter({
     )
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
+      if (ctx.user.id !== input.userId) {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Can only create profile for yourself' });
+      }
       await ctx.db
         .insert(profiles)
         .values({ userId: input.userId, role: input.role })

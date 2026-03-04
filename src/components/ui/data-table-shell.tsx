@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 type DataTableColumn<Row> = {
@@ -21,7 +22,7 @@ function DataTableShell<Row extends { id: string }>({
   columns,
   rows,
   loading = false,
-  emptyLabel = "No records found.",
+  emptyLabel = primitivesCopy.storybook.dataTableShell.empty,
   className,
 }: DataTableShellProps<Row>) {
   if (loading) {

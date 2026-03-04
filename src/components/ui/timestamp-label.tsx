@@ -1,3 +1,4 @@
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 type TimestampMode = "absolute" | "relative" | "both"
@@ -55,7 +56,7 @@ function TimestampLabel({
   value,
   mode = "absolute",
   locale = "en-NG",
-  invalidLabel = "Invalid date",
+  invalidLabel = primitivesCopy.labels.invalidDate,
   now = new Date(),
   className,
 }: TimestampLabelProps) {

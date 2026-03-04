@@ -1,6 +1,7 @@
 import * as React from "react"
 import { TrendingDown, TrendingUp } from "lucide-react"
 
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 import { TimestampLabel } from "./timestamp-label"
@@ -28,7 +29,7 @@ function MetricCard({
   timestamp,
   loading = false,
   error = false,
-  errorLabel = "Failed to load metric.",
+  errorLabel = primitivesCopy.labels.metricLoadError,
   className,
   ...props
 }: MetricCardProps) {
