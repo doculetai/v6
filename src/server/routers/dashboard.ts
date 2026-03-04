@@ -13,6 +13,7 @@ const dashboardSessionOutputSchema = z.object({
   userId: z.string(),
   email: z.string().nullable(),
   profileRole: z.enum(dashboardRoles).nullable(),
+  onboardingComplete: z.boolean(),
 });
 
 export const dashboardRouter = createTRPCRouter({
@@ -32,6 +33,7 @@ export const dashboardRouter = createTRPCRouter({
         userId: ctx.user.id,
         email: ctx.user.email ?? null,
         profileRole: profile?.role ?? null,
+        onboardingComplete: profile?.onboardingComplete ?? false,
       };
     }),
 });

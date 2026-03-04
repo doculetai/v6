@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { DashboardShell } from '@/components/layout/DashboardShell';
 import { DashboardSkeleton } from '@/components/layout/DashboardSkeleton';
 import { isDashboardRole } from '@/config/roles';
+import { TRPCReactProvider } from '@/trpc/client';
 
 import { notFound } from 'next/navigation';
 
@@ -23,7 +24,9 @@ export default async function DashboardRoleLayout({
 
   return (
     <DashboardShell role={role}>
-      <Suspense fallback={<DashboardSkeleton />}>{children}</Suspense>
+      <TRPCReactProvider>
+        <Suspense fallback={<DashboardSkeleton />}>{children}</Suspense>
+      </TRPCReactProvider>
     </DashboardShell>
   );
 }

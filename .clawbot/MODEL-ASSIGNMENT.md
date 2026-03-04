@@ -96,7 +96,58 @@ export DEEPSEEK_API_KEY=sk-...
 ./scripts/swarm/spawn-agent.sh --id reason-X --agent deepseek --model deepseek-reasoner --message "..."
 ```
 
-## Not yet set up (optional)
+## OpenRouter Paid Plan — Model Catalog (active)
 
-- **OpenRouter**: Set `OPENROUTER_API_KEY` → access to DeepSeek, Gemini Flash, 100+ free models
-- **Gemini CLI**: `npm i -g @google/gemini-cli` + `GEMINI_API_KEY` → 1M context window, great for large codebase analysis
+Set `OPENROUTER_API_KEY` in `.env.local` to activate.
+
+### FREE on OpenRouter
+| Model | ID | Context |
+|-------|----|---------|
+| Arcee Trinity Large Preview | `arcee-ai/trinity-large-preview:free` | 131K |
+| StepFun Step 3.5 Flash | `stepfun/step-3.5-flash:free` | 256K |
+
+### Ultra-cheap ($0.06–$0.12/M input)
+| Model | ID | $/M in | Context | Best for |
+|-------|-----|--------|---------|----------|
+| Z.ai GLM 4.7 Flash | `z-ai/glm-4.7-flash` | $0.06 | 203K | Copy config, review |
+| Qwen3.5-Flash | `qwen/qwen3.5-flash` | $0.10 | **1M** | Large codebase analysis |
+| Qwen3 Coder Next | `qwen/qwen3-coder-next` | $0.12 | 262K | Focused code gen |
+
+### Mid-tier — Best agentic coders
+| Model | ID | SWE-Bench | $/M in |
+|-------|-----|-----------|--------|
+| MiniMax M2.1 | `minimax/minimax-m2.1` | 72.5% | $0.27 |
+| **MiniMax M2.5** | `minimax/minimax-m2.5` | **80.2%** | $0.30 |
+| Qwen3.5 397B A17B | `qwen/qwen3.5-72b-a17b` | — | $0.39 |
+| Kimi K2.5 | `moonshotai/kimi-k2.5` | — | $0.45 |
+
+### 3-Hour Sprint Model Assignment
+| Wave | Role | Agent | Model |
+|------|------|-------|-------|
+| 4 (running) | Sponsor | `codex` | gpt-5.3-codex |
+| 5 | University | `openrouter` | `minimax/minimax-m2.5` |
+| 6 | Admin | `openrouter` | `minimax/minimax-m2.5` |
+| 7 | Agent role | `openrouter` | `qwen/qwen3-coder-next` |
+| 8 | Partner | `openrouter` | `qwen/qwen3-coder-next` |
+| Copy configs | All | `openrouter` | `z-ai/glm-4.7-flash` |
+
+```bash
+# Best agentic coder (Waves 5+)
+./scripts/swarm/spawn-agent.sh --id X --agent openrouter \
+  --model minimax/minimax-m2.5 --persona frontend-lead --message "..."
+
+# Cheapest (copy/review)
+./scripts/swarm/spawn-agent.sh --id X --agent openrouter \
+  --model z-ai/glm-4.7-flash --message "..."
+
+# 1M context (large codebase)
+./scripts/swarm/spawn-agent.sh --id X --agent openrouter \
+  --model qwen/qwen3.5-flash --message "..."
+
+# Free fallback
+./scripts/swarm/spawn-agent.sh --id X --agent openrouter \
+  --model stepfun/step-3.5-flash:free --message "..."
+```
+
+## Gemini CLI (optional)
+- `npm i -g @google/gemini-cli` + `GEMINI_API_KEY` → 1M context, great for large analysis
