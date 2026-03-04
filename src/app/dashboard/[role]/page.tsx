@@ -325,6 +325,268 @@ async function StudentOverview({
   );
 }
 
+async function SponsorOverview({
+  email,
+  caller,
+}: {
+  email: string;
+  caller: Awaited<ReturnType<typeof api>>;
+}) {
+  const firstName = getFirstName(email);
+  const [overviewResult, studentsResult] = await Promise.allSettled([
+    caller.sponsor.getSponsorOverview(),
+    caller.sponsor.listSponsoredStudents(),
+  ]);
+
+  const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+  const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
+  const recentStudents = students.slice(0, 3);
+
+  function formatNGN(kobo: number): string {
+    const naira = kobo / 100;
+    if (naira >= 1_000_000) return `₦${(naira / 1_000_000).toFixed(1)}M`;
+    if (naira >= 1_000) return `₦${(naira / 1_000).toFixed(0)}K`;
+    return `₦${naira.toLocaleString()}`;
+  }
+
+  return (
+    <section className="mx-auto w-full max-w-5xl space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
+          Welcome back, {firstName}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Track your commitments and upcoming disbursements.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          icon={<Banknote className="size-4.5" aria-hidden="true" />}
+          label="Total Committed"
+          value={overview ? formatNGN(overview.totalCommittedKobo) : '—'}
+          sub="across active sponsorships"
+          accent={Boolean(overview?.totalCommittedKobo)}
+        />
+        <StatCard
+          icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
+          label="Active Students"
+          value={overview ? String(overview.activeStudents) : '—'}
+          sub="currently sponsored"
+          accent={Boolean(overview?.activeStudents)}
+        />
+        <StatCard
+          icon={<UserRoundSearch className="size-4.5" aria-hidden="true" />}
+          label="Pending Invites"
+          value={overview ? String(overview.pendingInvites) : '—'}
+          sub="awaiting your response"
+          accent={Boolean(overview?.pendingInvites)}
+        />
+        <StatCard
+          icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
+          label="Next Disbursement"
+          value={
+            overview?.nextDisbursementAt
+              ? new Intl.DateTimeFormat('en-NG', { day: 'numeric', month: 'short' }).format(
+                  overview.nextDisbursementAt,
+                )
+              : 'None scheduled'
+          }
+          sub={
+            overview?.nextDisbursementAt ? 'scheduled date' : 'accept a sponsorship first'
+          }
+        />
+      </div>
+
+      {recentStudents.length > 0 ? (
+        <div className="space-y-3">
+          <h2 className="text-sm font-semibold text-foreground">Recent Students</h2>
+          <div className="space-y-2">
+            {recentStudents.map((s) => (
+              <Card key={s.id} className="border-border bg-card">
+                <CardContent className="flex items-center justify-between pt-4">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">
+                      {s.studentEmail ?? 'Unknown'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatNGN(s.amountKobo)} · {s.status}
+                    </p>
+                  </div>
+                  <span
+                    className={cn(
+                      'rounded-full px-2 py-0.5 text-xs font-medium',
+                      s.status === 'active'
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-muted text-muted-foreground',
+                    )}
+                  >
+                    {s.status}
+                  </span>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <Card className="border-border bg-card">
+          <CardContent className="pt-5">
+            <p className="text-sm text-muted-foreground">
+              No active sponsorships yet. Review pending student requests to get started.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      <Button asChild className="min-h-11 w-full sm:w-auto">
+        <Link href="/dashboard/sponsor/students">Review pending requests</Link>
+      </Button>
+    </section>
+  );
+}
+
+async function AgentOverview({
+  email,
+  caller,
+}: {
+  email: string;
+  caller: Awaited<ReturnType<typeof api>>;
+}) {
+  const firstName = getFirstName(email);
+  const [overviewResult] = await Promise.allSettled([caller.agent.getAgentOverview()]);
+  const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+
+  function formatNGN(kobo: number): string {
+    const naira = kobo / 100;
+    if (naira >= 1_000_000) return `₦${(naira / 1_000_000).toFixed(1)}M`;
+    if (naira >= 1_000) return `₦${(naira / 1_000).toFixed(0)}K`;
+    return `₦${naira.toLocaleString()}`;
+  }
+
+  return (
+    <section className="mx-auto w-full max-w-5xl space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
+          Welcome back, {firstName}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Guide your active students through their funding journey.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
+          label="Assigned Students"
+          value={overview ? String(overview.totalAssignedStudents) : '—'}
+          sub="in your caseload"
+          accent={Boolean(overview?.totalAssignedStudents)}
+        />
+        <StatCard
+          icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
+          label="Active Students"
+          value={overview ? String(overview.activeStudents) : '—'}
+          sub="verified and funded"
+          accent={Boolean(overview?.activeStudents)}
+        />
+        <StatCard
+          icon={<Banknote className="size-4.5" aria-hidden="true" />}
+          label="Pending Commissions"
+          value={overview ? formatNGN(overview.pendingCommissionsKobo) : '—'}
+          sub="awaiting payout"
+          accent={Boolean(overview?.pendingCommissionsKobo)}
+        />
+        <StatCard
+          icon={<Sparkles className="size-4.5" aria-hidden="true" />}
+          label="Total Earned"
+          value={overview ? formatNGN(overview.totalEarnedKobo) : '—'}
+          sub="lifetime commissions paid"
+          accent={Boolean(overview?.totalEarnedKobo)}
+        />
+      </div>
+
+      <Card className="border-border bg-card">
+        <CardContent className="pt-5">
+          <p className="text-sm text-muted-foreground">
+            {overview?.totalAssignedStudents
+              ? `You have ${overview.totalAssignedStudents} student${overview.totalAssignedStudents === 1 ? '' : 's'} in your caseload. Keep their journeys moving forward.`
+              : 'No students assigned yet. Use the Actions page to invite your first student.'}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Button asChild className="min-h-11 w-full sm:w-auto">
+        <Link href="/dashboard/agent/students">View your students</Link>
+      </Button>
+    </section>
+  );
+}
+
+async function PartnerOverview({
+  email,
+  caller,
+}: {
+  email: string;
+  caller: Awaited<ReturnType<typeof api>>;
+}) {
+  const firstName = getFirstName(email);
+  const [overviewResult] = await Promise.allSettled([caller.partner.getPartnerOverview()]);
+  const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+
+  return (
+    <section className="mx-auto w-full max-w-5xl space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
+          Welcome back, {firstName}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {overview?.organizationName
+            ? `${overview.organizationName} — integration performance at a glance.`
+            : 'Monitor your integration performance.'}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatCard
+          icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
+          label="Total Students"
+          value={overview ? String(overview.totalStudents) : '—'}
+          sub="enrolled via your integration"
+          accent={Boolean(overview?.totalStudents)}
+        />
+        <StatCard
+          icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
+          label="Verified Students"
+          value={overview ? String(overview.verifiedStudents) : '—'}
+          sub="KYC complete"
+          accent={Boolean(overview?.verifiedStudents)}
+        />
+        <StatCard
+          icon={<FileStack className="size-4.5" aria-hidden="true" />}
+          label="Active API Keys"
+          value={overview ? String(overview.activeApiKeys) : '—'}
+          sub="in use"
+          accent={Boolean(overview?.activeApiKeys)}
+        />
+      </div>
+
+      <Card className="border-border bg-card">
+        <CardContent className="pt-5">
+          <p className="text-sm text-muted-foreground">
+            {overview?.totalStudents
+              ? `${overview.verifiedStudents} of ${overview.totalStudents} students have completed KYC verification.`
+              : 'No students enrolled yet. Use the API Keys page to get your integration started.'}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Button asChild className="min-h-11 w-full sm:w-auto">
+        <Link href="/dashboard/partner/students">View students</Link>
+      </Button>
+    </section>
+  );
+}
+
 export default async function DashboardRolePage({ params }: DashboardRolePageProps) {
   const { role } = await params;
 
@@ -359,6 +621,23 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
 
   if (role === 'student' && sessionData.profileRole === 'student') {
     return <StudentOverview email={sessionData.email ?? ''} caller={caller} />;
+  }
+
+  // Admin → redirect to operations page
+  if (role === 'admin' && sessionData.profileRole === 'admin') {
+    redirect('/dashboard/admin/operations');
+  }
+
+  if (role === 'sponsor' && sessionData.profileRole === 'sponsor') {
+    return <SponsorOverview email={sessionData.email ?? ''} caller={caller} />;
+  }
+
+  if (role === 'agent' && sessionData.profileRole === 'agent') {
+    return <AgentOverview email={sessionData.email ?? ''} caller={caller} />;
+  }
+
+  if (role === 'partner' && sessionData.profileRole === 'partner') {
+    return <PartnerOverview email={sessionData.email ?? ''} caller={caller} />;
   }
 
   const roleCopy = dashboardOverviewCopy[role];
