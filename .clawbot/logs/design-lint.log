@@ -313,3 +313,9 @@ The email template (`sponsor-invitation-email.tsx`) was left unchanged — it ha
 To https://github.com/doculetai/v6.git
    cb8c8de..4261ee6  main -> main
 [design-lint] 2026-03-04 09:27:04 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 09:30:04 Scanning for design violations...
+[design-lint] 2026-03-04 09:30:07 Found 1 violation category(ies).
+[design-lint] 2026-03-04 09:30:07 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 09:30:07 Auto-fixing design violations (round 1)...

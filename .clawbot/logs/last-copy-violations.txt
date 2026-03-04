@@ -1,9 +1,11 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/agent.ts:144:      fullNamePlaceholder: "e.g. Amara Okafor",
-/Users/gm/v6/src/config/copy/agent.ts:146:      phonePlaceholder: "+234 801 234 5678",
-/Users/gm/v6/src/config/copy/agent.ts:148:      regionPlaceholder: "e.g. Lagos, Abuja, Port Harcourt",
-/Users/gm/v6/src/config/copy/agent.ts:150:      accreditationPlaceholder: "e.g. AGT-2024-00123",
-/Users/gm/v6/src/config/copy/admin.ts:160:      searchPlaceholder: "Name, email, or student ID…",
-/Users/gm/v6/src/config/copy/admin.ts:205:      notesPlaceholder: "Describe your decision clearly — this message is sent directly to the student…",
+/Users/gm/v6/src/config/copy/agent.ts:144:      fullNamePlaceholder: "Full legal name as it appears on your ID",
+/Users/gm/v6/src/config/copy/agent.ts:146:      phonePlaceholder: "Mobile number with country code",
+/Users/gm/v6/src/config/copy/agent.ts:148:      regionPlaceholder: "City or region where you operate",
+/Users/gm/v6/src/config/copy/agent.ts:150:      accreditationPlaceholder: "Your Doculet accreditation reference number",
+/Users/gm/v6/src/config/copy/admin.ts:160:      searchPlaceholder: "Search by name, email or student ID",
+/Users/gm/v6/src/config/copy/admin.ts:205:      notesPlaceholder: "Write a clear decision note — this message goes directly to the student",
+/Users/gm/v6/src/config/copy/student-onboarding.copy.ts:73:        schoolPlaceholder: "Select a school…",
+/Users/gm/v6/src/config/copy/student-onboarding.copy.ts:76:        programPlaceholder: "Select a program…",

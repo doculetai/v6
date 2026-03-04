@@ -585,3 +585,24 @@ error: Please commit or stash them.
 [import-guard] 2026-03-04 09:26:03 Found 1 violation category(ies).
 [import-guard] 2026-03-04 09:26:03 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
 [import-guard] 2026-03-04 09:26:03 Auto-fixing import violations (round 1 of max 8)...
+The file has no unstaged changes (git confirms nothing to commit for it). The violation was a false positive — `src/components/ui/earnings-panel.tsx` already has `'use client'` on line 1 and TypeScript is clean. No code changes were needed, so there's nothing to commit.
+Everything up-to-date
+[import-guard] 2026-03-04 09:27:20 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 09:30:21 Scanning import boundaries...
+[import-guard] 2026-03-04 09:30:21 Found 2 violation category(ies).
+[import-guard] 2026-03-04 09:30:21 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 09:30:21 Auto-fixing import violations (round 1 of max 8)...
+Done. Two violations fixed:
+
+1. **`onboarding-page-client.tsx`**: Removed the `@/server/root` import and `inferRouterOutputs` from `@trpc/server`. Replaced with `RouterOutputs` already exported from `@/trpc/client` — no behavior change, same type information.
+
+2. **`earnings-panel.tsx`**: Normalized `"use client"` (double quotes) to `'use client'` (single quotes) to match project convention and satisfy the import guard's directive detection.
+
+`★ Insight ─────────────────────────────────────`
+`@/trpc/client` is the correct boundary point: it imports `AppRouter` from the server once and re-exports `RouterOutputs`, so client components can get full type inference without crossing the server boundary themselves. The `import type` qualifier makes the original violation technically safe at runtime, but the import guard enforces the rule structurally regardless.
+`─────────────────────────────────────────────────`
+To https://github.com/doculetai/v6.git
+   0662df5..8085f79  main -> main
+[import-guard] 2026-03-04 09:31:50 Import fixes pushed to main.
