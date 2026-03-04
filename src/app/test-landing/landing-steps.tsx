@@ -24,14 +24,10 @@ export function Steps() {
 
         <div className="mt-16 md:mt-20">
           <div className="relative">
-            {/* Connector line — desktop. Requires inline style for dashed background pattern */}
+            {/* Connector line — desktop */}
             <div
-              className="pointer-events-none absolute left-[calc(12.5%+24px)] right-[calc(12.5%+24px)] top-6 hidden h-px md:block"
+              className="pointer-events-none absolute left-[calc(12.5%+24px)] right-[calc(12.5%+24px)] top-6 hidden h-px md:block [background-image:repeating-linear-gradient(90deg,transparent,transparent_4px,var(--border)_4px,var(--border)_12px)]"
               aria-hidden="true"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(90deg, transparent, transparent 4px, var(--border) 4px, var(--border) 12px)",
-              }}
             />
 
             <div className="grid gap-8 md:grid-cols-4 md:gap-0">

@@ -15,7 +15,7 @@ export function SidebarToggle({ isCollapsed, onToggle }: SidebarToggleProps) {
       onClick={onToggle}
       aria-label={label}
       className={cn(
-        'flex min-h-[44px] items-center gap-2 rounded-md px-3 text-xs text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring',
+        'flex min-h-11 items-center gap-2 rounded-md px-3 text-xs text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring',
         isCollapsed && 'w-full justify-center px-0',
       )}
     >

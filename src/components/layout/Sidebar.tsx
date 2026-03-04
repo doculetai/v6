@@ -189,7 +189,7 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
       <ul
         className={cn(
           'flex flex-col gap-0.5 overflow-hidden px-3 transition-all',
-          isOpen ? 'max-h-[500px] opacity-100' : 'invisible max-h-0 opacity-0',
+          isOpen ? 'max-h-screen opacity-100' : 'invisible max-h-0 opacity-0',
         )}
         role="list"
       >

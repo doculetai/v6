@@ -6,14 +6,10 @@ function CertificateMockup() {
   const cert = copy.certificate;
   return (
     <div className="relative">
-      {/* Outer glow — radial gradient requires inline style */}
+      {/* Outer glow */}
       <div
-        className="pointer-events-none absolute -inset-4 rounded-3xl opacity-30"
+        className="pointer-events-none absolute -inset-4 rounded-3xl opacity-30 [background:radial-gradient(ellipse_at_50%_50%,var(--accent)_0%,transparent_70%)]"
         aria-hidden="true"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 50%, var(--accent) 0%, transparent 70%)",
-        }}
       />
 
       {/* Certificate card */}
@@ -111,25 +107,16 @@ export function Hero() {
       id="main-content"
       className="relative overflow-hidden bg-background pb-20 pt-28 md:pb-32 md:pt-44"
     >
-      {/* Radial gradient — requires inline style for complex CSS function */}
+      {/* Radial gradient */}
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 [background:radial-gradient(ellipse_80%_50%_at_50%_-10%,color-mix(in_srgb,var(--accent)_8%,transparent)_0%,transparent_70%)]"
         aria-hidden="true"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 50% at 50% -10%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 70%)",
-        }}
       />
 
-      {/* Dot grid — requires inline style for backgroundImage pattern */}
+      {/* Dot grid */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none absolute inset-0 opacity-[0.03] [background-image:radial-gradient(circle,var(--primary)_1px,transparent_1px)] [background-size:28px_28px]"
         aria-hidden="true"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, var(--primary) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
       />
 
       <div className="relative mx-auto max-w-6xl px-5 md:px-8">
