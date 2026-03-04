@@ -1,18 +1,12 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
+import { dashboardRoles } from '@/config/roles';
 import { profiles } from '@/db/schema';
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc';
 
-const profileRoleSchema = z.enum([
-  'student',
-  'sponsor',
-  'university',
-  'admin',
-  'agent',
-  'partner',
-]);
+const profileRoleSchema = z.enum(dashboardRoles);
 
 export const studentRouter = createTRPCRouter({
   createProfile: publicProcedure

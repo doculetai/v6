@@ -1,3 +1,13 @@
+## PRODUCT CONTEXT
+
+Doculet.ai is a Nigerian bank statement verification platform. Sponsors (parents, guardians, employers, NGOs) verify their own bank statements to strengthen a student's Proof of Funds Certificate. A verified sponsor is required for Tier 3 certification — the highest level, accepted by US embassies.
+
+The sponsor dashboard is the home page after login. It shows: verification status badge (verified/pending), KPI cards (students sponsored count, total committed in ₦, certificates issued, pending invites), a student list with progress bars and tier badges, and recent activity. Two sponsor types exist with different copy: Individual (parent/guardian — personal tone, "My Student") and Corporate (formal tone, "Portfolio", extra CAC document in KYC).
+
+**Cross-persona handoffs**: Student invites sponsor → sponsor receives email → accepts on `/sponsor/invite?token=[token]` → completes KYC (identity + bank + statement) → signs affidavit → student's trust score updated (+15-25 pts). Sponsorship statuses: pending → invited → accepted → signed → verified. All amounts in ₦ (kobo integers, display as ₦1,200,000). All copy from `src/config/copy/sponsor.ts`.
+
+---
+
 Build the sponsor overview dashboard at src/app/dashboard/sponsor/page.tsx (Server Component) + src/app/dashboard/sponsor/sponsor-dashboard-client.tsx (Client Component).
 
 ## Page Structure

@@ -1,3 +1,5 @@
+import { commonErrors } from "./shared";
+
 export const agentCopy = {
   dashboard: {
     title: "Agent dashboard",
@@ -138,11 +140,7 @@ export const agentCopy = {
     settings: "Settings",
   },
 
-  errors: {
-    generic: "Something went wrong. Please try again.",
-    sessionExpired: "Your session has expired. Please sign in again.",
-    unauthorized: "You don't have permission to access this page.",
-  },
+  errors: commonErrors,
 } as const;
 
 export type AgentCopy = typeof agentCopy;

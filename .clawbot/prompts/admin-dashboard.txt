@@ -1,3 +1,13 @@
+## PRODUCT CONTEXT
+
+Doculet.ai is a Nigerian bank statement verification platform. The admin dashboard is the nerve center of the platform. Admins review documents, verify identities, detect fraud, issue certificates, manage users across all 6 roles, and monitor system health (Supabase, Dojah, Mono, Paystack, Resend integrations).
+
+The admin's primary workflow is the review queue: items arrive when students upload documents or complete identity verification. Review types: Identity Verification, Bank Verification, Document Review, Sponsor Attestation, Certificate Generation. Each item has a priority (Normal 48h SLA, High 24h, Urgent 4h) and can be assigned to specific reviewers. The evidence viewer shows 4 panels: Bank Evidence (account name, balance ₦/USD, transaction history), Identity Evidence (BVN/NIN verification, name match score), Document Evidence (file preview, OCR results, previous versions), Sponsor Evidence (sponsor KYC status, pledge amount).
+
+**Cross-persona handoffs**: Every admin decision creates a notification for the affected student. Approve document → student sees "Approved" green badge + trust score updates. Reject → student sees rejection reason + "Re-upload" button. Flag fraud → account suspended + student notified. Issue certificate → student gets "Certificate Ready" notification + can share. V5 gap: notifications weren't dispatched on admin decisions. All amounts in ₦, PII access must be logged in audit_logs. Copy from `src/config/copy/admin.ts`.
+
+---
+
 Build the admin overview dashboard at src/app/dashboard/admin/page.tsx (Server) + admin-dashboard-client.tsx (Client).
 
 ## Page Purpose

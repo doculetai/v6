@@ -14,49 +14,31 @@ type DashboardRolePageProps = {
   params: Promise<{ role: string }>;
 };
 
-function EmptyState({ role }: { role: DashboardRole }) {
-  const roleCopy = dashboardOverviewCopy[role];
+type StateCardProps = {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  role: DashboardRole;
+};
+
+function StateCard({ icon: Icon, title, description, role }: StateCardProps) {
+  const { ctaHref, ctaLabel } = dashboardOverviewCopy[role];
 
   return (
     <section className="mx-auto w-full max-w-5xl">
       <Card className="border-border bg-card dark:border-border dark:bg-card">
         <CardHeader className="space-y-3">
-          <UserRoundSearch className="size-5 text-muted-foreground dark:text-muted-foreground" />
+          <Icon className="size-5 text-muted-foreground dark:text-muted-foreground" />
           <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
-            {dashboardShellCopy.overview.emptyTitle}
+            {title}
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
-            {dashboardShellCopy.overview.emptyDescription}
+            {description}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Button asChild className="min-h-11 w-full sm:w-auto">
-            <Link href={roleCopy.ctaHref}>{roleCopy.ctaLabel}</Link>
-          </Button>
-        </CardContent>
-      </Card>
-    </section>
-  );
-}
-
-function ErrorState({ role }: { role: DashboardRole }) {
-  const roleCopy = dashboardOverviewCopy[role];
-
-  return (
-    <section className="mx-auto w-full max-w-5xl">
-      <Card className="border-border bg-card dark:border-border dark:bg-card">
-        <CardHeader className="space-y-3">
-          <AlertTriangle className="size-5 text-muted-foreground dark:text-muted-foreground" />
-          <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
-            {dashboardShellCopy.overview.errorTitle}
-          </CardTitle>
-          <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
-            {dashboardShellCopy.overview.errorDescription}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button asChild className="min-h-11 w-full sm:w-auto">
-            <Link href={roleCopy.ctaHref}>{roleCopy.ctaLabel}</Link>
+            <Link href={ctaHref}>{ctaLabel}</Link>
           </Button>
         </CardContent>
       </Card>
@@ -77,7 +59,14 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
     const roleCopy = dashboardOverviewCopy[role];
 
     if (!sessionData.profileRole) {
-      return <EmptyState role={role} />;
+      return (
+        <StateCard
+          icon={UserRoundSearch}
+          title={dashboardShellCopy.overview.emptyTitle}
+          description={dashboardShellCopy.overview.emptyDescription}
+          role={role}
+        />
+      );
     }
 
     return (
@@ -108,6 +97,13 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
       redirect('/login');
     }
 
-    return <ErrorState role={role} />;
+    return (
+      <StateCard
+        icon={AlertTriangle}
+        title={dashboardShellCopy.overview.errorTitle}
+        description={dashboardShellCopy.overview.errorDescription}
+        role={role}
+      />
+    );
   }
 }

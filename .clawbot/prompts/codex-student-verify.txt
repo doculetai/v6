@@ -28,4 +28,20 @@ V6: tRPC (@trpc/server 11+), Drizzle ORM (drizzle-orm/pg-core), Supabase Auth + 
 
 ---
 
-KYC verification page: Dojah identity check + Mono bank account connect. Status tracker shows tier 1/2/3 progress. Server page + client wrapper.
+## PRODUCT CORRECTIONS (Updated March 2026 — Read Before Building)
+
+**KYC Identity**: Student chooses NIN OR Passport from the START — both options shown from the beginning. Not NIN-then-fallback. Two buttons: "Verify with NIN" / "Verify with Passport".
+
+**Bank verification**: TWO PATHS, both primary:
+- Path A: Upload PDF bank statement (student got it from their bank branch or internet banking)
+- Path B: Connect via Mono live widget
+- If Mono fails → auto-offer PDF upload
+- PDF upload is NOT a fallback — many students prefer it
+
+**No emojis anywhere** — Lucide icons only
+
+**Playwright**: After building, screenshot at 375px + 1440px. Verify in both before marking done.
+
+---
+
+KYC verification page: Dojah identity check + Mono bank account connect + PDF upload fallback. Status tracker shows tier 1/2/3 progress. Server page + client wrapper.
