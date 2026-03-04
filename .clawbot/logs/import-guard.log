@@ -794,3 +794,78 @@ All the violation entries show `hits=''` — the import guard found **no actual 
 No changes needed, no commit required. The import boundaries are clean.
 Everything up-to-date
 [import-guard] 2026-03-04 10:41:27 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 10:44:27 Scanning import boundaries...
+[import-guard] 2026-03-04 10:44:28 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 10:44:28 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 10:44:28 Auto-fixing import violations (round 1 of max 8)...
+The log confirms it: the import guard already ran at 07:38:29 and found **0 violations**. All `hits=''` in your list means the codebase is clean. Nothing to fix or commit.
+
+```
+★ Insight ─────────────────────────────────────
+The import guard's automated loop already resolved the violations in two
+passes at 04:37 and 04:46 — extracting TRPCReactProvider to a separate
+provider.tsx, normalizing 'use client' directive quotes, and adding the
+directive where hydration safety required it. By the time this task was
+dispatched (07:38), the codebase was already clean.
+─────────────────────────────────────────────────
+```
+Everything up-to-date
+[import-guard] 2026-03-04 10:44:56 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 10:47:57 Scanning import boundaries...
+[import-guard] 2026-03-04 10:47:57 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 10:47:57 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 10:47:57 Auto-fixing import violations (round 1 of max 8)...
+All `hits=''` — no violations exist. Both checks confirm:
+
+- **Import guard**: Found 0 violation categories (last scan at 10:47)
+- **TypeScript**: Exits clean (no output = no errors)
+
+Nothing to fix or commit.
+Everything up-to-date
+[import-guard] 2026-03-04 10:48:39 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 10:51:39 Scanning import boundaries...
+[import-guard] 2026-03-04 10:51:40 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 10:51:40 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 10:51:40 Auto-fixing import violations (round 1 of max 8)...
+The violations list is empty — all `hits` values are `''`, meaning the import guard scan found **no violations** to fix.
+
+Nothing to do here. The import boundaries are clean.
+Everything up-to-date
+[import-guard] 2026-03-04 10:52:19 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 10:55:19 Scanning import boundaries...
+[import-guard] 2026-03-04 10:55:20 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 10:55:20 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 10:55:20 Auto-fixing import violations (round 1 of max 8)...
+No action needed. The log confirms **0 violations** as of the 07:38 scan. All `hits=''` in the violations list means the import guard found nothing to fix.
+
+The violations from the earlier 04:36 scan were already auto-resolved and pushed to main:
+- `src/trpc/client.tsx` — `'use client'` removed, `TRPCReactProvider` extracted to `src/trpc/provider.tsx`
+- `verify-page-client.tsx` — `@/server/root` import replaced with `@/trpc/client`
+- Quote style normalized on `landing-nav.tsx`, `_shared.tsx`, `masked-value.tsx`
+- `student-document-list.tsx` — `'use client'` added for hydration safety
+
+The codebase is clean.
+Everything up-to-date
+[import-guard] 2026-03-04 10:56:19 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 10:59:19 Scanning import boundaries...
+[import-guard] 2026-03-04 10:59:20 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 10:59:20 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 10:59:20 Auto-fixing import violations (round 1 of max 8)...
+TypeScript exits clean. No import boundary violations exist and no changes are needed.
+Everything up-to-date
+[import-guard] 2026-03-04 11:00:41 Import fixes pushed to main.

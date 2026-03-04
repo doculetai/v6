@@ -511,3 +511,96 @@ Nothing to commit — the email template was already correct and had no violatio
 The design lint scanner should be updated to skip files containing `design-lint-ignore` so it stops reporting false positives on this file. TypeScript (`tsc --noEmit`) and ESLint both pass clean.
 Everything up-to-date
 [design-lint] 2026-03-04 10:41:46 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 10:44:46 Scanning for design violations...
+[design-lint] 2026-03-04 10:44:48 Found 1 violation category(ies).
+[design-lint] 2026-03-04 10:44:48 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 10:44:48 Auto-fixing design violations (round 1)...
+This file already has a `design-lint-ignore` comment at the top explaining exactly why inline styles and `<a>` tags are required for email templates — email clients (Gmail, Outlook) strip external stylesheets and CSS classes. The violations flagged here are **intentional and correct**.
+
+No changes needed. The file is properly documented and the existing `design-lint-ignore` comment explains the exception.
+Everything up-to-date
+[design-lint] 2026-03-04 10:45:13 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 10:48:13 Scanning for design violations...
+[design-lint] 2026-03-04 10:48:15 Found 1 violation category(ies).
+[design-lint] 2026-03-04 10:48:15 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 10:48:15 Auto-fixing design violations (round 1)...
+The file already has a `design-lint-ignore` comment at lines 1–3 explaining exactly why inline styles are required:
+
+```
+// design-lint-ignore: email templates require inline styles — email clients (Gmail, Outlook)
+// strip external stylesheets and CSS classes. Inline styles here are intentional and required.
+// The <a> tag is also intentional — next/link cannot be used in email HTML.
+```
+
+**No fix needed.** Email templates are a legitimate exception to the inline style rule — Gmail, Outlook, and most email clients strip `<link>` and `<style>` tags, making Tailwind classes non-functional. Inline styles are the only reliable approach. The `<a>` tag instead of `<Link>` is also correct since `next/link` renders React router behavior that doesn't apply in email HTML.
+
+If the design-lint script is still flagging this file despite the ignore comment, the issue is in the linter logic (it should be skipping files/sections with `design-lint-ignore`), not in this template.
+Everything up-to-date
+[design-lint] 2026-03-04 10:48:52 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 10:51:52 Scanning for design violations...
+[design-lint] 2026-03-04 10:51:55 Found 1 violation category(ies).
+[design-lint] 2026-03-04 10:51:55 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 10:51:55 Auto-fixing design violations (round 1)...
+This file is already correctly annotated with a `design-lint-ignore` comment at line 1:
+
+```
+// design-lint-ignore: email templates require inline styles — email clients (Gmail, Outlook)
+// strip external stylesheets and CSS classes. Inline styles here are intentional and required.
+// The <a> tag is also intentional — next/link cannot be used in email HTML.
+```
+
+The inline styles and `<a>` tag in this file are **intentional exceptions** — email clients like Gmail and Outlook strip CSS classes and external stylesheets entirely, so inline styles are the only reliable styling mechanism for email HTML. `next/link` also cannot be rendered in email HTML.
+
+The design linter should be configured to skip files with the `design-lint-ignore` comment. There are no actual violations to fix here.
+Everything up-to-date
+[design-lint] 2026-03-04 10:52:32 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 10:55:32 Scanning for design violations...
+[design-lint] 2026-03-04 10:55:35 Found 1 violation category(ies).
+[design-lint] 2026-03-04 10:55:35 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 10:55:35 Auto-fixing design violations (round 1)...
+This file is already correctly handled. It has a `design-lint-ignore` comment at lines 1–3 explicitly documenting why inline styles and `<a>` are intentional:
+
+```tsx
+// design-lint-ignore: email templates require inline styles — email clients (Gmail, Outlook)
+// strip external stylesheets and CSS classes. Inline styles here are intentional and required.
+// The <a> tag is also intentional — next/link cannot be used in email HTML.
+```
+
+Email templates are a legitimate exception to both rules:
+- **Inline styles** — required because Gmail, Outlook, and most email clients strip `<style>` tags and CSS classes entirely
+- **`<a>` instead of `<Link>`** — `next/link` only works in the browser runtime, not in email HTML strings
+
+No changes needed here. The design-lint checker should be configured to skip files with the `design-lint-ignore` directive at the top. If you want, I can update the lint config to respect that comment and suppress these false positives.
+Everything up-to-date
+[design-lint] 2026-03-04 10:56:48 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 10:59:48 Scanning for design violations...
+[design-lint] 2026-03-04 10:59:52 Found 1 violation category(ies).
+[design-lint] 2026-03-04 10:59:52 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 10:59:52 Auto-fixing design violations (round 1)...
+The file already has a comment at line 1 explaining that inline styles are **intentional and required** for email templates — email clients like Gmail and Outlook strip external stylesheets and CSS classes. This is a well-known constraint of HTML email rendering.
+
+The design-lint tool flagged this file, but the violations are **false positives**. The comment `// design-lint-ignore: email templates require inline styles` was already added to suppress this, but the linter apparently doesn't honor it.
+
+No changes are needed here — changing inline styles to Tailwind classes in an email template would **break the email rendering** in virtually all email clients. The existing code is correct.
+
+```
+★ Insight ─────────────────────────────────────
+- Email HTML is a completely different rendering environment from browsers. Gmail, Outlook (especially Outlook 2007-2019 which uses Word's rendering engine), and most email clients strip <style> blocks and class-based CSS.
+- The only reliable styling method for cross-client email is inline styles — this is why libraries like react-email and mjml exist, and why they all use inline styles internally.
+- The design-lint-ignore comment at line 1 correctly documents this exception. The linter should be configured to skip files in src/lib/email/templates/.
+─────────────────────────────────────────────────
+```
+
+There are no actual violations to fix in this file. If the design-lint tool keeps flagging it, the right fix is to add `src/lib/email/templates/**` to the linter's ignore paths, not to alter the template.
+Everything up-to-date
+[design-lint] 2026-03-04 11:01:00 Design fixes pushed to main.
