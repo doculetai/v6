@@ -19,9 +19,9 @@ type Props = {
 };
 
 const SEVERITY_STYLES: Record<'low' | 'medium' | 'high', string> = {
-  low: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-  medium: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
-  high: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  low: 'bg-primary/5 text-primary border border-primary/20',
+  medium: 'bg-primary/10 text-primary border border-primary/30',
+  high: 'bg-destructive/10 text-destructive border border-destructive/20',
 };
 
 const TYPE_LABEL_KEYS = [
@@ -81,7 +81,7 @@ export function RiskPageClient({ flags, copy }: Props) {
           <p className="mt-1 text-sm text-muted-foreground">{copy.subtitle}</p>
         </div>
         <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-16 text-center">
-          <CheckCircle className="size-10 text-green-500" aria-hidden="true" />
+          <CheckCircle className="size-10 text-primary" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-foreground">{copy.empty.title}</p>
             <p className="mt-1 text-xs text-muted-foreground">{copy.empty.description}</p>

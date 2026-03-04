@@ -102,6 +102,7 @@ export const adminCopy = {
       inputHint: "Find a user by name, email, or role",
       filterByRole: "Filter by role",
       filterByStatus: "Filter by status",
+      totalCount: (n: number) => `${n.toLocaleString()} total`,
     },
     table: {
       name: "Name",
@@ -144,6 +145,10 @@ export const adminCopy = {
     empty: {
       title: "No users found",
       description: "Adjust your filters or search term to find users.",
+    },
+    error: {
+      title: "Failed to load users",
+      description: "Please refresh the page to try again.",
     },
   },
 
