@@ -20,21 +20,24 @@ line_count='      28'
 line_count='      69'
 line_count='      18'
 line_count='       8'
+line_count='     218'
+line_count='      26'
+line_count='     295'
 line_count='      27'
 line_count='      14'
-line_count='     586'
+line_count='      79'
 line_count='     114'
 line_count='     158'
 line_count='      34'
 line_count='      48'
 line_count='      53'
 line_count='      35'
-line_count='     194'
+line_count='     196'
 line_count='      47'
 line_count='      24'
 line_count='     372'
 line_count='      51'
-line_count='     165'
+line_count='     160'
 line_count='      50'
 line_count='      35'
 line_count='     174'
@@ -83,7 +86,7 @@ line_count='     158'
 line_count='      20'
 line_count='      23'
 line_count='     168'
-line_count='     218'
+line_count='     227'
 line_count='     269'
 line_count='     222'
 line_count='      13'
@@ -231,10 +234,6 @@ line_count='      10'
 line_count='      28'
 
 
-=== RAW TAILWIND COLORS (use semantic tokens: bg-primary, bg-card, text-foreground, etc.) ===
-/Users/gm/v6/src/app/dashboard/[role]/settings/settings-page-client.tsx:419:    pending: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
-/Users/gm/v6/src/app/dashboard/[role]/settings/settings-page-client.tsx:420:    verified: 'bg-green-500/10 text-green-700 dark:text-green-400',
-
 === INLINE STYLES (convert to Tailwind classes) ===
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:78:    <div style={wrapperStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:79:      <div style={cardStyle}>
@@ -244,6 +243,3 @@ line_count='      28'
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:85:        {note ? <div style={noteStyle}>{note}</div> : null}
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:86:        <a href={dashboardUrl} style={ctaStyle}>
 /Users/gm/v6/src/lib/email/templates/sponsor-invitation-email.tsx:89:        <p style={footerStyle}>{emailCopy.sponsorInvitation.footer}</p>
-
-=== FILES OVER 400 LINES (split into focused modules) ===
-/Users/gm/v6/src/app/dashboard/[role]/settings/settings-page-client.tsx (     586 lines)

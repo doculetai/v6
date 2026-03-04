@@ -979,3 +979,9 @@ Done. Here's what was fixed:
 **Email template left unchanged** — the `design-lint-ignore` comment in `sponsor-invitation-email.tsx` is correct; email clients strip CSS classes so inline styles are the only valid pattern there.
 Everything up-to-date
 [design-lint] 2026-03-04 12:41:08 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 12:44:08 Scanning for design violations...
+[design-lint] 2026-03-04 12:44:11 Found 1 violation category(ies).
+[design-lint] 2026-03-04 12:44:11 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 12:44:11 Auto-fixing design violations (round 1)...
