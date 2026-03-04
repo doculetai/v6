@@ -97,8 +97,62 @@ export const universityCopy = {
     verifyAnother: "Verify another certificate",
   },
 
+  students: {
+    title: "Students",
+    subtitle: "All students associated with your institution.",
+    search: {
+      placeholder: "Search by email, school, or program\u2026",
+    },
+    filters: {
+      all: "All",
+      verified: "Verified",
+      pending: "Pending",
+      failed: "Failed",
+    },
+    table: {
+      student: "Student",
+      status: "KYC Status",
+      tier: "Tier",
+      funding: "Funding",
+      submitted: "Submitted",
+      school: "School / Program",
+    },
+    tierLabels: {
+      none: "No tier",
+      tier1: "Tier 1",
+      tier2: "Tier 2",
+      tier3: "Tier 3",
+    },
+    statusLabels: {
+      not_started: "Not started",
+      pending: "Pending",
+      verified: "Verified",
+      failed: "Failed",
+    },
+    metrics: {
+      total: "Total students",
+      verified: "KYC verified",
+      pending: "Pending / not started",
+      failed: "KYC failed",
+    },
+    empty: {
+      heading: "No students yet",
+      body: "Students who register through your institution will appear here once they create their profile.",
+    },
+    emptyFiltered: {
+      heading: "No matching students",
+      body: "Try adjusting your search or changing the status filter.",
+    },
+    error: {
+      heading: "Could not load students",
+      body: "There was a problem fetching student data. Please try refreshing the page.",
+      retryLabel: "Try again",
+    },
+  },
+
   nav: {
     pipeline: "Pipeline",
+    students: "Students",
     verify: "Verify certificate",
     settings: "Settings",
   },
