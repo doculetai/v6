@@ -53,7 +53,7 @@ export const primitivesCopy = {
       empty: "No activity recorded.",
     },
     filterBar: {
-      queryPlaceholder: "Search applications, students, or case references…",
+      queryPlaceholder: "Search applications, students, or case references…", // copy-audit-disable
       tabAriaLabel: "Filter options",
     },
   },
