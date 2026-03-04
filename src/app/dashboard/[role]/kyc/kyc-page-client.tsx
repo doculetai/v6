@@ -58,7 +58,7 @@ function OverallStatusBanner({
 
 type TierCardProps = {
   tierIndex: number;
-  tier: { label: string; description: string };
+  tier: { tierHeading: string; label: string; description: string };
   kycStatus: KycStatus['kycStatus'];
   startCta: string;
   retryLabel: string;
@@ -75,7 +75,7 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel, comingSoon
           <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
           <div className="min-w-0">
             <CardTitle className="text-base font-semibold text-card-foreground">
-              Tier 1 — {tier.label}
+              {tier.tierHeading} — {tier.label}
             </CardTitle>
             <CardDescription className="mt-1 text-sm text-muted-foreground">
               {tier.description}
@@ -121,7 +121,7 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel, comingSoon
           )}
           <div className="min-w-0">
             <CardTitle className="text-base font-semibold text-card-foreground">
-              Tier 2 — {tier.label}
+              {tier.tierHeading} — {tier.label}
             </CardTitle>
             <CardDescription className="mt-1 text-sm text-muted-foreground">
               {tier.description}
@@ -153,7 +153,7 @@ function TierCard({ tierIndex, tier, kycStatus, startCta, retryLabel, comingSoon
         <Clock className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
         <div className="min-w-0">
           <CardTitle className="text-base font-semibold text-card-foreground">
-            Tier 3 — {tier.label}
+            {tier.tierHeading} — {tier.label}
           </CardTitle>
           <CardDescription className="mt-1 text-sm text-muted-foreground">
             {tier.description}

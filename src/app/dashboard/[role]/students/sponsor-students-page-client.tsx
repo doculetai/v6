@@ -183,7 +183,7 @@ function ActiveStudentsList({
         <thead>
           <tr className="border-b border-border bg-muted/40">
             <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              Student
+              {copy.active.student}
             </th>
             <th className="px-4 py-3 text-right font-medium text-muted-foreground">
               {copy.active.amount}

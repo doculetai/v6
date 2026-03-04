@@ -496,3 +496,10 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 12:38:33 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 12:38:33 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 12:38:33 Auto-fixing copy violations (round 1 of max 8)...
+Done. Both violations fixed and committed:
+
+- **Line 109** (`kyc.comingSoon`): `"Coming soon"` → `"Advanced verification options unlock as your sponsorship tier grows."` — ties the feature to their growth as a sponsor, which is contextually accurate given the tier-based KYC structure.
+- **Line 199** (`settings.notifications.comingSoon`): generic placeholder → a warm message that sets expectations and reassures the user they won't miss critical updates in the interim.
+To https://github.com/doculetai/v6.git
+   9fa62fe..e27670c  main -> main
+[copy-audit] 2026-03-04 12:39:26 Copy fixes pushed to main.

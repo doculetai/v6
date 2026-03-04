@@ -84,14 +84,17 @@ export const sponsorCopy = {
       "We verify all sponsors to protect students and ensure regulatory compliance.",
     tiers: [
       {
+        tierHeading: "Tier 1",
         label: "Basic",
         description: "Email and phone number confirmation.",
       },
       {
+        tierHeading: "Tier 2",
         label: "Standard",
         description: "BVN or NIN verification for fund commitments up to ₦10,000,000.",
       },
       {
+        tierHeading: "Tier 3",
         label: "Enhanced",
         description:
           "Government ID upload and selfie check required for commitments above ₦10,000,000.",
@@ -155,6 +158,7 @@ export const sponsorCopy = {
     },
     active: {
       empty: { title: 'No active sponsorships', description: 'Accept a student request to get started.' },
+      student: 'Student',
       amount: 'Amount',
       status: 'Status',
       since: 'Since',

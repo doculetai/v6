@@ -38,10 +38,10 @@ const kycBadgeClass: Record<SponsorSettings['kycStatus'], string> = {
 };
 
 const kycLabel: Record<SponsorSettings['kycStatus'], string> = {
-  not_started: 'Not verified',
-  pending: 'In progress',
-  verified: 'Verified',
-  failed: 'Failed',
+  not_started: sponsorCopy.kyc.status.notStarted,
+  pending: sponsorCopy.kyc.status.inProgress,
+  verified: sponsorCopy.kyc.status.verified,
+  failed: sponsorCopy.kyc.status.failed,
 };
 
 // ── SponsorProfileSettingsForm ────────────────────────────────────────────────
