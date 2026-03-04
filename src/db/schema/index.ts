@@ -6,3 +6,5 @@ export * from './certificates';
 export * from './partner';
 export * from './agents';
 export * from './webhooks';
+export * from './university';
+export * from './agent-assignments';
