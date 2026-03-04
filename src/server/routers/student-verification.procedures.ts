@@ -95,6 +95,48 @@ function toVerificationStatusOutput(
   };
 }
 
+async function callDojahKyc(
+  identityType: 'bvn' | 'nin' | 'passport',
+  identityNumber: string,
+): Promise<string> {
+  const appId = process.env.DOJAH_APP_ID;
+  const privateKey = process.env.DOJAH_PRIVATE_KEY;
+
+  if (!appId || !privateKey) {
+    throw new Error('Missing DOJAH_APP_ID or DOJAH_PRIVATE_KEY');
+  }
+
+  const url =
+    identityType === 'passport'
+      ? `https://api.dojah.io/api/v1/kyc/passport?passport=${identityNumber}&country=NG`
+      : `https://api.dojah.io/api/v1/kyc/${identityType}?${identityType}=${identityNumber}`;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      AppId: appId,
+      Authorization: privateKey,
+      Accept: 'application/json',
+    },
+  });
+
+  const body = (await response.json()) as {
+    entity?: { reference_id?: string };
+    error?: string;
+  };
+
+  if (!response.ok || body.error) {
+    throw new Error(body.error ?? `Dojah API error: ${response.status}`);
+  }
+
+  const referenceId = body.entity?.reference_id;
+  if (!referenceId) {
+    throw new Error('Dojah returned no reference_id');
+  }
+
+  return referenceId;
+}
+
 export const verificationProcedures = {
   getVerificationStatus: roleProcedure('student')
     .output(verificationStatusSchema)
@@ -125,7 +167,7 @@ export const verificationProcedures = {
     .output(startDojahIdentityCheckOutputSchema)
     .mutation(async ({ ctx, input }) => {
       try {
-        const referenceId = `dojah_${input.tier}_${crypto.randomUUID()}`;
+        const referenceId = await callDojahKyc(input.identityType, input.identityNumber);
         const record = await startDojahIdentityCheck(ctx.db, {
           userId: ctx.user.id,
           tier: input.tier,
