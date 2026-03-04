@@ -768,3 +768,10 @@ All 3 violations fixed and committed. Here's what changed across 6 files:
 [a11y-watch] 2026-03-04 13:03:11 Auto-fix committed changes. Pushing to main...
 Everything up-to-date
 [a11y-watch] 2026-03-04 13:03:12 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 13:07:12 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 13:07:12 Found 1 check category(ies), approx 0
+0 violation line(s).
+[a11y-watch] 2026-03-04 13:07:12 Full report: /Users/gm/v6/.clawbot/logs/last-a11y-violations.txt
+[a11y-watch] 2026-03-04 13:07:12 Invoking claude to fix a11y violations (round 1 of max 8)...
