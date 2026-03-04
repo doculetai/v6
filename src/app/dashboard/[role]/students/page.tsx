@@ -47,6 +47,7 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
 
   return (
     <div className="space-y-6">
+      <h1 className="sr-only">{partnerCopy.students.title}</h1>
       <PageHeader
         title={partnerCopy.students.title}
         subtitle={partnerCopy.students.subtitle}

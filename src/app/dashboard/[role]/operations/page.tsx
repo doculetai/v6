@@ -38,6 +38,7 @@ export default async function OperationsPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
+      <h1 className="sr-only">{adminCopy.operations.title}</h1>
       <PageHeader
         title={adminCopy.operations.title}
         subtitle={adminCopy.operations.subtitle}

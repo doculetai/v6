@@ -42,6 +42,7 @@ export default async function UniversityOverviewPage({ params }: PageProps) {
   const data = await fetchOverviewData();
   return (
     <div className="space-y-6">
+      <h1 className="sr-only">{universityCopy.overview.title}</h1>
       <PageHeader
         title={universityCopy.overview.title}
         subtitle={universityCopy.overview.subtitle}
