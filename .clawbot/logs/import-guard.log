@@ -575,3 +575,7 @@ error: Please commit or stash them.
 [import-guard] 2026-03-04 09:18:50 Found 1 violation category(ies).
 [import-guard] 2026-03-04 09:18:50 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
 [import-guard] 2026-03-04 09:18:50 Auto-fixing import violations (round 1 of max 8)...
+Fixed. The single violation was `overview-page-client.tsx` importing `UniversityOverviewOutput` from `@/server/routers/university`. Replaced with inlined interfaces (`RecentDocument` + `UniversityOverviewData`) — same shape, no server boundary crossing. TypeScript exits clean.
+To https://github.com/doculetai/v6.git
+   807a318..9f1cf6a  main -> main
+[import-guard] 2026-03-04 09:23:01 Import fixes pushed to main.

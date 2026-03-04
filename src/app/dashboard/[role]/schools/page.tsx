@@ -1,32 +1,61 @@
+import { TRPCError } from '@trpc/server';
+import type { inferRouterOutputs } from '@trpc/server';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { GraduationCap } from 'lucide-react';
-import { PageHeader } from '@/components/ui/page-header';
+import { notFound, redirect } from 'next/navigation';
+
+import { studentCopy } from '@/config/copy/student';
+import type { AppRouter } from '@/server/root';
+import { api } from '@/trpc/server';
+import { TRPCReactProvider } from '@/trpc/provider';
+
+import { SchoolsPageClient } from './schools-page-client';
 
 export const metadata: Metadata = {
   title: 'Schools — Doculet',
 };
 
-type PageProps = { params: Promise<{ role: string }> };
+type SchoolsRolePageProps = {
+  params: Promise<{ role: string }>;
+};
 
-export default async function SchoolsPage({ params }: PageProps) {
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type ListSchoolsOutput = RouterOutput['student']['listSchools'];
+type StudentSchoolSelection = RouterOutput['student']['getStudentSchoolSelection'];
+
+export default async function SchoolsRolePage({ params }: SchoolsRolePageProps) {
   const { role } = await params;
 
-  if (!['student'].includes(role)) {
+  if (role !== 'student') {
     notFound();
   }
 
+  let initialSchools: ListSchoolsOutput;
+  let initialSelection: StudentSchoolSelection;
+
+  try {
+    const caller = await api();
+    [initialSchools, initialSelection] = await Promise.all([
+      caller.student.listSchools({}),
+      caller.student.getStudentSchoolSelection(),
+    ]);
+  } catch (error) {
+    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
+      redirect('/login');
+    }
+
+    if (error instanceof TRPCError && error.code === 'FORBIDDEN') {
+      notFound();
+    }
+
+    throw error;
+  }
+
   return (
-    <section className="space-y-8">
-      <h1 className="sr-only">Schools</h1>
-      <PageHeader title="Schools" subtitle="Browse and apply to programs" />
-      <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
-        <GraduationCap className="size-10 text-muted-foreground/40" aria-hidden="true" />
-        <p className="text-sm font-medium text-foreground">This page is being built</p>
-        <p className="max-w-xs text-xs text-muted-foreground">
-          Full functionality for <strong>Schools</strong> is coming soon. Your navigation and layout are fully wired.
-        </p>
-      </div>
-    </section>
+    <>
+      <h1 className="sr-only">{studentCopy.schools.title}</h1>
+      <TRPCReactProvider>
+        <SchoolsPageClient initialSchools={initialSchools} initialSelection={initialSelection} />
+      </TRPCReactProvider>
+    </>
   );
 }

@@ -9,6 +9,7 @@ import { documentProcedures } from './student-documents.procedures';
 import { inviteProcedures } from './student-invites.procedures';
 import { onboardingProcedures } from './student-onboarding.procedures';
 import { proofProcedures } from './student-proof.procedures';
+import { schoolsProcedures } from './student-schools.procedures';
 import { verificationProcedures } from './student-verification.procedures';
 
 const profileRoleSchema = z.enum(dashboardRoles);
@@ -49,6 +50,9 @@ export const studentRouter = createTRPCRouter({
 
   // ── Onboarding ──────────────────────────────────────────────────────────
   ...onboardingProcedures,
+
+  // ── Schools ──────────────────────────────────────────────────────────────
+  ...schoolsProcedures,
 
   // ── Verification ─────────────────────────────────────────────────────────
   ...verificationProcedures,

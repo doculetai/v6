@@ -193,3 +193,33 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 09:18:05 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 09:18:05 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 09:18:05 Auto-fixing copy violations (round 1 of max 8)...
+These flagged strings are **not actual violations** — they're all proper HTML input `placeholder` attributes with real, contextually-appropriate copy:
+
+**`agent.ts` (lines 144–150):**
+- `"e.g. Amara Okafor"` — realistic Nigerian name example
+- `"+234 801 234 5678"` — correct Nigerian phone format
+- `"e.g. Lagos, Abuja, Port Harcourt"` — real cities matching the platform's user base
+- `"e.g. AGT-2024-00123"` — accurate accreditation ID format
+
+**`admin.ts` (lines 160, 205):**
+- `"Name, email, or student ID…"` — clear, functional search placeholder
+- `"Describe your decision clearly — this message is sent directly to the student…"` — excellent UX copy that communicates consequence
+
+These are false positives from the audit script. The script is likely flagging:
+1. Keys that contain the word `Placeholder`
+2. Values starting with `"e.g."` as if they were example/stub text
+
+All six strings are **warm, professional, fintech-grade copy** — exactly what the conventions require. No TODO, TBD, or Lorem in sight. Nothing to fix here.
+
+`★ Insight ─────────────────────────────────────`
+- The audit script conflates two different meanings of "placeholder": (1) the HTML `placeholder` attribute (legitimate UX copy) vs. (2) developer stub text that hasn't been written yet. Key naming conventions like `fullNamePlaceholder` actually describe the correct usage.
+- `"e.g. AGT-2024-00123"` is especially good copy — it implicitly documents the ID format to users without needing a separate tooltip or label.
+`─────────────────────────────────────────────────`
+Everything up-to-date
+[copy-audit] 2026-03-04 09:20:24 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 09:23:24 Scanning copy config coverage...
+[copy-audit] 2026-03-04 09:23:25 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 09:23:25 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 09:23:25 Auto-fixing copy violations (round 1 of max 8)...
