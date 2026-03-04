@@ -1,4 +1,7 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/agent.ts:268:      linkPlaceholder: 'Your referral link is on its way…',
+/Users/gm/v6/src/config/copy/agent.ts:268:      linkPlaceholder: 'Generating your unique referral link…',
+/Users/gm/v6/src/config/copy/admin.ts:278:        comingSoon: 'Notification routing configuration coming soon.',
+/Users/gm/v6/src/config/copy/partner.ts:226:      orgNamePlaceholder: 'e.g. Greenfield University',
+/Users/gm/v6/src/config/copy/partner.ts:228:      webhookPlaceholder: 'https://your-server.com/webhook',

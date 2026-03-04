@@ -806,3 +806,11 @@ Each `page.tsx` now follows the same pattern already established in `activity/pa
 [a11y-watch] 2026-03-04 13:24:01 Auto-fix committed changes. Pushing to main...
 Everything up-to-date
 [a11y-watch] 2026-03-04 13:24:02 A11y fixes pushed. FIX_COUNT reset.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 13:28:02 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 13:28:02 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 13:32:03 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 13:32:03 All accessibility checks passed. No violations found.

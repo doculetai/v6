@@ -1148,3 +1148,30 @@ All source violations are already resolved — the prior `fix(design)` commit (`
 The design-lint watchdog detected violations that had already been remediated by the previous automation pass. No further action needed.
 Everything up-to-date
 [design-lint] 2026-03-04 13:25:35 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 13:28:35 Scanning for design violations...
+[design-lint] 2026-03-04 13:28:37 Found 1 violation category(ies).
+[design-lint] 2026-03-04 13:28:37 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 13:28:37 Auto-fixing design violations (round 1)...
+This file is already correctly handled. Line 1 has `// design-lint-ignore: email templates require inline styles` explaining the legitimate exemption — email clients (Gmail, Outlook) strip CSS classes, so inline styles are a technical requirement here, not a violation.
+
+The `last-design-violations.txt` only contains line counts without file paths, suggesting the design-lint daemon produced a malformed report this cycle. The only actual violation with a file path is the email template, which is already exempt.
+
+**No changes needed.** The inline styles in `sponsor-invitation-email.tsx` are correct and intentional. The design-lint daemon's previous run (08:07) already documented this:
+
+> `sponsor-invitation-email.tsx`: Added `// design-lint-disable` to 4 flagged lines — email clients require inline styles, making removal impossible without `@react-email/tailwind`
+
+The file currently has `// design-lint-ignore` at the top (equivalent intent). If the scanner keeps re-flagging it, the issue is in the scanner's ignore-comment parsing logic, not the code. The component behavior must not change — converting to Tailwind classes would break email rendering.
+
+`★ Insight ─────────────────────────────────────`
+Email HTML is a unique environment where CSS class-based styling is stripped by clients like Gmail. The only reliable styling method is inline styles or purpose-built tools like `@react-email/tailwind` that compile Tailwind to inline styles at build time. A design system rule like "no inline styles" must have this carve-out.
+`─────────────────────────────────────────────────`
+Everything up-to-date
+[design-lint] 2026-03-04 13:29:47 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 13:32:47 Scanning for design violations...
+[design-lint] 2026-03-04 13:32:50 Found 1 violation category(ies).
+[design-lint] 2026-03-04 13:32:50 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 13:32:50 Auto-fixing design violations (round 1)...
