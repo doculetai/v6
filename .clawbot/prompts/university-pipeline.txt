@@ -1,3 +1,13 @@
+## PRODUCT CONTEXT
+
+Doculet.ai is a Nigerian bank statement verification platform. The university pipeline is the PRIMARY interface for US university admissions officers. They use this Kanban board to review Nigerian students who have Doculet certificates, verify their financial standing, and make enrollment decisions.
+
+The pipeline has 6 columns: Invited → Awaiting Proof → Proof Received → Under Review → Verified → Insufficient. Each student card shows: name, program, Tier badge (1/2/3 with colors: gray/blue/green), verified funding amount in ₦ (with USD equivalent), SLA countdown (72-hour target from submission), and team member assignment. Universities can drag cards between columns, bulk approve/reject, request additional documents, and export CSV.
+
+**Cross-persona handoff**: When a university approves/rejects a student, the `applications` table status must update AND the student must see the updated status on their `/student/schools` page. V5 gap: decisions only updated `uni_students` but not `applications` — student never saw the change. V6 must sync bidirectionally. Also: when university requests documents, student receives notification with the request message. Badges on cards: Auto-Verified (green), Info Requested (amber), Funding Changed (blue), Cert Expiring (red). All copy from `src/config/copy/university.ts`.
+
+---
+
 Build the university application pipeline at src/app/dashboard/university/pipeline/page.tsx (Server) + pipeline-page-client.tsx (Client).
 
 ## Page Purpose

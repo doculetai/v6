@@ -1,3 +1,13 @@
+## PRODUCT CONTEXT
+
+Doculet.ai is a Nigerian bank statement verification platform. Sponsor KYC is essential — without it, the student cannot achieve Tier 3 certification. The sponsor must complete identity verification (BVN 11 digits or NIN 11 digits, verified instantly via Dojah against Central Bank of Nigeria data), bank account verification (Mono widget connects to GTBank, Access, Zenith, UBA, etc.), and sign a legal affidavit.
+
+Individual sponsors (parent/guardian) have 3 steps: Identity → Bank → Affidavit. Corporate sponsors have 5 steps: Identity → Bank → Statement → CAC Document Upload → Compliance Report. KYC completion updates the sponsor's verification status and immediately reflects on the student's verify page. Mono connections expire after ~90 days (75-day warning threshold). BVN/NIN are never stored in plain text — only SHA-256 hashes. Display masked: ****1234.
+
+**Key states**: Not Started (gray), In Progress (amber + which step is next), Tier 1 Complete (blue, identity only), Fully Verified (green, all steps). All copy from `src/config/copy/sponsor.ts` keys: sponsorKyc.*. Trust signals emphasized: "Your BVN is verified through the Central Bank of Nigeria", "We never store your full BVN or NIN", "256-bit bank-grade encryption".
+
+---
+
 Build the sponsor KYC verification page at src/app/dashboard/sponsor/kyc/page.tsx (Server) + kyc-page-client.tsx (Client).
 
 ## Page Purpose
