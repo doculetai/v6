@@ -30,13 +30,13 @@ export function ControlToolbar({
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder="Search..."
-          className="min-h-[44px] w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="min-h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
       </div>
       <select
         value={sortValue}
         onChange={(e) => onSortChange(e.target.value)}
-        className="min-h-[44px] rounded-lg border border-border bg-card px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="min-h-11 rounded-lg border border-border bg-card px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {sortOptions.map((opt) => (
           <option key={opt.value} value={opt.value}>

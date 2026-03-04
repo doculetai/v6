@@ -58,7 +58,7 @@ function ErrorState({
       )}
     >
       {illustration ? (
-        <div className="mx-auto max-w-[160px] mb-6">{illustration}</div>
+        <div className="mx-auto max-w-40 mb-6">{illustration}</div>
       ) : (
         <AlertTriangle className="mb-6 size-12 text-muted-foreground" />
       )}
