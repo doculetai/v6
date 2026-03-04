@@ -220,6 +220,44 @@ export const adminCopy = {
     },
   },
 
+  analytics: {
+    title: 'Platform analytics',
+    subtitle: 'Aggregate metrics across all users and transactions.',
+    stats: {
+      totalUsers: { label: 'Total users', sub: 'all roles' },
+      totalStudents: { label: 'Students', sub: 'registered on platform' },
+      totalSponsors: { label: 'Sponsors', sub: 'registered on platform' },
+      totalSponsorships: { label: 'Sponsorships', sub: 'all time' },
+      totalCommitted: { label: 'Total committed', sub: 'across active sponsorships' },
+      totalDisbursed: { label: 'Total disbursed', sub: 'all time' },
+      pendingDocuments: { label: 'Pending documents', sub: 'awaiting review' },
+      approvedDocuments: { label: 'Approved documents', sub: 'all time' },
+      issuedCertificates: { label: 'Certificates issued', sub: 'proof of funds' },
+      kycVerified: { label: 'KYC verified students', sub: 'identity confirmed' },
+    },
+    error: { title: 'Failed to load analytics', description: 'Please refresh the page to try again.' },
+  },
+
+  risk: {
+    title: 'Risk flags',
+    subtitle: 'Users with patterns that require attention.',
+    empty: {
+      title: 'No risk flags',
+      description: 'All users are within normal activity patterns.',
+    },
+    typeLabels: {
+      repeated_kyc_failure: 'Repeated KYC failure',
+      repeated_document_rejection: 'Repeated document rejection',
+      unverified_with_active_sponsorship: 'Unverified with active sponsorship',
+    },
+    severityLabels: {
+      low: 'Low',
+      medium: 'Medium',
+      high: 'High',
+    },
+    error: { title: 'Failed to load risk flags', description: 'Please refresh the page to try again.' },
+  },
+
   nav: {
     dashboard: "Dashboard",
     documents: "Document review",

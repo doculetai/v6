@@ -1,32 +1,38 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { ShieldAlert } from 'lucide-react';
-import { PageHeader } from '@/components/ui/page-header';
+
+import { adminCopy } from '@/config/copy/admin';
+import { api } from '@/trpc/server';
+
+import { RiskPageClient } from './risk-page-client';
 
 export const metadata: Metadata = {
-  title: 'Risk — Doculet',
+  title: adminCopy.risk.title,
 };
 
-type PageProps = { params: Promise<{ role: string }> };
+type PageProps = {
+  params: Promise<{ role: string }>;
+};
 
 export default async function RiskPage({ params }: PageProps) {
   const { role } = await params;
 
-  if (!['admin'].includes(role)) {
-    notFound();
+  if (role !== 'admin') {
+    return <p className="text-muted-foreground">{adminCopy.errors.unauthorized}</p>;
+  }
+
+  let flags: Awaited<ReturnType<Awaited<ReturnType<typeof api>>['admin']['getRiskFlags']>> | null = null;
+
+  try {
+    const caller = await api();
+    flags = await caller.admin.getRiskFlags();
+  } catch {
+    flags = null;
   }
 
   return (
-    <section className="space-y-8">
-      <h1 className="sr-only">Risk</h1>
-      <PageHeader title="Risk" subtitle="Risk and compliance flags" />
-      <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-20 text-center">
-        <ShieldAlert className="size-10 text-muted-foreground/40" aria-hidden="true" />
-        <p className="text-sm font-medium text-foreground">This page is being built</p>
-        <p className="max-w-xs text-xs text-muted-foreground">
-          Full functionality for <strong>Risk</strong> is coming soon. Your navigation and layout are fully wired.
-        </p>
-      </div>
-    </section>
+    <RiskPageClient
+      flags={flags}
+      copy={adminCopy.risk}
+    />
   );
 }
