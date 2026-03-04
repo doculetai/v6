@@ -1,0 +1,276 @@
+Build V6's design system from scratch — it must BEAT V5's. Not just port CSS, but architect a proper theme system that's easy to manage, administer, and extend for white-label partners.
+
+## What V5 Had (baseline to beat)
+V5 had a 1484-line globals.css with Obsidian Blues palette. It works but:
+- Hard to customize per partner (require touching raw CSS)
+- Dark mode tokens scattered across 3 `.dark {}` blocks
+- No programmatic control over theme
+
+## What V6 Needs: A TypeScript-First Theme System
+
+### Architecture
+
+```
+src/config/
+  themes/
+    types.ts          — Theme interface (full token shape)
+    doculet.ts        — Default Doculet theme (Obsidian Blues, premium fintech)
+    index.ts          — Theme registry + active theme resolver
+  theme.ts            — Re-export: import { theme } from "@/config/theme"
+
+src/lib/
+  theme-to-css.ts     — Converts Theme object → CSS custom properties string
+
+src/components/
+  theme-provider.tsx  — Client component: applies theme via CSS vars + data-theme attribute
+```
+
+### Theme Interface (src/config/themes/types.ts)
+
+```typescript
+export interface ColorScale {
+  50: string; 100: string; 200: string; 300: string; 400: string;
+  500: string; 600: string; 700: string; 800: string; 900: string; 950: string;
+}
+
+export interface SemanticTokens {
+  background: string;
+  foreground: string;
+  card: string;
+  cardForeground: string;
+  primary: string;
+  primaryForeground: string;
+  secondary: string;
+  secondaryForeground: string;
+  muted: string;
+  mutedForeground: string;
+  accent: string;
+  accentForeground: string;
+  destructive: string;
+  border: string;
+  input: string;
+  ring: string;
+  success: string;
+  warning: string;
+}
+
+export interface Theme {
+  name: string;
+  displayName: string;
+  description: string;
+
+  // Color palettes
+  colors: {
+    primary: ColorScale;    // Obsidian Blues (or partner brand)
+    neutral: ColorScale;    // Cool slate
+    success: Partial<ColorScale>;
+    warning: Partial<ColorScale>;
+    destructive: Partial<ColorScale>;
+    accent: Partial<ColorScale>;
+  };
+
+  // Semantic tokens (light mode)
+  light: SemanticTokens;
+
+  // Semantic tokens (dark mode)
+  dark: SemanticTokens;
+
+  // Typography
+  fonts: {
+    sans: string;       // CSS font-family value
+    serif: string;
+    mono: string;
+  };
+
+  // Scale
+  radius: {
+    sm: string; md: string; lg: string; xl: string; '2xl': string; full: string;
+  };
+
+  shadows: {
+    xs: string; sm: string; md: string; lg: string; xl: string; '2xl': string;
+  };
+
+  // Motion
+  duration: {
+    micro: string; fast: string; normal: string; slow: string; slower: string;
+  };
+
+  // Layout
+  layout: {
+    sidebarWidth: string;
+    headerHeight: string;
+    contentMaxWidth: string;
+  };
+}
+```
+
+### Doculet Default Theme (src/config/themes/doculet.ts)
+
+The Doculet Obsidian Blues palette. Reference V5 globals.css for exact values:
+Read /Users/gm/v5/src/app/globals.css for all hex values and HSL vars.
+
+Key values:
+- Primary: #000080 (navy), #4747D4 (violet), #8080FF (periwinkle), #0E0E55 (midnight)
+- Neutral: #14152A (darkest), through to #F7F7FB (lightest)
+- Success: #10B981 emerald
+- Warning: #f59e0b amber
+- Destructive: #ef4444 red
+- Fonts: IBM_Plex_Sans + IBM_Plex_Serif
+- Radius: sm=6px, md=8px, lg=12px, xl=16px, 2xl=24px
+
+Dark mode semantic tokens (from V5 .dark {} block):
+- background: deep navy (hsl 240 72% 19%)
+- card: slightly lighter navy (hsl 240 68% 24%)
+- primary-foreground: becomes background in dark (inverted)
+- accent: brighter periwinkle (hsl 240 100% 75%)
+- border: dark navy blue (hsl 238 38% 36%)
+
+### Theme Registry (src/config/themes/index.ts)
+
+```typescript
+import { doculetTheme } from './doculet';
+import type { Theme } from './types';
+
+export const themes: Record<string, Theme> = {
+  doculet: doculetTheme,
+};
+
+export function getTheme(name: string): Theme {
+  return themes[name] ?? themes.doculet;
+}
+
+export const defaultTheme = doculetTheme;
+```
+
+### CSS Generator (src/lib/theme-to-css.ts)
+
+Convert a Theme object to CSS custom properties. Output:
+```css
+:root {
+  --color-primary-500: #4747D4;
+  ... all color scales ...
+  --color-background: #FAFAFA;
+  ... all semantic tokens ...
+  --font-sans: 'IBM Plex Sans', sans-serif;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 3px ...;
+  --duration-fast: 150ms;
+}
+.dark {
+  --color-background: hsl(240 72% 19%);
+  ... dark overrides ...
+}
+```
+
+### globals.css (Replace entirely)
+
+```css
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* V6 theme CSS vars are injected by ThemeProvider at runtime */
+/* Static fallback for SSR — doculet theme defaults */
+
+@theme {
+  /* Reference the CSS vars (set by ThemeProvider) */
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-primary: var(--color-primary-800);
+  --color-primary-foreground: #ffffff;
+  --color-card: var(--color-card);
+  --color-card-foreground: var(--color-card-foreground);
+  --color-secondary: var(--color-secondary);
+  --color-secondary-foreground: var(--color-secondary-foreground);
+  --color-muted: var(--color-muted);
+  --color-muted-foreground: var(--color-muted-foreground);
+  --color-accent: var(--color-accent);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-destructive: var(--color-destructive);
+  --color-border: var(--color-border);
+  --color-input: var(--color-input);
+  --color-ring: var(--color-ring);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --font-sans: var(--font-plex-sans);
+  --font-serif: var(--font-plex-serif);
+  --radius: var(--radius-lg);
+}
+
+/* Base styles (always applied) */
+* { border-color: var(--color-border); }
+html { scroll-behavior: smooth; }
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+```
+
+### ThemeProvider (src/components/theme-provider.tsx)
+
+Client component that:
+1. Generates CSS string from the active theme using theme-to-css.ts
+2. Injects it as a `<style>` tag in `<head>` via useEffect
+3. Manages light/dark mode toggle (stores preference in localStorage + sets .dark class on html)
+4. Exposes `useTheme()` hook
+
+### src/lib/fonts.ts
+
+```typescript
+import { IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
+export const plexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-plex-sans",
+  display: "swap",
+});
+export const plexSerif = IBM_Plex_Serif({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plex-serif",
+  display: "swap",
+});
+```
+
+### src/app/layout.tsx Updates
+
+Import plexSans, plexSerif from @/lib/fonts.
+Import ThemeProvider.
+Import defaultTheme from @/config/theme.
+Wrap children in `<ThemeProvider theme={defaultTheme}>`.
+Body className: `${plexSans.variable} ${plexSerif.variable} antialiased`.
+
+### src/app/page.tsx — Branded Placeholder
+
+Replace the default Next.js boilerplate with a clean Doculet placeholder:
+```tsx
+export default function Home() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-bold text-foreground tracking-tight">doculet.ai</h1>
+        <p className="text-muted-foreground text-lg">Proof of Funds Verification Platform</p>
+        <p className="text-sm text-muted-foreground">V6 — Building</p>
+        <a href="/dashboard/student" className="inline-block mt-4 px-6 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+          Open Dashboard →
+        </a>
+      </div>
+    </div>
+  );
+}
+```
+
+## Success Criteria
+1. `npm run typecheck` passes
+2. http://localhost:3000 shows Doculet branding (navy/violet, IBM Plex font)
+3. http://localhost:3000/dashboard/student shows the correct design tokens applied
+4. Dark mode toggle works (adds .dark to html element, colors shift correctly)
+5. Theme is defined in TypeScript — easy to swap per partner
+
+Commit: `feat(design): TypeScript-first theme system with Obsidian Blues, IBM Plex, dark mode`
+Push and open PR to main.

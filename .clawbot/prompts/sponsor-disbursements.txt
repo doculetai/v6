@@ -1,0 +1,71 @@
+Build the sponsor disbursements page at src/app/dashboard/sponsor/disbursements/page.tsx (Server) + disbursements-page-client.tsx (Client).
+
+## Page Layout
+Three sections:
+1. **DisbursementFlow** — the main disbursement timeline component
+2. **Manual Disburse Panel** — trigger a disbursement manually
+3. **Transaction History** — completed disbursements table (cards on mobile)
+
+## DisbursementFlow Component (src/components/sponsor/DisbursementFlow.tsx)
+
+A visual timeline of the disbursement schedule:
+
+```
+[Upcoming] ────────────────────────────────
+  📅 March 15, 2026  ₦200,000  [Scheduled]
+  📅 April 15, 2026  ₦200,000  [Scheduled]
+
+[In Progress] ──────────────────────────────
+  ⏳ Feb 28, 2026  ₦200,000  [Processing]
+
+[Completed] ──────────────────────────────
+  ✅ Jan 15, 2026  ₦200,000  REF: DIS-001
+  ✅ Dec 15, 2025  ₦200,000  REF: DIS-000
+```
+
+Timeline uses vertical line + node. Color coding:
+- Scheduled: blue node, future date
+- Processing: amber pulsing node
+- Completed: green node + checkmark
+- Failed: red node + retry option
+
+Amounts: kobo integers in DB → display as ₦X,XXX,XXX format.
+
+## Manual Disburse Panel
+
+Card with:
+- Dropdown: select student (if sponsor has multiple students)
+- Input: amount in ₦ (converted to kobo before submission)
+- Textarea: disbursement note/reason
+- Button: "Disburse Funds" → confirmation modal → tRPC.sponsor.manualDisburse()
+- Paystack payment initiation flow (redirect to checkout if needed)
+
+Show: remaining balance available to disburse = committed - disbursed.
+
+## Transaction History Table (cards on mobile)
+
+Columns: Date | Student | Amount (₦) | Reference | Status | Receipt
+Mobile card: each row becomes a card with all fields stacked.
+
+Filter: by student, by status (all/completed/failed/processing)
+Pagination: 20 per page
+
+## Paystack Integration
+tRPC.sponsor.initiateDisbursement() → returns Paystack reference
+tRPC.sponsor.verifyDisbursement(reference) → confirms payment status
+Show Paystack receipt link in history table.
+
+## Copy Config
+Import from src/config/copy/sponsor.ts — keys: sponsorDisbursements.*
+
+## Data (tRPC)
+- trpc.sponsor.getDisbursements() → { scheduled: [], completed: [], processing: [] }
+- trpc.sponsor.manualDisburse(studentId, amountKobo, note) → PaystackInit
+- trpc.sponsor.getDisbursementHistory(filters, page) → paginated results
+
+## States
+- Loading: skeleton timeline + table skeleton
+- Empty (no history): illustration + "First disbursement pending"
+- Error: retry + Sentry
+
+npm run typecheck → commit: feat(sponsor): DisbursementFlow + transaction history → PR to main

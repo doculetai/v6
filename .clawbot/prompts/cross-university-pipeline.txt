@@ -1,0 +1,96 @@
+Wire the full university pipeline chain: student selects school → university sees in pipeline → approves → student enrollment confirmed → proof certificate updated.
+
+## Full Chain:
+
+### Step 1: Student Selects School (Onboarding Step 2)
+In `/dashboard/student/onboarding` (step 2: Select School/Program):
+- tRPC.student.selectSchool(schoolId, programId)
+- Creates application record in `university_applications` table:
+  { studentId, universityId, programId, status: 'pending' }
+- Student's proof certificate checklist shows "School Selected ✓"
+
+### Step 2: University Sees Student in Pipeline
+In `/dashboard/university/pipeline` (existing page):
+- New student appears in "Pending Review" column
+- Shows: student name, program, funding tier, funding amount
+- University can filter by program
+
+### Step 3: University Approves Application
+- tRPC.university.approveStudent(studentId) (existing procedure)
+- Updates university_applications status → 'approved'
+- Sends Resend email to student: "Congratulations! [University Name] has approved your application."
+- Student's dashboard shows: "University Approved ✓" badge
+
+### Step 4: Student Enrollment Confirmed
+When application status → 'approved':
+- Update student_profiles.enrollmentStatus → 'approved'
+- Update proof certificate: enrollment_confirmed = true
+
+### Step 5: Proof Certificate Updated
+In `/dashboard/student/proof` page:
+- Checklist item "University Enrollment" updates from pending → confirmed (green)
+- If all checklist items complete → certificate is issued
+- tRPC.student.issueCertificate() if all conditions met:
+  - KYC verified (tier >= 1)
+  - Bank connected
+  - Sponsor accepted
+  - Documents approved
+  - University enrollment confirmed
+
+### Certificate Issuance
+tRPC.student.issueCertificate():
+1. Verify all conditions are met
+2. Create certificate record: { studentId, token: crypto.randomUUID(), validUntil: +1year, hash: sha256(data) }
+3. Return certificate data + public URL: /certificate/[token]
+4. Send Resend email to student with certificate link
+5. Send notification to sponsor + university
+
+## Real-time Updates
+
+Student proof page subscribes to:
+- `university_applications` → status changes
+- `certificates` → new certificate issued
+
+University pipeline subscribes to:
+- `university_applications` WHERE universityId = current → new students appearing
+
+## Supabase Realtime Subscriptions Pattern
+```typescript
+// In client component
+const channel = supabase
+  .channel('application-status')
+  .on('postgres_changes', {
+    event: 'UPDATE',
+    schema: 'public',
+    table: 'university_applications',
+    filter: `student_id=eq.${studentId}`
+  }, (payload) => {
+    setApplicationStatus(payload.new.status);
+  })
+  .subscribe();
+```
+
+## University Application States
+pending → under_review → approved → enrolled
+                       ↘ rejected
+
+## Certificate Conditions Checklist
+```typescript
+interface CertificateConditions {
+  kycVerified: boolean;      // student_profiles.verification_tier >= 1
+  bankConnected: boolean;    // student_profiles.bank_account_id !== null
+  sponsorAccepted: boolean;  // sponsor_invites has accepted invite
+  documentsApproved: boolean; // all required documents are approved
+  enrollmentConfirmed: boolean; // university_applications.status === 'approved'
+}
+
+function canIssueCertificate(conditions: CertificateConditions): boolean {
+  return Object.values(conditions).every(Boolean);
+}
+```
+
+## Email Templates Needed
+- `sendEnrollmentApprovedEmail(studentEmail, universityName, program)` → Resend
+- `sendCertificateIssuedEmail(studentEmail, certUrl, validUntil)` → Resend
+
+npm run typecheck → commit: feat(cross): wire university pipeline chain + certificate issuance → PR to main

@@ -1,0 +1,51 @@
+Build the sponsor's individual student view at src/app/dashboard/sponsor/students/[studentId]/page.tsx (Server) + student-detail-client.tsx (Client).
+
+## Page Layout (top to bottom)
+1. **Student header** — name, school, program, verification tier badge
+2. **ControlToolbar** — action buttons (approve/reject/request-more)
+3. **CommitmentTimeline** — funding history
+4. **Progress Checklist** — KYC, bank, documents, proof status
+5. **Document Review Panel** — uploaded documents with status
+6. **DisbursementFlow** — scheduled + completed disbursements
+
+## ControlToolbar Component (src/components/sponsor/ControlToolbar.tsx)
+Three action buttons in a row (full-width on mobile):
+- ✓ Approve Documents — triggers trpc.sponsor.approveStudentDocuments(studentId)
+- ✗ Request More Info — opens a modal with reason text field → trpc.sponsor.requestMoreInfo
+- ⊘ Pause Sponsorship — confirmation modal → trpc.sponsor.pauseSponsorship
+
+Buttons use semantic colors: approve=green, request=amber, pause=destructive.
+Show loading state per button (not global spinner).
+
+## CommitmentTimeline Component (src/components/sponsor/CommitmentTimeline.tsx)
+Vertical timeline of events:
+- Sponsorship created (date + amount)
+- Each disbursement (date + amount + status)
+- Status changes (approved, paused, etc.)
+
+Use a vertical line + circle dot per event. Most recent at top.
+
+## Document Review Panel
+List of student's uploaded documents. Each row:
+- Document type (passport, admission letter, etc.)
+- Thumbnail/file icon
+- Upload date
+- Status badge (pending/approved/rejected/more-info-requested)
+- View button → opens in modal or new tab
+
+## DisbursementFlow Component (src/components/sponsor/DisbursementFlow.tsx)
+Two sections:
+1. Scheduled disbursements (upcoming) — date + amount
+2. Completed disbursements — date + amount + reference number
+
+## Data (tRPC)
+- trpc.sponsor.getStudentDetail(studentId) → full student record with docs + disbursements
+
+## Requirements
+- Skeleton loading for each section independently
+- Error boundaries per section
+- Mobile: each section collapses to an accordion
+- All ₦ amounts from kobo integers
+- WCAG 2.1 AA
+
+Run npm run typecheck. Commit feat(sponsor): student detail view with ControlToolbar + CommitmentTimeline. Open PR to main.

@@ -1,0 +1,94 @@
+Build the admin document review queue at src/app/dashboard/admin/documents/page.tsx (Server) + document-review-client.tsx (Client).
+
+## Page Purpose
+Admins review student-uploaded documents and approve, reject, or request additional information.
+
+## Review Queue Layout
+
+**Left panel (list):** Paginated queue of pending documents.
+**Right panel (viewer):** Selected document preview + action controls.
+
+On mobile: list first, viewer opens as full-screen sheet.
+
+## Document Queue List (left panel)
+
+Each queue item:
+- Student name + avatar initials
+- Document type (passport, bank statement, admission letter, etc.)
+- Upload timestamp (relative: "2 hours ago")
+- Days pending badge (red if >24h: "OVERDUE")
+- Status badge: pending / under-review / approved / rejected / more-info-requested
+- Click to open in viewer panel
+
+Filters (top of list):
+- Status tabs: All | Pending | Overdue | Under Review | Complete
+- Search: student name
+- Sort: oldest first (default), newest first
+
+Count: "X documents pending (Y overdue)"
+
+## Document Viewer (right panel)
+
+Top:
+- Document type + student name
+- Upload date
+- Current status badge
+
+Middle: Document preview
+- If PDF: embedded PDF viewer (iframe with sandbox)
+- If image: zoomable image
+- If unknown: file icon + "Download to view" link
+
+Bottom: Review Controls
+
+### Approve
+Button: "✓ Approve" → green
+- Calls tRPC.admin.approveDocument(documentId)
+- Triggers: Resend email to student ("Your [document type] has been approved")
+- Status → approved, removes from queue
+
+### Reject
+Button: "✗ Reject" → red
+- Opens inline form: rejection reason (required, textarea, min 20 chars)
+- Reason options (quick-pick chips): "Document unclear", "Wrong document type", "Expired", "Doesn't match records"
+- Or custom text
+- Calls tRPC.admin.rejectDocument(documentId, reason)
+- Triggers: Resend email to student with reason
+- Status → rejected
+
+### Request More Info
+Button: "⚠ Request More Info" → amber
+- Opens inline form: message to student (textarea)
+- Calls tRPC.admin.requestMoreInfo(documentId, message)
+- Triggers: Resend email to student
+- Status → more-info-requested
+- Student must re-upload with clarification
+
+## Audit Trail (below viewer controls)
+Timeline of all actions taken on this document:
+- Uploaded by student (timestamp)
+- Viewed by admin X (timestamp)
+- Rejected: "Document unclear" (timestamp)
+- Re-uploaded by student (timestamp)
+- Approved (timestamp)
+
+## Keyboard Shortcuts (for power users)
+A = Approve, R = Reject, M = More info, J/K = next/prev document
+
+## Copy Config
+Import from src/config/copy/admin.ts — keys: adminDocumentReview.*
+
+## Data (tRPC)
+- trpc.admin.getDocumentQueue(filters, page) → PaginatedDocuments
+- trpc.admin.approveDocument(id) → void
+- trpc.admin.rejectDocument(id, reason) → void
+- trpc.admin.requestMoreInfo(id, message) → void
+- trpc.admin.getDocumentAuditTrail(id) → AuditEvent[]
+
+## Email (Resend)
+All status transitions trigger emails via Resend:
+- Approved: "Good news! Your [type] has been approved."
+- Rejected: "Action needed: [type] was rejected. Reason: [reason]"
+- More info: "We need more information about your [type]: [message]"
+
+npm run typecheck → commit: feat(admin): document review queue with viewer + approve/reject/request-more → PR to main

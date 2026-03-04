@@ -1,0 +1,92 @@
+Write Playwright E2E smoke tests for V6. Tests run against real Supabase with seeded data.
+
+## Setup (src/tests/e2e/)
+
+### global-setup.ts
+Already exists — seeds Supabase auth users + test data before tests run.
+
+### playwright.config.ts
+- baseURL: http://localhost:3000
+- 3 projects: chromium, mobile-chrome (iPhone 14), mobile-safari
+- globalSetup: './global-setup.ts'
+- retries: 2
+
+## Test Fixtures (tests/fixtures/)
+
+Create typed fixtures matching real DB schema:
+- `student.fixture.ts` → StudentProfile with all fields
+- `sponsor.fixture.ts` → SponsorProfile + Sponsorship
+- `certificate.fixture.ts` → Certificate with valid token
+
+## Smoke Tests to Write
+
+### 1. Auth Flow (tests/e2e/auth.spec.ts)
+```
+test('signup → email confirm → login → dashboard redirect')
+test('login with valid credentials → redirected to /dashboard/[role]')
+test('login with invalid credentials → error message shown')
+test('forgot password → email sent message shown')
+test('logged out user visiting /dashboard → redirected to /login')
+```
+
+Use seed credentials:
+- Student: kemi.adesanya@doculet.test / password123
+- Sponsor: olufemi.adeleke@doculet.test / password123
+- Admin: admin@doculet.test / password123
+
+### 2. Student Onboarding (tests/e2e/student-onboarding.spec.ts)
+```
+test('new student → redirected to onboarding wizard')
+test('step 1: welcome → click Next → step 2 shown')
+test('step 2: select school (University of Lagos) → step 3 shown')
+test('step 3: select funding type (Full Scholarship) → step 4 shown')
+test('step 4: click View Dashboard → onboarding complete → /dashboard/student')
+test('returning student → onboarding NOT shown, direct to dashboard')
+```
+
+### 3. Sponsor Invite Chain (tests/e2e/sponsor-invite.spec.ts)
+```
+test('student can send invite to sponsor email')
+test('invite email shows in sponsor dashboard as pending')
+test('sponsor can accept invite → status updates to accepted')
+test('student sees accepted invite in their invite list')
+```
+
+### 4. Certificate Verification (tests/e2e/certificate.spec.ts)
+```
+test('public certificate page loads without auth')
+test('valid token → shows student name, school, amount')
+test('invalid token → shows "Certificate Not Found" message')
+test('certificate page has no sensitive data in HTML source')
+```
+
+### 5. Dashboard Shell (tests/e2e/dashboard-shell.spec.ts)
+```
+test('student dashboard loads and shows correct nav items')
+test('sponsor dashboard loads and shows correct nav items')
+test('admin dashboard loads and shows correct nav items')
+test('mobile: sidebar hidden by default, hamburger toggles it')
+test('dark mode toggle: .dark class applied to html element')
+```
+
+## Test Helpers
+
+```typescript
+// tests/helpers/auth.ts
+export async function loginAs(page: Page, role: 'student' | 'sponsor' | 'admin' | 'agent' | 'partner' | 'university') {
+  const credentials = { ... }; // from seed data
+  await page.goto('/login');
+  await page.fill('[name="email"]', credentials[role].email);
+  await page.fill('[name="password"]', credentials[role].password);
+  await page.click('button[type="submit"]');
+  await page.waitForURL(`/dashboard/${role}`);
+}
+```
+
+## Requirements
+- NO vi.mock() or jest.mock() — tests against real Supabase
+- Use typed fixtures, not inline fake data
+- Tests must pass on CI (GitHub Actions) with test DB env vars
+- Screenshot on failure (Playwright config: screenshot: 'only-on-failure')
+
+npm run typecheck → commit: test(e2e): smoke tests for auth, onboarding, invite chain, certificates → PR to main

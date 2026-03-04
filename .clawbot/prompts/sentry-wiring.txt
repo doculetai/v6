@@ -1,0 +1,135 @@
+Wire Sentry error tracking throughout the V6 application.
+
+## Install + Config
+
+### Already in package.json? Check first.
+If not installed: `npm install @sentry/nextjs`
+
+### sentry.client.config.ts (root)
+```typescript
+import * as Sentry from "@sentry/nextjs";
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+  tracesSampleRate: 0.1,
+  replaysSessionSampleRate: 0.05,
+  replaysOnErrorSampleRate: 1.0,
+  integrations: [Sentry.replayIntegration()],
+});
+```
+
+### sentry.server.config.ts (root)
+```typescript
+import * as Sentry from "@sentry/nextjs";
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  environment: process.env.NODE_ENV,
+  tracesSampleRate: 0.1,
+});
+```
+
+### sentry.edge.config.ts (root)
+```typescript
+import * as Sentry from "@sentry/nextjs";
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 0.1,
+});
+```
+
+### next.config.ts
+Wrap with `withSentryConfig(nextConfig, { silent: true, hideSourceMaps: true })`.
+
+## Instrument All API Routes
+
+For every file in `src/app/api/**/route.ts`:
+Wrap the handler with try/catch + Sentry.captureException:
+
+```typescript
+import * as Sentry from "@sentry/nextjs";
+
+export async function POST(req: Request) {
+  try {
+    // ... existing handler logic
+  } catch (error) {
+    Sentry.captureException(error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+```
+
+## tRPC Error Middleware
+
+In src/server/trpc.ts, add error middleware:
+```typescript
+const sentryMiddleware = t.middleware(async ({ next, path }) => {
+  const result = await next();
+  if (!result.ok) {
+    Sentry.captureException(result.error, {
+      extra: { path },
+    });
+  }
+  return result;
+});
+```
+
+Apply to all procedures that need it (or use a base procedure that includes it).
+
+## Cron Handler Sentry Wiring
+
+For each file in `src/app/api/cron/**/route.ts`:
+```typescript
+export async function GET(req: Request) {
+  return Sentry.withMonitor("cron-name", async () => {
+    try {
+      // ... cron logic
+      return NextResponse.json({ ok: true });
+    } catch (error) {
+      Sentry.captureException(error);
+      return NextResponse.json({ error: "Cron failed" }, { status: 500 });
+    }
+  });
+}
+```
+
+## src/app/global-error.tsx
+
+```typescript
+"use client";
+import * as Sentry from "@sentry/nextjs";
+import NextError from "next/error";
+import { useEffect } from "react";
+
+export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+  return (
+    <html>
+      <body>
+        <NextError statusCode={500} />
+      </body>
+    </html>
+  );
+}
+```
+
+## Remove All console.log
+
+Search for `console.log` in `src/` and either:
+- Remove it (if just debug noise)
+- Replace with `Sentry.captureMessage(msg, 'info')` for important events
+
+## .env.local / Environment Vars Needed
+- `NEXT_PUBLIC_SENTRY_DSN` — client-side DSN
+- `SENTRY_ORG` — for source maps upload
+- `SENTRY_PROJECT` — for source maps upload
+- `SENTRY_AUTH_TOKEN` — for source maps upload
+
+## Requirements
+- Zero console.log in production paths
+- All error handlers captured
+- Sentry.captureException, NOT Sentry.captureMessage for errors
+- Never log sensitive data (no PII, no tokens) in Sentry context
+
+npm run typecheck → commit: feat(monitoring): Sentry error tracking wired to all API routes, tRPC, and crons → PR to main

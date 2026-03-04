@@ -1,0 +1,73 @@
+Wire the document review loop end-to-end: student uploads → admin reviews → requests more info → student re-uploads → admin approves/rejects.
+
+## Full Loop:
+
+### Step 1: Student Uploads Document
+In `/dashboard/student/documents` page:
+- File picker (PDF/image, max 10MB)
+- Document type selector: passport | admission_letter | bank_statement | sponsor_letter | other
+- Upload via tRPC.student.uploadDocument(file, documentType)
+  - File → Supabase Storage: `documents/{studentId}/{uuid}.{ext}`
+  - Creates record in `documents` table: { studentId, type, storageUrl, status: 'pending' }
+- After upload: document appears in list with "Pending Review" badge
+
+### Step 2: Admin Sees Document in Queue
+In `/dashboard/admin/documents` (existing page):
+- New document appears in pending queue
+- Shows student name, document type, upload time
+- Admin clicks to open in viewer
+
+### Step 3: Admin Requests More Info
+Admin clicks "Request More Info" → message field:
+- tRPC.admin.requestMoreInfo(documentId, message)
+- Updates document status → 'more_info_requested'
+- Sends Resend email to student: "Your [type] needs clarification: [message]"
+
+### Step 4: Student Re-uploads
+Student returns to `/dashboard/student/documents`:
+- Document shows "More Info Requested" badge with admin's message displayed
+- "Re-upload" button → same file picker
+- tRPC.student.reuploadDocument(documentId, newFile)
+  - Uploads new file to Storage
+  - Updates document record: new storageUrl, status back to 'pending', version++
+
+### Step 5: Admin Re-reviews and Approves/Rejects
+Admin sees document back in queue (version 2 clearly labeled):
+- Approve → tRPC.admin.approveDocument(documentId)
+  - Status → 'approved'
+  - Sends email to student: "Your [type] has been approved!"
+- Reject → tRPC.admin.rejectDocument(documentId, reason)
+  - Status → 'rejected'
+  - Sends email: "Your [type] was rejected. Reason: [reason]"
+
+## Status Machine (documents table)
+```
+pending → under_review → more_info_requested → pending (re-uploaded) → approved
+                       ↘ rejected
+```
+
+## Real-time Updates
+On both student documents page AND admin review page:
+Supabase Realtime subscription on `documents` table filtered by studentId/documentId.
+Status badge updates without page refresh.
+
+## Audit Trail
+Every status change → insert to `document_audit_events` table:
+{ documentId, fromStatus, toStatus, actorId, actorRole, message, createdAt }
+
+## Storage Policy
+Supabase Storage bucket `documents`:
+- Read: authenticated users — student can read own docs, admin can read all
+- Write: authenticated student who owns the document
+- Create bucket + policy if they don't exist (via SQL migration or edge function)
+
+## Email Templates Needed (in src/lib/email/templates.ts)
+- `sendDocumentMoreInfoEmail(studentEmail, docType, adminMessage)` → Resend
+- `sendDocumentApprovedEmail(studentEmail, docType)` → Resend
+- `sendDocumentRejectedEmail(studentEmail, docType, reason)` → Resend
+
+## tRPC Procedures
+student router: uploadDocument, reuploadDocument, getDocuments
+admin router: requestMoreInfo (already exists), approveDocument (already exists), rejectDocument (already exists)
+
+npm run typecheck → commit: feat(cross): wire document review loop with realtime status + re-upload flow → PR to main
