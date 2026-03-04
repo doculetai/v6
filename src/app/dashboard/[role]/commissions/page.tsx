@@ -30,6 +30,9 @@ export default async function CommissionsPage({ params }: PageProps) {
   }
 
   return (
-    <CommissionsPageClient commissions={commissions} copy={agentCopy.commissions} />
+    <div className="space-y-6">
+      <h1 className="sr-only">{agentCopy.commissions.title}</h1>
+      <CommissionsPageClient commissions={commissions} copy={agentCopy.commissions} />
+    </div>
   );
 }

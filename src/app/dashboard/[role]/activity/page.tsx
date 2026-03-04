@@ -30,6 +30,9 @@ export default async function ActivityPage({ params }: PageProps) {
   }
 
   return (
-    <ActivityPageClient commissions={commissions} copy={agentCopy.activity} commissionStatusLabels={agentCopy.commissions.statusLabels} />
+    <div className="space-y-6">
+      <h1 className="sr-only">{agentCopy.activity.title}</h1>
+      <ActivityPageClient commissions={commissions} copy={agentCopy.activity} commissionStatusLabels={agentCopy.commissions.statusLabels} />
+    </div>
   );
 }
