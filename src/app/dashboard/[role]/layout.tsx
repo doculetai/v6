@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { DashboardShell } from '@/components/layout/DashboardShell';
 import { DashboardSkeleton } from '@/components/layout/DashboardSkeleton';
 import { isDashboardRole } from '@/config/roles';
-import { TRPCReactProvider } from '@/trpc/client';
+import { TRPCReactProvider } from '@/trpc/provider';
 
 import { notFound } from 'next/navigation';
 

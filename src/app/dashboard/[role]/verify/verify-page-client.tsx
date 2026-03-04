@@ -2,8 +2,6 @@
 
 import { AlertTriangle, CheckCircle2, ShieldCheck, WalletCards } from 'lucide-react';
 import { useMemo, useState, type FormEvent } from 'react';
-import type { inferRouterOutputs } from '@trpc/server';
-
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,11 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { studentCopy } from '@/config/copy/student';
-import type { AppRouter } from '@/server/root';
+import type { RouterOutputs } from '@/trpc/client';
 import { trpc } from '@/trpc/client';
 
-type RouterOutput = inferRouterOutputs<AppRouter>;
-type VerificationStatusOutput = RouterOutput['student']['getVerificationStatus'];
+type VerificationStatusOutput = RouterOutputs['student']['getVerificationStatus'];
 type TierStatus = VerificationStatusOutput['tiers'][number]['status'];
 type IdentityType = 'bvn' | 'nin' | 'passport';
 

@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 
 import type { AppRouter } from '@/server/root';
 import { api } from '@/trpc/server';
-import { TRPCReactProvider } from '@/trpc/client';
+import { TRPCReactProvider } from '@/trpc/provider';
 
 import { VerifyPageClient } from './verify-page-client';
 
