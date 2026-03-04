@@ -76,3 +76,7 @@ Fixed. Both errors were mismatched JSX tags — `</h1>` closing an `<h2>` openin
 [build-watch] 2026-03-04 07:48:27 Auto-fix committed changes.
 To https://github.com/doculetai/v6.git
    659e530..4035846  main -> main
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 07:50:28 Running typecheck...
+[build-watch] 2026-03-04 07:50:40 Build clean. No errors found.
