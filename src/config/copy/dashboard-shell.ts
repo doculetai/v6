@@ -78,3 +78,6 @@ export const dashboardOverviewCopy: Record<DashboardRole, OverviewCopy> = {
   },
 };
 
+export function getFallbackUserName(role: DashboardRole) {
+  return `${roleDisplayNames[role]} ${dashboardShellCopy.sidebar.fallbackUserNameSuffix}`;
+}

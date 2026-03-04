@@ -30,4 +30,8 @@ export function getNavItems(role: string): NavItem[] {
   return getNavConfig(role).items;
 }
 
+export function isActivePath(href: string, currentPath: string) {
+  return currentPath === href || currentPath.startsWith(`${href}/`);
+}
+
 export type { NavConfig, NavItem } from './types';

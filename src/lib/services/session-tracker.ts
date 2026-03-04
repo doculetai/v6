@@ -111,7 +111,7 @@ export async function trackLogin(
     const now = new Date().toISOString()
 
     const db = await getDB()
-    const { sql, eq } = await import("drizzle-orm")
+    const { sql } = await import("drizzle-orm")
 
     // Upsert via raw SQL — user_sessions table uses session_token_hash as conflict key
     const result = await db.execute(sql`

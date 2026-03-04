@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { boolean, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 import { timestamps } from './_helpers';
 import { users } from './users';
@@ -16,7 +16,17 @@ export const sponsorProfiles = pgTable('sponsor_profiles', {
   })
     .default('not_started')
     .notNull(),
+  fullName: text('full_name'),
+  phoneNumber: text('phone_number'),
+  relationshipToStudent: text('relationship_to_student', {
+    enum: ['parent', 'guardian', 'relative', 'corporate', 'other'],
+  }),
   companyName: text('company_name'),
+  cacNumber: text('cac_number'),
+  directorBvn: text('director_bvn'),
+  notifyFundingUpdates: boolean('notify_funding_updates').default(true).notNull(),
+  notifyVerificationUpdates: boolean('notify_verification_updates').default(true).notNull(),
+  notifySecurityAlerts: boolean('notify_security_alerts').default(true).notNull(),
   ...timestamps,
 });
 

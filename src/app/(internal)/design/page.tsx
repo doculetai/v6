@@ -67,6 +67,37 @@ const skeletons = [
   { label: 'Document List', import: 'DocumentListSkeleton', el: <DocumentListSkeleton items={4} /> },
 ] as const;
 
+const referenceNowMs = Date.parse('2026-03-01T12:00:00.000Z');
+const timestampDemoValue = new Date(referenceNowMs - 3 * 60 * 1000);
+const activityTimelineItems = [
+  {
+    id: '1',
+    title: 'Proof of funds verified',
+    description: 'University of Lagos confirmed the document.',
+    timestamp: new Date(referenceNowMs - 10 * 60 * 1000).toISOString(),
+    tone: 'success' as const,
+  },
+  {
+    id: '2',
+    title: 'Document flagged for review',
+    description: 'Admission letter requires re-upload.',
+    timestamp: new Date(referenceNowMs - 2 * 60 * 60 * 1000).toISOString(),
+    tone: 'warning' as const,
+  },
+  {
+    id: '3',
+    title: 'Sponsorship disbursement scheduled',
+    timestamp: new Date(referenceNowMs - 24 * 60 * 60 * 1000).toISOString(),
+    tone: 'info' as const,
+  },
+  {
+    id: '4',
+    title: 'Identity verification submitted',
+    timestamp: new Date(referenceNowMs - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    tone: 'neutral' as const,
+  },
+];
+
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
     <section id={id} className="space-y-5 scroll-mt-8">
@@ -347,7 +378,7 @@ export default function DesignPage() {
                   deltaValue="+12%"
                   deltaLabel="vs last month"
                   deltaDirection="up"
-                  timestamp={new Date().toISOString()}
+                  timestamp={new Date(referenceNowMs).toISOString()}
                 />
                 <MetricCard
                   label="Pending Reviews"
@@ -378,9 +409,9 @@ export default function DesignPage() {
               <p className="font-medium text-foreground">TimestampLabel</p>
               <Code>{`import { TimestampLabel } from '@/components/ui/timestamp-label'`}</Code>
               <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-5">
-                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="relative" />
-                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="absolute" />
-                <TimestampLabel value={new Date(Date.now() - 3 * 60 * 1000)} mode="both" />
+                <TimestampLabel value={timestampDemoValue} mode="relative" />
+                <TimestampLabel value={timestampDemoValue} mode="absolute" />
+                <TimestampLabel value={timestampDemoValue} mode="both" />
                 <TimestampLabel value="not-a-date" />
               </div>
             </div>
@@ -429,36 +460,7 @@ export default function DesignPage() {
             <div className="space-y-3">
               <p className="font-medium text-foreground">ActivityTimeline</p>
               <Code>{`import { ActivityTimeline } from '@/components/ui/activity-timeline'`}</Code>
-              <ActivityTimeline
-                items={[
-                  {
-                    id: '1',
-                    title: 'Proof of funds verified',
-                    description: 'University of Lagos confirmed the document.',
-                    timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-                    tone: 'success',
-                  },
-                  {
-                    id: '2',
-                    title: 'Document flagged for review',
-                    description: 'Admission letter requires re-upload.',
-                    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-                    tone: 'warning',
-                  },
-                  {
-                    id: '3',
-                    title: 'Sponsorship disbursement scheduled',
-                    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-                    tone: 'info',
-                  },
-                  {
-                    id: '4',
-                    title: 'Identity verification submitted',
-                    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-                    tone: 'neutral',
-                  },
-                ]}
-              />
+              <ActivityTimeline items={activityTimelineItems} />
             </div>
 
             {/* PipelineStepper */}

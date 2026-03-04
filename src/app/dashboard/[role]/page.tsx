@@ -53,50 +53,21 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
     notFound();
   }
 
+  const roleCopy = dashboardOverviewCopy[role];
+  let sessionData: { email: string | null; profileRole: DashboardRole | null } | null = null;
+  let hasLoadError = false;
+
   try {
     const caller = await api();
-    const sessionData = await caller.dashboard.getSession({ role });
-    const roleCopy = dashboardOverviewCopy[role];
-
-    if (!sessionData.profileRole) {
-      return (
-        <StateCard
-          icon={UserRoundSearch}
-          title={dashboardShellCopy.overview.emptyTitle}
-          description={dashboardShellCopy.overview.emptyDescription}
-          role={role}
-        />
-      );
-    }
-
-    return (
-      <section className="mx-auto w-full max-w-5xl">
-        <Card className="border-border bg-card dark:border-border dark:bg-card">
-          <CardHeader className="space-y-3">
-            <Sparkles className="size-5 text-muted-foreground dark:text-muted-foreground" />
-            <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-3xl">
-              {roleCopy.title}
-            </CardTitle>
-            <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
-              {roleCopy.description}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
-              {`${dashboardShellCopy.overview.signedInLabel}: ${sessionData.email ?? dashboardShellCopy.overview.noEmailFallback}`}
-            </p>
-            <Button asChild className="min-h-11 w-full sm:w-auto">
-              <Link href={roleCopy.ctaHref}>{roleCopy.ctaLabel}</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </section>
-    );
+    sessionData = await caller.dashboard.getSession({ role });
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
       redirect('/login');
     }
+    hasLoadError = true;
+  }
 
+  if (hasLoadError || !sessionData) {
     return (
       <StateCard
         icon={AlertTriangle}
@@ -106,4 +77,39 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
       />
     );
   }
+
+  if (!sessionData.profileRole) {
+    return (
+      <StateCard
+        icon={UserRoundSearch}
+        title={dashboardShellCopy.overview.emptyTitle}
+        description={dashboardShellCopy.overview.emptyDescription}
+        role={role}
+      />
+    );
+  }
+
+  return (
+    <section className="mx-auto w-full max-w-5xl">
+      <Card className="border-border bg-card dark:border-border dark:bg-card">
+        <CardHeader className="space-y-3">
+          <Sparkles className="size-5 text-muted-foreground dark:text-muted-foreground" />
+          <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-3xl">
+            {roleCopy.title}
+          </CardTitle>
+          <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
+            {roleCopy.description}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+            {`${dashboardShellCopy.overview.signedInLabel}: ${sessionData.email ?? dashboardShellCopy.overview.noEmailFallback}`}
+          </p>
+          <Button asChild className="min-h-11 w-full sm:w-auto">
+            <Link href={roleCopy.ctaHref}>{roleCopy.ctaLabel}</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    </section>
+  );
 }
