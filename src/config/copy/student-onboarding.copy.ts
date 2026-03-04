@@ -70,8 +70,10 @@ export const studentOnboardingCopy = {
         description:
           "Choose the exact institution and course so your funding target is accurate.",
         schoolLabel: "School",
+        schoolPlaceholder: "Select a school…",
         schoolHint: "Search for your university",
         programLabel: "Program",
+        programPlaceholder: "Select a program…",
         programHint: "Choose your degree program",
         programEmptyTitle: "No programs for this school yet",
         programEmptyDescription:
