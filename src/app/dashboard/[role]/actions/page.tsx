@@ -16,5 +16,10 @@ export default async function ActionsPage({ params }: PageProps) {
     notFound();
   }
 
-  return <ActionsPageClient copy={agentCopy.actions} referralUrl={null} />;
+  return (
+    <div className="space-y-6">
+      <h1 className="sr-only">{agentCopy.actions.title}</h1>
+      <ActionsPageClient copy={agentCopy.actions} referralUrl={null} />
+    </div>
+  );
 }

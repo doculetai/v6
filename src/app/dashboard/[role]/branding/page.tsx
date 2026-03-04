@@ -24,5 +24,10 @@ export default async function BrandingPage({ params }: PageProps) {
     branding = null;
   }
 
-  return <BrandingPageClient branding={branding} copy={partnerCopy.branding} />;
+  return (
+    <div className="space-y-6">
+      <h1 className="sr-only">{partnerCopy.branding.title}</h1>
+      <BrandingPageClient branding={branding} copy={partnerCopy.branding} />
+    </div>
+  );
 }

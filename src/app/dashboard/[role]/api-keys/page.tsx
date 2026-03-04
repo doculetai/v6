@@ -24,5 +24,10 @@ export default async function ApiKeysPage({ params }: PageProps) {
     keys = [];
   }
 
-  return <ApiKeysPageClient initialKeys={keys} copy={partnerCopy.apiKeys} />;
+  return (
+    <div className="space-y-6">
+      <h1 className="sr-only">{partnerCopy.apiKeys.title}</h1>
+      <ApiKeysPageClient initialKeys={keys} copy={partnerCopy.apiKeys} />
+    </div>
+  );
 }
