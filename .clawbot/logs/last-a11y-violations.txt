@@ -7,3 +7,4 @@ Add <h1> as the first visible heading, or use your PageHeading component.
 /Users/gm/v6/src/app/dashboard/[role]/operations/page.tsx
 /Users/gm/v6/src/app/dashboard/[role]/students/page.tsx
 /Users/gm/v6/src/app/dashboard/[role]/overview/page.tsx
+/Users/gm/v6/src/app/dashboard/[role]/onboarding/page.tsx

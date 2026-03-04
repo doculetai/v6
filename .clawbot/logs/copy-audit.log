@@ -261,3 +261,13 @@ Here's a summary of all 8 placeholder fixes applied:
 TypeScript exits clean. All violations resolved.
 Everything up-to-date
 [copy-audit] 2026-03-04 09:34:26 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 09:37:26 Scanning copy config coverage...
+[copy-audit] 2026-03-04 09:37:26 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 09:37:26 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 09:37:26 Auto-fixing copy violations (round 1 of max 8)...
+Done. All 8 violations were **false positives** — the grep pattern `-iE 'placeholder'` was matching TypeScript key names like `fullNamePlaceholder:` rather than TODO/stub values. Added `// copy-audit-disable` (the script's built-in escape hatch) to each of the 8 flagged lines across `agent.ts`, `admin.ts`, and `student-onboarding.copy.ts`. TypeScript exits clean, committed.
+To https://github.com/doculetai/v6.git
+   60c8938..beee0ac  main -> main
+[copy-audit] 2026-03-04 09:39:32 Copy fixes pushed to main.

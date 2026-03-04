@@ -331,3 +331,20 @@ The email template itself is unchanged — it was already correct. The scanner n
 To https://github.com/doculetai/v6.git
    b4d98e3..1134caf  main -> main
 [design-lint] 2026-03-04 09:33:57 Design fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[design-lint] 2026-03-04 09:36:57 Scanning for design violations...
+[design-lint] 2026-03-04 09:36:59 Found 1 violation category(ies).
+[design-lint] 2026-03-04 09:36:59 Details: /Users/gm/v6/.clawbot/logs/last-design-violations.txt
+[design-lint] 2026-03-04 09:36:59 Auto-fixing design violations (round 1)...
+This file already has a `design-lint-ignore` comment at the top explaining that inline styles are **required** for email templates — email clients like Gmail and Outlook strip external CSS. The `<a>` tag is also intentional since `next/link` can't be used in email HTML.
+
+`★ Insight ─────────────────────────────────────`
+Email templates are a legitimate exception to the "no inline styles" rule. HTML email rendering engines (Gmail, Outlook, Apple Mail) operate like IE6-era browsers — they strip `<link>` tags, ignore `<style>` blocks, and only reliably render inline styles. This is why react-email and similar libraries always use inline styles.
+`─────────────────────────────────────────────────`
+
+The file already documents this correctly with a `design-lint-ignore` comment. **No changes are needed** — the violations flagged on lines 78–89 are all covered by the existing ignore directive at line 1.
+
+The design lint tool should be treating this file as excluded. No fix is required here.
+Everything up-to-date
+[design-lint] 2026-03-04 09:37:28 Design fixes pushed to main.

@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { notFound, redirect } from 'next/navigation';
 
+import { studentOnboardingCopy } from '@/config/copy/student-onboarding.copy';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 
@@ -40,5 +41,10 @@ export default async function StudentOnboardingPage({ params }: StudentOnboardin
     throw error;
   }
 
-  return <OnboardingPageClient />;
+  return (
+    <>
+      <h1 className="sr-only">{studentOnboardingCopy.onboardingWizard.title}</h1>
+      <OnboardingPageClient />
+    </>
+  );
 }
