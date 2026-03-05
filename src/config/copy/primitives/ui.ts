@@ -6,7 +6,7 @@ export const uiPrimitives = {
     metricLoadError: "Unable to load metric",
     clearFilters: "Clear filters",
     loadingContent: "Loading content",
-    searchPlaceholder: "Find by name, reference number, or status",
+    searchPlaceholder: "Filter by name, reference number, or status",
     toggleTheme: "Toggle theme",
   },
   fileUploader: {
