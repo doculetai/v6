@@ -16,6 +16,7 @@ const authDir = join(process.cwd(), 'tests', 'e2e', '.auth');
 const authFile = join(authDir, 'student.json');
 
 setup('seed E2E data', async () => {
+  setup.setTimeout(90_000);
   if (e2eConfig.seedOnSetup) {
     const { spawn } = await import('node:child_process');
     await new Promise<void>((resolve, reject) => {
