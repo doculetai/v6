@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { captureException } from '@sentry/nextjs';
 import { and, eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -8,6 +9,7 @@ import {
 } from '@/db/queries/sponsor-invitations';
 import {
   disbursements,
+  kycVerifications,
   sponsorProfiles,
   sponsorships,
 } from '@/db/schema';

@@ -8,6 +8,7 @@ import {
   startDojahIdentityCheck,
   verificationStatusValues,
 } from '@/db/queries/student-verification';
+import { callDojahKyc } from '@/lib/services/dojah';
 
 import { roleProcedure } from '../trpc';
 

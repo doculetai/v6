@@ -109,7 +109,21 @@ export const sponsorCopy = {
     startCta: "Start verification",
     retryLabel: "Try again",
     overallStatusLabel: "KYC status",
-    comingSoon: "Advanced verification options unlock as your sponsorship tier grows.",
+    identityTypes: {
+      bvn: "BVN",
+      nin: "NIN",
+      passport: "International Passport",
+    },
+    form: {
+      identityTypeLabel: "Identity type",
+      identityNumberLabel: "Identity number",
+      submitCta: "Submit",
+      cancelCta: "Cancel",
+    },
+    feedback: {
+      started: "Verification submitted. We will update your status after provider confirmation.",
+      error: "Unable to start verification. Please try again.",
+    },
   },
 
   disbursements: {
