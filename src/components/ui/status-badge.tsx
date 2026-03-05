@@ -1,3 +1,4 @@
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 type StatusBadgeStatus =
@@ -17,11 +18,11 @@ interface StatusBadgeProps {
 }
 
 const DEFAULT_LABELS: Record<StatusBadgeStatus, string> = {
-  pending: "Pending",
-  verified: "Verified",
-  rejected: "Rejected",
-  attention: "Attention needed",
-  expired: "Expired",
+  pending: primitivesCopy.statusBadge.pending,
+  verified: primitivesCopy.statusBadge.verified,
+  rejected: primitivesCopy.statusBadge.rejected,
+  attention: primitivesCopy.statusBadge.attention,
+  expired: primitivesCopy.statusBadge.expired,
 }
 
 const STATUS_STYLES: Record<StatusBadgeStatus, { badge: string; dot: string }> = {

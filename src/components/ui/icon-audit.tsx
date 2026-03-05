@@ -1,4 +1,6 @@
 import type { LucideIcon } from "lucide-react"
+
+import { primitivesCopy } from "@/config/copy/primitives"
 import { iconography } from "@/config/iconography"
 
 interface IconAuditProps {
@@ -27,8 +29,8 @@ function IconAudit({ size = "md" }: IconAuditProps) {
 
   return (
     <div className="rounded-xl border bg-card p-4">
-      <h2 className="text-lg font-semibold text-foreground">Icon Audit</h2>
-      <p className="mt-1 text-sm text-muted-foreground">Canonical semantic icon mapping for enterprise routes.</p>
+      <h2 className="text-lg font-semibold text-foreground">{primitivesCopy.iconAudit.title}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{primitivesCopy.iconAudit.description}</p>
 
       <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {icons.map(({ key, Icon }) => (

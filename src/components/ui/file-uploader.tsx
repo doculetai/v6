@@ -21,10 +21,6 @@ type DropzoneState = "idle" | "drag-hover" | "error";
 
 const DEFAULT_ACCEPT = ".pdf,.jpg,.jpeg,.png";
 const DEFAULT_MAX_SIZE = 10 * 1024 * 1024; // 10MB
-const DEFAULT_DROPZONE_TEXT = "Drop file here or click to browse";
-const DEFAULT_CONSTRAINTS_TEXT = "PDF, JPG, PNG · Max 10MB";
-const ERROR_INVALID_FILE_TYPE = "This file type is not supported";
-const ERROR_FILE_TOO_LARGE = "File must be under 10MB";
 
 function getAcceptedExtensions(accept: string): string[] {
   return accept

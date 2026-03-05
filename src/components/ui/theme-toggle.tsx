@@ -39,7 +39,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       size="sm"
       className={cn("h-8 w-8 p-0", className)}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      aria-label={theme === "dark" ? primitivesCopy.themeToggle.switchToLight : primitivesCopy.themeToggle.switchToDark}
     >
       {theme === "dark" ? (
         <Sun className="h-4 w-4" />

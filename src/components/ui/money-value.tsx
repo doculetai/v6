@@ -1,3 +1,4 @@
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 type MoneyDisplay = "full" | "compact"
@@ -7,6 +8,8 @@ interface MoneyValueProps {
   amountMinor: number
   display?: MoneyDisplay
   showCode?: boolean
+  /** Currency code, e.g. NGN, USD. Default from primitivesCopy */
+  currencyCode?: string
   className?: string
 }
 
@@ -14,6 +17,7 @@ function MoneyValue({
   amountMinor,
   display = "full",
   showCode = true,
+  currencyCode = primitivesCopy.moneyValue.defaultCurrency,
   className,
 }: MoneyValueProps) {
   const amountMajor = amountMinor / 100
@@ -29,7 +33,7 @@ function MoneyValue({
     <span className={cn("inline-flex items-baseline gap-1", className)}>
       {showCode ? (
         <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          NGN
+          {currencyCode}
         </span>
       ) : null}
       <span className="font-semibold tabular-nums text-foreground">{formattedAmount}</span>

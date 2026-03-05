@@ -847,3 +847,25 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [copy-audit] 2026-03-04 19:14:52 Scanning copy config coverage...
 [copy-audit] 2026-03-04 19:14:54 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 19:17:58 Scanning copy config coverage...
+[copy-audit] 2026-03-04 19:18:02 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 19:21:03 Scanning copy config coverage...
+[copy-audit] 2026-03-04 19:21:04 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 19:24:05 Scanning copy config coverage...
+[copy-audit] 2026-03-04 19:24:06 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 19:27:06 Scanning copy config coverage...
+[copy-audit] 2026-03-04 19:27:07 Copy config coverage complete. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 19:30:08 Scanning copy config coverage...
+[copy-audit] 2026-03-04 19:30:08 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 19:30:08 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 19:30:08 Auto-fixing copy violations (round 1 of max 8)...

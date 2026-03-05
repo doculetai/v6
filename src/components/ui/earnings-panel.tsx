@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react"
 
+import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
 interface EarningsPanelProps {
@@ -40,7 +41,7 @@ function EarningsPanel({
         <span className="text-3xl font-bold tracking-tight text-foreground">
           {rate}%
         </span>
-        <span className="text-sm text-muted-foreground">Conversion rate</span>
+        <span className="text-sm text-muted-foreground">{primitivesCopy.earningsPanel.conversionRate}</span>
       </div>
 
       <div
@@ -61,7 +62,7 @@ function EarningsPanel({
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Total paid out</span>
+          <span className="text-sm text-muted-foreground">{primitivesCopy.earningsPanel.totalPaidOut}</span>
           <span className="font-semibold text-foreground">
             {formatCurrency(totalPaidOut, currency)}
           </span>

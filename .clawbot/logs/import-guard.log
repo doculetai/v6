@@ -1778,3 +1778,40 @@ error: Please commit or stash them.
 0 violation category(ies).
 [import-guard] 2026-03-04 19:14:55 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
 [import-guard] 2026-03-04 19:14:55 Auto-fixing import violations (round 1 of max 8)...
+TypeScript check exits clean (exit code 0). No violations were found and no changes are needed — nothing to commit.
+Everything up-to-date
+[import-guard] 2026-03-04 19:20:58 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 19:23:58 Scanning import boundaries...
+[import-guard] 2026-03-04 19:24:01 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 19:24:01 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 19:24:01 Auto-fixing import violations (round 1 of max 8)...
+The import guard already resolved all violations earlier today. The log confirms:
+
+- **07:38:29** — `Found 0 violation categories` — the codebase is clean
+- All `hits=''` entries in the violations list are empty, confirming no issues remain
+
+**What was fixed in previous runs:**
+- `src/trpc/client.tsx` — removed `'use client'`, extracted `TRPCReactProvider` to `src/trpc/provider.tsx`
+- `verify-page-client.tsx` — replaced `@/server/root` import with `@/trpc/client`
+- `landing-nav.tsx`, `_shared.tsx`, `masked-value.tsx` — quote style normalized to `'use client';`
+- `student-document-list.tsx` — `'use client'` added for locale-safe rendering
+
+Nothing to do — the import boundaries are clean.
+Everything up-to-date
+[import-guard] 2026-03-04 19:25:22 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 19:28:23 Scanning import boundaries...
+[import-guard] 2026-03-04 19:28:26 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 19:28:26 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 19:28:26 Auto-fixing import violations (round 1 of max 8)...
+All 19 violation entries show `hits=''` — meaning the import-guard scanner found **no actual violations** to fix.
+
+Nothing to do here. The codebase is already clean with respect to the import boundary rules listed.
+To https://github.com/doculetai/v6.git
+   27a6eac..af691ee  main -> main
+[import-guard] 2026-03-04 19:29:37 Import fixes pushed to main.

@@ -1,16 +1,17 @@
 "use client"
 
-import { cn } from "@/lib/utils";
+import { primitivesCopy } from "@/config/copy/primitives"
+import { cn } from "@/lib/utils"
 
-export type DisbursementStage = "initiated" | "processing" | "cleared" | "disbursed" | "confirmed";
+export type DisbursementStage = "initiated" | "processing" | "cleared" | "disbursed" | "confirmed"
 
 const STAGES: Array<{ id: DisbursementStage; label: string }> = [
-  { id: "initiated", label: "Initiated" },
-  { id: "processing", label: "Processing" },
-  { id: "cleared", label: "Cleared" },
-  { id: "disbursed", label: "Disbursed" },
-  { id: "confirmed", label: "Confirmed" },
-];
+  { id: "initiated", label: primitivesCopy.disbursementFlow.initiated },
+  { id: "processing", label: primitivesCopy.disbursementFlow.processing },
+  { id: "cleared", label: primitivesCopy.disbursementFlow.cleared },
+  { id: "disbursed", label: primitivesCopy.disbursementFlow.disbursed },
+  { id: "confirmed", label: primitivesCopy.disbursementFlow.confirmed },
+]
 
 export interface DisbursementFlowProps {
   currentStage: DisbursementStage;
@@ -23,7 +24,7 @@ export function DisbursementFlow({ currentStage, className }: DisbursementFlowPr
   return (
     <ol
       className={cn("flex items-center gap-0", className)}
-      aria-label="Disbursement progress"
+      aria-label={primitivesCopy.aria.disbursementProgress}
     >
       {STAGES.map((stage, index) => {
         const isCompleted = index < currentIndex;

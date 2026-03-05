@@ -1,4 +1,6 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/primitives.ts:7:    searchPlaceholder: "Search by name, reference, or status…",
+/Users/gm/v6/src/config/copy/primitives.ts:181:  // ── Form labels & placeholders ───────────────────────────────────────────
+/Users/gm/v6/src/config/copy/primitives.ts:194:    selectPlaceholder: "Select an option…",
+/Users/gm/v6/src/config/copy/primitives.ts:195:    searchPlaceholder: "Search…",
