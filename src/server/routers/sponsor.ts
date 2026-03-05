@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { captureException } from '@sentry/nextjs';
-import { and, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 
 import {
@@ -8,12 +8,14 @@ import {
   respondToPendingInvitation,
 } from '@/db/queries/sponsor-invitations';
 import {
+  bankAccounts,
   disbursements,
   kycVerifications,
   sponsorProfiles,
   sponsorships,
 } from '@/db/schema';
 import { callDojahKyc } from '@/lib/services/dojah';
+import { initiatePaystackTransfer } from '@/lib/paystack/initiate-transfer';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
@@ -442,5 +444,84 @@ export const sponsorRouter = createTRPCRouter({
           message: 'Unable to start identity verification.',
         });
       }
+    }),
+
+  initiateDisbursement: roleProcedure('sponsor')
+    .input(z.object({ disbursementId: z.string().uuid() }))
+    .output(z.object({ status: z.literal('processing'), paystackReference: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // 1. Load disbursement + verify it belongs to this sponsor
+      const [disbursement] = await ctx.db
+        .select({
+          id: disbursements.id,
+          amountKobo: disbursements.amountKobo,
+          status: disbursements.status,
+          sponsorship: {
+            sponsorId: sponsorships.sponsorId,
+            studentId: sponsorships.studentId,
+          },
+        })
+        .from(disbursements)
+        .innerJoin(sponsorships, eq(disbursements.sponsorshipId, sponsorships.id))
+        .where(eq(disbursements.id, input.disbursementId))
+        .limit(1);
+
+      if (!disbursement) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Disbursement not found.' });
+      }
+      if (disbursement.sponsorship.sponsorId !== ctx.user.id) {
+        throw new TRPCError({ code: 'FORBIDDEN', message: 'Not your disbursement.' });
+      }
+      if (disbursement.status !== 'scheduled') {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'Disbursement is not in scheduled state.',
+        });
+      }
+
+      // 2. Get student's most recent verified Paystack recipient code
+      const [bankAccount] = await ctx.db
+        .select({ paystackRecipientCode: bankAccounts.paystackRecipientCode })
+        .from(bankAccounts)
+        .where(eq(bankAccounts.userId, disbursement.sponsorship.studentId))
+        .orderBy(desc(bankAccounts.linkedAt))
+        .limit(1);
+
+      if (!bankAccount?.paystackRecipientCode) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'Student has not linked a verified bank account.',
+        });
+      }
+
+      // 3. Initiate the Paystack transfer
+      const reference = `DOCULET-${input.disbursementId}-${Date.now()}`;
+      const transfer = await initiatePaystackTransfer({
+        amountKobo: disbursement.amountKobo,
+        recipientCode: bankAccount.paystackRecipientCode,
+        reference,
+      });
+
+      if (!transfer.success) {
+        captureException(new Error(`Paystack transfer failed: ${transfer.error}`), {
+          tags: { domain: 'payments', disbursementId: input.disbursementId },
+        });
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Payment initiation failed. Please try again.',
+        });
+      }
+
+      // 4. Mark disbursement as processing with Paystack reference
+      await ctx.db
+        .update(disbursements)
+        .set({
+          status: 'processing',
+          paystackReference: transfer.paystackReference,
+          updatedAt: new Date(),
+        })
+        .where(eq(disbursements.id, input.disbursementId));
+
+      return { status: 'processing', paystackReference: transfer.paystackReference };
     }),
 });
