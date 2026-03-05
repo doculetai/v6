@@ -38,6 +38,7 @@ const verificationStatusSchema = z.object({
     accountNumberMasked: z.string().nullable(),
     monoAccountId: z.string().nullable(),
     linkedAt: z.date().nullable(),
+    daysSinceLinked: z.number().int().nullable(),
   }),
 });
 

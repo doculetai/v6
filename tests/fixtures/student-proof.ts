@@ -8,6 +8,8 @@ export const completeChecklistInputFixture: ProofChecklistInputs = {
   bankStatus: 'verified',
   approvedDocumentCount: 2,
   sponsorCount: 1,
+  schoolComplete: true,
+  fundingType: 'self',
 };
 
 export const partialChecklistInputFixture: ProofChecklistInputs = {
@@ -15,6 +17,8 @@ export const partialChecklistInputFixture: ProofChecklistInputs = {
   bankStatus: 'verified',
   approvedDocumentCount: 0,
   sponsorCount: 0,
+  schoolComplete: false,
+  fundingType: 'sponsor',
 };
 
 export const activeProgressSignalsFixture: ProofProgressSignals = {

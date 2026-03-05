@@ -18,7 +18,7 @@ import {
 } from '@/components/student/documents/student-documents-states';
 import { StudentDocumentUploadForm } from '@/components/student/documents/student-document-upload-form';
 import { studentCopy } from '@/config/copy/student';
-import type { SupportedDocumentMimeType } from '@/lib/documents';
+import type { StudentDocumentType, SupportedDocumentMimeType } from '@/lib/documents';
 import { trpc } from '@/trpc/client';
 
 function buildFileInputKey() {
@@ -69,6 +69,12 @@ export function DocumentsPageClient() {
       documentType: '',
     },
   });
+
+  const handleReuploadClick = (documentType: StudentDocumentType) => {
+    form.setValue('documentType', documentType);
+    const formEl = document.getElementById('document-upload-form');
+    formEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const studentDocumentsQuery = trpc.student.listDocuments.useQuery(undefined, {
     staleTime: 15_000,
@@ -127,7 +133,8 @@ export function DocumentsPageClient() {
         </div>
       </header>
 
-      <StudentDocumentUploadForm
+      <section id="document-upload-form" className="scroll-mt-4">
+        <StudentDocumentUploadForm
         copy={copy}
         form={form}
         fileInputKey={fileInputKey}
@@ -145,11 +152,16 @@ export function DocumentsPageClient() {
 
       {!studentDocumentsQuery.isPending && !studentDocumentsQuery.isError ? (
         studentDocumentsQuery.data.length > 0 ? (
-          <StudentDocumentList copy={copy} documents={studentDocumentsQuery.data} />
+          <StudentDocumentList
+            copy={copy}
+            documents={studentDocumentsQuery.data}
+            onReuploadClick={handleReuploadClick}
+          />
         ) : (
           <StudentDocumentsEmptyState copy={copy.states} />
         )
       ) : null}
     </section>
+  </section>
   );
 }

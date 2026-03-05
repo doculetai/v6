@@ -12,6 +12,7 @@ import { studentCopy } from '@/config/copy/student';
 import type { RouterOutputs } from '@/trpc/client';
 import { trpc } from '@/trpc/client';
 
+import { StudentSponsorInviteCard } from '@/components/student/StudentSponsorInviteCard';
 import { getBadgeVariant, formatDate } from './_utils';
 
 type VerificationStatusOutput = RouterOutputs['student']['getVerificationStatus'];

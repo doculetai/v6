@@ -1,23 +1,27 @@
 import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 
-const checklistKeys = ['kyc', 'bank', 'sponsor', 'documents'] as const;
+const checklistKeys = ['kyc', 'school', 'bank', 'sponsor', 'documents'] as const;
 
 export type ProofChecklistKey = (typeof checklistKeys)[number];
 
 export type ProofChecklistStatus = {
   kycComplete: boolean;
+  schoolComplete: boolean;
   bankComplete: boolean;
   sponsorComplete: boolean;
   documentsComplete: boolean;
   completedCount: number;
   totalCount: number;
+  requiresSponsor: boolean;
 };
 
 export type ProofChecklistInputs = {
   kycStatus: 'not_started' | 'pending' | 'verified' | 'failed' | null;
+  schoolComplete: boolean;
   bankStatus: 'not_started' | 'pending' | 'verified' | 'failed' | null;
   approvedDocumentCount: number;
   sponsorCount: number;
+  fundingType: 'self' | 'sponsor' | 'corporate' | null;
 };
 
 export type ProofProgressSignals = {
@@ -35,33 +39,33 @@ export type CertificateTokenPayload = {
 };
 
 export function calculateProofChecklistStatus(input: ProofChecklistInputs): ProofChecklistStatus {
+  const requiresSponsor = input.fundingType === 'sponsor' || input.fundingType === 'corporate';
+
   const checklist = {
     kycComplete: input.kycStatus === 'verified',
+    schoolComplete: input.schoolComplete,
     bankComplete: input.bankStatus === 'verified',
-    sponsorComplete: input.sponsorCount > 0,
+    sponsorComplete: requiresSponsor ? input.sponsorCount > 0 : true,
     documentsComplete: input.approvedDocumentCount > 0,
   };
 
-  const completedCount = checklistKeys.reduce((count, key) => {
-    if (key === 'kyc') {
-      return checklist.kycComplete ? count + 1 : count;
-    }
+  const effectiveKeys = requiresSponsor
+    ? (['kyc', 'school', 'bank', 'sponsor', 'documents'] as const)
+    : (['kyc', 'school', 'bank', 'documents'] as const);
 
-    if (key === 'bank') {
-      return checklist.bankComplete ? count + 1 : count;
-    }
-
-    if (key === 'sponsor') {
-      return checklist.sponsorComplete ? count + 1 : count;
-    }
-
+  const completedCount = effectiveKeys.reduce((count, key) => {
+    if (key === 'kyc') return checklist.kycComplete ? count + 1 : count;
+    if (key === 'school') return checklist.schoolComplete ? count + 1 : count;
+    if (key === 'bank') return checklist.bankComplete ? count + 1 : count;
+    if (key === 'sponsor') return checklist.sponsorComplete ? count + 1 : count;
     return checklist.documentsComplete ? count + 1 : count;
   }, 0);
 
   return {
     ...checklist,
     completedCount,
-    totalCount: checklistKeys.length,
+    totalCount: effectiveKeys.length,
+    requiresSponsor,
   };
 }
 

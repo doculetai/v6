@@ -88,7 +88,7 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
     <PageShell width="wide">
       <Section>
         <PageHeader
-          title={`Welcome back, ${firstName}`}
+          title={copy.title}
           description={copy.journeySubtitle}
         />
         <Grid cols={{ sm: 3 }} gap="md">

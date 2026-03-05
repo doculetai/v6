@@ -16,11 +16,13 @@ import { roleProcedure } from '../trpc';
 
 const proofChecklistSchema = z.object({
   kycComplete: z.boolean(),
+  schoolComplete: z.boolean(),
   bankComplete: z.boolean(),
   sponsorComplete: z.boolean(),
   documentsComplete: z.boolean(),
   completedCount: z.number().int().min(0),
   totalCount: z.number().int().min(1),
+  requiresSponsor: z.boolean(),
 });
 
 const proofCertificateSchema = z.object({
@@ -75,7 +77,7 @@ async function loadProofRecords(userId: string, db: DrizzleDB) {
   const [profile, documentRecords, sponsors, activeCertificate] = await Promise.all([
     db.query.studentProfiles.findFirst({
       where: eq(studentProfiles.userId, userId),
-      columns: { kycStatus: true, bankStatus: true, updatedAt: true },
+      columns: { kycStatus: true, bankStatus: true, schoolId: true, programId: true, fundingType: true, updatedAt: true },
     }),
     db.query.documents.findMany({
       where: eq(documents.userId, userId),
@@ -141,11 +143,16 @@ async function getProofSnapshot(userId: string, db: DrizzleDB) {
   const { approvedDocumentCount, pendingDocumentCount } = summarizeDocuments(documentRecords);
   const { uniqueSponsorCount, committedAmountKobo, currency } = summarizeSponsors(sponsors);
 
+  const schoolComplete = Boolean(profile?.schoolId && profile?.programId);
+  const fundingType = profile?.fundingType ?? null;
+
   const checklist = calculateProofChecklistStatus({
     kycStatus: profile?.kycStatus ?? null,
+    schoolComplete,
     bankStatus: profile?.bankStatus ?? null,
     approvedDocumentCount,
     sponsorCount: uniqueSponsorCount,
+    fundingType,
   });
 
   const hasAnyProgress = hasProofProgress({

@@ -43,7 +43,7 @@ export default async function StudentDocumentsPage({ params }: StudentDocumentsP
     notFound();
   }
 
-  let session: { profileRole: DashboardRole | null };
+  let session: { profileRole: DashboardRole | null; onboardingComplete: boolean };
 
   try {
     const caller = await api();

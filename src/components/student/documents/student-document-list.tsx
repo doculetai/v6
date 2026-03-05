@@ -1,7 +1,8 @@
 'use client';
 
-import { CalendarClock, FileText } from 'lucide-react';
+import { CalendarClock, FileText, Upload } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { StudentCopy } from '@/config/copy/student';
 import type { StudentDocumentStatus, StudentDocumentType } from '@/lib/documents';
@@ -19,6 +20,7 @@ type StudentDocumentListItem = {
 type StudentDocumentListProps = {
   copy: StudentCopy['documents'];
   documents: StudentDocumentListItem[];
+  onReuploadClick?: (documentType: StudentDocumentType) => void;
 };
 
 function formatDocumentDate(value: Date) {
@@ -37,7 +39,7 @@ function getTypeLabel(
   return match?.label ?? typeValue;
 }
 
-export function StudentDocumentList({ copy, documents }: StudentDocumentListProps) {
+export function StudentDocumentList({ copy, documents, onReuploadClick }: StudentDocumentListProps) {
   return (
     <Card className="border-border bg-card/95 shadow-sm backdrop-blur dark:border-border dark:bg-card/95">
       <CardHeader className="space-y-2">
@@ -83,13 +85,27 @@ export function StudentDocumentList({ copy, documents }: StudentDocumentListProp
                 </div>
 
                 {showRejectionReason ? (
-                  <div className="mt-3 rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 dark:border-destructive/25 dark:bg-destructive/15">
-                    <p className="text-xs font-medium text-destructive dark:text-destructive md:text-sm">
-                      {copy.list.rejectionReasonLabel}
-                    </p>
-                    <p className="mt-1 break-words text-sm text-destructive dark:text-destructive">
-                      {document.rejectionReason ?? copy.list.rejectionReasonFallback}
-                    </p>
+                  <div className="mt-3 space-y-2">
+                    <div className="rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 dark:border-destructive/25 dark:bg-destructive/15">
+                      <p className="text-xs font-medium text-destructive dark:text-destructive md:text-sm">
+                        {copy.list.rejectionReasonLabel}
+                      </p>
+                      <p className="mt-1 break-words text-sm text-destructive dark:text-destructive">
+                        {document.rejectionReason ?? copy.list.rejectionReasonFallback}
+                      </p>
+                    </div>
+                    {onReuploadClick ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-11 min-w-[44px] gap-2"
+                        onClick={() => onReuploadClick(document.type)}
+                      >
+                        <Upload className="size-4" aria-hidden="true" />
+                        {copy.reuploadCta}
+                      </Button>
+                    ) : null}
                   </div>
                 ) : null}
               </li>

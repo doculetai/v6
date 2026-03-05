@@ -19,21 +19,26 @@ describe('student proof helpers', () => {
     const status = calculateProofChecklistStatus(completeChecklistInputFixture);
 
     expect(status.kycComplete).toBe(true);
+    expect(status.schoolComplete).toBe(true);
     expect(status.bankComplete).toBe(true);
     expect(status.sponsorComplete).toBe(true);
     expect(status.documentsComplete).toBe(true);
     expect(status.completedCount).toBe(4);
     expect(status.totalCount).toBe(4);
+    expect(status.requiresSponsor).toBe(false);
   });
 
   it('computes partial completion correctly', () => {
     const status = calculateProofChecklistStatus(partialChecklistInputFixture);
 
     expect(status.kycComplete).toBe(false);
+    expect(status.schoolComplete).toBe(false);
     expect(status.bankComplete).toBe(true);
     expect(status.sponsorComplete).toBe(false);
     expect(status.documentsComplete).toBe(false);
     expect(status.completedCount).toBe(1);
+    expect(status.totalCount).toBe(5);
+    expect(status.requiresSponsor).toBe(true);
   });
 
   it('detects progress only when profile-backed onboarding has started', () => {
