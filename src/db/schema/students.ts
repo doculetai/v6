@@ -95,6 +95,7 @@ export const bankAccounts = pgTable(
     accountNumber: text('account_number').notNull(),
     bankName: text('bank_name').notNull(),
     monoAccountId: text('mono_account_id').notNull(),
+    paystackRecipientCode: text('paystack_recipient_code'),
     linkedAt: timestamp('linked_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
