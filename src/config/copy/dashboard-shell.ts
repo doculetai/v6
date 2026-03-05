@@ -47,6 +47,7 @@ export function getFallbackUserName(role: DashboardRole): string {
 }
 
 export const studentHomeCopy = {
+  title: 'Your proof journey',
   journeySubtitle: 'Your proof-of-funds journey at a glance.',
   stats: {
     verification: {

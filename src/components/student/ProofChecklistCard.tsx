@@ -6,11 +6,13 @@ import { studentCopy } from '@/config/copy/student';
 
 type ProofChecklist = {
   kycComplete: boolean;
+  schoolComplete: boolean;
   bankComplete: boolean;
   sponsorComplete: boolean;
   documentsComplete: boolean;
   completedCount: number;
   totalCount: number;
+  requiresSponsor: boolean;
 };
 
 type ProofChecklistCardProps = {
@@ -58,17 +60,25 @@ export function ProofChecklistCard({ checklist }: ProofChecklistCardProps) {
             pendingDetail={studentCopy.proof.progress.items.kyc.pendingDetail}
           />
           <ChecklistItem
+            complete={checklist.schoolComplete}
+            label={studentCopy.proof.progress.items.school.label}
+            completeDetail={studentCopy.proof.progress.items.school.completeDetail}
+            pendingDetail={studentCopy.proof.progress.items.school.pendingDetail}
+          />
+          <ChecklistItem
             complete={checklist.bankComplete}
             label={studentCopy.proof.progress.items.bank.label}
             completeDetail={studentCopy.proof.progress.items.bank.completeDetail}
             pendingDetail={studentCopy.proof.progress.items.bank.pendingDetail}
           />
-          <ChecklistItem
-            complete={checklist.sponsorComplete}
-            label={studentCopy.proof.progress.items.sponsor.label}
-            completeDetail={studentCopy.proof.progress.items.sponsor.completeDetail}
-            pendingDetail={studentCopy.proof.progress.items.sponsor.pendingDetail}
-          />
+          {checklist.requiresSponsor ? (
+            <ChecklistItem
+              complete={checklist.sponsorComplete}
+              label={studentCopy.proof.progress.items.sponsor.label}
+              completeDetail={studentCopy.proof.progress.items.sponsor.completeDetail}
+              pendingDetail={studentCopy.proof.progress.items.sponsor.pendingDetail}
+            />
+          ) : null}
           <ChecklistItem
             complete={checklist.documentsComplete}
             label={studentCopy.proof.progress.items.documents.label}

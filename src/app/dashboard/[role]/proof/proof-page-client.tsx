@@ -10,11 +10,13 @@ import { cn } from '@/lib/utils';
 
 type ProofChecklist = {
   kycComplete: boolean;
+  schoolComplete: boolean;
   bankComplete: boolean;
   sponsorComplete: boolean;
   documentsComplete: boolean;
   completedCount: number;
   totalCount: number;
+  requiresSponsor: boolean;
 };
 
 type ProofCertificate = {
