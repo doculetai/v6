@@ -1019,3 +1019,9 @@ These strings all live in `primitives/` — shared copy used across every role. 
 To https://github.com/doculetai/v6.git
    985f05e..5a69cae  main -> main
 [copy-audit] 2026-03-04 20:38:13 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 20:41:14 Scanning copy config coverage...
+[copy-audit] 2026-03-04 20:41:14 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 20:41:14 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 20:41:14 Auto-fixing copy violations (round 1 of max 8)...

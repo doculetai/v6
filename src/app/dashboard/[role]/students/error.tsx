@@ -1,6 +1,7 @@
 'use client';
 
 import { AlertTriangle } from 'lucide-react';
+import { captureException } from '@sentry/nextjs';
 import { useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,7 @@ export default function StudentsError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    captureException(error);
   }, [error]);
 
   return (
@@ -24,7 +25,7 @@ export default function StudentsError({
         <p className="font-semibold text-foreground">{commonErrors.generic}</p>
       </div>
       <Button variant="outline" onClick={reset} className="min-h-11">
-        Try again
+        {commonErrors.tryAgain}
       </Button>
     </div>
   );
