@@ -903,3 +903,13 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 19:44:12 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 19:44:12 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 19:44:12 Auto-fixing copy violations (round 1 of max 8)...
+The changes were auto-committed by the eslint-watch hook. The current HEAD already has the updated values. The git status confirms the working tree is clean with the fixes applied:
+
+- `form.ts:29` → `"Select an option"` (was "Choose one")
+- `form.ts:30` → `"Search by name or reference number"` (was "Search records")
+- `storybook.ts:56` → `"Find by application ID, student name, or case number"` (was "...case reference")
+- `ui.ts:9` → `"Find by name, reference number, or status"` (was "Search by name, reference, or status")
+
+All four violations fixed, TypeScript exits clean, and changes are committed.
+Everything up-to-date
+[copy-audit] 2026-03-04 19:52:01 Copy fixes pushed to main.

@@ -192,6 +192,9 @@ async function exchangeMonoCodeAndVerify(monoCode: string): Promise<MonoAccountD
   }
 
   const accountId = authParsed.data.id;
+  if (!/^[a-zA-Z0-9_-]+$/.test(accountId)) {
+    throw new Error('Mono returned an unexpected account ID format');
+  }
 
   // Step 2: get account details
   const accountRes = await fetch(`https://api.withmono.com/v2/accounts/${accountId}`, {
@@ -205,10 +208,14 @@ async function exchangeMonoCodeAndVerify(monoCode: string): Promise<MonoAccountD
   }
 
   const account = accountParsed.data.account;
+  const accountNumber = account.accountNumber;
+  if (!accountNumber) {
+    throw new Error('Mono returned no accountNumber');
+  }
 
   return {
     monoAccountId: accountId,
-    accountNumber: account.accountNumber ?? '',
+    accountNumber,
     bankName: account.institution?.name ?? account.name ?? 'Unknown Bank',
   };
 }
