@@ -1025,3 +1025,17 @@ error: Please commit or stash them.
 [build-watch] 2026-03-04 20:37:12 Found 3 TypeScript error(s).
 [build-watch] 2026-03-04 20:37:12 Errors written to: /Users/gm/v6/.clawbot/logs/last-build-errors.txt
 [build-watch] 2026-03-04 20:37:12 Auto-fixing (round 1 of max 10)...
+The files were modified in the working tree (not yet committed) relative to HEAD — fixing the broken closing tags restored them to match HEAD, so there's nothing new to commit. The typecheck confirms everything is clean (exit code 0).
+
+**Summary:** All 3 JSX closing tag errors fixed:
+- `agent-overview.tsx:70` — `</div>` → `</Grid>`
+- `partner-overview.tsx:62` — `</div>` → `</Grid>`
+- `sponsor-overview.tsx:117` — `</div>` → `</Stack>`
+
+`tsc --noEmit` exits cleanly with no errors.
+[build-watch] 2026-03-04 20:42:27 Auto-fix committed changes.
+Everything up-to-date
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 20:44:28 Running typecheck...
+[build-watch] 2026-03-04 20:44:42 Build clean. No errors found.

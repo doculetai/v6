@@ -1,5 +1,8 @@
 /** Admin-domain UI primitives — operations, oversight labels */
 
 export const adminPrimitives = {
-  // Add admin-specific primitives here
+  operations: {
+    overviewTitle: "Operations",
+    usersLabel: "Users",
+  },
 } as const

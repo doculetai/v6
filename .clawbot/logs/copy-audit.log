@@ -1025,3 +1025,16 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 20:41:14 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 20:41:14 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 20:41:14 Auto-fixing copy violations (round 1 of max 8)...
+All 4 violations fixed and committed:
+
+| File | Change |
+|---|---|
+| `form.ts` | `"Select one"` → `"Choose an option"` (was bald/generic) |
+| `form.ts` | `"Filter by name..."` → `"Search by name..."` (consistent verb) |
+| `storybook.ts` | `"Filter by application ID..."` → `"Search by application ID..."` |
+| `ui.ts` | `"Filter by name, reference number..."` → `"Search by name, reference number..."` |
+
+`"Filter by"` implies client-side narrowing of an already-loaded list; `"Search by"` better reflects that these are querying against data — more accurate and fintech-appropriate.
+To https://github.com/doculetai/v6.git
+   ba62006..bb3e70c  main -> main
+[copy-audit] 2026-03-04 20:43:46 Copy fixes pushed to main.
