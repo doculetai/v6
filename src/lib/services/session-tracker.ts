@@ -1,5 +1,7 @@
 import { createHash } from "crypto"
 
+import { and, eq, gte, ne } from "drizzle-orm"
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -84,12 +86,48 @@ export function extractIP(headers: Headers): string | null {
 }
 
 // ---------------------------------------------------------------------------
-// DB-backed functions — use Drizzle via dynamic import to stay edge-safe
+// Row mapping — Drizzle returns camelCase, SessionRecord uses snake_case
+// ---------------------------------------------------------------------------
+
+type UserSessionRow = {
+  id: string
+  userId: string
+  sessionTokenHash: string
+  deviceName: string | null
+  browser: string | null
+  os: string | null
+  ipAddress: string | null
+  fingerprint: string | null
+  location: string | null
+  isCurrent: boolean
+  lastActiveAt: Date
+  createdAt: Date
+}
+
+function toSessionRecord(row: UserSessionRow): SessionRecord {
+  return {
+    id: row.id,
+    user_id: row.userId,
+    device_name: row.deviceName,
+    browser: row.browser,
+    os: row.os,
+    ip_address: row.ipAddress,
+    fingerprint: row.fingerprint,
+    location: row.location,
+    is_current: row.isCurrent,
+    last_active_at: row.lastActiveAt.toISOString(),
+    created_at: row.createdAt.toISOString(),
+  }
+}
+
+// ---------------------------------------------------------------------------
+// DB-backed functions — Drizzle queries
 // ---------------------------------------------------------------------------
 
 async function getDB() {
   const { db } = await import("@/db")
-  return db
+  const { userSessions } = await import("@/db/schema")
+  return { db, userSessions }
 }
 
 export async function trackLogin(
@@ -98,6 +136,7 @@ export async function trackLogin(
   accessToken: string,
 ): Promise<SessionRecord | null> {
   try {
+    const { db, userSessions } = await getDB()
     const headers = new Headers(request.headers)
     const ua = headers.get("user-agent") ?? ""
     const ip = extractIP(headers)
@@ -108,29 +147,34 @@ export async function trackLogin(
     const tokenHash = hashToken(accessToken)
     const { deviceName, browser, os } = parseUserAgent(ua)
     const fingerprint = generateFingerprint(ua, ip ?? "unknown", acceptLang, secChUa, acceptEncoding)
-    const now = new Date().toISOString()
+    const now = new Date()
 
-    const db = await getDB()
-    const { sql, eq } = await import("drizzle-orm")
+    const [row] = await db
+      .insert(userSessions)
+      .values({
+        userId,
+        sessionTokenHash: tokenHash,
+        deviceName,
+        browser,
+        os,
+        ipAddress: ip ?? undefined,
+        fingerprint,
+        location,
+        isCurrent: true,
+        lastActiveAt: now,
+      })
+      .onConflictDoUpdate({
+        target: userSessions.sessionTokenHash,
+        set: {
+          isCurrent: true,
+          lastActiveAt: now,
+          ipAddress: ip ?? undefined,
+          location,
+        },
+      })
+      .returning()
 
-    // Upsert via raw SQL — user_sessions table uses session_token_hash as conflict key
-    const result = await db.execute(sql`
-      INSERT INTO user_sessions
-        (user_id, session_token_hash, device_name, browser, os, ip_address,
-         fingerprint, location, is_current, last_active_at, created_at)
-      VALUES
-        (${userId}, ${tokenHash}, ${deviceName}, ${browser}, ${os}, ${ip},
-         ${fingerprint}, ${location}, true, ${now}, ${now})
-      ON CONFLICT (session_token_hash) DO UPDATE SET
-        is_current     = true,
-        last_active_at = ${now},
-        ip_address     = EXCLUDED.ip_address,
-        location       = EXCLUDED.location
-      RETURNING *
-    `)
-
-    const row = (result as unknown as { rows: SessionRecord[] }).rows[0]
-    return row ?? null
+    return row ? toSessionRecord(row) : null
   } catch {
     return null
   }
@@ -141,20 +185,22 @@ export async function isNewFingerprint(
   fingerprint: string,
 ): Promise<boolean> {
   try {
-    const db = await getDB()
-    const { sql } = await import("drizzle-orm")
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+    const { db, userSessions } = await getDB()
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 
-    const result = await db.execute(sql`
-      SELECT id FROM user_sessions
-      WHERE user_id = ${userId}
-        AND fingerprint = ${fingerprint}
-        AND last_active_at >= ${thirtyDaysAgo}
-      LIMIT 1
-    `)
+    const rows = await db
+      .select({ id: userSessions.id })
+      .from(userSessions)
+      .where(
+        and(
+          eq(userSessions.userId, userId),
+          eq(userSessions.fingerprint, fingerprint),
+          gte(userSessions.lastActiveAt, thirtyDaysAgo),
+        ),
+      )
+      .limit(1)
 
-    const rows = (result as unknown as { rows: unknown[] }).rows
-    return !rows || rows.length === 0
+    return rows.length === 0
   } catch {
     return false
   }
@@ -162,15 +208,17 @@ export async function isNewFingerprint(
 
 export async function heartbeat(userId: string, tokenHash: string): Promise<void> {
   try {
-    const db = await getDB()
-    const { sql } = await import("drizzle-orm")
-    const now = new Date().toISOString()
-    await db.execute(sql`
-      UPDATE user_sessions
-      SET last_active_at = ${now}
-      WHERE user_id = ${userId}
-        AND session_token_hash = ${tokenHash}
-    `)
+    const { db, userSessions } = await getDB()
+    const now = new Date()
+    await db
+      .update(userSessions)
+      .set({ lastActiveAt: now })
+      .where(
+        and(
+          eq(userSessions.userId, userId),
+          eq(userSessions.sessionTokenHash, tokenHash),
+        ),
+      )
   } catch {
     // Non-blocking — silently fail
   }
@@ -178,13 +226,15 @@ export async function heartbeat(userId: string, tokenHash: string): Promise<void
 
 export async function endSession(userId: string, tokenHash: string): Promise<void> {
   try {
-    const db = await getDB()
-    const { sql } = await import("drizzle-orm")
-    await db.execute(sql`
-      DELETE FROM user_sessions
-      WHERE user_id = ${userId}
-        AND session_token_hash = ${tokenHash}
-    `)
+    const { db, userSessions } = await getDB()
+    await db
+      .delete(userSessions)
+      .where(
+        and(
+          eq(userSessions.userId, userId),
+          eq(userSessions.sessionTokenHash, tokenHash),
+        ),
+      )
   } catch {
     // Non-blocking — silently fail
   }
@@ -195,13 +245,10 @@ export async function terminateSession(
   sessionId: string,
 ): Promise<boolean> {
   try {
-    const db = await getDB()
-    const { sql } = await import("drizzle-orm")
-    await db.execute(sql`
-      DELETE FROM user_sessions
-      WHERE user_id = ${userId}
-        AND id = ${sessionId}
-    `)
+    const { db, userSessions } = await getDB()
+    await db
+      .delete(userSessions)
+      .where(and(eq(userSessions.userId, userId), eq(userSessions.id, sessionId)))
     return true
   } catch {
     return false
@@ -213,33 +260,21 @@ export async function terminateAllOtherSessions(
   currentTokenHash: string,
 ): Promise<number> {
   try {
-    const db = await getDB()
-    const { sql } = await import("drizzle-orm")
-    const result = await db.execute(sql`
-      DELETE FROM user_sessions
-      WHERE user_id = ${userId}
-        AND session_token_hash != ${currentTokenHash}
-      RETURNING id
-    `)
-    const rows = (result as unknown as { rows: unknown[] }).rows
-    return rows?.length ?? 0
+    const { db, userSessions } = await getDB()
+    const deleted = await db
+      .delete(userSessions)
+      .where(
+        and(
+          eq(userSessions.userId, userId),
+          ne(userSessions.sessionTokenHash, currentTokenHash),
+        ),
+      )
+      .returning({ id: userSessions.id })
+
+    return deleted.length
   } catch {
     return 0
   }
 }
 
-export async function getActiveSessions(userId: string): Promise<SessionRecord[]> {
-  try {
-    const db = await getDB()
-    const { sql } = await import("drizzle-orm")
-    const result = await db.execute(sql`
-      SELECT * FROM user_sessions
-      WHERE user_id = ${userId}
-      ORDER BY last_active_at DESC
-    `)
-    const rows = (result as unknown as { rows: SessionRecord[] }).rows
-    return rows ?? []
-  } catch {
-    return []
-  }
-}
+// Drizzle doesn't have a built-in "not equal" for this - we need ne from drizzle-orm

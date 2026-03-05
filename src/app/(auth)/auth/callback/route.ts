@@ -5,10 +5,10 @@ import { NextResponse } from 'next/server';
 import { env } from '@/lib/env';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/auth/complete';
-  const origin = request.headers.get('origin') ?? env.NEXT_PUBLIC_APP_URL ?? '';
+  const url = new URL(request.url);
+  const code = url.searchParams.get('code');
+  const next = url.searchParams.get('next') ?? '/auth/complete';
+  const origin = url.origin;
 
   if (!code) {
     return NextResponse.redirect(`${origin}/login?error=auth_callback_missing_code`);
