@@ -9,9 +9,12 @@ import { processDojahWebhook } from '@/db/queries/dojah-webhook';
 function verifyDojahSignature(rawBody: string, signature: string): boolean {
   const secret = process.env.DOJAH_WEBHOOK_SECRET;
   if (!secret) return false;
-  const expected = createHmac('sha512', secret).update(rawBody).digest('hex');
-  if (expected.length !== signature.length) return false;
-  return timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
+  const expected = createHmac('sha512', secret).update(rawBody).digest();
+  try {
+    return timingSafeEqual(expected, Buffer.from(signature, 'hex'));
+  } catch {
+    return false;
+  }
 }
 
 const dojahPayloadSchema = z.object({
