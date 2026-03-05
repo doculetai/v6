@@ -1,27 +1,31 @@
 'use client';
 
 import { AlertTriangle } from 'lucide-react';
+import { useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { agentCopy } from '@/config/copy/agent';
+import { commonErrors } from '@/config/copy/shared';
 
-export default function SettingsError({ reset }: { error: Error; reset: () => void }) {
+export default function SettingsError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
   return (
-    <div className="mx-auto w-full max-w-2xl">
-      <Card className="border-border bg-card dark:border-border dark:bg-card">
-        <CardHeader className="space-y-3">
-          <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />
-          <CardTitle className="text-lg text-card-foreground">
-            {agentCopy.settings.errors.loadError}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button variant="outline" className="min-h-11" onClick={reset}>
-            {agentCopy.settings.errors.tryAgain}
-          </Button>
-        </CardContent>
-      </Card>
+    <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
+      <AlertTriangle className="size-10 text-destructive" aria-hidden="true" />
+      <div className="space-y-1">
+        <p className="font-semibold text-foreground">{commonErrors.generic}</p>
+      </div>
+      <Button variant="outline" onClick={reset} className="min-h-11">
+        Try again
+      </Button>
     </div>
   );
 }

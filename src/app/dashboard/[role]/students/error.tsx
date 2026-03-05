@@ -1,17 +1,31 @@
 'use client';
 
 import { AlertTriangle } from 'lucide-react';
+import { useEffect } from 'react';
 
+import { Button } from '@/components/ui/button';
 import { commonErrors } from '@/config/copy/shared';
 
-export default function StudentsError() {
+export default function StudentsError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
   return (
-    <div className="flex flex-col items-center gap-4 py-16 text-center">
-      <AlertTriangle className="size-10 text-muted-foreground" aria-hidden="true" />
+    <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
+      <AlertTriangle className="size-10 text-destructive" aria-hidden="true" />
       <div className="space-y-1">
-        <p className="text-base font-medium text-foreground">Something went wrong</p>
-        <p className="text-sm text-muted-foreground">{commonErrors.generic}</p>
+        <p className="font-semibold text-foreground">{commonErrors.generic}</p>
       </div>
+      <Button variant="outline" onClick={reset} className="min-h-11">
+        Try again
+      </Button>
     </div>
   );
 }

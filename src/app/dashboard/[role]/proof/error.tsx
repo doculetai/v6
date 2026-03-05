@@ -1,34 +1,31 @@
 'use client';
 
 import { AlertTriangle } from 'lucide-react';
+import { useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { studentCopy } from '@/config/copy/student';
+import { commonErrors } from '@/config/copy/shared';
 
-type DashboardProofErrorProps = {
+export default function ProofError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
   reset: () => void;
-};
+}) {
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
 
-export default function DashboardProofError({ reset }: DashboardProofErrorProps) {
   return (
-    <section className="mx-auto w-full max-w-3xl">
-      <Card className="border-border bg-card/80 shadow-md dark:border-border dark:bg-card/80">
-        <CardHeader className="space-y-3">
-          <AlertTriangle className="size-5 text-destructive dark:text-destructive" aria-hidden="true" />
-          <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
-            {studentCopy.proof.states.errorTitle}
-          </CardTitle>
-          <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
-            {studentCopy.proof.states.errorDescription}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button type="button" className="min-h-11" onClick={reset}>
-            {studentCopy.proof.states.retryCta}
-          </Button>
-        </CardContent>
-      </Card>
-    </section>
+    <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
+      <AlertTriangle className="size-10 text-destructive" aria-hidden="true" />
+      <div className="space-y-1">
+        <p className="font-semibold text-foreground">{commonErrors.generic}</p>
+      </div>
+      <Button variant="outline" onClick={reset} className="min-h-11">
+        Try again
+      </Button>
+    </div>
   );
 }
