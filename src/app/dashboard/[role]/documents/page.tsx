@@ -64,6 +64,12 @@ export default async function StudentDocumentsPage({ params }: StudentDocumentsP
     redirect('/dashboard/student');
   }
 
+  const { enforceStudentOnboardingGate } = await import('@/lib/auth/student-onboarding-gate');
+  await enforceStudentOnboardingGate({
+    profileRole: session.profileRole,
+    onboardingComplete: session.onboardingComplete,
+  });
+
   return (
     <>
       <h1 className="sr-only">{studentCopy.documents.title}</h1>

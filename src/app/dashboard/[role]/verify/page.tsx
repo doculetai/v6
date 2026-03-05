@@ -23,10 +23,17 @@ export default async function VerifyRolePage({ params }: VerifyRolePageProps) {
     notFound();
   }
 
+  const caller = await api();
+  const session = await caller.dashboard.getSession({ role: 'student' });
+  const { enforceStudentOnboardingGate } = await import('@/lib/auth/student-onboarding-gate');
+  await enforceStudentOnboardingGate({
+    profileRole: session.profileRole,
+    onboardingComplete: session.onboardingComplete,
+  });
+
   let initialData: VerificationStatusOutput;
 
   try {
-    const caller = await api();
     initialData = await caller.student.getVerificationStatus();
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {

@@ -18,6 +18,9 @@ export const roleDisplayNames: Record<DashboardRole, string> = {
 
 export const dashboardShellCopy = {
   logoAlt: 'Doculet.ai logo',
+  studentHome: {
+    title: 'Your proof journey',
+  },
   sidebar: {
     accountLabel: 'Account',
     logoutLabel: 'Log out',
@@ -63,6 +66,9 @@ export const studentHomeCopy = {
       linkedLabel: 'Linked',
       notLinkedLabel: 'Not linked',
     },
+  },
+  empty: {
+    cta: 'Start onboarding',
   },
   school: {
     sectionLabel: 'Selected School',

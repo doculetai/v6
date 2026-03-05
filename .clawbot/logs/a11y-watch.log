@@ -1043,3 +1043,7 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [a11y-watch] 2026-03-04 20:41:41 Scanning for accessibility violations...
 [a11y-watch] 2026-03-04 20:41:42 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 20:45:42 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 20:45:44 All accessibility checks passed. No violations found.

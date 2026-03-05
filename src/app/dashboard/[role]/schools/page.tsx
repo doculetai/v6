@@ -29,11 +29,18 @@ export default async function SchoolsRolePage({ params }: SchoolsRolePageProps) 
     notFound();
   }
 
+  const caller = await api();
+  const session = await caller.dashboard.getSession({ role: 'student' });
+  const { enforceStudentOnboardingGate } = await import('@/lib/auth/student-onboarding-gate');
+  await enforceStudentOnboardingGate({
+    profileRole: session.profileRole,
+    onboardingComplete: session.onboardingComplete,
+  });
+
   let initialSchools: ListSchoolsOutput;
   let initialSelection: StudentSchoolSelection;
 
   try {
-    const caller = await api();
     [initialSchools, initialSelection] = await Promise.all([
       caller.student.listSchools({}),
       caller.student.getStudentSchoolSelection(),

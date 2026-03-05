@@ -22,6 +22,12 @@ export default async function DashboardProofPage({ params }: DashboardProofPageP
   }
 
   const caller = await api();
+  const session = await caller.dashboard.getSession({ role: 'student' });
+  const { enforceStudentOnboardingGate } = await import('@/lib/auth/student-onboarding-gate');
+  await enforceStudentOnboardingGate({
+    profileRole: session.profileRole,
+    onboardingComplete: session.onboardingComplete,
+  });
   let initialData: StudentProofData;
 
   try {
