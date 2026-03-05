@@ -971,3 +971,9 @@ Changes: "Select an option" → "Choose one…" (removes generic bald phrasing);
 To https://github.com/doculetai/v6.git
    940aa77..e1707b5  main -> main
 [copy-audit] 2026-03-04 20:13:37 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 20:16:38 Scanning copy config coverage...
+[copy-audit] 2026-03-04 20:16:39 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 20:16:39 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 20:16:39 Auto-fixing copy violations (round 1 of max 8)...

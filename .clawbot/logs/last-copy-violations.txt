@@ -1,7 +1,7 @@
 
 
 === PLACEHOLDER / TODO STRINGS IN COPY CONFIG (write real copy — no TODO/TBD/Lorem) ===
-/Users/gm/v6/src/config/copy/primitives/form.ts:29:    selectPlaceholder: "Select an option",
-/Users/gm/v6/src/config/copy/primitives/form.ts:30:    searchPlaceholder: "Search by name, email, or reference number",
-/Users/gm/v6/src/config/copy/primitives/storybook.ts:56:    queryPlaceholder: "Search by application ID, student name, or case reference number",
-/Users/gm/v6/src/config/copy/primitives/ui.ts:9:    searchPlaceholder: "Search by name, reference number, or status",
+/Users/gm/v6/src/config/copy/primitives/form.ts:29:    selectPlaceholder: "Choose one…",
+/Users/gm/v6/src/config/copy/primitives/form.ts:30:    searchPlaceholder: "Search by name, email, or reference…",
+/Users/gm/v6/src/config/copy/primitives/storybook.ts:56:    queryPlaceholder: "Search by application ID, student name, or case reference…",
+/Users/gm/v6/src/config/copy/primitives/ui.ts:9:    searchPlaceholder: "Search by name, reference number, or status…",

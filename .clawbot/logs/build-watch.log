@@ -996,3 +996,6 @@ Typecheck passes clean (exit code 0). The error is already resolved. No commit n
 The typecheck is already clean — no errors remain. The `FormEvent` reference was likely removed in a previous eslint-fix pass. Nothing to commit.
 [build-watch] 2026-03-04 20:14:23 Auto-fix committed changes.
 Everything up-to-date
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 20:16:25 Running typecheck...

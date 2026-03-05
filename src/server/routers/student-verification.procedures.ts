@@ -9,6 +9,8 @@ import {
   verificationStatusValues,
 } from '@/db/queries/student-verification';
 import { callDojahKyc } from '@/lib/services/dojah';
+import { createPaystackRecipient } from '@/lib/paystack/create-recipient';
+import { updateBankRecipientCode } from '@/db/queries/update-bank-recipient';
 
 import { roleProcedure } from '../trpc';
 
@@ -240,6 +242,23 @@ export const verificationProcedures = {
           monoAccountId: verified.monoAccountId,
           bankName: verified.bankName,
           accountNumber: verified.accountNumber,
+        });
+
+        // Fire-and-forget: create Paystack recipient (non-blocking, failures logged to Sentry)
+        void createPaystackRecipient({
+          name: verified.bankName,
+          accountNumber: verified.accountNumber,
+          bankName: verified.bankName,
+        }).then(async (result) => {
+          if (result.success) {
+            await updateBankRecipientCode(ctx.db, verified.monoAccountId, result.recipientCode);
+          } else {
+            captureException(new Error(`Paystack recipient creation failed: ${result.error}`), {
+              tags: { domain: 'payments', operation: 'create-recipient' },
+            });
+          }
+        }).catch((err: unknown) => {
+          captureException(err, { tags: { domain: 'payments', operation: 'create-recipient' } });
         });
 
         return {
