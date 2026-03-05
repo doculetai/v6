@@ -13,6 +13,7 @@ import {
   sponsorProfiles,
   sponsorships,
 } from '@/db/schema';
+import { callDojahKyc } from '@/lib/services/dojah';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
@@ -377,6 +378,68 @@ export const sponsorRouter = createTRPCRouter({
           sponsorType: input.sponsorType,
           companyName: input.companyName ?? null,
           kycStatus: 'not_started',
+        });
+      }
+    }),
+
+  startDojahIdentityCheck: roleProcedure('sponsor')
+    .input(
+      z.object({
+        tier: z.union([z.literal(2), z.literal(3)]),
+        identityType: z.enum(['bvn', 'nin', 'passport']),
+        identityNumber: z.string().trim().min(6).max(32).regex(/^[a-zA-Z0-9]+$/),
+      }),
+    )
+    .output(
+      z.object({
+        referenceId: z.string(),
+        tier: z.union([z.literal(2), z.literal(3)]),
+        status: z.literal('pending'),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      let dojahReferenceId: string | undefined;
+      try {
+        dojahReferenceId = await callDojahKyc(input.identityType, input.identityNumber);
+
+        const [verificationRecord] = await ctx.db
+          .insert(kycVerifications)
+          .values({
+            userId: ctx.user.id,
+            provider: 'dojah',
+            status: 'pending',
+            tier: input.tier,
+            referenceId: dojahReferenceId,
+          })
+          .returning();
+
+        if (!verificationRecord) {
+          throw new Error('Failed to insert KYC verification record');
+        }
+
+        await ctx.db
+          .update(sponsorProfiles)
+          .set({ kycStatus: 'pending', updatedAt: new Date() })
+          .where(eq(sponsorProfiles.userId, ctx.user.id));
+
+        return { referenceId: verificationRecord.referenceId, tier: input.tier, status: 'pending' };
+      } catch (error) {
+        captureException(error, {
+          tags: {
+            router: 'sponsor',
+            procedure: 'startDojahIdentityCheck',
+            role: 'sponsor',
+            identityType: input.identityType,
+          },
+          extra: {
+            tier: input.tier,
+            dojahReferenceId: dojahReferenceId ?? 'not_yet_obtained',
+          },
+        });
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Unable to start identity verification.',
         });
       }
     }),
