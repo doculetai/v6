@@ -932,3 +932,9 @@ These strings weren't `TODO`/`TBD`/`Lorem` — the audit flagged them because th
 To https://github.com/doculetai/v6.git
    34e38ae..e04980d  main -> main
 [copy-audit] 2026-03-04 19:58:27 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 20:01:28 Scanning copy config coverage...
+[copy-audit] 2026-03-04 20:01:30 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 20:01:30 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 20:01:30 Auto-fixing copy violations (round 1 of max 8)...
