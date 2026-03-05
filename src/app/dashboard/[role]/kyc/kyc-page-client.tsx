@@ -1,8 +1,11 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertTriangle, CheckCircle2, Clock, XCircle } from 'lucide-react';
-import { useState, type FormEvent } from 'react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { z } from 'zod';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -23,14 +26,20 @@ type KycStatus = {
 
 type Copy = typeof sponsorCopy.kyc;
 
-type IdentityType = 'bvn' | 'nin' | 'passport';
-
 type KycPageClientProps = {
   kycStatus: KycStatus;
   copy: Copy;
 };
 
 type FeedbackState = { kind: 'success' | 'error'; message: string } | null;
+
+// ── Identity form schema ───────────────────────────────────────────────────────
+
+const identityFormSchema = z.object({
+  identityType: z.enum(['bvn', 'nin', 'passport']),
+  identityNumber: z.string().trim().min(6).max(32).regex(/^[a-zA-Z0-9]+$/),
+});
+type IdentityFormValues = z.infer<typeof identityFormSchema>;
 
 // ── Overall status banner ─────────────────────────────────────────────────────
 
@@ -74,8 +83,14 @@ type IdentityFormProps = {
 };
 
 function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityFormProps) {
-  const [identityType, setIdentityType] = useState<IdentityType>('bvn');
-  const [identityNumber, setIdentityNumber] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<IdentityFormValues>({
+    resolver: zodResolver(identityFormSchema),
+    defaultValues: { identityType: 'bvn', identityNumber: '' },
+  });
 
   const mutation = trpc.sponsor.startDojahIdentityCheck.useMutation({
     onSuccess: () => {
@@ -86,23 +101,19 @@ function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityForm
     },
   });
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    mutation.mutate({ tier, identityType, identityNumber });
-  };
+  const onSubmit = handleSubmit((values) => {
+    mutation.mutate({ tier, identityType: values.identityType, identityNumber: values.identityNumber });
+  });
 
   return (
-    <form className="mt-3 space-y-3" onSubmit={handleSubmit}>
+    <form className="mt-3 space-y-3" onSubmit={onSubmit}>
       <div className="space-y-1.5">
         <Label htmlFor={`identity-type-${tier}`} className="text-xs">
           {copy.form.identityTypeLabel}
         </Label>
         <select
           id={`identity-type-${tier}`}
-          value={identityType}
-          onChange={(event) => {
-            setIdentityType(event.target.value as IdentityType);
-          }}
+          {...register('identityType')}
           className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm text-foreground dark:bg-input/30"
         >
           <option value="bvn">{copy.identityTypes.bvn}</option>
@@ -117,26 +128,23 @@ function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityForm
         </Label>
         <Input
           id={`identity-number-${tier}`}
-          value={identityNumber}
-          onChange={(event) => {
-            setIdentityNumber(event.target.value);
-          }}
-          minLength={6}
-          maxLength={32}
-          required
-          className="h-9 text-sm"
+          {...register('identityNumber')}
+          className={cn('h-9 text-sm', errors.identityNumber && 'border-destructive')}
         />
+        {errors.identityNumber ? (
+          <p className="text-xs text-destructive">{errors.identityNumber.message}</p>
+        ) : null}
       </div>
 
       <div className="flex gap-2">
-        <Button type="submit" size="sm" disabled={mutation.isPending} className="min-h-9">
+        <Button type="submit" size="sm" disabled={isSubmitting || mutation.isPending} className="min-h-9">
           {copy.form.submitCta}
         </Button>
         <Button
           type="button"
           size="sm"
           variant="outline"
-          disabled={mutation.isPending}
+          disabled={isSubmitting || mutation.isPending}
           className="min-h-9"
           onClick={onCancel}
         >
