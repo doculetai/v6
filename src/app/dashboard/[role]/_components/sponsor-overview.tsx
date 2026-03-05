@@ -3,6 +3,13 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Grid,
+  PageHeader,
+  PageShell,
+  Section,
+  Stack,
+} from '@/components/layout/content-primitives';
 import { sponsorCopy } from '@/config/copy/sponsor';
 import { cn, formatNGN } from '@/lib/utils';
 import { api } from '@/trpc/server';
@@ -78,10 +85,10 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
               : copy.stats.nextDisbursement.noneSub
           }
         />
-      </div>
+        </Grid>
 
-      {recentStudents.length > 0 ? (
-        <div className="space-y-3">
+        {recentStudents.length > 0 ? (
+        <Stack gap="md" className="mt-6">
           <h2 className="text-sm font-semibold text-foreground">{copy.recentStudents.heading}</h2>
           <div className="space-y-2">
             {recentStudents.map((s) => (

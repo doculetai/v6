@@ -36,6 +36,7 @@ function createBankRecord(): BankAccountRecord {
     accountNumber: '0123456789',
     bankName: 'Zenith Bank',
     monoAccountId: 'mono_acc_12345',
+    paystackRecipientCode: null,
     linkedAt: new Date('2026-03-01T09:00:00.000Z'),
     createdAt: new Date('2026-03-01T09:00:00.000Z'),
     updatedAt: new Date('2026-03-01T09:00:00.000Z'),

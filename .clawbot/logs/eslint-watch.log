@@ -2683,3 +2683,44 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [eslint-watch] 2026-03-04 20:17:48 Linting 1 changed file(s)...
 [eslint-watch] 2026-03-04 20:18:11 ESLint auto-fixed some issues. Committing...
+[main c17b8d2] fix(lint): eslint --fix pass [eslint-watch]
+ Committer: GM <gm@GMs-MacBook-Pro.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 27 files changed, 696 insertions(+), 5 deletions(-)
+ create mode 100644 src/app/dashboard/[role]/actions/error.tsx
+ create mode 100644 src/app/dashboard/[role]/activity/error.tsx
+ create mode 100644 src/app/dashboard/[role]/analytics/error.tsx
+ create mode 100644 src/app/dashboard/[role]/api-keys/error.tsx
+ create mode 100644 src/app/dashboard/[role]/branding/error.tsx
+ create mode 100644 src/app/dashboard/[role]/commissions/error.tsx
+ create mode 100644 src/app/dashboard/[role]/disbursements/error.tsx
+ create mode 100644 src/app/dashboard/[role]/documents/error.tsx
+ create mode 100644 src/app/dashboard/[role]/error.tsx
+ create mode 100644 src/app/dashboard/[role]/kyc/error.tsx
+ create mode 100644 src/app/dashboard/[role]/onboarding/error.tsx
+ create mode 100644 src/app/dashboard/[role]/pipeline/error.tsx
+ create mode 100644 src/app/dashboard/[role]/risk/error.tsx
+ create mode 100644 src/app/dashboard/[role]/transactions/error.tsx
+ create mode 100644 src/app/dashboard/[role]/users/error.tsx
+ create mode 100644 src/app/dashboard/[role]/verify/error.tsx
+ create mode 100644 src/db/queries/update-bank-recipient.ts
+ create mode 100644 src/lib/paystack/bank-codes.ts
+ create mode 100644 src/lib/paystack/create-recipient.ts
+To https://github.com/doculetai/v6.git
+   bbb6739..c17b8d2  main -> main
+[eslint-watch] 2026-03-04 20:18:20 Lint clean after auto-fix.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[eslint-watch] 2026-03-04 20:20:55 Linting 20 changed file(s)...
+[eslint-watch] 2026-03-04 20:21:39 ESLint auto-fixed some issues. Committing...

@@ -977,3 +977,11 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 20:16:39 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 20:16:39 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 20:16:39 Auto-fixing copy violations (round 1 of max 8)...
+All 4 violations fixed and committed. The changes were minimal — the audit was flagging trailing `…` ellipses as placeholder markers in these three primitive files:
+
+- `form.ts`: `"Choose one…"` → `"Select an option"` and `"Search by name, email, or reference…"` → without trailing ellipsis
+- `storybook.ts`: `queryPlaceholder` ellipsis removed  
+- `ui.ts`: `searchPlaceholder` ellipsis removed
+To https://github.com/doculetai/v6.git
+   c17b8d2..dd9f8b8  main -> main
+[copy-audit] 2026-03-04 20:21:32 Copy fixes pushed to main.

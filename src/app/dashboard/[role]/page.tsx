@@ -5,6 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
+import { PageShell, Section } from '@/components/layout/content-primitives';
 import { dashboardOverviewCopy, dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
@@ -93,7 +94,8 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
             <Link href={roleCopy.ctaHref}>{roleCopy.ctaLabel}</Link>
           </Button>
         </CardContent>
-      </Card>
-    </section>
+        </Card>
+      </Section>
+    </PageShell>
   );
 }
