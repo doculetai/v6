@@ -3,6 +3,12 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Grid,
+  PageHeader,
+  PageShell,
+  Section,
+} from '@/components/layout/content-primitives';
 import { agentCopy } from '@/config/copy/agent';
 import { formatNGN } from '@/lib/utils';
 import { api } from '@/trpc/server';
@@ -63,9 +69,9 @@ export async function AgentOverview({ email, caller }: AgentOverviewProps) {
           sub={copy.stats.totalEarned.sub}
           accent={Boolean(overview?.totalEarnedKobo)}
         />
-      </div>
+        </Grid>
 
-      <Card className="border-border bg-card">
+        <Card className="border-border bg-card mt-6">
         <CardContent className="pt-5">
           <p className="text-sm text-muted-foreground">
             {overview?.totalAssignedStudents

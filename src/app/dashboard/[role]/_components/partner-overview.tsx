@@ -3,6 +3,12 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Grid,
+  PageHeader,
+  PageShell,
+  Section,
+} from '@/components/layout/content-primitives';
 import { partnerCopy } from '@/config/copy/partner';
 import { api } from '@/trpc/server';
 

@@ -1002,3 +1002,20 @@ error: Please commit or stash them.
 [build-watch] 2026-03-04 20:18:53 Found 1 TypeScript error(s).
 [build-watch] 2026-03-04 20:18:53 Errors written to: /Users/gm/v6/.clawbot/logs/last-build-errors.txt
 [build-watch] 2026-03-04 20:18:53 Auto-fixing (round 2 of max 10)...
+All the files were already auto-committed by the eslint-watch daemon (commits `891b01e` and `b6f8c69`). The typecheck is clean and all fixes are in git.
+
+**Summary of what was fixed:**
+
+1. `tests/fixtures/student-verification.ts` — added `paystackRecipientCode: null` to match the updated `bank_accounts` schema
+2. `src/app/dashboard/[role]/_components/sponsor-overview.tsx` — `</div>` → `</Grid>` and `</div>` → `</Stack>` (mismatched JSX closing tags)
+3. `src/app/dashboard/[role]/_components/student-overview.tsx` — `</Grid>`/`</Stack>` → `</div>`, and stray `</Section>`/`</PageShell>` → `</section>`
+4. `src/app/dashboard/[role]/page.tsx` — stray `</Section>`/`</PageShell>` removed, `</section>` used instead
+5. `overview-shared.tsx` — auto-fixed by the eslint-watch (linter corrected the JSX structure for `EmptyState` and `ErrorState`)
+
+The eslint-watch daemon picked up and committed the changes as they were saved. Typecheck passes cleanly.
+[build-watch] 2026-03-04 20:31:37 Auto-fix committed changes.
+Everything up-to-date
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 20:33:39 Running typecheck...
+[build-watch] 2026-03-04 20:34:27 Build clean. No errors found.

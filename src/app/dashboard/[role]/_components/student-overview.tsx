@@ -85,15 +85,13 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
   const prioritySteps = activeSteps.slice(0, 2);
 
   return (
-    <section className="mx-auto w-full max-w-5xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
-          Welcome back, {firstName}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">{copy.journeySubtitle}</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <PageShell width="wide">
+      <Section>
+        <PageHeader
+          title={`Welcome back, ${firstName}`}
+          description={copy.journeySubtitle}
+        />
+        <Grid cols={{ sm: 3 }} gap="md">
         <StatCard
           icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
           label={copy.stats.verification.label}
@@ -123,7 +121,7 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
           sub={bankName ?? (bankConnected ? '' : 'Required for disbursements')}
           accent={bankConnected}
         />
-      </div>
+        </Grid>
 
         <Card className="border-border bg-card dark:border-border dark:bg-card mt-6">
         <CardContent className="flex flex-col gap-3 pt-5 sm:flex-row sm:items-center sm:justify-between">
@@ -176,17 +174,17 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
         </CardContent>
       </Card>
 
-      {prioritySteps.length > 0 ? (
-        <div className="space-y-3">
+        {prioritySteps.length > 0 ? (
+        <Stack gap="md" className="mt-6">
           <h2 className="text-sm font-semibold text-foreground">{copy.nextSteps.heading}</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Grid cols={{ sm: 2 }} gap="md">
             {prioritySteps.map((key, i) => (
               <NextStepCard key={key} step={copy.nextSteps.items[key]} index={i} />
             ))}
-          </div>
-        </div>
+          </Grid>
+        </Stack>
       ) : (
-        <Card className="border-border bg-card dark:border-border dark:bg-card">
+        <Card className="border-border bg-card dark:border-border dark:bg-card mt-6">
           <CardContent className="flex items-center gap-3 pt-5">
             <CheckCircle2 className="size-5 text-primary" aria-hidden="true" />
             <p className="text-sm text-muted-foreground">
@@ -195,6 +193,7 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
           </CardContent>
         </Card>
       )}
-    </section>
+      </Section>
+    </PageShell>
   );
 }

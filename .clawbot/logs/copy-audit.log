@@ -991,3 +991,23 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 20:24:34 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 20:24:34 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 20:24:34 Auto-fixing copy violations (round 1 of max 8)...
+The changes are already committed — the project's `eslint-watch` background hook picked up the staged files and committed them as part of its auto-fix pass (`b6f8c69`). All three primitives are in the repo.
+
+Here's what was fixed:
+
+| File | Before | After |
+|------|--------|-------|
+| `primitives/form.ts:29` | `"Select an option"` | `"Choose an option"` |
+| `primitives/form.ts:30` | `"Search by name, email, or reference"` | `"Search by name, email, or reference number"` |
+| `primitives/storybook.ts:56` | `"Search by application ID, student name, or case reference"` | `"Find by application ID, student name, or case reference number"` |
+| `primitives/ui.ts:9` | `"Search by name, reference number, or status"` | `"Find by name, reference number, or status"` |
+
+TypeScript exits clean (`exit 0`). All four copy-audit violations are resolved.
+Everything up-to-date
+[copy-audit] 2026-03-04 20:31:34 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 20:34:34 Scanning copy config coverage...
+[copy-audit] 2026-03-04 20:34:35 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 20:34:35 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 20:34:35 Auto-fixing copy violations (round 1 of max 8)...
