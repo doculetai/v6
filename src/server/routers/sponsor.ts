@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { captureException } from '@sentry/nextjs';
-import { and, desc, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 import {
@@ -450,7 +450,7 @@ export const sponsorRouter = createTRPCRouter({
     .input(z.object({ disbursementId: z.string().uuid() }))
     .output(z.object({ status: z.literal('processing'), paystackReference: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      // 1. Load disbursement + verify it belongs to this sponsor
+      // 1. Load disbursement + verify ownership
       const [disbursement] = await ctx.db
         .select({
           id: disbursements.id,
@@ -472,14 +472,8 @@ export const sponsorRouter = createTRPCRouter({
       if (disbursement.sponsorship.sponsorId !== ctx.user.id) {
         throw new TRPCError({ code: 'FORBIDDEN', message: 'Not your disbursement.' });
       }
-      if (disbursement.status !== 'scheduled') {
-        throw new TRPCError({
-          code: 'PRECONDITION_FAILED',
-          message: 'Disbursement is not in scheduled state.',
-        });
-      }
 
-      // 2. Get student's most recent verified Paystack recipient code
+      // 2. Get student's Paystack recipient code
       const [bankAccount] = await ctx.db
         .select({ paystackRecipientCode: bankAccounts.paystackRecipientCode })
         .from(bankAccounts)
@@ -494,8 +488,22 @@ export const sponsorRouter = createTRPCRouter({
         });
       }
 
-      // 3. Initiate the Paystack transfer
-      const reference = `DOCULET-${input.disbursementId}-${Date.now()}`;
+      // 3. Atomically claim the disbursement — prevents double-spend on concurrent requests
+      const reference = `DOCULET-${input.disbursementId}`;
+      const [claimed] = await ctx.db
+        .update(disbursements)
+        .set({ status: 'processing', updatedAt: new Date() })
+        .where(and(eq(disbursements.id, input.disbursementId), eq(disbursements.status, 'scheduled')))
+        .returning({ id: disbursements.id });
+
+      if (!claimed) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'Disbursement is not in scheduled state.',
+        });
+      }
+
+      // 4. Call Paystack — idempotent reference means retries are safe
       const transfer = await initiatePaystackTransfer({
         amountKobo: disbursement.amountKobo,
         recipientCode: bankAccount.paystackRecipientCode,
@@ -503,6 +511,12 @@ export const sponsorRouter = createTRPCRouter({
       });
 
       if (!transfer.success) {
+        // Roll back the status so the sponsor can retry
+        await ctx.db
+          .update(disbursements)
+          .set({ status: 'scheduled', paystackReference: null, updatedAt: new Date() })
+          .where(eq(disbursements.id, input.disbursementId));
+
         captureException(new Error(`Paystack transfer failed: ${transfer.error}`), {
           tags: { domain: 'payments', disbursementId: input.disbursementId },
         });
@@ -512,15 +526,25 @@ export const sponsorRouter = createTRPCRouter({
         });
       }
 
-      // 4. Mark disbursement as processing with Paystack reference
-      await ctx.db
-        .update(disbursements)
-        .set({
-          status: 'processing',
-          paystackReference: transfer.paystackReference,
-          updatedAt: new Date(),
-        })
-        .where(eq(disbursements.id, input.disbursementId));
+      // 5. Persist paystackReference — Sentry alert if this fails (transfer already live)
+      try {
+        await ctx.db
+          .update(disbursements)
+          .set({ paystackReference: transfer.paystackReference, updatedAt: new Date() })
+          .where(eq(disbursements.id, input.disbursementId));
+      } catch (dbError) {
+        captureException(dbError, {
+          tags: { domain: 'payments', procedure: 'initiateDisbursement' },
+          extra: {
+            disbursementId: input.disbursementId,
+            paystackReference: transfer.paystackReference,
+            transferCode: transfer.transferCode,
+            note: 'Paystack transfer succeeded but DB update failed — REQUIRES MANUAL RECONCILIATION',
+          },
+        });
+        // Return success — the transfer IS live, Sentry will alert ops
+        return { status: 'processing', paystackReference: transfer.paystackReference };
+      }
 
       return { status: 'processing', paystackReference: transfer.paystackReference };
     }),

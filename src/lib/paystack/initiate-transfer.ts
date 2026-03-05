@@ -5,10 +5,10 @@ type InitiateTransferResult =
   | { success: false; error: string };
 
 const paystackTransferResponseSchema = z.object({
-  status: z.boolean().optional(),
+  status: z.boolean(),
   data: z
     .object({
-      transfer_code: z.string().optional(),
+      transfer_code: z.string(),
       reference: z.string().optional(),
     })
     .optional(),
