@@ -1,6 +1,6 @@
 import { createHash } from "crypto"
 
-import { and, eq, gte, ne } from "drizzle-orm"
+import { and, desc, eq, gte, ne } from "drizzle-orm"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -277,4 +277,16 @@ export async function terminateAllOtherSessions(
   }
 }
 
-// Drizzle doesn't have a built-in "not equal" for this - we need ne from drizzle-orm
+export async function getActiveSessions(userId: string): Promise<SessionRecord[]> {
+  try {
+    const { db, userSessions } = await getDB()
+    const rows = await db
+      .select()
+      .from(userSessions)
+      .where(eq(userSessions.userId, userId))
+      .orderBy(desc(userSessions.lastActiveAt))
+    return rows.map(toSessionRecord)
+  } catch {
+    return []
+  }
+}

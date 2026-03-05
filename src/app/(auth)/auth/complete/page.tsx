@@ -34,24 +34,25 @@ export default function AuthCompletePage() {
     };
   }, [router]);
 
-  if (error) {
-    return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
-        <p className="text-destructive">{error}</p>
-        <a
-          href={authCopy.routes.login}
-          className="text-primary hover:underline"
-        >
-          Return to sign in
-        </a>
-      </div>
-    );
-  }
-
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
-      <Loader2 className="size-8 animate-spin text-primary" aria-hidden />
-      <p className="text-muted-foreground">Finishing sign-in...</p>
+      <h1 className="sr-only">Completing sign-in</h1>
+      {error ? (
+        <>
+          <p className="text-destructive">{error}</p>
+          <a
+            href={authCopy.routes.login}
+            className="text-primary hover:underline"
+          >
+            Return to sign in
+          </a>
+        </>
+      ) : (
+        <>
+          <Loader2 className="size-8 animate-spin text-primary" aria-hidden />
+          <p className="text-muted-foreground">Finishing sign-in...</p>
+        </>
+      )}
     </div>
   );
 }
