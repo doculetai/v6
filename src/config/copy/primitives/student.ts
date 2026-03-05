@@ -12,7 +12,7 @@ export const studentPrimitives = {
     uploadCta: "Upload document",
   },
   schools: {
-    searchPlaceholder: "Search by university, program, or city…",
+    searchHint: "Search by university, program, or city…",
     emptyTitle: "No programs found",
   },
 } as const

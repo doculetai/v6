@@ -27,7 +27,7 @@ interface FilterBarProps {
 
 function FilterBar({
   query,
-  queryPlaceholder = primitivesCopy.storybook.filterBar.queryPlaceholder,
+  queryPlaceholder = primitivesCopy.storybook.filterBar.queryHint,
   chips,
   activeChip,
   onQueryChange,
