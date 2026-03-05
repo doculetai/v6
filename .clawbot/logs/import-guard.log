@@ -1950,3 +1950,8 @@ error: Please commit or stash them.
 0 violation category(ies).
 [import-guard] 2026-03-04 20:35:54 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
 [import-guard] 2026-03-04 20:35:54 Auto-fixing import violations (round 1 of max 8)...
+All 19 violation slots are empty (`hits=''`). No actual import boundary violations were provided — there's nothing to fix.
+
+If you meant to include specific violation details (file paths, line numbers, rule IDs), please re-run the import guard and share the populated output.
+Everything up-to-date
+[import-guard] 2026-03-04 20:37:43 Import fixes pushed to main.

@@ -31,17 +31,13 @@ export async function PartnerOverview({ email, caller }: PartnerOverviewProps) {
   const copy = partnerCopy.dashboard.overview;
 
   return (
-    <section className="mx-auto w-full max-w-5xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
-          Welcome back, {firstName}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {copy.subtitle(overview?.organizationName ?? null)}
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <PageShell width="wide">
+      <Section>
+        <PageHeader
+          title={`Welcome back, ${firstName}`}
+          description={copy.subtitle(overview?.organizationName ?? null)}
+        />
+        <Grid cols={{ sm: 3 }} gap="md">
         <StatCard
           icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
           label={copy.stats.totalStudents.label}
@@ -63,7 +59,7 @@ export async function PartnerOverview({ email, caller }: PartnerOverviewProps) {
           sub={copy.stats.activeApiKeys.sub}
           accent={Boolean(overview?.activeApiKeys)}
         />
-      </div>
+      </Grid>
 
       <Card className="border-border bg-card">
         <CardContent className="pt-5">
@@ -73,11 +69,12 @@ export async function PartnerOverview({ email, caller }: PartnerOverviewProps) {
               : copy.summary.empty}
           </p>
         </CardContent>
-      </Card>
+        </Card>
 
-      <Button asChild className="min-h-11 w-full sm:w-auto">
-        <Link href="/dashboard/partner/students">{copy.cta}</Link>
-      </Button>
-    </section>
+        <Button asChild className="min-h-11 w-full sm:w-auto mt-6">
+          <Link href="/dashboard/partner/students">{copy.cta}</Link>
+        </Button>
+      </Section>
+    </PageShell>
   );
 }

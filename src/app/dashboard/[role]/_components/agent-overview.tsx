@@ -32,15 +32,13 @@ export async function AgentOverview({ email, caller }: AgentOverviewProps) {
   const copy = agentCopy.dashboard.overview;
 
   return (
-    <section className="mx-auto w-full max-w-5xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
-          Welcome back, {firstName}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">{copy.subtitle}</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <PageShell width="wide">
+      <Section>
+        <PageHeader
+          title={`Welcome back, ${firstName}`}
+          description={copy.subtitle}
+        />
+        <Grid cols={{ sm: 2, lg: 4 }} gap="md">
         <StatCard
           icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
           label={copy.stats.assignedStudents.label}
@@ -69,9 +67,9 @@ export async function AgentOverview({ email, caller }: AgentOverviewProps) {
           sub={copy.stats.totalEarned.sub}
           accent={Boolean(overview?.totalEarnedKobo)}
         />
-        </Grid>
+      </Grid>
 
-        <Card className="border-border bg-card mt-6">
+      <Card className="border-border bg-card">
         <CardContent className="pt-5">
           <p className="text-sm text-muted-foreground">
             {overview?.totalAssignedStudents
@@ -81,11 +79,12 @@ export async function AgentOverview({ email, caller }: AgentOverviewProps) {
               : copy.caseload.empty}
           </p>
         </CardContent>
-      </Card>
+        </Card>
 
-      <Button asChild className="min-h-11 w-full sm:w-auto">
-        <Link href="/dashboard/agent/students">{copy.cta}</Link>
-      </Button>
-    </section>
+        <Button asChild className="min-h-11 w-full sm:w-auto mt-6">
+          <Link href="/dashboard/agent/students">{copy.cta}</Link>
+        </Button>
+      </Section>
+    </PageShell>
   );
 }

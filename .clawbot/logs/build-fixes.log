@@ -53,3 +53,8 @@ src/app/dashboard/[role]/branding/branding-page-client.tsx(148,54): error TS2304
 2026-03-04 20:18:53 Round 2: 1 errors
 2026-03-04 20:18:53 tests/fixtures/student-verification.ts(32,3): error TS2741: Property 'paystackRecipientCode' is missing in type '{ id: string; userId: string; provider: "mono"; accountNumber: string; bankName: string; monoAccountId: string; linkedAt: Date; createdAt: Date; updatedAt: Date; }' but required in type '{ id: string; createdAt: Date; updatedAt: Date; userId: string; provider: "mono"; accountNumber: string; bankName: string; monoAccountId: string; paystackRecipientCode: string | null; linkedAt: Date; }'.
 2026-03-04 20:18:53 ---
+2026-03-04 20:37:13 Round 1: 3 errors
+2026-03-04 20:37:13 src/app/dashboard/[role]/_components/agent-overview.tsx(70,9): error TS17002: Expected corresponding JSX closing tag for 'Grid'.
+src/app/dashboard/[role]/_components/partner-overview.tsx(62,9): error TS17002: Expected corresponding JSX closing tag for 'Grid'.
+src/app/dashboard/[role]/_components/sponsor-overview.tsx(117,11): error TS17002: Expected corresponding JSX closing tag for 'Stack'.
+2026-03-04 20:37:13 ---

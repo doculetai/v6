@@ -85,8 +85,8 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
         />
       </Grid>
 
-      {recentStudents.length > 0 ? (
-        <div className="space-y-3">
+        {recentStudents.length > 0 ? (
+        <Stack gap="md" className="mt-6">
           <h2 className="text-sm font-semibold text-foreground">{copy.recentStudents.heading}</h2>
           <Stack gap="sm">
             {recentStudents.map((s) => (
@@ -114,7 +114,7 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
               </Card>
             ))}
           </Stack>
-        </div>
+        </Stack>
       ) : (
         <Card className="border-border bg-card mt-6">
           <CardContent className="pt-5">

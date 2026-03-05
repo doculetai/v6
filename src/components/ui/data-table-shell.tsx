@@ -22,7 +22,7 @@ function DataTableShell<Row extends { id: string }>({
   columns,
   rows,
   loading = false,
-  emptyLabel = primitivesCopy.storybook.dataTableShell.empty,
+  emptyLabel = primitivesCopy.empty.noRecords,
   className,
 }: DataTableShellProps<Row>) {
   if (loading) {

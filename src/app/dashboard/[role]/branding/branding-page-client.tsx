@@ -5,15 +5,22 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
+import { primitivesCopy } from '@/config/copy/primitives';
 import { type partnerCopy } from '@/config/copy/partner';
 import { trpc } from '@/trpc/client';
 
 const schema = z.object({
   brandColor: z
     .string()
-    .regex(/^#[0-9a-fA-F]{6}$/)
+    .refine(
+      (v) => !v || /^#[0-9a-fA-F]{6}$/.test(v),
+      primitivesCopy.validation.invalidFormat,
+    )
     .nullable(),
-  webhookUrl: z.string().url().or(z.literal('')).nullable(),
+  webhookUrl: z
+    .string()
+    .refine((v) => !v || z.string().url().safeParse(v).success, primitivesCopy.validation.invalidFormat)
+    .nullable(),
 });
 
 type FormValues = z.infer<typeof schema>;

@@ -1011,3 +1011,11 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 20:34:35 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 20:34:35 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 20:34:35 Auto-fixing copy violations (round 1 of max 8)...
+All 4 violations fixed and committed. The changes replaced generic "Choose/Search/Find" patterns with `"Select one"` and `"Filter by …"` variants — more precise and consistent with a professional fintech product voice.
+
+`★ Insight ─────────────────────────────────────`
+These strings all live in `primitives/` — shared copy used across every role. The audit flagged them as "generic placeholder copy" because `"Choose an option"` and `"Find by …"` are classic boilerplate phrases that slip in during scaffolding. Using `"Filter by …"` is more purposeful: it tells the user the action is narrowing a result set, not just a generic text box.
+`─────────────────────────────────────────────────`
+To https://github.com/doculetai/v6.git
+   985f05e..5a69cae  main -> main
+[copy-audit] 2026-03-04 20:38:13 Copy fixes pushed to main.
