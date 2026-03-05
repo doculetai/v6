@@ -952,3 +952,9 @@ These weren't TODO/TBD placeholders — they were UI `placeholder` attribute val
 To https://github.com/doculetai/v6.git
    0a5a3c4..ca79948  main -> main
 [copy-audit] 2026-03-04 20:06:25 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 20:09:25 Scanning copy config coverage...
+[copy-audit] 2026-03-04 20:09:25 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 20:09:25 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 20:09:25 Auto-fixing copy violations (round 1 of max 8)...
