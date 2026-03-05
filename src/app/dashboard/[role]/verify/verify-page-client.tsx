@@ -189,6 +189,19 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
         </CardContent>
       </Card>
 
+      {statusQuery.data.monoConnection.isConnected &&
+      statusQuery.data.monoConnection.daysSinceLinked !== null &&
+      statusQuery.data.monoConnection.daysSinceLinked > 75 ? (
+        <Card className="border-amber-500/40 bg-amber-500/10 dark:border-amber-500/30 dark:bg-amber-500/10">
+          <CardContent className="flex items-center gap-3 py-4">
+            <AlertTriangle className="size-5 shrink-0 text-amber-600 dark:text-amber-500" aria-hidden="true" />
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+              {copy.bankExpiringBanner}
+            </p>
+          </CardContent>
+        </Card>
+      ) : null}
+
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="border-border bg-card/95 dark:border-border dark:bg-card/90">
           <CardHeader className="space-y-3">
@@ -298,6 +311,10 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
           </CardContent>
         </Card>
       </div>
+
+      {(statusQuery.data.fundingType === 'sponsor' || statusQuery.data.fundingType === 'corporate') ? (
+        <StudentSponsorInviteCard />
+      ) : null}
 
       {feedback ? (
         <Card

@@ -15,6 +15,7 @@ import { updateBankRecipientCode } from '@/db/queries/update-bank-recipient';
 import { roleProcedure } from '../trpc';
 
 const verificationStatusSchema = z.object({
+  fundingType: z.enum(['self', 'sponsor', 'corporate']).nullable(),
   completionPercent: z.number().int().min(0).max(100),
   overallStatus: z.enum(verificationStatusValues),
   tiers: z.array(
@@ -77,6 +78,7 @@ function toVerificationStatusOutput(
   const latestTier = toDojahTier(tier3OrTier2?.tier);
 
   return {
+    fundingType: snapshot.profile.fundingType,
     completionPercent: snapshot.progress.completionPercent,
     overallStatus: snapshot.progress.overallStatus,
     tiers: snapshot.progress.tiers,
@@ -86,13 +88,22 @@ function toVerificationStatusOutput(
       referenceId: tier3OrTier2?.referenceId ?? null,
       updatedAt: tier3OrTier2?.updatedAt ?? null,
     },
-    monoConnection: {
-      isConnected: snapshot.latestBankAccount !== null,
-      bankName: snapshot.latestBankAccount?.bankName ?? null,
-      accountNumberMasked: snapshot.bankAccountMasked,
-      monoAccountId: snapshot.latestBankAccount?.monoAccountId ?? null,
-      linkedAt: snapshot.latestBankAccount?.linkedAt ?? null,
-    },
+    monoConnection: (() => {
+      const linkedAt = snapshot.latestBankAccount?.linkedAt ?? null;
+      const daysSinceLinked =
+        linkedAt !== null
+          ? Math.floor((Date.now() - linkedAt.getTime()) / (24 * 60 * 60 * 1000))
+          : null;
+
+      return {
+        isConnected: snapshot.latestBankAccount !== null,
+        bankName: snapshot.latestBankAccount?.bankName ?? null,
+        accountNumberMasked: snapshot.bankAccountMasked,
+        monoAccountId: snapshot.latestBankAccount?.monoAccountId ?? null,
+        linkedAt,
+        daysSinceLinked,
+      };
+    })(),
   };
 }
 

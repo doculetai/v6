@@ -65,6 +65,7 @@ export const studentCopy = {
         passport: "Passport",
       },
     },
+    bankExpiringBanner: "Your bank connection is expiring. Reconnect.",
     bankSection: {
       title: "Connect your bank",
       description:
@@ -125,6 +126,7 @@ export const studentCopy = {
       submitIdle: "Upload document",
       submitUploading: "Uploading document...",
     },
+    reuploadCta: "Re-upload",
     list: {
       title: "Submitted documents",
       description: "Track review decisions and provide updates quickly when feedback is requested.",
@@ -250,6 +252,7 @@ export const studentCopy = {
       pending: "Invitation sent — awaiting response",
       accepted: "Accepted — sponsor completing verification",
       declined: "Invitation declined",
+      cancelled: "Invitation cancelled",
     },
     cancel: "Cancel invitation",
   },
