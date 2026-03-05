@@ -10,6 +10,13 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  Grid,
+  PageHeader,
+  PageShell,
+  Section,
+  Stack,
+} from '@/components/layout/content-primitives';
 import { studentHomeCopy } from '@/config/copy/dashboard-shell';
 import { studentDocumentTypeValues } from '@/lib/documents';
 import { api } from '@/trpc/server';
@@ -116,9 +123,9 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
           sub={bankName ?? (bankConnected ? '' : 'Required for disbursements')}
           accent={bankConnected}
         />
-      </div>
+        </Grid>
 
-      <Card className="border-border bg-card dark:border-border dark:bg-card">
+        <Card className="border-border bg-card dark:border-border dark:bg-card mt-6">
         <CardContent className="flex flex-col gap-3 pt-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
@@ -176,8 +183,8 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
             {prioritySteps.map((key, i) => (
               <NextStepCard key={key} step={copy.nextSteps.items[key]} index={i} />
             ))}
-          </div>
-        </div>
+          </Grid>
+        </Stack>
       ) : (
         <Card className="border-border bg-card dark:border-border dark:bg-card">
           <CardContent className="flex items-center gap-3 pt-5">
@@ -188,6 +195,7 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
           </CardContent>
         </Card>
       )}
-    </section>
+      </Section>
+    </PageShell>
   );
 }

@@ -39,15 +39,13 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
   const copy = sponsorCopy.dashboard.overview;
 
   return (
-    <section className="mx-auto w-full max-w-5xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground md:text-3xl">
-          Welcome back, {firstName}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">{copy.subtitle}</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <PageShell width="wide">
+      <Section>
+        <PageHeader
+          title={`Welcome back, ${firstName}`}
+          description={copy.subtitle}
+        />
+        <Grid cols={{ sm: 2, lg: 4 }} gap="md">
         <StatCard
           icon={<Banknote className="size-4.5" aria-hidden="true" />}
           label={copy.stats.totalCommitted.label}
@@ -85,12 +83,12 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
               : copy.stats.nextDisbursement.noneSub
           }
         />
-        </Grid>
+      </Grid>
 
-        {recentStudents.length > 0 ? (
-        <Stack gap="md" className="mt-6">
+      {recentStudents.length > 0 ? (
+        <div className="space-y-3">
           <h2 className="text-sm font-semibold text-foreground">{copy.recentStudents.heading}</h2>
-          <div className="space-y-2">
+          <Stack gap="sm">
             {recentStudents.map((s) => (
               <Card key={s.id} className="border-border bg-card">
                 <CardContent className="flex items-center justify-between pt-4">
@@ -115,19 +113,20 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
                 </CardContent>
               </Card>
             ))}
-          </div>
+          </Stack>
         </div>
       ) : (
-        <Card className="border-border bg-card">
+        <Card className="border-border bg-card mt-6">
           <CardContent className="pt-5">
             <p className="text-sm text-muted-foreground">{copy.recentStudents.empty}</p>
           </CardContent>
         </Card>
       )}
 
-      <Button asChild className="min-h-11 w-full sm:w-auto">
-        <Link href="/dashboard/sponsor/students">{copy.cta}</Link>
-      </Button>
-    </section>
+        <Button asChild className="min-h-11 w-full sm:w-auto mt-6">
+          <Link href="/dashboard/sponsor/students">{copy.cta}</Link>
+        </Button>
+      </Section>
+    </PageShell>
   );
 }

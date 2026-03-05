@@ -95,7 +95,6 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
           </Button>
         </CardContent>
         </Card>
-      </Section>
-    </PageShell>
+    </section>
   );
 }

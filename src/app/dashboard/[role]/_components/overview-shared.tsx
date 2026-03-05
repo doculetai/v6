@@ -3,6 +3,11 @@ import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
+import {
+  Container,
+  PageShell,
+  Section,
+} from '@/components/layout/content-primitives';
 import { dashboardOverviewCopy, dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import type { DashboardRole } from '@/config/roles';
 import { cn } from '@/lib/utils';
@@ -74,10 +79,12 @@ export function EmptyState({ role }: { role: DashboardRole }) {
   const roleCopy = dashboardOverviewCopy[role];
 
   return (
-    <section className="mx-auto w-full max-w-5xl">
-      <Card className="border-border bg-card dark:border-border dark:bg-card">
-        <CardHeader className="space-y-3">
-          <UserRoundSearch className="size-5 text-muted-foreground dark:text-muted-foreground" />
+    <PageShell width="wide">
+      <Section>
+        <Container>
+          <Card className="border-border bg-card dark:border-border dark:bg-card">
+            <CardHeader className="space-y-3">
+              <UserRoundSearch className="size-5 text-muted-foreground dark:text-muted-foreground" />
           <h1 className="leading-none font-semibold text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
             {dashboardShellCopy.overview.emptyTitle}
           </h1>
@@ -89,9 +96,11 @@ export function EmptyState({ role }: { role: DashboardRole }) {
           <Button asChild className="min-h-11 w-full sm:w-auto">
             <Link href={roleCopy.ctaHref}>{roleCopy.ctaLabel}</Link>
           </Button>
-        </CardContent>
-      </Card>
-    </section>
+          </CardContent>
+          </Card>
+        </Container>
+      </Section>
+    </PageShell>
   );
 }
 
@@ -99,10 +108,12 @@ export function ErrorState({ role }: { role: DashboardRole }) {
   const roleCopy = dashboardOverviewCopy[role];
 
   return (
-    <section className="mx-auto w-full max-w-5xl">
-      <Card className="border-border bg-card dark:border-border dark:bg-card">
-        <CardHeader className="space-y-3">
-          <AlertTriangle className="size-5 text-muted-foreground dark:text-muted-foreground" />
+    <PageShell width="wide">
+      <Section>
+        <Container>
+          <Card className="border-border bg-card dark:border-border dark:bg-card">
+            <CardHeader className="space-y-3">
+              <AlertTriangle className="size-5 text-muted-foreground dark:text-muted-foreground" />
           <h1 className="leading-none font-semibold text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
             {dashboardShellCopy.overview.errorTitle}
           </h1>
@@ -114,8 +125,10 @@ export function ErrorState({ role }: { role: DashboardRole }) {
           <Button asChild className="min-h-11 w-full sm:w-auto">
             <Link href={roleCopy.ctaHref}>{roleCopy.ctaLabel}</Link>
           </Button>
-        </CardContent>
-      </Card>
-    </section>
+          </CardContent>
+          </Card>
+        </Container>
+      </Section>
+    </PageShell>
   );
 }
