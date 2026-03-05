@@ -1768,3 +1768,13 @@ error: Please commit or stash them.
 0 violation category(ies).
 [import-guard] 2026-03-04 19:07:42 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
 [import-guard] 2026-03-04 19:07:42 Auto-fixing import violations (round 1 of max 8)...
+The violations list shows all empty hits (`hits=''`) — the import guard found **no actual violations** to fix. There's nothing to do here.
+Everything up-to-date
+[import-guard] 2026-03-04 19:11:21 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 19:14:36 Scanning import boundaries...
+[import-guard] 2026-03-04 19:14:55 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 19:14:55 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 19:14:55 Auto-fixing import violations (round 1 of max 8)...

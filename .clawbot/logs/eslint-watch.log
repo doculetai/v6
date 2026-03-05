@@ -2324,3 +2324,27 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [eslint-watch] 2026-03-04 19:08:03 Linting 3 changed file(s)...
 [eslint-watch] 2026-03-04 19:09:25 ESLint auto-fixed some issues. Committing...
+[main 9c8be5c] fix(lint): eslint --fix pass [eslint-watch]
+ Committer: GM <gm@GMs-MacBook-Pro.local>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 9 files changed, 174 insertions(+), 19 deletions(-)
+ create mode 100644 src/app/api/webhooks/dojah/route.ts
+ create mode 100644 src/db/queries/dojah-webhook.ts
+To https://github.com/doculetai/v6.git
+   34987af..9c8be5c  main -> main
+[eslint-watch] 2026-03-04 19:10:04 Lint clean after auto-fix.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[eslint-watch] 2026-03-04 19:12:42 Linting 4 changed file(s)...
+[eslint-watch] 2026-03-04 19:14:44 ESLint auto-fixed some issues. Committing...
