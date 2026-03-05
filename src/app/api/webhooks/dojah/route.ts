@@ -1,5 +1,5 @@
 import { captureException } from '@sentry/nextjs';
-import { createHmac } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -10,7 +10,8 @@ function verifyDojahSignature(rawBody: string, signature: string): boolean {
   const secret = process.env.DOJAH_WEBHOOK_SECRET;
   if (!secret) return false;
   const expected = createHmac('sha512', secret).update(rawBody).digest('hex');
-  return expected === signature;
+  if (expected.length !== signature.length) return false;
+  return timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
 }
 
 const dojahPayloadSchema = z.object({
@@ -35,7 +36,11 @@ export async function POST(req: NextRequest) {
   try {
     const parsed = dojahPayloadSchema.safeParse(JSON.parse(rawBody));
     if (!parsed.success) {
-      return NextResponse.json({ received: true }); // ignore malformed events
+      captureException(new Error('Dojah webhook schema mismatch'), {
+        extra: { issues: parsed.error.issues },
+        tags: { webhook: 'dojah' },
+      });
+      return NextResponse.json({ received: true });
     }
     payload = parsed.data;
   } catch {
