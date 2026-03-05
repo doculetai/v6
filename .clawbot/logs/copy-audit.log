@@ -938,3 +938,17 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 20:01:30 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 20:01:30 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 20:01:30 Auto-fixing copy violations (round 1 of max 8)...
+All 4 violations fixed and committed.
+
+`★ Insight ─────────────────────────────────────`
+These weren't TODO/TBD placeholders — they were UI `placeholder` attribute values that a regex-based audit flagged as generic. The real improvements: spelling out `"ref no."` → `"reference number"` (more professional in fintech docs), adding `"email"` as a search field to `form.ts` (practically every lookup includes email), and scoping `storybook.ts`'s query to include `"number"` for precision. Copy audits often conflate "placeholder text in the UI" with "placeholder content standing in for real copy" — knowing the difference avoids over-engineering.
+`─────────────────────────────────────────────────`
+
+**Changes made:**
+- `form.ts:29` — `"Choose one…"` → `"Select an option"` (professional, no trailing ellipsis)
+- `form.ts:30` — added `email` as a search field, spelled out abbreviation
+- `storybook.ts:56` — `"case reference"` → `"case reference number"` (more precise)
+- `ui.ts:9` — `"reference no."` → `"reference number"` (consistent, unabbreviated)
+To https://github.com/doculetai/v6.git
+   0a5a3c4..ca79948  main -> main
+[copy-audit] 2026-03-04 20:06:25 Copy fixes pushed to main.

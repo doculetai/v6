@@ -1003,3 +1003,7 @@ error: additionally, your index contains uncommitted changes.
 error: Please commit or stash them.
 [a11y-watch] 2026-03-04 20:00:54 Scanning for accessibility violations...
 [a11y-watch] 2026-03-04 20:00:55 All accessibility checks passed. No violations found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[a11y-watch] 2026-03-04 20:04:57 Scanning for accessibility violations...
+[a11y-watch] 2026-03-04 20:05:03 All accessibility checks passed. No violations found.

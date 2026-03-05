@@ -11,6 +11,7 @@
  * - auth    Session management
  * - sponsor Disbursement, earnings, commitment timeline
  * - storybook Demo / Storybook copy
+ * - student, university, admin, agent, partner  Persona scaffolds (add as needed)
  */
 
 import { uiPrimitives } from "./ui"
@@ -45,3 +46,8 @@ export { commonPrimitives } from "./common"
 export { authPrimitives } from "./auth"
 export { sponsorPrimitives } from "./sponsor"
 export { storybookPrimitives } from "./storybook"
+export { studentPrimitives } from "./student"
+export { universityPrimitives } from "./university"
+export { adminPrimitives } from "./admin"
+export { agentPrimitives } from "./agent"
+export { partnerPrimitives } from "./partner"
