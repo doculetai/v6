@@ -1815,3 +1815,14 @@ Nothing to do here. The codebase is already clean with respect to the import bou
 To https://github.com/doculetai/v6.git
    27a6eac..af691ee  main -> main
 [import-guard] 2026-03-04 19:29:37 Import fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[import-guard] 2026-03-04 19:32:37 Scanning import boundaries...
+[import-guard] 2026-03-04 19:32:40 Found 0
+0 violation category(ies).
+[import-guard] 2026-03-04 19:32:40 Details: /Users/gm/v6/.clawbot/logs/last-import-violations.txt
+[import-guard] 2026-03-04 19:32:40 Auto-fixing import violations (round 1 of max 8)...
+The log confirms it: **0 violation categories found**, all 19 entries are `hits=''`. The import boundaries are already clean — no fixes needed.
+To https://github.com/doculetai/v6.git
+   68aad42..dd8672d  main -> main
+[import-guard] 2026-03-04 19:34:28 Import fixes pushed to main.
