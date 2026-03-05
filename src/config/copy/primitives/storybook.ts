@@ -53,7 +53,7 @@ export const storybookPrimitives = {
     empty: "No commitment history",
   },
   filterBar: {
-    queryPlaceholder: "Filter by application ID, student name, or case reference",
+    queryPlaceholder: "Search by application ID, student name, or case reference",
     tabAriaLabel: "Filter options",
   },
 } as const
