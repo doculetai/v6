@@ -897,3 +897,9 @@ The 2 TypeScript errors flagged (`bankName` property in `student-verification.pr
 To https://github.com/doculetai/v6.git
    ad5c796..55e8b14  main -> main
 [copy-audit] 2026-03-04 19:41:08 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 19:44:11 Scanning copy config coverage...
+[copy-audit] 2026-03-04 19:44:12 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 19:44:12 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 19:44:12 Auto-fixing copy violations (round 1 of max 8)...

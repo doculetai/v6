@@ -43,8 +43,6 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
   const [identityNumber, setIdentityNumber] = useState('');
 
   const [monoAccountId, setMonoAccountId] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
 
   const [feedback, setFeedback] = useState<FeedbackState>(null);
 
@@ -72,8 +70,6 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
         message: copy.feedback.monoConnected,
       });
       setMonoAccountId('');
-      setBankName('');
-      setAccountNumber('');
       await utils.student.getVerificationStatus.invalidate();
     },
     onError: () => {
@@ -113,8 +109,6 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
 
     monoMutation.mutate({
       monoAccountId,
-      bankName,
-      accountNumber,
     });
   };
 
@@ -284,33 +278,6 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
                   onChange={(event) => {
                     setMonoAccountId(event.target.value);
                   }}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="bank-name">{copy.bankSection.monoForm.bankNameLabel}</Label>
-                <Input
-                  id="bank-name"
-                  value={bankName}
-                  onChange={(event) => {
-                    setBankName(event.target.value);
-                  }}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="account-number">{copy.bankSection.monoForm.accountNumberLabel}</Label>
-                <Input
-                  id="account-number"
-                  value={accountNumber}
-                  onChange={(event) => {
-                    setAccountNumber(event.target.value);
-                  }}
-                  inputMode="numeric"
-                  minLength={10}
-                  maxLength={10}
                   required
                 />
               </div>
