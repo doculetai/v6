@@ -123,7 +123,7 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
           sub={bankName ?? (bankConnected ? '' : 'Required for disbursements')}
           accent={bankConnected}
         />
-        </Grid>
+      </div>
 
         <Card className="border-border bg-card dark:border-border dark:bg-card mt-6">
         <CardContent className="flex flex-col gap-3 pt-5 sm:flex-row sm:items-center sm:justify-between">
@@ -183,8 +183,8 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
             {prioritySteps.map((key, i) => (
               <NextStepCard key={key} step={copy.nextSteps.items[key]} index={i} />
             ))}
-          </Grid>
-        </Stack>
+          </div>
+        </div>
       ) : (
         <Card className="border-border bg-card dark:border-border dark:bg-card">
           <CardContent className="flex items-center gap-3 pt-5">
@@ -195,7 +195,6 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
           </CardContent>
         </Card>
       )}
-      </Section>
-    </PageShell>
+    </section>
   );
 }
