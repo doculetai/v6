@@ -53,8 +53,6 @@ const startDojahIdentityCheckOutputSchema = z.object({
 
 const connectMonoBankAccountInputSchema = z.object({
   monoAccountId: z.string().trim().min(4).max(128),
-  bankName: z.string().trim().min(2).max(120),
-  accountNumber: z.string().trim().regex(/^\d{10}$/),
 });
 
 const connectMonoBankAccountOutputSchema = z.object({
@@ -151,6 +149,70 @@ async function callDojahKyc(
   return referenceId;
 }
 
+const monoAuthResponseSchema = z.object({
+  id: z.string().optional(),
+  message: z.string().optional(),
+});
+
+const monoAccountResponseSchema = z.object({
+  account: z
+    .object({
+      name: z.string().optional(),
+      accountNumber: z.string().optional(),
+      institution: z.object({ name: z.string().optional() }).optional(),
+    })
+    .optional(),
+  message: z.string().optional(),
+});
+
+type MonoAccountDetails = {
+  monoAccountId: string;
+  accountNumber: string;
+  bankName: string;
+};
+
+async function exchangeMonoCodeAndVerify(monoCode: string): Promise<MonoAccountDetails> {
+  const secretKey = process.env.MONO_SECRET_KEY;
+  if (!secretKey) throw new Error('Missing MONO_SECRET_KEY');
+
+  // Step 1: exchange code for account ID
+  const authRes = await fetch('https://api.withmono.com/v2/accounts/auth', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'mono-sec-key': secretKey,
+    },
+    body: JSON.stringify({ code: monoCode }),
+  });
+
+  const authParsed = monoAuthResponseSchema.safeParse(await authRes.json());
+  if (!authParsed.success || !authRes.ok || !authParsed.data.id) {
+    const msg = authParsed.success ? authParsed.data.message : undefined;
+    throw new Error(msg ?? 'Mono auth exchange failed');
+  }
+
+  const accountId = authParsed.data.id;
+
+  // Step 2: get account details
+  const accountRes = await fetch(`https://api.withmono.com/v2/accounts/${accountId}`, {
+    headers: { 'mono-sec-key': secretKey },
+  });
+
+  const accountParsed = monoAccountResponseSchema.safeParse(await accountRes.json());
+  if (!accountParsed.success || !accountRes.ok || !accountParsed.data.account) {
+    const msg = accountParsed.success ? accountParsed.data.message : undefined;
+    throw new Error(msg ?? 'Mono account fetch failed');
+  }
+
+  const account = accountParsed.data.account;
+
+  return {
+    monoAccountId: accountId,
+    accountNumber: account.accountNumber ?? '',
+    bankName: account.institution?.name ?? account.name ?? 'Unknown Bank',
+  };
+}
+
 export const verificationProcedures = {
   getVerificationStatus: roleProcedure('student')
     .output(verificationStatusSchema)
@@ -217,11 +279,14 @@ export const verificationProcedures = {
     .output(connectMonoBankAccountOutputSchema)
     .mutation(async ({ ctx, input }) => {
       try {
+        // input.monoAccountId is the code from the Mono widget
+        const verified = await exchangeMonoCodeAndVerify(input.monoAccountId);
+
         const linkedAccount = await connectMonoAccount(ctx.db, {
           userId: ctx.user.id,
-          monoAccountId: input.monoAccountId,
-          bankName: input.bankName,
-          accountNumber: input.accountNumber,
+          monoAccountId: verified.monoAccountId,
+          bankName: verified.bankName,
+          accountNumber: verified.accountNumber,
         });
 
         return {
@@ -237,7 +302,7 @@ export const verificationProcedures = {
 
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Unable to connect bank account.',
+          message: 'Unable to connect bank account. Please try again.',
         });
       }
     }),

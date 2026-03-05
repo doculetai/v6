@@ -2433,3 +2433,20 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [eslint-watch] 2026-03-04 19:37:08 Linting 5 changed file(s)...
 [eslint-watch] 2026-03-04 19:37:26 ESLint auto-fixed some issues. Committing...
+fatal: Unable to create '/Users/gm/v6/.git/index.lock': File exists.
+
+Another git process seems to be running in this repository, e.g.
+an editor opened by 'git commit'. Please make sure all processes
+are terminated then try again. If it still fails, a git process
+may have crashed in this repository earlier:
+remove the file manually to continue.
+Everything up-to-date
+[eslint-watch] 2026-03-04 19:37:29 Lint clean after auto-fix.
+error: cannot pull with rebase: You have unstaged changes.
+error: additionally, your index contains uncommitted changes.
+error: Please commit or stash them.
+[eslint-watch] 2026-03-04 19:40:01 No .ts/.tsx files changed since last check. Skipping.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[eslint-watch] 2026-03-04 19:42:33 Linting 9 changed file(s)...
+[eslint-watch] 2026-03-04 19:43:02 ESLint auto-fixed some issues. Committing...

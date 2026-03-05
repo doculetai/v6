@@ -884,3 +884,16 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 19:36:23 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 19:36:23 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 19:36:23 Auto-fixing copy violations (round 1 of max 8)...
+All 4 violations fixed:
+
+| File | Before | After |
+|---|---|---|
+| `primitives/form.ts` | `"Select an option…"` | `"Choose one"` |
+| `primitives/form.ts` | `"Search…"` | `"Search records"` |
+| `primitives/storybook.ts` | `"Search applications, students, or case references…"` | `"Search by application ID, student name, or case reference"` |
+| `primitives/ui.ts` | `"Search by name, reference, or status…"` | `"Search by name, reference, or status"` |
+
+The 2 TypeScript errors flagged (`bankName` property in `student-verification.procedures.ts`) are pre-existing and unrelated to copy config — they'll need a separate fix targeting the Mono account schema mismatch.
+To https://github.com/doculetai/v6.git
+   ad5c796..55e8b14  main -> main
+[copy-audit] 2026-03-04 19:41:08 Copy fixes pushed to main.
