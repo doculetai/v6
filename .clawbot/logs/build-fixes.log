@@ -47,3 +47,6 @@ src/app/dashboard/[role]/branding/branding-page-client.tsx(148,54): error TS2304
 2026-03-04 19:59:35 Round 1: 1 errors
 2026-03-04 19:59:35 src/app/dashboard/[role]/kyc/kyc-page-client.tsx(189,30): error TS2339: Property 'comingSoon' does not exist on type '{ readonly title: "Verify your identity"; readonly subtitle: "We verify all sponsors to protect students and ensure regulatory compliance."; readonly tiers: readonly [{ readonly tierHeading: "Tier 1"; readonly label: "Basic"; readonly description: "Email and phone number confirmation."; }, { ...; }, { ...; }]; ... 6...'.
 2026-03-04 19:59:35 ---
+2026-03-04 20:11:26 Round 1: 1 errors
+2026-03-04 20:11:26 src/app/dashboard/[role]/kyc/kyc-page-client.tsx(92,32): error TS2304: Cannot find name 'FormEvent'.
+2026-03-04 20:11:26 ---

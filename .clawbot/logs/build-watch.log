@@ -981,3 +981,18 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [build-watch] 2026-03-04 20:07:47 Running typecheck...
 [build-watch] 2026-03-04 20:08:16 Build clean. No errors found.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[build-watch] 2026-03-04 20:10:17 Running typecheck...
+[build-watch] 2026-03-04 20:11:26 Found 1 TypeScript error(s).
+[build-watch] 2026-03-04 20:11:26 Errors written to: /Users/gm/v6/.clawbot/logs/last-build-errors.txt
+[build-watch] 2026-03-04 20:11:26 Auto-fixing (round 1 of max 10)...
+Typecheck passes clean (exit code 0). The error is already resolved. No commit needed since there's nothing to change.
+
+`★ Insight ─────────────────────────────────────`
+`FormEvent` is a React type — it's typically imported via `import type { FormEvent } from 'react'`. Since `react-hook-form`'s `handleSubmit` wraps the native event, you often don't need `FormEvent` directly. The fact that it disappeared from the file suggests it was removed as part of a prior lint/fix pass (matching the recent `fix(lint): eslint --fix pass [eslint-watch]` commits in the git log).
+`─────────────────────────────────────────────────`
+
+The typecheck is already clean — no errors remain. The `FormEvent` reference was likely removed in a previous eslint-fix pass. Nothing to commit.
+[build-watch] 2026-03-04 20:14:23 Auto-fix committed changes.
+Everything up-to-date

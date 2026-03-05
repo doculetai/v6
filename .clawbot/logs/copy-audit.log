@@ -958,3 +958,16 @@ error: Please commit or stash them.
 [copy-audit] 2026-03-04 20:09:25 Found 1 violation category(ies).
 [copy-audit] 2026-03-04 20:09:25 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
 [copy-audit] 2026-03-04 20:09:25 Auto-fixing copy violations (round 1 of max 8)...
+All 4 violations fixed:
+
+| File | Before | After |
+|------|--------|-------|
+| `primitives/form.ts:29` | `"Select an option"` | `"Choose one…"` |
+| `primitives/form.ts:30` | `"Search by name, email, or reference number"` | `"Search by name, email, or reference…"` |
+| `primitives/storybook.ts:56` | `"Search by application ID, student name, or case reference number"` | `"Search by application ID, student name, or case reference…"` |
+| `primitives/ui.ts:9` | `"Search by name, reference number, or status"` | `"Search by name, reference number, or status…"` |
+
+Changes: "Select an option" → "Choose one…" (removes generic bald phrasing); trailing `…` added to all search placeholders (professional fintech convention indicating the field is interactive/expandable). TypeScript exits clean, committed.
+To https://github.com/doculetai/v6.git
+   940aa77..e1707b5  main -> main
+[copy-audit] 2026-03-04 20:13:37 Copy fixes pushed to main.
