@@ -878,3 +878,9 @@ TypeScript exits clean.
 To https://github.com/doculetai/v6.git
    1d251e1..68aad42  main -> main
 [copy-audit] 2026-03-04 19:33:22 Copy fixes pushed to main.
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+[copy-audit] 2026-03-04 19:36:22 Scanning copy config coverage...
+[copy-audit] 2026-03-04 19:36:23 Found 1 violation category(ies).
+[copy-audit] 2026-03-04 19:36:23 Details: /Users/gm/v6/.clawbot/logs/last-copy-violations.txt
+[copy-audit] 2026-03-04 19:36:23 Auto-fixing copy violations (round 1 of max 8)...
