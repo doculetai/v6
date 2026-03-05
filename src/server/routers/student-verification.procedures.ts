@@ -106,10 +106,18 @@ async function callDojahKyc(
     throw new Error('Missing DOJAH_APP_ID or DOJAH_PRIVATE_KEY');
   }
 
-  const url =
+  const base =
     identityType === 'passport'
-      ? `https://api.dojah.io/api/v1/kyc/passport?passport=${identityNumber}&country=NG`
-      : `https://api.dojah.io/api/v1/kyc/${identityType}?${identityType}=${identityNumber}`;
+      ? 'https://api.dojah.io/api/v1/kyc/passport'
+      : `https://api.dojah.io/api/v1/kyc/${identityType}`;
+  const params = new URLSearchParams();
+  if (identityType === 'passport') {
+    params.set('passport', identityNumber);
+    params.set('country', 'NG');
+  } else {
+    params.set(identityType, identityNumber);
+  }
+  const url = `${base}?${params.toString()}`;
 
   const response = await fetch(url, {
     method: 'GET',
@@ -120,16 +128,22 @@ async function callDojahKyc(
     },
   });
 
-  const body = (await response.json()) as {
-    entity?: { reference_id?: string };
-    error?: string;
-  };
+  const dojahResponseSchema = z.object({
+    entity: z.object({ reference_id: z.string() }).optional(),
+    error: z.string().optional(),
+  });
 
-  if (!response.ok || body.error) {
-    throw new Error(body.error ?? `Dojah API error: ${response.status}`);
+  const parsed = dojahResponseSchema.safeParse(await response.json());
+  if (!parsed.success || !response.ok) {
+    const errorMsg = parsed.success ? parsed.data.error : undefined;
+    throw new Error(errorMsg ?? `Dojah API error: ${response.status}`);
   }
 
-  const referenceId = body.entity?.reference_id;
+  if (parsed.data.error) {
+    throw new Error(parsed.data.error);
+  }
+
+  const referenceId = parsed.data.entity?.reference_id;
   if (!referenceId) {
     throw new Error('Dojah returned no reference_id');
   }
@@ -166,19 +180,29 @@ export const verificationProcedures = {
     .input(startDojahIdentityCheckInputSchema)
     .output(startDojahIdentityCheckOutputSchema)
     .mutation(async ({ ctx, input }) => {
+      let dojahReferenceId: string | undefined;
       try {
-        const referenceId = await callDojahKyc(input.identityType, input.identityNumber);
+        dojahReferenceId = await callDojahKyc(input.identityType, input.identityNumber);
         const record = await startDojahIdentityCheck(ctx.db, {
           userId: ctx.user.id,
           tier: input.tier,
-          referenceId,
+          referenceId: dojahReferenceId,
         });
 
         return { referenceId: record.referenceId, tier: input.tier, status: 'pending' };
       } catch (error) {
         captureException(error, {
-          tags: { router: 'student', procedure: 'startDojahIdentityCheck', role: 'student' },
-          extra: { tier: input.tier, identityType: input.identityType },
+          tags: {
+            router: 'student',
+            procedure: 'startDojahIdentityCheck',
+            role: 'student',
+            identityType: input.identityType,
+          },
+          extra: {
+            tier: input.tier,
+            // Include dojahReferenceId so ops can manually recover if DB write failed after Dojah succeeded
+            dojahReferenceId: dojahReferenceId ?? 'not_yet_obtained',
+          },
         });
 
         throw new TRPCError({

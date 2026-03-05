@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { dashboardRoles } from '@/config/roles';
+import { dashboardRoles, isDashboardRole } from '@/config/roles';
 import { profiles } from '@/db/schema';
 
 import { createTRPCRouter, protectedProcedure } from '../trpc';
@@ -35,6 +35,21 @@ export const studentRouter = createTRPCRouter({
           target: profiles.userId,
           set: { role: input.role, updatedAt: new Date() },
         });
+    }),
+
+  ensureProfile: protectedProcedure
+    .output(z.object({ created: z.boolean() }))
+    .mutation(async ({ ctx }) => {
+      const existing = await ctx.db.query.profiles.findFirst({
+        where: (table, { eq }) => eq(table.userId, ctx.user.id),
+      });
+      if (existing) return { created: false };
+
+      const metaRole = ctx.user.user_metadata?.role;
+      const role = typeof metaRole === 'string' && isDashboardRole(metaRole) ? metaRole : 'student';
+
+      await ctx.db.insert(profiles).values({ userId: ctx.user.id, role });
+      return { created: true };
     }),
 
   getCurrentProfile: protectedProcedure

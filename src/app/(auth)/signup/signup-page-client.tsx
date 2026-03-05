@@ -62,6 +62,7 @@ export function SignupPageClient() {
     const { data, error } = await supabaseBrowserClient.auth.signUp({
       email: values.email,
       password: values.password,
+      options: { data: { role: values.role } },
     });
 
     if (error) {

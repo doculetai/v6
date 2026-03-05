@@ -54,6 +54,7 @@ export function LoginPageClient() {
     }
 
     try {
+      await browserTrpcClient.student.ensureProfile.mutate();
       const profile = await browserTrpcClient.student.getCurrentProfile.query();
       router.push(`/dashboard/${profile.role}`);
     } catch {
