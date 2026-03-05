@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+tests/e2e/.auth/
+tests/e2e/test-results/
 
 # next.js
 /.next/
@@ -35,6 +37,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# git worktrees
+.worktrees/
 
 # typescript
 *.tsbuildinfo
