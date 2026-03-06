@@ -200,6 +200,7 @@ export const studentCopy = {
       submitUploading: "Uploading document...",
       dropzoneLabel: "Drag and drop your file, or",
       dropzoneBrowse: "browse",
+      selectedFileChangeHint: "— click to change",
     },
     reuploadCta: "Re-upload",
     list: {

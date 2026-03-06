@@ -135,7 +135,7 @@ export function StudentDocumentUploadForm({
                 <div className="space-y-0.5">
                   <p className="text-sm font-medium text-foreground">{selectedFile.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {`${(selectedFile.size / 1024 / 1024).toFixed(2)} MB — click to change`}
+                    {`${(selectedFile.size / 1024 / 1024).toFixed(2)} MB ${copy.upload.selectedFileChangeHint}`}
                   </p>
                 </div>
               ) : (
