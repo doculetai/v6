@@ -242,6 +242,68 @@ export const studentCopy = {
     },
   },
 
+  phoneSheet: {
+    title: 'Confirm your number',
+    description: 'We need your phone number to complete your identity profile. You will receive a one-time code.',
+    phonePlaceholder: '+234 800 000 0000',
+    phoneLabel: 'Phone number',
+    sendCodeCta: 'Send code',
+    otpLabel: 'Verification code',
+    otpPlaceholder: '_ _ _ _ _ _',
+    confirmCta: 'Confirm',
+    confirmingCta: 'Confirming...',
+    sendingCta: 'Sending...',
+    successMessage: 'Phone number confirmed.',
+    errorSend: 'Unable to send the code. Check your number and try again.',
+    errorVerify: 'Code did not match. Please try again.',
+  },
+
+  kycSheet: {
+    title: 'Verify your identity',
+    description: 'Enter your BVN or NIN for a secure identity check. This information is never stored by Doculet.',
+    identityTypeLabel: 'Identity type',
+    identityNumberLabel: 'Identity number',
+    identityTypes: {
+      bvn: 'BVN — Bank Verification Number',
+      nin: 'NIN — National Identification Number',
+      passport: 'International Passport',
+    },
+    submitCta: 'Start check',
+    submittingCta: 'Checking...',
+    successMessage: 'Identity check submitted. We will update your status shortly.',
+    errorGeneric: 'Identity check failed. Check your number and try again.',
+    failureGuidance: 'The number did not match. Enter your name exactly as it appears on your BVN or NIN registration.',
+    manualFallbackCta: 'Upload your ID instead',
+    manualFallbackHref: '/dashboard/student/documents',
+  },
+
+  bankVerification: {
+    sectionTitle: 'Bank verification',
+    notVerifiedDescription: 'Connect your bank account or upload a recent statement to confirm your balance.',
+    monoConnectCta: 'Connect your bank account',
+    monoConnectDescription: 'Secure real-time connection. Your login credentials are never stored.',
+    orDivider: 'or',
+    statementUploadLabel: 'Upload a bank statement',
+    statementUploadHint: 'PDF or image, 6 months or less, maximum 8 MB.',
+    status: {
+      verified: 'Verified',
+      pendingReview: 'Statement under review',
+      notVerified: 'Not verified',
+    },
+    connectedBank: '{bankName} (****{last4})',
+  },
+
+  ocrCard: {
+    title: 'Document submitted',
+    submittedLabel: 'Submitted for review',
+    fieldLabels: {
+      accountHolder: 'Account holder',
+      balance: 'Balance',
+      dateRange: 'Statement period',
+    },
+    dismissCta: 'Dismiss',
+  },
+
   proof: {
     title: "Proof certificate",
     subtitle: "Track the four trust checks that unlock your tamper-evident certificate.",
