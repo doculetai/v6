@@ -2,13 +2,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   GraduationCap,
-  LoaderCircle,
-  School,
+  CircleNotch,
+  Buildings,
   ShieldCheck,
-  Sparkles,
-  TriangleAlert,
-  WalletCards,
-} from 'lucide-react';
+  Sparkle,
+  Warning,
+  Wallet,
+  CheckCircle,
+} from '@phosphor-icons/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -17,9 +18,12 @@ import { z } from 'zod';
 import { FundingTypeOption } from '@/components/student/FundingTypeOption';
 import { OnboardingHero, OnboardingLoadingState } from '@/components/student/OnboardingShell';
 import { OnboardingStateCard } from '@/components/student/OnboardingStateCard';
+import { Container, PageShell, Stack } from '@/components/layout/content-primitives';
+import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { studentCopy } from '@/config/copy/student';
 import type { RouterOutputs } from '@/trpc/client';
 import { trpc } from '@/trpc/client';
@@ -132,49 +136,58 @@ export function OnboardingPageClient() {
   }
   if (onboardingQuery.isError) {
     return (
-      <section className="mx-auto w-full max-w-5xl">
+      <PageShell width="wide">
         <OnboardingStateCard
-          icon={TriangleAlert}
+          icon={Warning}
           title={onboardingCopy.error.title}
           description={onboardingCopy.error.description}
           actionLabel={onboardingCopy.error.retryCta}
           onAction={() => onboardingQuery.refetch()}
         />
-      </section>
+      </PageShell>
     );
   }
   if (!onboardingData || onboardingData.schools.length === 0) {
     return (
-      <section className="mx-auto w-full max-w-5xl">
+      <PageShell width="wide">
         <OnboardingStateCard
-          icon={School}
+          icon={Buildings}
           title={onboardingCopy.empty.title}
           description={onboardingCopy.empty.description}
           actionLabel={onboardingCopy.empty.cta}
           onAction={() => router.push('/dashboard/student')}
         />
-      </section>
+      </PageShell>
     );
   }
   return (
-    <section className="mx-auto w-full max-w-5xl space-y-6">
+    <PageShell width="wide">
+      <Stack gap="md">
+      <PageHeader
+        title={onboardingCopy.title}
+        description={onboardingCopy.subtitle}
+        breadcrumbs={[
+          { label: 'Overview', href: '/dashboard/student' },
+          { label: 'Application Setup' },
+        ]}
+      />
       <OnboardingHero currentStep={currentStep} stepLabels={stepLabels} />
       {currentStep === 1 ? (
-        <Card className="border-border bg-card dark:border-border dark:bg-card">
+        <Card className="border-border bg-card">
           <CardHeader className="space-y-3">
-            <Sparkles className="size-5 text-primary dark:text-primary" aria-hidden="true" />
-            <CardTitle className="text-2xl text-card-foreground dark:text-card-foreground md:text-4xl">
+            <Sparkle className="size-5 text-primary" weight="duotone" aria-hidden="true" />
+            <CardTitle className="text-2xl text-card-foreground md:text-4xl">
               {onboardingCopy.steps.welcome.title}
             </CardTitle>
-            <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
+            <CardDescription className="text-sm text-muted-foreground md:text-base">
               {onboardingCopy.steps.welcome.description}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
             <ul className="space-y-3">
               {onboardingCopy.steps.welcome.highlights.map((highlight) => (
-                <li key={highlight} className="flex items-start gap-2 text-sm text-foreground dark:text-foreground">
-                  <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary dark:text-primary" />
+                <li key={highlight} className="flex items-start gap-2 text-sm text-foreground">
+                  <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" weight="duotone" />
                   <span>{highlight}</span>
                 </li>
               ))}
@@ -186,13 +199,13 @@ export function OnboardingPageClient() {
         </Card>
       ) : null}
       {currentStep === 2 ? (
-        <Card className="border-border bg-card dark:border-border dark:bg-card">
+        <Card className="border-border bg-card">
           <CardHeader className="space-y-3">
-            <GraduationCap className="size-5 text-primary dark:text-primary" aria-hidden="true" />
-            <CardTitle className="text-2xl text-card-foreground dark:text-card-foreground md:text-4xl">
+            <GraduationCap className="size-5 text-primary" weight="duotone" aria-hidden="true" />
+            <CardTitle className="text-2xl text-card-foreground md:text-4xl">
               {onboardingCopy.steps.schoolProgram.title}
             </CardTitle>
-            <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
+            <CardDescription className="text-sm text-muted-foreground md:text-base">
               {onboardingCopy.steps.schoolProgram.description}
             </CardDescription>
           </CardHeader>
@@ -205,57 +218,67 @@ export function OnboardingPageClient() {
             >
               <div className="space-y-2">
                 <Label htmlFor="schoolId">{onboardingCopy.steps.schoolProgram.schoolLabel}</Label>
-                <select
-                  id="schoolId"
-                  className="h-11 min-h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground dark:border-input dark:bg-background dark:text-foreground"
-                  {...schoolProgramForm.register('schoolId', {
-                    onChange: () => schoolProgramForm.setValue('programId', '', { shouldValidate: true }),
-                  })}
+                <Select
+                  value={schoolProgramForm.watch('schoolId')}
+                  onValueChange={(value) => {
+                    schoolProgramForm.setValue('schoolId', value, { shouldValidate: true });
+                    schoolProgramForm.setValue('programId', '', { shouldValidate: true });
+                  }}
                 >
-                  <option value="">{onboardingCopy.steps.schoolProgram.schoolPlaceholder}</option>
-                  {onboardingData.schools.map((school) => (
-                    <option key={school.id} value={school.id}>
-                      {school.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger id="schoolId" className="h-11">
+                    <SelectValue placeholder={onboardingCopy.steps.schoolProgram.schoolPlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {onboardingData.schools.map((school) => (
+                      <SelectItem key={school.id} value={school.id}>
+                        {school.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 {schoolProgramForm.formState.errors.schoolId ? (
-                  <p className="text-sm text-destructive dark:text-destructive">
+                  <p className="text-sm text-destructive">
                     {schoolProgramForm.formState.errors.schoolId.message}
                   </p>
                 ) : null}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="programId">{onboardingCopy.steps.schoolProgram.programLabel}</Label>
-                <select
-                  id="programId"
-                  className="h-11 min-h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground dark:border-input dark:bg-background dark:text-foreground"
-                  {...schoolProgramForm.register('programId')}
+                <Select
+                  value={schoolProgramForm.watch('programId')}
+                  onValueChange={(value) => {
+                    schoolProgramForm.setValue('programId', value, { shouldValidate: true });
+                  }}
+                  disabled={!selectedSchool || selectedSchool.programs.length === 0}
                 >
-                  <option value="">{onboardingCopy.steps.schoolProgram.programPlaceholder}</option>
-                  {(selectedSchool?.programs ?? []).map((program) => (
-                    <option key={program.id} value={program.id}>
-                      {program.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger id="programId" className="h-11">
+                    <SelectValue placeholder={onboardingCopy.steps.schoolProgram.programPlaceholder} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(selectedSchool?.programs ?? []).map((program) => (
+                      <SelectItem key={program.id} value={program.id}>
+                        {program.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 {schoolProgramForm.formState.errors.programId ? (
-                  <p className="text-sm text-destructive dark:text-destructive">
+                  <p className="text-sm text-destructive">
                     {schoolProgramForm.formState.errors.programId.message}
                   </p>
                 ) : null}
               </div>
               {selectedSchool && selectedSchool.programs.length === 0 ? (
-                <div className="rounded-xl border border-border bg-background p-4 dark:border-border dark:bg-background">
-                  <p className="text-sm font-medium text-foreground dark:text-foreground">
+                <div className="rounded-xl border border-border bg-background p-4">
+                  <p className="text-sm font-medium text-foreground">
                     {onboardingCopy.steps.schoolProgram.programEmptyTitle}
                   </p>
-                  <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     {onboardingCopy.steps.schoolProgram.programEmptyDescription}
                   </p>
                 </div>
               ) : null}
-              {schoolError ? <p className="text-sm text-destructive dark:text-destructive">{schoolError}</p> : null}
+              {schoolError ? <p className="text-sm text-destructive">{schoolError}</p> : null}
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button type="button" variant="outline" className="min-h-11 w-full sm:w-auto" onClick={() => setManualStep(1)}>
                   {onboardingCopy.navigation.backCta}
@@ -263,7 +286,7 @@ export function OnboardingPageClient() {
                 <Button type="submit" className="min-h-11 w-full sm:w-auto" disabled={saveSchoolProgram.isPending}>
                   {saveSchoolProgram.isPending ? (
                     <span className="inline-flex items-center gap-2">
-                      <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+                      <CircleNotch className="size-5 animate-spin" weight="duotone" aria-hidden="true" />
                       {onboardingCopy.steps.schoolProgram.savingCta}
                     </span>
                   ) : (
@@ -276,13 +299,13 @@ export function OnboardingPageClient() {
         </Card>
       ) : null}
       {currentStep === 3 ? (
-        <Card className="border-border bg-card dark:border-border dark:bg-card">
+        <Card className="border-border bg-card">
           <CardHeader className="space-y-3">
-            <WalletCards className="size-5 text-primary dark:text-primary" aria-hidden="true" />
-            <CardTitle className="text-2xl text-card-foreground dark:text-card-foreground md:text-4xl">
+            <Wallet className="size-5 text-primary" weight="duotone" aria-hidden="true" />
+            <CardTitle className="text-2xl text-card-foreground md:text-4xl">
               {onboardingCopy.steps.fundingType.title}
             </CardTitle>
-            <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
+            <CardDescription className="text-sm text-muted-foreground md:text-base">
               {onboardingCopy.steps.fundingType.description}
             </CardDescription>
           </CardHeader>
@@ -307,12 +330,12 @@ export function OnboardingPageClient() {
                   ))}
                 </div>
                 {fundingTypeForm.formState.errors.fundingType ? (
-                  <p className="text-sm text-destructive dark:text-destructive">
+                  <p className="text-sm text-destructive">
                     {fundingTypeForm.formState.errors.fundingType.message}
                   </p>
                 ) : null}
               </div>
-              {fundingError ? <p className="text-sm text-destructive dark:text-destructive">{fundingError}</p> : null}
+              {fundingError ? <p className="text-sm text-destructive">{fundingError}</p> : null}
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button type="button" variant="outline" className="min-h-11 w-full sm:w-auto" onClick={() => setManualStep(2)}>
                   {onboardingCopy.navigation.backCta}
@@ -320,7 +343,7 @@ export function OnboardingPageClient() {
                 <Button type="submit" className="min-h-11 w-full sm:w-auto" disabled={saveFundingType.isPending}>
                   {saveFundingType.isPending ? (
                     <span className="inline-flex items-center gap-2">
-                      <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+                      <CircleNotch className="size-5 animate-spin" weight="duotone" aria-hidden="true" />
                       {onboardingCopy.steps.fundingType.savingCta}
                     </span>
                   ) : (
@@ -333,36 +356,53 @@ export function OnboardingPageClient() {
         </Card>
       ) : null}
       {currentStep >= 4 ? (
-        <Card className="border-border bg-card dark:border-border dark:bg-card">
+        <Card className="border-border bg-card">
           <CardHeader className="space-y-3">
-            <ShieldCheck className="size-5 text-primary dark:text-primary" aria-hidden="true" />
-            <CardTitle className="text-2xl text-card-foreground dark:text-card-foreground md:text-4xl">
+            <ShieldCheck className="size-5 text-primary" weight="duotone" aria-hidden="true" />
+            <CardTitle className="text-2xl text-card-foreground md:text-4xl">
               {onboardingData.onboardingComplete ? onboardingCopy.steps.action.successTitle : onboardingCopy.steps.action.title}
             </CardTitle>
-            <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
+            <CardDescription className="text-sm text-muted-foreground md:text-base">
               {onboardingData.onboardingComplete
                 ? onboardingCopy.steps.action.successDescription
                 : onboardingCopy.steps.action.description}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            <div className="rounded-xl border border-border bg-background p-4 dark:border-border dark:bg-background">
-              <p className="mb-3 text-sm font-medium text-foreground dark:text-foreground">
+            <div className="rounded-xl border border-border bg-background p-4">
+              <p className="mb-3 text-sm font-medium text-foreground">
                 {onboardingCopy.steps.action.checklistTitle}
               </p>
               <dl className="space-y-2 text-sm">
-                <div className="flex justify-between gap-3"><dt className="text-muted-foreground dark:text-muted-foreground">{onboardingCopy.steps.action.summary.school}</dt><dd className="text-right text-foreground dark:text-foreground">{persistedSchool?.name ?? onboardingCopy.steps.action.summary.missingValue}</dd></div>
-                <div className="flex justify-between gap-3"><dt className="text-muted-foreground dark:text-muted-foreground">{onboardingCopy.steps.action.summary.program}</dt><dd className="text-right text-foreground dark:text-foreground">{persistedProgram?.name ?? onboardingCopy.steps.action.summary.missingValue}</dd></div>
-                <div className="flex justify-between gap-3"><dt className="text-muted-foreground dark:text-muted-foreground">{onboardingCopy.steps.action.summary.fundingType}</dt><dd className="text-right text-foreground dark:text-foreground">{persistedFundingTitle}</dd></div>
-                <div className="flex justify-between gap-3"><dt className="text-muted-foreground dark:text-muted-foreground">{onboardingCopy.steps.action.summary.tuition}</dt><dd className="text-right text-foreground dark:text-foreground">{persistedProgram ? formatTuition(persistedProgram.tuitionAmount, persistedProgram.currency) : onboardingCopy.steps.action.summary.missingValue}</dd></div>
-                <div className="flex justify-between gap-3"><dt className="text-muted-foreground dark:text-muted-foreground">{onboardingCopy.steps.action.summary.duration}</dt><dd className="text-right text-foreground dark:text-foreground">{persistedProgram ? `${persistedProgram.durationMonths} ${onboardingCopy.steps.action.summary.monthsSuffix}` : onboardingCopy.steps.action.summary.missingValue}</dd></div>
+                <div className="flex justify-between gap-3"><dt className="text-muted-foreground">{onboardingCopy.steps.action.summary.school}</dt><dd className="text-right text-foreground">{persistedSchool?.name ?? onboardingCopy.steps.action.summary.missingValue}</dd></div>
+                <div className="flex justify-between gap-3"><dt className="text-muted-foreground">{onboardingCopy.steps.action.summary.program}</dt><dd className="text-right text-foreground">{persistedProgram?.name ?? onboardingCopy.steps.action.summary.missingValue}</dd></div>
+                <div className="flex justify-between gap-3"><dt className="text-muted-foreground">{onboardingCopy.steps.action.summary.fundingType}</dt><dd className="text-right text-foreground">{persistedFundingTitle}</dd></div>
+                <div className="flex justify-between gap-3"><dt className="text-muted-foreground">{onboardingCopy.steps.action.summary.tuition}</dt><dd className="text-right text-foreground">{persistedProgram ? formatTuition(persistedProgram.tuitionAmount, persistedProgram.currency) : onboardingCopy.steps.action.summary.missingValue}</dd></div>
+                <div className="flex justify-between gap-3"><dt className="text-muted-foreground">{onboardingCopy.steps.action.summary.duration}</dt><dd className="text-right text-foreground">{persistedProgram ? `${persistedProgram.durationMonths} ${onboardingCopy.steps.action.summary.monthsSuffix}` : onboardingCopy.steps.action.summary.missingValue}</dd></div>
               </dl>
             </div>
-            {completeError ? <p className="text-sm text-destructive dark:text-destructive">{completeError}</p> : null}
+            {completeError ? <p className="text-sm text-destructive">{completeError}</p> : null}
             {onboardingData.onboardingComplete ? (
-              <Button asChild className="min-h-11 w-full sm:w-auto">
-                <Link href="/dashboard/student">{onboardingCopy.steps.action.openDashboardCta}</Link>
-              </Button>
+              <div className="flex flex-col items-start gap-4">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="size-7 shrink-0 text-primary" weight="duotone" aria-hidden="true" />
+                  <p className="text-base font-semibold text-foreground">
+                    {onboardingCopy.steps.action.successTitle}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Button asChild className="min-h-11 w-full sm:w-auto">
+                    <Link href="/dashboard/student/verify">
+                      {onboardingCopy.steps.action.nextStepCta}
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="min-h-11 w-full sm:w-auto">
+                    <Link href="/dashboard/student">
+                      {onboardingCopy.steps.action.overviewCta}
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             ) : (
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button type="button" variant="outline" className="min-h-11 w-full sm:w-auto" onClick={() => setManualStep(3)}>
@@ -371,7 +411,7 @@ export function OnboardingPageClient() {
                 <Button type="button" className="min-h-11 w-full sm:w-auto" onClick={() => completeOnboarding.mutate()} disabled={completeOnboarding.isPending}>
                   {completeOnboarding.isPending ? (
                     <span className="inline-flex items-center gap-2">
-                      <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
+                      <CircleNotch className="size-5 animate-spin" weight="duotone" aria-hidden="true" />
                       {onboardingCopy.steps.action.completingCta}
                     </span>
                   ) : (
@@ -383,6 +423,7 @@ export function OnboardingPageClient() {
           </CardContent>
         </Card>
       ) : null}
-    </section>
+      </Stack>
+    </PageShell>
   );
 }
