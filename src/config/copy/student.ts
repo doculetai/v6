@@ -18,6 +18,15 @@ export const studentCopy = {
       viewDetails: "View details",
       visitWebsite: "Visit website",
       estimatedTuition: "Estimated annual tuition (out-of-state)",
+      durationMonths: "months",
+      programSingular: "program",
+      programPlural: "programs",
+      noPrograms: "No programs listed yet.",
+      morePrograms: "more",
+    },
+    feedback: {
+      programSelected: "Program selected. Your funding target has been updated.",
+      programError: "Unable to select this program right now. Please try again.",
     },
     filters: {
       allCountries: "All countries",

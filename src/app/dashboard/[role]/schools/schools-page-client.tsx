@@ -95,11 +95,11 @@ function ProgramRow({ program, schoolId, isSelected, isPending, onApply }: Progr
           {program.name}
         </p>
         <p className="text-xs text-muted-foreground">
-          {`${program.durationMonths} months`}
+          {`${program.durationMonths} ${copy.card.durationMonths}`}
         </p>
       </div>
       <div className="flex shrink-0 items-center gap-3">
-        <MoneyValue amountMinor={program.tuitionAmount} display="compact" showCode />
+        <MoneyValue amountMinor={program.tuitionAmount} currencyCode={program.currency} display="compact" showCode />
         <Button
           type="button"
           size="sm"
@@ -156,7 +156,7 @@ function SchoolCard({ school, selectedProgramId, pendingProgramId, onApply }: Sc
           </div>
           {school.programs.length > 0 ? (
             <Badge variant="secondary" className="shrink-0 text-xs">
-              {`${school.programs.length} ${school.programs.length === 1 ? 'program' : 'programs'}`}
+              {`${school.programs.length} ${school.programs.length === 1 ? copy.card.programSingular : copy.card.programPlural}`}
             </Badge>
           ) : null}
         </div>
@@ -207,19 +207,17 @@ function SchoolCard({ school, selectedProgramId, pendingProgramId, onApply }: Sc
         ) : school.outOfStateTuition != null ? (
           <div className="rounded-lg border border-border bg-background/50 p-3 dark:bg-background/30">
             <p className="text-xs text-muted-foreground">{copy.card.estimatedTuition}</p>
-            <p className="text-sm font-medium text-foreground font-mono">
-              ${(school.outOfStateTuition / 100).toLocaleString('en-US')}
-            </p>
+            <MoneyValue amountMinor={school.outOfStateTuition} currencyCode="USD" display="full" showCode />
           </div>
         ) : (
           <p className="text-xs text-muted-foreground">
-            No programs listed yet.
+            {copy.card.noPrograms}
           </p>
         )}
 
         {remainingCount > 0 ? (
           <p className="text-xs text-muted-foreground">
-            {`+${remainingCount} more program${remainingCount === 1 ? '' : 's'}`}
+            {`+${remainingCount} ${copy.card.morePrograms} ${remainingCount === 1 ? copy.card.programSingular : copy.card.programPlural}`}
           </p>
         ) : null}
       </CardContent>
@@ -279,7 +277,7 @@ export function SchoolsPageClient({ initialSchools, initialSelection }: SchoolsP
       setPendingProgramId(null);
       setFeedback({
         kind: 'success',
-        message: 'Program selected. Your funding target has been updated.',
+        message: copy.feedback.programSelected,
       });
       await utils.student.getStudentSchoolSelection.invalidate();
       await utils.student.listSchools.invalidate();
@@ -288,7 +286,7 @@ export function SchoolsPageClient({ initialSchools, initialSelection }: SchoolsP
       setPendingProgramId(null);
       setFeedback({
         kind: 'error',
-        message: error.message || 'Unable to select this program right now. Please try again.',
+        message: error.message || copy.feedback.programError,
       });
     },
   });
