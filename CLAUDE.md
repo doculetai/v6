@@ -1219,6 +1219,39 @@ Settings
 - The QR code is positioned in the bottom-right corner of the certificate.
 - Scanning the QR takes the viewer to the public certificate page (read-only, no login required).
 
+**Mobile form keyboard UX:**
+- CTA button (submit/next) floats above the keyboard.
+- Form content scrolls behind the sticky button.
+- Standard mobile form pattern — do not let the button scroll away.
+
+**Login redirect:**
+- Always redirects to /dashboard/[role] (Overview) after login.
+- No smart redirect to Onboarding or last-visited page. Always Overview.
+
+**Admin queue filters:**
+- 3 filters: university, document status, date range submitted.
+- FIFO default order within filtered results.
+
+**All 3 verification tiers complete — Verification page state:**
+- All 3 tier cards show 'Complete' with a checkmark and a brief summary of what was verified.
+- The proof target progress bar at the top shows 100% / ₦ X / ₦ X.
+- A CTA appears below the tiers: link to the Proof of Funds page to pay the certificate fee.
+
+**PDF download UX:**
+- Opens a new browser tab/window showing the PDF preview.
+- Student can review and save from the browser.
+- No immediate forced download. No loading state spinner needed.
+
+**Proof history tab:**
+- Yes — the Proof of Funds page has two tabs: "Current Certificate" and "History".
+- History tab: all previously issued certs (expired, revoked) in reverse-chronological list.
+- Each history item shows: cert ID, school, issue date, expiry date, status (expired/revoked).
+
+**Upcoming tier card visual treatment:**
+- Muted opacity (50–60%), greyed text, no action button.
+- No lock icon. No hidden tiers. All 3 tier cards are always visible — upcoming ones just dimmed.
+- Copy: tier name and description are still readable but clearly inactive.
+
 **Re-upload OCR flow:**
 - Yes — full OCR review card appears on every bank statement upload. No exceptions.
 - Student must confirm extracted fields each time they re-upload.
