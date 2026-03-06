@@ -533,6 +533,79 @@ Four event types, in reverse-chronological order:
 - To switch: tap the card. Context switches to that application.
 - Current application shown in the sidebar header below the identity block (small label: "Application: University of Lagos").
 
+**Notification bell (grouped by type):**
+- Bell dropdown groups notifications into three sections: Documents, Sponsor, System.
+- Each group has a "Mark all as read" action. Individual notifications are not individually dismissable.
+- Notification row: icon + label + relative timestamp + unread dot.
+- Clicking a notification navigates to the relevant page/section.
+
+**Post-certificate dashboard state:**
+- All journey steps show as completed in the sidebar and progress tracker.
+- Proof page becomes the primary nav focus (visually elevated, not just an item).
+- Quick action CTA changes to: "Share your certificate."
+- Overview shows a persistent "certified" banner/hero card above stats — institutional acknowledgment, not a party.
+
+**Date and timestamp formatting:**
+- Events within the last 24 hours: relative — "2 hours ago", "yesterday at 14:32".
+- Events older than 24 hours: absolute — "04 Mar 2026" (day-month-year, no time unless relevant).
+- Never ISO format (2026-03-04) in student-facing UI. Use readable English date.
+- Use IBM Plex Mono for dates shown alongside monetary values.
+
+**Confirmation dialogs — required for exactly these 4 actions:**
+1. Deleting an uploaded document.
+2. Cancelling an outstanding sponsor invite.
+3. Changing school or program after onboarding.
+4. Logging out.
+- All other destructive actions: act immediately, offer undo via toast if reversible.
+- Dialog pattern: title + one-sentence consequence + Cancel + Confirm (destructive variant).
+
+**Document requirements — university-configured:**
+- Required document types vary by university. Each partner university configures their own list.
+- The Documents page derives the required list from the student's selected school.
+- Architecture implication: `student.listDocuments()` must join against university document requirements. No hardcoded document type list in the frontend.
+- If a student has no school selected: show a prompt to select a school before documents can be managed.
+
+**Session timeout UX:**
+- Warning dialog appears 2 minutes before session expiry.
+- Dialog: "Your session is about to expire. Continue?" with an Extend Session button.
+- If ignored: redirect to login. Form state is lost (not persisted across session boundary).
+- Auto-extend on activity is NOT used — hard expiry for security.
+
+**Page-level error boundaries:**
+- Only the failed section shows an error state — not the entire page.
+- Error card: what failed (section name) + reason (if available) + Retry button.
+- Other sections continue to show their loaded content.
+- Never a full-page white error screen. Always partial recovery.
+
+**Proof page — History tab (all four content types):**
+1. Verification access log: who accessed the public cert URL, when, from where (if available).
+2. Share events: WhatsApp share, PDF download, email sent, link copied — each timestamped.
+3. Journey completion timeline: when each step completed (KYC on [date], docs approved on [date], cert issued on [date]).
+4. Certificate validity / renewal info: expiry date if applicable, renewal instructions.
+
+**Student Settings page scope (3 sections via tabs):**
+- Profile tab: update email address (triggers re-verification flow).
+- Security tab: change password or manage auth method.
+- Notifications tab: toggle which events trigger email and/or bell notifications.
+- Phone number is NOT in settings — it is managed via the KYC verification sheet in the journey.
+
+**Document version history — all versions shown:**
+- When a student re-uploads after rejection, all versions are visible in chronological order.
+- Most recent version is at the top. Earlier rejected versions shown below, clearly labelled "Rejected — [date]".
+- Student can see the full submission history per document type.
+
+**Document requirements list (top of Documents page):**
+- A clear requirements summary at the top of the Documents page before any upload area.
+- Format: "Your university requires N documents. [doc type 1], [doc type 2], [doc type 3]."
+- Each required document type becomes a separate upload target (dashed area or card) below.
+- Requirements are sourced from the university config, not hardcoded.
+
+**Overview primary CTA — mid-journey state:**
+- A prominent banner above the stats section: "Continue your verification."
+- Contains: current step name, one-line description of what's needed, one CTA button.
+- This banner is the highest-priority element on the overview when the journey is incomplete.
+- Disappears when all steps are complete (replaced by the certified banner).
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
