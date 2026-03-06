@@ -18,6 +18,7 @@ import {
   StudentDocumentsLoadingState,
 } from '@/components/student/documents/student-documents-states';
 import { StudentDocumentUploadForm } from '@/components/student/documents/student-document-upload-form';
+import { ActionSuccessBanner } from '@/components/ui/action-success-banner';
 import { DocumentUploadProgress, type UploadStage } from '@/components/ui/document-upload-progress';
 import { PageShell, Stack } from '@/components/layout/content-primitives';
 import { PageHeader } from '@/components/layout/page-header';
@@ -156,24 +157,23 @@ export function DocumentsPageClient() {
         ]}
       />
 
-      {allApproved && (
-        <div className="flex items-start gap-3 rounded-xl border border-success/20 bg-success/5 p-4">
-          <CheckCircle className="mt-0.5 size-5 shrink-0 text-success" weight="duotone" aria-hidden="true" />
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-foreground">
-              {copy.allApproved.heading}
-            </p>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              {copy.allApproved.body}
-            </p>
-            <Button asChild variant="link" className="mt-1 h-auto p-0 text-sm text-primary">
-              <Link href="/dashboard/student/proof">
-                {copy.allApproved.cta}
-              </Link>
-            </Button>
-          </div>
-        </div>
-      )}
+      {allApproved ? (
+        <ActionSuccessBanner
+          message={copy.allApproved.heading}
+          nextAction={{
+            label: studentCopy.nextSteps.postDocs.title,
+            description: studentCopy.nextSteps.postDocs.body,
+            cta: studentCopy.nextSteps.postDocs.cta,
+            href: studentCopy.nextSteps.postDocs.href,
+          }}
+        />
+      ) : uploadStage === 'submitted' ? (
+        <ActionSuccessBanner
+          message={copy.submitSuccessMessage}
+          nextAction={null}
+          onDismiss={() => setUploadStage(null)}
+        />
+      ) : null}
 
       <section id="document-upload-form" className="scroll-mt-4">
         <StudentDocumentUploadForm

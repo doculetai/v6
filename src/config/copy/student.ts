@@ -198,6 +198,8 @@ export const studentCopy = {
       fileAccept: "application/pdf,image/png,image/jpeg",
       submitIdle: "Upload document",
       submitUploading: "Uploading document...",
+      dropzoneLabel: "Drag and drop your file, or",
+      dropzoneBrowse: "browse",
     },
     reuploadCta: "Re-upload",
     list: {
@@ -226,6 +228,7 @@ export const studentCopy = {
       fileTooLarge: "File size must be 8MB or less.",
       uploadFailed: "We could not upload your document right now. Please try again.",
     },
+    submitSuccessMessage: "Document submitted for review",
     empty: {
       title: "No documents yet",
       description:

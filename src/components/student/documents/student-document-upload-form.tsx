@@ -1,6 +1,6 @@
 'use client';
 
-import { UploadCloud } from 'lucide-react';
+import { CloudArrowUp } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { Controller, type UseFormReturn } from 'react-hook-form';
 
@@ -44,12 +44,12 @@ export function StudentDocumentUploadForm({
   const uploadError = form.formState.errors.root?.message;
 
   return (
-    <Card className="border-border bg-card/95 shadow-sm backdrop-blur dark:border-border dark:bg-card/95">
+    <Card className="border-border bg-card shadow-sm">
       <CardHeader className="space-y-2">
-        <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
+        <CardTitle className="text-xl text-card-foreground md:text-2xl">
           {copy.upload.title}
         </CardTitle>
-        <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground">
+        <CardDescription className="text-sm text-muted-foreground">
           {copy.upload.description}
         </CardDescription>
       </CardHeader>
@@ -65,7 +65,7 @@ export function StudentDocumentUploadForm({
                 <Select onValueChange={field.onChange} value={field.value ?? ''}>
                   <SelectTrigger
                     id="document-type"
-                    className="h-11 w-full bg-background dark:bg-background"
+                    className="h-11 w-full bg-background"
                     aria-invalid={Boolean(documentTypeError)}
                   >
                     <SelectValue placeholder={copy.upload.documentTypeHint} />
@@ -81,7 +81,7 @@ export function StudentDocumentUploadForm({
               )}
             />
             {documentTypeError ? (
-              <p className="text-sm text-destructive dark:text-destructive" role="alert">
+              <p className="text-sm text-destructive" role="alert">
                 {documentTypeError}
               </p>
             ) : null}
@@ -126,7 +126,8 @@ export function StudentDocumentUploadForm({
                     : 'border-border bg-background/60 hover:border-primary/40 hover:bg-primary/5',
               )}
             >
-              <UploadCloud
+              <CloudArrowUp
+                weight="duotone"
                 className={cn('size-8 transition-colors', selectedFile ? 'text-primary' : 'text-muted-foreground')}
                 aria-hidden="true"
               />
@@ -140,7 +141,8 @@ export function StudentDocumentUploadForm({
               ) : (
                 <div className="space-y-0.5">
                   <p className="text-sm font-medium text-foreground">
-                    Drag and drop your file, or <span className="text-primary underline-offset-2 hover:underline">browse</span>
+                    {copy.upload.dropzoneLabel}{' '}
+                    <span className="text-primary underline-offset-2 hover:underline">{copy.upload.dropzoneBrowse}</span>
                   </p>
                   <p className="text-xs text-muted-foreground">{copy.upload.fileHelp}</p>
                 </div>
@@ -148,14 +150,14 @@ export function StudentDocumentUploadForm({
             </label>
 
             {fileError ? (
-              <p className="text-sm text-destructive dark:text-destructive" role="alert">
+              <p className="text-sm text-destructive" role="alert">
                 {fileError}
               </p>
             ) : null}
           </div>
 
           {uploadError ? (
-            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/30 dark:bg-destructive/15 dark:text-destructive">
+            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/30 dark:bg-destructive/15">
               {uploadError}
             </p>
           ) : null}
