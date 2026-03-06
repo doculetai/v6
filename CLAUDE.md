@@ -946,6 +946,77 @@ Four event types, in reverse-chronological order:
 - No action available for the student. No countdown. Calm, institutional holding state.
 - Admin sees this student in the "Ready to issue" queue.
 
+**Bank connection display (Verification page, Tier 3):**
+- Shows: bank name + masked account number + verified balance + connection date.
+- Pattern: "Access Bank · ****8821 · ₦ 2,450,000 verified · Connected 04 Mar 2026"
+- Balance is shown in full — this is the proof amount, showing it is the whole point.
+- For document-upload path: same display after OCR + admin approval. Balance is the admin-verified figure.
+
+**Schools browse page:**
+- A dedicated `/dashboard/student/schools` page with search + filter by country/program + select action.
+- Students can browse all partner institutions before committing.
+- Once a school is selected from this page, the selection is saved and reflected in the journey.
+- This page is accessible from the sidebar nav and from the onboarding form's school selector.
+
+**OCR failure — manual entry fallback:**
+- If OCR cannot extract readable data: show a manual entry form with 4 fields (account name, account number, bank name, balance).
+- Message above the form: "We could not read this document automatically. Enter your details below."
+- Admin reviews all manually-entered submissions with extra scrutiny (flagged as manual in the queue).
+- Student is not told admin will review it differently — just that they need to enter the details.
+
+**Email branding:**
+- Branded HTML emails: Doculet logo at top, warm white (#FDFCFA) background, brand blue (#2B39A3) accents.
+- Font: IBM Plex Sans (web-safe fallback: Arial).
+- Tone matches role: warm/encouraging for student emails, clear/professional for sponsor and university emails.
+- All transactional emails include: student name, relevant action, a CTA button, and the Doculet footer.
+
+**Onboarding — condensed to one page (no wizard):**
+- The 4-step onboarding wizard is replaced by a single-page form.
+- One screen: school selector + program selector + funding relationship selector.
+- On submit: student is taken directly to their overview (journey now at stage 1).
+- Design implication: `onboarding-page-client.tsx` is replaced entirely. No step state, no hero stepper, no multi-card layout.
+
+**Proof target progress (Verification page):**
+- A progress bar on the Verification page shows: "₦ 1,850,000 / ₦ 2,500,000 target"
+- Bar fills proportionally. When target is met: bar fills completely, label changes to "Target met."
+- Target is sourced from the university program config (set by university, not tuition amount necessarily).
+- Shows combined total from all sponsors + self-funded banking.
+
+**Admin platform analytics (4 metrics on overview):**
+1. Verification queue: pending count + under review count + escalated count.
+2. Student pipeline: funnel showing students at each journey stage platform-wide.
+3. Certificates issued: count with a trend sparkline (today / this week / this month).
+4. Fraud flags: high-risk submission count + recent alert list.
+
+**University student roster:**
+- A Students page in the university dashboard: full list of enrolled students.
+- Columns: student name, program, current journey stage, document status, cert status.
+- Filter by: program, stage, document status. Export to CSV.
+- University sees all enrolled students — not just those in the review queue.
+
+**Sponsor type labels (use exactly these strings):**
+- Self-funded (no sponsor): "Self-funded"
+- Individual/family sponsor: "Family sponsor"
+- Company sponsor: "Corporate sponsor"
+- On the certificate: "Self-funded" or "Sponsored by [Name] · Family sponsor" or "Sponsored by [Company] · Corporate sponsor"
+- In the onboarding form: relational framing ("I am paying / Someone is sponsoring me / A company is sponsoring me") → maps to these labels on save.
+
+**404 page (inside dashboard):**
+- Full branded page: Doculet logo, "Page not found" heading, one-sentence message, "Go to Overview" button.
+- Not a section-level error card. A dedicated page with the dashboard layout shell.
+- No automatic redirect. Student sees the 404 page and must click to return.
+
+**Replacing an approved document:**
+- Blocked. Student sees: "This document is already approved. Contact support if you need to replace it."
+- No upload action available on approved document cards.
+- To replace: student must contact support. Admin processes the replacement manually.
+
+**Admin student detail layout:**
+- Two-column layout.
+- Left column: student profile (name, contact, avatar, verification tier badges, fraud risk score, proof target progress).
+- Right column: submission queue items (documents, KYC, banking — each as a reviewable card with approve/reject actions).
+- Both columns scroll independently on longer records.
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
