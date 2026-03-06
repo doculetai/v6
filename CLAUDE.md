@@ -361,6 +361,111 @@ No stated SLA for admin review. Copy must not promise a timeline.
 - Never use: "within 24 hours", "within 2 business days", "shortly", "soon"
 - The student should feel held, not given a false promise.
 
+### UX & Interaction Patterns
+
+**Scroll fatigue — tabs within page:**
+- Long pages use tabs, not infinite scroll or accordions.
+- Which pages use tabs: Documents (Embassy docs / Bank statement), Proof (Certificate / Share / History), Overview (Journey / Activity), Settings (Profile / Security / Notifications).
+- Tab labels: short nouns, sentence case. No verbs ("Upload" → "Bank statement"). No truncation.
+
+**Mobile navigation — bottom tab bar:**
+- On mobile, the sidebar is hidden. Primary journey steps appear as bottom tabs (app-style).
+- Bottom tabs: Overview, Documents, Banking, Proof, Settings. Support via floating button.
+- Sidebar is desktop-only. Mobile = bottom bar. Never both at once.
+
+**Sheet vs page on mobile:**
+- Quick actions (phone verification, confirm choice, small forms) → bottom sheet.
+- Multi-step flows (KYC, document upload, OCR review, banking setup) → full dedicated page.
+- Rule: if it has more than 2 steps or requires a camera/file picker → full page.
+
+**Document upload UX — all three patterns combined:**
+1. Student selects file → thumbnail preview shown with filename.
+2. Student reviews preview, then taps confirm to upload.
+3. Upload starts: inline progress bar on the card.
+4. For multi-document sections: a queue — student adds all files, reviews list, submits all at once.
+- Never auto-upload on selection. Always preview + confirm.
+
+**Page density — full context:**
+- Each page shows the full picture: current status, history, next action, related context.
+- Students should not need to visit multiple pages to understand their situation.
+- One clear primary CTA per page. Supporting info below it.
+
+**Loading states:**
+- Page/section loading → skeleton placeholders (match the layout shape).
+- Button/mutation loading → spinner inline in the button, button disabled.
+- Never a full-page spinner. Never a blank white flash.
+
+**Section labels (uppercase group headers):**
+- Use sparingly — only when content below is a genuinely different type.
+- Not every card group needs a label. Let typography hierarchy do the separation first.
+- When used: 10–11px, ALL CAPS, tracked wide, muted-foreground colour.
+
+**Locked/upcoming journey steps:**
+- Visible but muted — reduced opacity. No lock icon. No tooltip explaining why it's locked.
+- Students can see the full journey ahead from day one. Nothing hidden.
+- Clicking a muted step → no action. It simply does not respond.
+
+**Form validation:**
+- Inline error below each field on blur (when user leaves the field) and on submit.
+- Error message is precise: name the field, name the problem, name the fix. "School is required" → "Select a school to continue."
+- No summary banner at the top. No toast for form errors.
+
+**Step navigation within a journey page:**
+- Every journey page has explicit Back and Continue/Next buttons.
+- Sidebar also works for navigation (non-linear access).
+- Back/Next are not wizards — they navigate between independent pages, not state machines.
+
+**Amount display:**
+- Always full NGN with naira symbol and commas: ₦ 1,500,000.
+- Never abbreviated (no ₦ 1.5M, no 1500000).
+- Use IBM Plex Mono for all monetary values.
+
+**Document card display — two formats by context:**
+- List view (default): file type icon + filename + status badge + upload date. One row per document.
+- Featured/detail view: thumbnail preview card with status badge overlaid bottom-left.
+- Status badges: pending (muted), approved (success), rejected (destructive). No custom colours.
+
+**Breadcrumbs:**
+- Only on deeply nested pages (e.g. document detail, individual sponsorship view).
+- Top-level journey pages (Documents, Banking, Proof) do not need breadcrumbs — sidebar shows location.
+
+**Animations:**
+- Purposeful micro-interactions only. Navigation between pages is instant (no transition).
+- What animates: step completion (stage fills in), status badge change (fade to new state), sheet open/close (slide).
+- Duration: 150–200ms. Ease-out. Nothing loops. Nothing decorates.
+- Respect `prefers-reduced-motion` — all animations off when set.
+
+**Multi-application (application switcher):**
+- Students can have multiple parallel applications (different schools, different sponsors).
+- A switcher UI (dropdown or list) lets them navigate between applications.
+- Each application has its own journey state, documents, and cert.
+- Design implication: the URL and tRPC context must always carry an `applicationId`. Never assume one application per student.
+
+**OCR review step (bank statement upload path):**
+- After OCR processes the uploaded statement, student reviews four extracted fields before admin submission:
+  1. Account name (must match their legal name)
+  2. Account number
+  3. Bank name
+  4. Available / average balance
+- Student can correct any field before confirming. If they correct, flag for admin attention.
+- Only after student confirms → submission goes to admin queue.
+
+**KYC failure handling:**
+- On Dojah rejection: show the failure reason precisely (blurry ID, expired document, name mismatch, etc.).
+- Do NOT offer immediate retry. Route directly to manual review queue.
+- Copy: "[Reason]. Your verification has been referred for manual review. We will be in touch."
+- Admin sees the failure reason + student's submitted images in the review queue.
+
+**School / program change policy:**
+- Student can change school and program at any time, as long as no sponsor has confirmed a commitment.
+- Once a sponsor confirms → school selection is locked. Contact support to change.
+- A change after onboarding resets the proof-of-funds target amount (re-derived from new program tuition).
+
+**Help / Support access:**
+- Floating help button, bottom-right corner, on every page.
+- On click: opens a support sheet (not a new page, not a new tab).
+- Sidebar Support nav item is removed. Floating button is the sole access point.
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
