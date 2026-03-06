@@ -1,4 +1,4 @@
-import type { Icon } from '@phosphor-icons/react';
+import type { Icon } from '@/components/icons';
 
 export type NavGroup = {
   id: string;
@@ -29,5 +29,5 @@ export type NavItem = {
 export type NavConfig = {
   groups: NavGroup[];
   items: NavItem[];
-  quickAction: NavQuickAction;
+  quickAction?: NavQuickAction;
 };

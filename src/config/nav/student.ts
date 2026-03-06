@@ -1,14 +1,18 @@
 'use client';
 
-import { ArrowRight, Trophy, FileText, GraduationCap, House, Gear, Question } from '@phosphor-icons/react';
+import {
+  ClipboardText,
+  FileText,
+  Gear,
+  House,
+  ShieldCheck,
+  Trophy,
+} from '@/components/icons';
 
 import type { NavConfig } from './types';
 
 export const studentNavConfig: NavConfig = {
-  groups: [
-    { id: 'journey', label: 'My Journey' },
-    { id: 'credentials', label: 'Credentials' },
-  ],
+  groups: [],
   items: [
     {
       label: 'Overview',
@@ -18,36 +22,35 @@ export const studentNavConfig: NavConfig = {
       isPrimary: true,
     },
     {
-      label: 'Schools',
-      href: '/dashboard/student/schools',
-      icon: GraduationCap,
-      description: 'Browse and apply to programs',
-      group: 'journey',
+      label: 'Onboarding',
+      href: '/dashboard/student/setup',
+      icon: ClipboardText,
+      description: 'Set up your school and funding type',
+    },
+    {
+      label: 'Verification',
+      href: '/dashboard/student/verification',
+      icon: ShieldCheck,
+      description: 'Verify your identity and bank account',
+      disabledBeforeStage: 1,
+      disabledReason: 'Complete your profile setup first',
     },
     {
       label: 'Documents',
       href: '/dashboard/student/documents',
       icon: FileText,
-      description: 'Upload and manage your documents',
-      group: 'journey',
+      description: 'Upload your bank statement',
       disabledBeforeStage: 1,
-      disabledReason: 'Complete your application setup first',
+      disabledReason: 'Complete your profile setup first',
     },
     {
       label: 'Proof of Funds',
       href: '/dashboard/student/proof',
       icon: Trophy,
       description: 'View and share your certificate',
-      group: 'credentials',
       isPrimary: true,
       disabledBeforeStage: 2,
       disabledReason: 'Complete verification and documents first',
-    },
-    {
-      label: 'Support',
-      href: '/dashboard/student/support',
-      icon: Question,
-      description: 'Get help with your proof journey',
     },
     {
       label: 'Settings',
@@ -56,11 +59,6 @@ export const studentNavConfig: NavConfig = {
       description: 'Account and session settings',
     },
   ],
-  quickAction: {
-    label: 'Continue application',
-    icon: ArrowRight,
-    href: '/dashboard/student/schools',
-  },
 };
 
 // Backward compat

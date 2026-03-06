@@ -1,7 +1,7 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import { ArrowRight, CaretDown, Trophy } from '@phosphor-icons/react';
+import { CaretDown } from '@/components/icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -11,7 +11,6 @@ import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
 import type { DashboardRole } from '@/config/roles';
-import { getStudentQuickAction } from '@/lib/student-trust-stage';
 import type { StudentTrustStage } from '@/lib/student-trust-stage';
 import { usePinnedItems } from '@/lib/hooks/usePinnedItems';
 import { useRecentPages } from '@/lib/hooks/useRecentPages';
@@ -81,14 +80,9 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
   const router = useRouter();
   const navConfig = getNavConfig(role, { studentTrustStage });
 
-  // For student role, override quickAction based on trust stage
-  const quickAction =
-    role === 'student' && studentTrustStage !== undefined
-      ? {
-          ...getStudentQuickAction(studentTrustStage),
-          icon: studentTrustStage >= 2 ? Trophy : ArrowRight,
-        }
-      : navConfig.quickAction;
+  // Student nav has no quickAction — it was removed in the journey redesign.
+  // Other roles still have quickActions defined in their nav configs.
+  const quickAction = role === 'student' ? undefined : navConfig.quickAction;
   const { isCollapsed, toggle: toggleCollapsed, hydrated } = useSidebarCollapsed(defaultCollapsed);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const accent = ROLE_ACCENTS[role];
@@ -172,18 +166,20 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         {/* ── Role indicator ── */}
         <RoleIndicator role={role} isCollapsed={isCollapsed} />
 
-        {/* ── Quick action ── */}
-        <div className="px-3 pb-2 pt-1">
-          <SidebarQuickAction
-            label={quickAction.label}
-            icon={quickAction.icon}
-            href={quickAction.href}
-            isCollapsed={isCollapsed}
-          />
-        </div>
-
-        {/* ── Separator ── */}
-        <div className="mx-3 border-t border-sidebar-border" />
+        {/* ── Quick action (optional — not all roles have one) ── */}
+        {quickAction && (
+          <>
+            <div className="px-3 pb-2 pt-1">
+              <SidebarQuickAction
+                label={quickAction.label}
+                icon={quickAction.icon}
+                href={quickAction.href}
+                isCollapsed={isCollapsed}
+              />
+            </div>
+            <div className="mx-3 border-t border-sidebar-border" />
+          </>
+        )}
 
         {/* ── Pinned items ── */}
         {pinnedItems.length > 0 && (
