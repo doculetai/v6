@@ -1095,3 +1095,29 @@ Settings
 - **Shadows:** sm (badges/inline) → default (cards/dropdowns) → md (modals) → lg (sidesheets) → overlay (full-screen)
 - **Icon sizes:** nav=24px, inline=20px, small=16px — Phosphor Duotone only, weight="duotone" always
 - **Role accents:** Student #2B39A3, Sponsor #15803D, University #0369A1, Admin #C2410C, Agent #6D28D9, Partner #0F766E
+
+**Sponsor commitment flow:**
+- Sponsor sees the student's proof target (program funding threshold).
+- Sponsor enters the amount they are committing and clicks "Commit".
+- The committed amount is saved as their contribution toward the student's target.
+- Multiple sponsors: each commits separately; total is summed against the target.
+- Commitment is not a payment — it is a declared intent. Payment happens separately (Paystack charge for the certificate processing fee only).
+
+**Multi-sponsor certificate display:**
+- When multiple sponsors have contributed: cert shows "Multi-sponsor arrangement · ₦ 3,500,000 verified" — total only.
+- No individual sponsor names on the certificate face.
+- Sponsor breakdown (who contributed what) is visible to admin and student in the platform but NOT on the public certificate.
+
+**OCR review location:**
+- Inline on the Documents page.
+- After the student uploads a bank statement, a review card expands inline directly below the uploaded file card.
+- Review card shows 4 extracted fields: name, account number, bank name, balance.
+- Student confirms or corrects each field before submitting.
+- If OCR fails to extract a field: that field shows an empty input, student must enter it manually.
+- On confirm: the review card collapses and the document card shows "Pending review" status.
+
+**QR code on certificate:**
+- Yes — a QR code is printed on both the screen view and the PDF.
+- The QR code links to the public verification URL (e.g. doculet.ai/c/[token]).
+- The QR code is positioned in the bottom-right corner of the certificate.
+- Scanning the QR takes the viewer to the public certificate page (read-only, no login required).
