@@ -166,7 +166,7 @@ type CertificateMetaProps = {
 
 function CertificateMeta({ certificate }: CertificateMetaProps) {
   return (
-    <div className="grid gap-3 rounded-xl border border-border bg-muted p-4  sm:grid-cols-2">
+    <div className="grid gap-3 rounded-xl border border-border bg-muted p-4 sm:grid-cols-2">
       <MetaItem
         label={studentCopy.proof.certificate.idLabel}
         value={certificate.certificateId ? truncateCertificateId(certificate.certificateId) : null}

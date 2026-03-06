@@ -245,7 +245,7 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
                     value={String(tier)}
                     onValueChange={(v) => setTier(v === '3' ? 3 : 2)}
                   >
-                    <SelectTrigger id="verify-tier" className="h-10">
+                    <SelectTrigger id="verify-tier" className="h-11">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -261,7 +261,7 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
                     value={identityType}
                     onValueChange={(v) => setIdentityType(v as IdentityType)}
                   >
-                    <SelectTrigger id="identity-type" className="h-10">
+                    <SelectTrigger id="identity-type" className="h-11">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

@@ -13,7 +13,7 @@ export function TrustSignal({ message, className }: TrustSignalProps) {
   return (
     <div
       className={cn(
-        'flex items-start gap-2 rounded-lg border border-border/50 bg-muted/30 px-3 py-2.5',
+        'flex items-start gap-2 rounded-lg border border-border/50 bg-muted px-3 py-2.5',
         className,
       )}
     >
