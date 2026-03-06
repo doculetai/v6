@@ -1,7 +1,7 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import { CaretDown } from '@phosphor-icons/react';
+import { ArrowRight, CaretDown, Trophy } from '@phosphor-icons/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -11,8 +11,8 @@ import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
 import type { DashboardRole } from '@/config/roles';
-import type { StudentTrustStage } from '@/lib/student-trust-stage';
 import { getStudentQuickAction } from '@/lib/student-trust-stage';
+import type { StudentTrustStage } from '@/lib/student-trust-stage';
 import { usePinnedItems } from '@/lib/hooks/usePinnedItems';
 import { useRecentPages } from '@/lib/hooks/useRecentPages';
 import { cn } from '@/lib/utils';
@@ -81,9 +81,13 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
   const router = useRouter();
   const navConfig = getNavConfig(role, { studentTrustStage });
 
+  // For student role, override quickAction based on trust stage
   const quickAction =
     role === 'student' && studentTrustStage !== undefined
-      ? getStudentQuickAction(studentTrustStage)
+      ? {
+          ...getStudentQuickAction(studentTrustStage),
+          icon: studentTrustStage >= 2 ? Trophy : ArrowRight,
+        }
       : navConfig.quickAction;
   const { isCollapsed, toggle: toggleCollapsed, hydrated } = useSidebarCollapsed(defaultCollapsed);
   const [isSigningOut, setIsSigningOut] = useState(false);

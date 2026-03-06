@@ -1,6 +1,3 @@
-import type { Icon } from '@phosphor-icons/react';
-import { ArrowRight, Trophy } from '@phosphor-icons/react/dist/ssr';
-
 export type StudentTrustStage = 0 | 1 | 2 | 3;
 
 export type StudentTrustStageInput = {
@@ -27,17 +24,19 @@ export function computeStudentTrustStage(input: StudentTrustStageInput): Student
   return allComplete ? 2 : 1;
 }
 
-type QuickAction = { label: string; href: string; icon: Icon };
+// Icon-free — safe to import in Server Components and Client Components alike.
+// Icons are resolved in Sidebar.tsx (client component) to avoid RSC createContext errors.
+type QuickActionBase = { label: string; href: string };
 
-export function getStudentQuickAction(stage: StudentTrustStage): QuickAction {
+export function getStudentQuickAction(stage: StudentTrustStage): QuickActionBase {
   switch (stage) {
     case 0:
-      return { label: 'Set up your application', href: '/dashboard/student/onboarding', icon: ArrowRight };
+      return { label: 'Set up your application', href: '/dashboard/student/onboarding' };
     case 1:
-      return { label: 'Continue your application', href: '/dashboard/student/verify', icon: ArrowRight };
+      return { label: 'Continue your application', href: '/dashboard/student/verify' };
     case 2:
-      return { label: 'View your proof', href: '/dashboard/student/proof', icon: Trophy };
+      return { label: 'View your proof', href: '/dashboard/student/proof' };
     case 3:
-      return { label: 'Share your certificate', href: '/dashboard/student/proof', icon: Trophy };
+      return { label: 'Share your certificate', href: '/dashboard/student/proof' };
   }
 }
