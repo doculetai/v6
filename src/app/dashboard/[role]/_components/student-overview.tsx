@@ -166,7 +166,7 @@ export async function StudentOverview({ email, phone, caller }: StudentOverviewP
                 : copy.stats.verification.notStartedLabel
             }
             accent={completionPercent > 0}
-            href="/dashboard/student/proof"
+            href="/dashboard/student/verification"
           />
           <StatCard
             icon={<Files className="size-4.5" weight="duotone" aria-hidden="true" />}
