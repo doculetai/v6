@@ -34,8 +34,9 @@
   --color-ring: var(--ring);
 
   /* Extended semantic tokens */
-  --color-success: var(--color-success);
-  --color-warning: var(--color-warning);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-gold: var(--gold);
 
   /* Chart colors (shadcn) */
   --color-chart-1: var(--chart-1);
@@ -57,6 +58,7 @@
   /* Typography */
   --font-sans: var(--font-plex-sans);
   --font-serif: var(--font-plex-serif);
+  --font-mono: var(--font-plex-mono);
 
   /* Radius */
   --radius-sm: var(--radius-sm);
@@ -80,43 +82,48 @@
    ============================================================ */
 :root {
   /* Semantic tokens */
-  --background: #FAFAFA;
-  --foreground: #14152A;
-  --card: #ffffff;
-  --card-foreground: #14152A;
-  --popover: #ffffff;
-  --popover-foreground: #14152A;
-  --primary: #000080;
-  --primary-foreground: #ffffff;
-  --secondary: #EEEFF4;
-  --secondary-foreground: #14152A;
-  --muted: #EEEFF4;
-  --muted-foreground: #4A4D73;
-  --accent: #8080FF;
-  --accent-foreground: #0E0E55;
-  --destructive: #dc2626;
-  --border: #DDDEE8;
-  --input: #DDDEE8;
-  --ring: #8080FF;
-  --color-success: #10B981;
-  --color-warning: #f59e0b;
+  --background: #FDFCFA;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+  --primary: #2563EB;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1F5F9;
+  --secondary-foreground: #0F172A;
+  --muted: #F1F5F9;
+  --muted-foreground: #475569;
+  --accent: #3B82F6;
+  --accent-foreground: #0A1628;
+  --destructive: #DC2626;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #3B82F6;
+  --success: #16A34A;
+  --warning: #D97706;
+  --gold: #D4A853;
 
   /* Chart */
-  --chart-1: #000080;
-  --chart-2: #8080FF;
-  --chart-3: #10B981;
-  --chart-4: #f59e0b;
-  --chart-5: #6B6F94;
+  --chart-1: #2563EB;
+  --chart-2: #3B82F6;
+  --chart-3: #16A34A;
+  --chart-4: #D97706;
+  --chart-5: #64748B;
 
-  /* Sidebar */
-  --sidebar: #000080;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #000080;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: rgba(255, 255, 255, 0.12);
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(255, 255, 255, 0.15);
-  --sidebar-ring: #8080FF;
+  /* Sidebar — light/crisp with brand blue accents */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #0F172A;
+  --sidebar-primary: #2B39A3;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F1F5F9;
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #2B39A3;
+
+  /* Glass surfaces */
+  --sidebar-glass-bg: rgba(255, 255, 255, 0.97);
+  --topbar-glass-bg: rgba(253, 252, 250, 0.94);
 
   /* Radius */
   --radius: 12px;
@@ -128,12 +135,12 @@
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-xs: 0 1px 2px 0 rgb(14 14 85 / 0.04);
-  --shadow-sm: 0 1px 3px 0 rgb(14 14 85 / 0.06), 0 1px 2px -1px rgb(14 14 85 / 0.04);
-  --shadow-md: 0 4px 6px -1px rgb(14 14 85 / 0.08), 0 2px 4px -2px rgb(14 14 85 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(14 14 85 / 0.10), 0 4px 6px -4px rgb(14 14 85 / 0.06);
-  --shadow-xl: 0 20px 25px -5px rgb(14 14 85 / 0.10), 0 8px 10px -6px rgb(14 14 85 / 0.06);
-  --shadow-2xl: 0 1px 2px rgb(14 14 85 / 0.03), 0 4px 8px rgb(14 14 85 / 0.04), 0 12px 24px rgb(14 14 85 / 0.06), 0 32px 64px rgb(14 14 85 / 0.08);
+  --shadow-xs: 0 1px 2px 0 rgb(10 22 40 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(10 22 40 / 0.06), 0 1px 2px -1px rgb(10 22 40 / 0.04);
+  --shadow-md: 0 4px 6px -1px rgb(10 22 40 / 0.08), 0 2px 4px -2px rgb(10 22 40 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(10 22 40 / 0.10), 0 4px 6px -4px rgb(10 22 40 / 0.06);
+  --shadow-xl: 0 20px 25px -5px rgb(10 22 40 / 0.10), 0 8px 10px -6px rgb(10 22 40 / 0.06);
+  --shadow-2xl: 0 1px 2px rgb(10 22 40 / 0.03), 0 4px 8px rgb(10 22 40 / 0.04), 0 12px 24px rgb(10 22 40 / 0.06), 0 32px 64px rgb(10 22 40 / 0.08);
 
   /* Motion */
   --duration-micro: 50ms;
@@ -152,13 +159,58 @@
   --color-surface-container: var(--card);
 }
 
+/* ============================================================
+   SSR FALLBACK — Doculet dark mode defaults
+   ThemeProvider overrides these on the client via style#doculet-theme
+   ============================================================ */
+.dark {
+  --background: #0A1628;
+  --foreground: #F1F5F9;
+  --card: #0D1F3C;
+  --card-foreground: #F1F5F9;
+  --primary: #3B82F6;
+  --primary-foreground: #FFFFFF;
+  --secondary: #1E293B;
+  --secondary-foreground: #E2E8F0;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #2563EB;
+  --accent-foreground: #F1F5F9;
+  --destructive: #EF4444;
+  --border: #1E293B;
+  --input: #1E293B;
+  --ring: #3B82F6;
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --gold: #D4A853;
+  --chart-1: #3B82F6;
+  --chart-2: #2563EB;
+  --chart-3: #4ADE80;
+  --chart-4: #FBBF24;
+  --chart-5: #94A3B8;
+  --sidebar: #0D1F3C;
+  --sidebar-foreground: #F1F5F9;
+  --sidebar-primary: #D4A853;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1E293B;
+  --sidebar-accent-foreground: #E2E8F0;
+  --sidebar-border: #1E293B;
+  --sidebar-ring: #3B82F6;
+
+  /* Glass surfaces (dark) */
+  --sidebar-glass-bg: rgba(13, 31, 60, 0.85);
+  --topbar-glass-bg: rgba(10, 22, 40, 0.85);
+}
+
 /* Base styles */
 * {
   border-color: var(--border);
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {

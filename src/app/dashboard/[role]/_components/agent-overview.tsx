@@ -1,4 +1,4 @@
-import { Banknote, GraduationCap, ShieldCheck, Sparkles } from 'lucide-react';
+import { Money, GraduationCap, ShieldCheck, Coins } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -40,28 +40,28 @@ export async function AgentOverview({ email, caller }: AgentOverviewProps) {
         />
         <Grid cols={{ sm: 2, lg: 4 }} gap="md">
         <StatCard
-          icon={<GraduationCap className="size-4.5" aria-hidden="true" />}
+          icon={<GraduationCap className="size-4.5" weight="duotone" aria-hidden="true" />}
           label={copy.stats.assignedStudents.label}
           value={overview ? String(overview.totalAssignedStudents) : '—'}
           sub={copy.stats.assignedStudents.sub}
           accent={Boolean(overview?.totalAssignedStudents)}
         />
         <StatCard
-          icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
+          icon={<ShieldCheck className="size-4.5" weight="duotone" aria-hidden="true" />}
           label={copy.stats.activeStudents.label}
           value={overview ? String(overview.activeStudents) : '—'}
           sub={copy.stats.activeStudents.sub}
           accent={Boolean(overview?.activeStudents)}
         />
         <StatCard
-          icon={<Banknote className="size-4.5" aria-hidden="true" />}
+          icon={<Money className="size-4.5" weight="duotone" aria-hidden="true" />}
           label={copy.stats.pendingCommissions.label}
           value={overview ? formatNGN(overview.pendingCommissionsKobo) : '—'}
           sub={copy.stats.pendingCommissions.sub}
           accent={Boolean(overview?.pendingCommissionsKobo)}
         />
         <StatCard
-          icon={<Sparkles className="size-4.5" aria-hidden="true" />}
+          icon={<Coins className="size-4.5" weight="duotone" aria-hidden="true" />}
           label={copy.stats.totalEarned.label}
           value={overview ? formatNGN(overview.totalEarnedKobo) : '—'}
           sub={copy.stats.totalEarned.sub}

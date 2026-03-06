@@ -1,4 +1,4 @@
-import { AlertTriangle, ArrowRight, UserRoundSearch } from 'lucide-react';
+import { Warning, ArrowRight, UserFocus } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -22,13 +22,13 @@ export type StatCardProps = {
 
 export function StatCard({ icon, label, value, sub, accent }: StatCardProps) {
   return (
-    <Card className="border-border bg-card dark:border-border dark:bg-card">
+    <Card className="border-border bg-card">
       <CardContent className="pt-5">
         <div className="flex items-start justify-between">
           <div
             className={cn(
-              'flex h-9 w-9 items-center justify-center rounded-lg',
-              accent ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground',
+              'flex size-10 items-center justify-center rounded-lg',
+              accent ? 'bg-primary/15 text-primary dark:bg-primary/20' : 'bg-muted text-muted-foreground',
             )}
           >
             {icon}
@@ -38,7 +38,7 @@ export function StatCard({ icon, label, value, sub, accent }: StatCardProps) {
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             {label}
           </p>
-          <p className="mt-0.5 text-2xl font-bold text-foreground">{value}</p>
+          <p className="mt-0.5 text-2xl font-semibold text-foreground">{value}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{sub}</p>
         </div>
       </CardContent>
@@ -55,7 +55,7 @@ export type NextStepItemConfig = {
 
 export function NextStepCard({ step, index }: { step: NextStepItemConfig; index: number }) {
   return (
-    <Card className="border-border bg-card dark:border-border dark:bg-card">
+    <Card className="border-border bg-card">
       <CardContent className="flex flex-col gap-3 pt-5">
         <div className="flex items-center gap-2">
           <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
@@ -64,10 +64,10 @@ export function NextStepCard({ step, index }: { step: NextStepItemConfig; index:
           <p className="text-sm font-semibold text-foreground">{step.label}</p>
         </div>
         <p className="text-sm text-muted-foreground">{step.description}</p>
-        <Button asChild size="sm" variant="outline" className="mt-auto w-full sm:w-auto">
+        <Button asChild size="sm" variant="default" className="mt-auto w-full sm:w-auto">
           <Link href={step.href} className="inline-flex items-center gap-1.5">
             {step.cta}
-            <ArrowRight className="size-3.5" aria-hidden="true" />
+            <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
           </Link>
         </Button>
       </CardContent>
@@ -82,13 +82,13 @@ export function EmptyState({ role }: { role: DashboardRole }) {
     <PageShell width="wide">
       <Section>
         <Container>
-          <Card className="border-border bg-card dark:border-border dark:bg-card">
+          <Card className="border-border bg-card">
             <CardHeader className="space-y-3">
-              <UserRoundSearch className="size-5 text-muted-foreground dark:text-muted-foreground" />
-          <h1 className="leading-none font-semibold text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
+              <UserFocus className="size-5 text-muted-foreground" weight="duotone" />
+          <h1 className="leading-none font-semibold text-xl text-card-foreground md:text-2xl">
             {dashboardShellCopy.overview.emptyTitle}
           </h1>
-          <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
+          <CardDescription className="text-sm text-muted-foreground md:text-base">
             {dashboardShellCopy.overview.emptyDescription}
           </CardDescription>
         </CardHeader>
@@ -111,13 +111,13 @@ export function ErrorState({ role }: { role: DashboardRole }) {
     <PageShell width="wide">
       <Section>
         <Container>
-          <Card className="border-border bg-card dark:border-border dark:bg-card">
+          <Card className="border-border bg-card">
             <CardHeader className="space-y-3">
-              <AlertTriangle className="size-5 text-muted-foreground dark:text-muted-foreground" />
-          <h1 className="leading-none font-semibold text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
+              <Warning className="size-5 text-muted-foreground" weight="duotone" />
+          <h1 className="leading-none font-semibold text-xl text-card-foreground md:text-2xl">
             {dashboardShellCopy.overview.errorTitle}
           </h1>
-          <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
+          <CardDescription className="text-sm text-muted-foreground md:text-base">
             {dashboardShellCopy.overview.errorDescription}
           </CardDescription>
         </CardHeader>

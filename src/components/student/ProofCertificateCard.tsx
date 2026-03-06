@@ -54,7 +54,7 @@ export function ProofCertificateCard({
   });
 
   return (
-    <Card className="relative overflow-hidden border-border bg-card/80 shadow-xl backdrop-blur-sm ring-1 ring-primary/20">
+    <Card className="relative overflow-hidden border-border bg-card shadow-lg ring-1 ring-primary/20">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/5"
@@ -62,12 +62,12 @@ export function ProofCertificateCard({
 
       <CardHeader className="relative space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/80 px-4 text-sm font-medium text-foreground">
+          <div className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-medium text-foreground">
             <ShieldCheck weight="duotone" className="size-5 text-primary" aria-hidden="true" />
             <span className="font-serif text-xl font-semibold text-foreground">{studentCopy.proof.certificate.title}</span>
           </div>
 
-          <div className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/80 px-4 text-xs font-medium text-foreground">
+          <div className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background px-4 text-xs font-medium text-foreground">
             {certificate.issued ? (
               <Shield weight="duotone" className="size-4 text-primary" aria-hidden="true" />
             ) : (
@@ -97,7 +97,7 @@ export function ProofCertificateCard({
           <TrustSignal message={uiPrimitives.trustSignals.certificate} className="mt-2" />
         </div>
 
-        <div className="space-y-3 rounded-xl border border-border bg-background/75 p-4">
+        <div className="space-y-3 rounded-xl border border-border bg-muted p-4">
           <label
             htmlFor="proof-share-link"
             className="block text-xs font-medium text-muted-foreground"
@@ -166,7 +166,7 @@ type CertificateMetaProps = {
 
 function CertificateMeta({ certificate }: CertificateMetaProps) {
   return (
-    <div className="grid gap-3 rounded-xl border border-border bg-background/75 p-4  sm:grid-cols-2">
+    <div className="grid gap-3 rounded-xl border border-border bg-muted p-4  sm:grid-cols-2">
       <MetaItem
         label={studentCopy.proof.certificate.idLabel}
         value={certificate.certificateId ? truncateCertificateId(certificate.certificateId) : null}
