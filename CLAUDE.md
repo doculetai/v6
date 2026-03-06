@@ -1218,3 +1218,130 @@ Settings
 - The QR code links to the public verification URL (e.g. doculet.ai/c/[token]).
 - The QR code is positioned in the bottom-right corner of the certificate.
 - Scanning the QR takes the viewer to the public certificate page (read-only, no login required).
+
+**KYC timeout (Dojah network failure, not a rejection):**
+- 1 silent retry automatically.
+- If still failing: inline error shown: "Verification unavailable. Please try again in a few minutes." with a "Try again" button.
+- NOT escalated to manual review on timeout. Manual review is only triggered by actual identity mismatch/failure.
+
+**Onboarding draft state:**
+- Progress is saved only on submit/next. Partial within-step progress is lost if the student navigates away.
+- Onboarding is a single-page form — either fully submitted or not started.
+
+**Document 'More information needed' status label:**
+- Document card shows the status badge: "More information needed"
+- The admin's written note is displayed verbatim below the badge.
+- Student can re-upload or provide clarification based on the note.
+
+**First session UX (brand new student):**
+- Student lands on the Overview page. Everything shows empty/incomplete states.
+- A prominent "Begin your application" card at the top of Overview directs them to the Onboarding page.
+- No automatic redirect to Onboarding. No welcome modal.
+
+**Email verification:**
+- No email verification required before accessing the dashboard.
+- Student lands on the dashboard immediately after signup.
+- Email verification happens via KYC/onboarding flow, not at signup.
+
+**University deactivated (student's selected school removed):**
+- An alert banner on the student's Overview page: "Your selected school is no longer active. Contact support."
+- The student's journey is paused — no further steps allowed until resolved.
+- Student is also notified via email.
+
+**KYC re-verification (policy change):**
+- Student is notified via email + in-app bell: "We need to re-verify your identity. Please complete a new verification."
+- T2 tier card on the Verification page reverts to incomplete.
+- Student must go through the Dojah flow again.
+
+**Account deletion — certificate:**
+- When a student deletes their account, their certificate is revoked immediately.
+- The public verification URL returns "Certificate not found" after deletion.
+- No grace period.
+
+**Active sidebar nav item visual treatment (student):**
+- 2px left border in role accent (#2B39A3 for student).
+- Very light bg wash in role accent at low opacity.
+- Text and icon in role accent.
+- All other items: muted text, no bg, no border.
+
+**Admin impersonation — student notification:**
+- Student is NOT notified in real-time during the impersonation session.
+- After the impersonation session ends, student receives an email: "An admin accessed your account on [date] at [time]."
+
+**Status page:**
+- Yes — a "System status" link in the sidebar footer.
+- Links to an external status page.
+
+**Duplicate upload detection:**
+- Platform detects duplicate files (hash check).
+- If the same file is uploaded twice: shows inline error "This file has already been uploaded." Upload is blocked.
+
+**Notification bell — grouping:**
+- Grouped by type: Documents, Verification, Sponsor, Certificate.
+- Within each group: reverse-chronological order.
+
+**Notification bell — mark all read:**
+- "Mark all as read" text link in the top-right of the notification dropdown header.
+
+**Notification bell — mobile:**
+- Mobile header: Doculet logo left, notification bell icon right.
+- Bottom tab bar (4 items: Overview, Documents, Proof, Settings) is separate below.
+
+**Student-sponsor messaging:**
+- Simple message thread per sponsorship.
+- Access: "Message" button on the sponsor card on the student's Overview page.
+- Clicking opens a slide-in sheet with the message thread.
+- Student is notified when sponsor reads their message: "Read" label shown under the message.
+
+**Cert expiry — sponsor notification:**
+- When the student's cert expires, the sponsor is notified and prompted to re-commit.
+- Sponsorship does not auto-expire — sponsor must actively choose to extend or not.
+
+**School browse UX (Onboarding page):**
+- Full /schools browse page — student clicks "Browse schools" in the form, navigates to /schools.
+- /schools page has search with autosuggest to ease typing.
+- Student selects a school, is returned to Onboarding form with it pre-filled.
+
+**T3 banking choice (Verification page):**
+- Equal upfront choice shown in the T3 card from the start.
+- Two options: "Connect via Mono" and "Upload bank statement".
+- No "try Mono first" default. Student decides their path.
+
+**Proof of Funds page — in progress (cert not yet issued):**
+- Status card at top: "Your certificate will be ready once verification is complete."
+- Below: blurred/locked certificate preview.
+- Fee card appears only when all verification steps are complete (cert ready to request).
+
+**'More information needed' notification to student:**
+- Email sent with the admin's written note.
+- In-app bell notification.
+- Document card status updated to "More information needed" with the note shown.
+
+**Document version history:**
+- Yes — expandable "History" section on each document card.
+- Shows all previous uploads with dates and review outcomes (approved, rejected with note, etc.).
+
+**Onboarding form validation:**
+- Inline validation on submit: if school or funding type is empty, they highlight red with error text on click of "Save".
+
+**Breadcrumbs:**
+- Only on deeply nested pages (2+ levels: e.g. application detail inside Applications).
+- Not shown on top-level nav pages (Overview, Verification, Documents, Proof of Funds, Settings).
+
+**T2 manual review state (Verification page):**
+- T2 card shows: "Your identity is under manual review. We'll notify you when it's complete."
+- No action available for the student.
+- Tier 3 remains locked until T2 manual review is resolved.
+
+**Multi-application context switching:**
+- Applications page: clicking an application card sets it as the active dashboard context.
+- All subsequent pages (Verification, Documents, Proof) show data for the selected application.
+- Active application is persisted in session/URL for subsequent page visits.
+
+**Applications nav item:**
+- "Applications" is a dedicated nav item in the student sidebar (7th item, after Settings — or positioned logically).
+- The rest of the sidebar (Verification, Documents, Proof) reflects the currently active application context.
+
+**Bell notification copy — document approved:**
+- "Your bank statement has been approved" — document type named explicitly.
+- Similar pattern: "Your bank statement has been rejected" / "More information needed for your bank statement."
