@@ -271,3 +271,46 @@ When `/product-owner` returns findings, use these impeccable skills to fix them:
 5. **Layout primitives mandatory** — PageShell, Section, Grid, Stack, PageHeader; never raw mx-auto max-w-.
 6. **Accessibility** — WCAG 2.1 AA, 44x44px touch targets, focus-visible rings.
 7. **No emojis anywhere** — UI, copy configs, code, commits. The brand is institutional, not casual.
+
+### State Vocabulary
+
+**Error / failure states — matter-of-fact + precise:**
+- State the failure, name the reason, name the required action. Never apologetic, never vague.
+- Pattern: `[What failed] · [Why] · [What to do]` — e.g. "Verification failed · BVN mismatch · Resubmit with correct NIN."
+- Tone: bank letter, not customer service apology. The student is an adult; give them information.
+- Never use: "Something went wrong", "Oops", "Sorry about that", "We couldn't quite…"
+
+**Success / milestone states — clear acknowledgment, not celebration:**
+- Mark completion with a distinct visual transition: a status heading, a state card, a filled step indicator.
+- Not a party (no confetti, no "Woohoo!"), not a whisper (not just a toast). A firm institutional "done."
+- Certificate issued = dedicated success surface. Think: bank account opened confirmation, not startup confetti.
+- Pattern: State the achievement plainly. "Your proof of funds certificate is ready." Then the action.
+
+**Pending / review states — calm confidence:**
+- "Under review" not "Waiting." "Processing" not "Hang tight."
+- Conveys institutional process, not uncertainty. The student should feel held, not left hanging.
+
+### Certificate Sharing (Nigerian mobile context)
+Four sharing paths, in priority order:
+1. **WhatsApp direct share** — primary CTA on mobile. Use `https://wa.me/?text=` intent with the verification URL. Most Nigerian students will use this first.
+2. **Public verification URL** — shareable link any embassy or institution can open to confirm authenticity.
+3. **Download PDF** — formal attachment for email or portal submission. Primary CTA on desktop.
+4. **Doculet email** — Doculet sends the cert directly to the institution on the student's behalf.
+
+Mobile cert page: WhatsApp share is the primary button. Desktop cert page: Download PDF is the primary button.
+
+### Relational Sponsor Framing
+Always use relational language — who is the funder to the student, not the payment mechanism.
+- "I am paying for my education" (not "Self-funded")
+- "Someone is sponsoring me" (not "Third-party sponsor")
+- "A company is sponsoring me" (not "Corporate sponsor")
+
+This applies to: onboarding wizard copy, summary cards, tRPC output display labels, and email templates.
+Never expose structural terms (escrow, third-party, corporate) in student-facing UI.
+
+### Token Quick-Reference (for design consistency)
+- **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
+- **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
+- **Shadows:** sm (badges/inline) → default (cards/dropdowns) → md (modals) → lg (sidesheets) → overlay (full-screen)
+- **Icon sizes:** nav=24px, inline=20px, small=16px — Phosphor Duotone only, weight="duotone" always
+- **Role accents:** Student #2B39A3, Sponsor #15803D, University #0369A1, Admin #C2410C, Agent #6D28D9, Partner #0F766E
