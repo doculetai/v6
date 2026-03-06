@@ -678,6 +678,68 @@ Four event types, in reverse-chronological order:
 - Agent: "No students assigned. [Invite a student]"
 - Never: lengthy explanations, illustrations, multi-CTA empty states, or humor.
 
+**SCOPE BOUNDARY — proof of funds only (not a payments platform):**
+- Doculet verifies and certifies that funds exist. It does NOT move, disburse, or commit money.
+- There are no "disbursement" flows, "fund release" flows, or cash transfer UIs for students.
+- Paystack is used only for: certificate processing fees (student pays Doculet for the cert).
+- Sponsors do NOT transfer money through Doculet. They are linked as the source of funds, not the sender.
+- Any language like "commit funds", "release payment", "disburse to student" — remove from UI copy entirely.
+
+**Status badge accessibility:**
+- Two signals only: colour + text label. The word is the primary signal; colour reinforces it.
+- Pattern: `<Badge variant="success">Approved</Badge>` — no icon inside the badge.
+- Ensure all badge background/text colour combinations meet WCAG AA contrast (4.5:1 minimum).
+
+**Copy-to-clipboard confirmation:**
+- Icon-only. The copy button icon changes to a checkmark (CheckCircle, Phosphor Duotone) for 2 seconds, then reverts.
+- No toast. No sound. The button itself is the only feedback.
+- Applies to: certificate ID, verification URL, invite link, account number.
+
+**Sponsor document visibility:**
+- Sponsors have read-only access to the student's uploaded documents and their statuses.
+- Sponsor sees: document type, status badge, upload date. They cannot download or open the files.
+- This read-only view builds trust — sponsor can see the process is real without accessing private documents.
+
+**Certificate validity:**
+- Certificates have an expiry date set per university program (linked to the program's enrollment deadline).
+- The cert's validity window is configured by the university, not by Doculet.
+- Proof History tab shows: expiry date + "Contact your university to renew" if expired.
+
+**Profile avatar (two sources, combined):**
+- If KYC (Dojah) has captured a verified face photo: use that as the avatar. No separate upload needed.
+- If no KYC photo yet: show initials avatar (role-accent background, white initials).
+- Students can optionally upload a profile photo in Settings > Profile — this overrides the initials but not the KYC photo.
+- Priority order: KYC photo → uploaded photo → initials.
+
+**Language / locale:**
+- English only. No i18n infrastructure required.
+- Copy lives in `src/config/copy/` — per-role, not per-language.
+- Nigerian locale for formatting: ₦ (naira symbol), DD MMM YYYY dates, comma as thousands separator.
+
+**University admin primary jobs (split equally):**
+1. Queue review: process incoming student document submissions for their institution.
+2. Programme management: configure which programs exist, their document requirements, tuition amounts, and cert validity windows.
+
+**Admin primary jobs (split equally):**
+1. Verification queue: review KYC escalations, document approvals/rejections, OCR corrections.
+2. Platform operations: monitor transaction health, fraud signals, API usage, platform fees.
+
+**Badge counters — 4 locations:**
+- Bell icon in sidebar header: unread notification count.
+- Sidebar nav items: contextual count for pending actions (e.g. "Documents" shows (2) if 2 are under review).
+- Mobile bottom tab bar: same badge counts as sidebar equivalents.
+- Page H1 area: inline count in heading context — "Documents · 2 pending" — not inside the H1 text itself.
+
+**Admin queue ordering:**
+- FIFO — oldest submission first. No priority scoring, no urgency flagging.
+- Admin works through the queue in submission order. Simple, fair, auditable.
+- Admin can filter (by type, status, date range) but cannot reorder. Filter narrows; it doesn't prioritise.
+
+**Partner dashboard primary view:**
+- Two panels: API health + student pipeline summary.
+- API health: requests this period, quota used, error rate, billing estimate.
+- Student pipeline: students started, completed each stage, certificate issued — conversion funnel view.
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
