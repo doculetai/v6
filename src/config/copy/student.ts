@@ -21,7 +21,7 @@ export const studentCopy = {
 
   verify: {
     title: "Verify your identity",
-    subtitle: "We confirm who you are before issuing your certificate. Complete all three tiers for the strongest proof.",
+    subtitle: "Confirm your identity before your certificate is issued. All three tiers give you the strongest proof.",
     tracker: {
       title: "Verification progress",
       subtitle: "Track completion across Tier 1, Tier 2, and Tier 3 before certificate release.",
@@ -51,13 +51,13 @@ export const studentCopy = {
         },
       ],
       dojahForm: {
-        title: "Run our verification provider identity check",
-        description: "Submit BVN, NIN, or passport details for secure identity verification via our verification provider.",
+        title: "Verify your identity",
+        description: "Enter your BVN, NIN, or passport number to complete a secure identity check.",
         tierLabel: "Tier",
         identityTypeLabel: "Identity type",
         identityNumberLabel: "Identity number",
-        submitCta: "Start our verification provider check",
-        pendingReferenceLabel: "Current our verification provider reference",
+        submitCta: "Start identity check",
+        pendingReferenceLabel: "Verification reference",
         tierOptions: {
           tier2: "Tier 2",
           tier3: "Tier 3",
@@ -76,13 +76,17 @@ export const studentCopy = {
       manualReviewDescription: "Upload a clear photo of your government-issued ID (passport, driver's licence, or national ID card) and a selfie holding the ID.",
       governmentIdLabel: "Government-issued ID",
       selfieLabel: "Selfie holding your ID",
+      fileTooLarge: "File must be 8MB or less.",
+      governmentIdPlaceholder: "Click to select your government ID",
+      selfiePlaceholder: "Click to take or select a selfie",
+      uploadError: "Unable to upload files. Please try again.",
       submitCta: "Submit for manual review",
       submittingCta: "Submitting...",
       submittedFeedback: "Your documents have been submitted for manual review. We will update your verification status within 24-48 hours.",
       submittedTitle: "Manual review in progress",
       submittedDescription: "Our team is reviewing your uploaded ID. You will be notified when the review is complete.",
     },
-    bankExpiringBanner: "Your bank connection is expiring. Reconnect.",
+    bankExpiringBanner: "Your bank connection is about to expire. Reconnect to keep your balance verified.",
     bankSection: {
       title: "Connect your bank",
       description:
@@ -107,7 +111,7 @@ export const studentCopy = {
         accountTypeLabel: "Account type",
         countryLabel: "Country code (e.g. NG, GB, US)",
         submitCta: "Add account",
-        successToast: "Bank account added.",
+        successToast: "Bank account added. Upload a statement to complete verification.",
       },
       accountsList: {
         title: "Your bank accounts",
@@ -126,11 +130,11 @@ export const studentCopy = {
       refresh: "Refresh status",
     },
     feedback: {
-      dojahStarted: "our verification provider verification started. We will update your status after provider confirmation.",
+      dojahStarted: "Identity check started. We'll update your status once the check completes.",
       monoConnected: "Mono connection saved. Tier tracker has been updated.",
       manualAdded: "Bank account added. Upload a bank statement to complete verification.",
       loadError: "Unable to load verification status right now.",
-      dojahError: "Unable to start the our verification provider check. Please try again.",
+      dojahError: "Unable to start identity verification. Please try again.",
       monoError: "Unable to save your Mono account right now.",
     },
   },
@@ -250,7 +254,7 @@ export const studentCopy = {
     certificate: {
       title: "Tamper-evident certificate",
       description:
-        "Each certificate link includes a signed token and immutable audit trail metadata.",
+        "Your certificate is cryptographically signed and verifiable by any embassy or institution worldwide.",
       issuedBadge: "Issued",
       lockedBadge: "Locked",
       idLabel: "Certificate ID",
@@ -288,12 +292,12 @@ export const studentCopy = {
       title: "Certificate not ready yet",
       description:
         "Complete KYC, bank, sponsor, and document checks to unlock your proof certificate.",
-      helper: "Secure sharing becomes available as soon as all checklist items are complete.",
+      helper: "Complete all four checklist items to unlock secure sharing.",
     },
     empty: {
       title: "Start your proof checklist",
       description:
-        "Your proof journey has not started yet. Begin verification to move toward certificate issuance.",
+        "Complete identity verification, link your bank account, and invite a sponsor to unlock your certificate.",
       cta: "Continue verification",
       illustrationLabel: "Shield and document checklist illustration",
     },

@@ -17,9 +17,22 @@ export const roleDisplayNames: Record<DashboardRole, string> = {
 };
 
 export const dashboardShellCopy = {
+  brandName: 'Doculet',
   logoAlt: 'Doculet.ai logo',
   studentHome: {
     title: 'Your proof journey',
+  },
+  notifications: {
+    ariaLabel: 'Notifications',
+    empty: 'No notifications',
+    markAllRead: 'Mark all as read',
+  },
+  notificationPreferences: {
+    title: 'Notification preferences',
+    subtitle: 'Choose how you receive updates.',
+    email: 'Email',
+    inApp: 'In-app',
+    push: 'Push',
   },
   sidebar: {
     accountLabel: 'Account',
@@ -27,6 +40,17 @@ export const dashboardShellCopy = {
     navAriaLabel: 'Dashboard navigation',
     fallbackUserNameSuffix: 'account',
     avatarFallback: 'DU',
+    footerBrand: 'Doculet.ai',
+    expandLabel: 'Expand sidebar',
+    collapseLabel: 'Collapse sidebar',
+    footerVersion: 'v1.0.0',
+    footerStatus: 'Status',
+    footerActive: 'Active',
+  },
+  topbar: {
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    navMenu: 'Navigation menu',
   },
   bottomNav: {
     navAriaLabel: 'Mobile dashboard navigation',
@@ -34,9 +58,9 @@ export const dashboardShellCopy = {
   overview: {
     signedInLabel: 'Signed in as',
     noEmailFallback: 'No email address available',
-    emptyTitle: 'Profile setup still in progress',
+    emptyTitle: 'Complete your profile to continue',
     emptyDescription:
-      'Finish your onboarding details to unlock your personalized dashboard experience.',
+      'Finish setting up your profile to see your verification progress and funding status.',
     errorTitle: 'We could not load your dashboard',
     errorDescription: 'Please refresh this page in a moment to try again.',
   },
@@ -127,8 +151,8 @@ export const dashboardOverviewCopy: Record<DashboardRole, OverviewCopy> = {
   university: {
     title: 'Welcome back, University',
     description: 'Validate student funding records and clear pending enrollment decisions.',
-    ctaLabel: 'Open verification queue',
-    ctaHref: '/dashboard/university/verification',
+    ctaLabel: 'Open pipeline',
+    ctaHref: '/dashboard/university/pipeline',
   },
   admin: {
     title: 'Welcome back, Admin',
