@@ -810,6 +810,71 @@ Four event types, in reverse-chronological order:
 - Student must select a new school. All previously approved documents for the old school remain (not deleted).
 - The alert banner persists on the overview until the student selects a new school.
 
+**Verification tiers (3-tier model):**
+- Tier 1: Phone verification — OTP to verified mobile number.
+- Tier 2: Identity — Dojah KYC (ID document + face capture). Manual review on automated failure.
+- Tier 3: Banking — Mono API connection OR bank statement upload. Both are equally valid paths.
+- Each tier must be complete before the next is accessible.
+- Journey sidebar shows tier progress, not a percentage.
+
+**Multi-sponsor (multiple sponsors per application):**
+- A student can invite multiple sponsors to one application.
+- Each sponsor has their own invite card. Combined sponsor amounts contribute to the proof target.
+- If one sponsor cancels: their contribution is removed, target recalculates, journey may pause if funds fall short.
+- UI: each sponsor is a separate card on the overview. Not combined into one card.
+
+**Sponsor invite expiry:**
+- Invite links expire after 7 days.
+- If expired: invite card shows "Invite expired" with a "Resend invite" action.
+- Student is notified by email when a sponsor invite expires without being accepted.
+
+**Certificate revocation:**
+- Admin can revoke an issued certificate.
+- Effect: certificate page shows a "Revoked" state. Public verification URL returns an invalid/revoked state.
+- Downloaded PDF copies are not recalled — but the verification URL is the authoritative source.
+- Student is notified by email when their certificate is revoked, with reason.
+
+**Proof-of-funds target:**
+- The target amount is set by the university per program — not necessarily the advertised tuition.
+- Universities configure their own proof threshold (may include living expenses, fees, etc.).
+- The target is shown to the student from the moment they select a school: "You need to prove ₦ X,XXX,XXX."
+- If a student's school is changed, the target recalculates to the new program's threshold.
+
+**Certificate issuance — manual admin trigger:**
+- Certificates are NOT auto-issued. Admin must manually review the complete package and press "Issue certificate."
+- Admin reviews: all documents approved + all verification tiers complete + proof target met + no active flags.
+- On issuance: student is notified immediately (email + bell + cert page updates).
+- Design implication: there is a "Ready to issue" queue in admin — students whose packages are complete but cert not yet issued.
+
+**Mono bank connection failure — automatic fallback:**
+- If Mono API fails or times out: student is automatically moved to the document upload path.
+- No choice prompt. The system handles the failure silently and presents the upload option.
+- A brief inline message explains: "Bank connection unavailable. Upload your bank statement instead."
+- Student does not need to understand why Mono failed.
+
+**Admin impersonation:**
+- Admin can fully act on behalf of a student (not read-only).
+- The impersonating admin sees an orange banner: "Impersonating [Student Name] — all actions are audit-logged."
+- Student is NOT notified in real time. Student receives an email after the session ends: "An admin accessed your account on [date] to [action]."
+- Every action taken during impersonation is written to the audit log.
+
+**University bulk student import (3 methods):**
+1. CSV upload: university downloads a template, fills in student name/email/program/enrollment date, uploads.
+2. Manual entry: one student at a time via a form. For small cohorts.
+3. API push: university SIS pushes records via the partner API. For technical integrations.
+- All three result in the same student record. Method is a preference, not a capability gate.
+
+**Agent commissions:**
+- Managed entirely offline. No in-app commission tracking, no commissions page, no payment flows.
+- Agents see their student pipeline (how many students, what stage) but no financial tracking.
+- Do not build any commission, earnings, or payout UI for agents.
+
+**Verification page identity:**
+- Page title: "Verification" — H1 matches nav label exactly.
+- URL slug: `/dashboard/student/verification`
+- This page hosts the 3-tier verification journey: phone → identity → banking.
+- Each tier is a section on the page, not a separate page.
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
