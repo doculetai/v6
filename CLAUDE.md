@@ -332,6 +332,35 @@ All four journey surfaces must stay in sync at all times:
 - CTA pointing to a different step than `journeyState.nextAction` → break
 - Email saying "Step 3: Upload documents" when the stage is labelled "Documents" → break
 
+### Banking Verification Path
+Two equal options are presented upfront — student chooses based on preference:
+- **Option A — Connect bank (Mono API):** Real-time balance pull. Instant result. Primary for students with supported banks.
+- **Option B — Upload bank statement:** Student uploads PDF/image. OCR extracts balance and account info. Goes to admin review.
+
+UI pattern: Side-by-side choice cards (not a dropdown, not a fallback message). Both options are first-class.
+After OCR on Option B: show the student a preview of extracted data (name, account, balance) before submitting to admin. This is the "OCR review" step the user described.
+
+### Student Notification Model
+Three notification channels when admin approves/rejects a document or verification:
+1. **In-app status badge** — document card or journey step updates its status on the student's next visit. Always present.
+2. **Email** — transactional email: "[Document type] approved" or "[Document type] requires resubmission." Always sent.
+3. **Notification bell** — sidebar/header bell icon shows unread count. Student can dismiss.
+
+No WhatsApp notifications for review outcomes (only used for certificate sharing).
+
+### First-Time Student Empty State
+New students land on the Overview (no redirect to onboarding wizard).
+- All journey steps shown as "upcoming" (locked visually but visible — they can see the full path ahead).
+- A prominent "Get started" CTA block at the top, above the journey steps.
+- The overview is the orientation surface. Students should understand what the platform does before being sent anywhere.
+- Never auto-redirect a new user. Show them the destination first, then guide them.
+
+### Review / Pending Copy
+No stated SLA for admin review. Copy must not promise a timeline.
+- Use: "Under review", "Your submission has been received", "We will be in touch"
+- Never use: "within 24 hours", "within 2 business days", "shortly", "soon"
+- The student should feel held, not given a false promise.
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
