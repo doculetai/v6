@@ -1,8 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UploadCloud } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { CheckCircle } from '@phosphor-icons/react';
+import Link from 'next/link';
+import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import {
@@ -17,8 +18,14 @@ import {
   StudentDocumentsLoadingState,
 } from '@/components/student/documents/student-documents-states';
 import { StudentDocumentUploadForm } from '@/components/student/documents/student-document-upload-form';
+import { DocumentUploadProgress, type UploadStage } from '@/components/ui/document-upload-progress';
+import { PageShell, Stack } from '@/components/layout/content-primitives';
+import { PageHeader } from '@/components/layout/page-header';
+import { Button } from '@/components/ui/button';
 import { studentCopy } from '@/config/copy/student';
+import { primitivesCopy } from '@/config/copy/primitives';
 import type { StudentDocumentType, SupportedDocumentMimeType } from '@/lib/documents';
+import { useDocumentsRealtime } from '@/lib/supabase/useDocumentsRealtime';
 import { trpc } from '@/trpc/client';
 
 function buildFileInputKey() {
@@ -58,6 +65,16 @@ export function DocumentsPageClient() {
   const copy = studentCopy.documents;
   const utils = trpc.useUtils();
   const [fileInputKey, setFileInputKey] = useState(buildFileInputKey);
+  const [uploadStage, setUploadStage] = useState<UploadStage | null>(null);
+
+  const handleProgressComplete = useCallback(() => {
+    // Clear progress after completion animation
+    setTimeout(() => setUploadStage(null), 800);
+  }, []);
+
+  const sessionQuery = trpc.dashboard.getSession.useQuery({ role: 'student' });
+  const userId = sessionQuery.data?.userId ?? '';
+  useDocumentsRealtime(userId);
 
   const formSchema = useMemo(() => {
     return createDocumentUploadFormSchema(copy.validation);
@@ -80,6 +97,10 @@ export function DocumentsPageClient() {
     staleTime: 15_000,
   });
 
+  const allApproved =
+    (studentDocumentsQuery.data?.length ?? 0) > 0 &&
+    (studentDocumentsQuery.data?.every((d) => d.status === 'approved') ?? false);
+
   const uploadDocumentMutation = trpc.student.uploadDocument.useMutation({
     onSuccess: async () => {
       await utils.student.listDocuments.invalidate();
@@ -90,8 +111,15 @@ export function DocumentsPageClient() {
     form.clearErrors('root');
 
     try {
+      // Stage 1: Uploading
+      setUploadStage('uploading');
       const fileBase64 = await readFileAsBase64(values.file);
 
+      // Stage 2: Scanning
+      setUploadStage('scanning');
+
+      // Stage 3: Processing (extracting document details)
+      setUploadStage('processing');
       await uploadDocumentMutation.mutateAsync({
         documentType: values.documentType,
         fileName: values.file.name,
@@ -100,12 +128,16 @@ export function DocumentsPageClient() {
         fileBase64,
       });
 
+      // Stage 4: Submitted
+      setUploadStage('submitted');
+
       form.reset({
         documentType: '',
       });
 
       setFileInputKey(buildFileInputKey());
     } catch {
+      setUploadStage(null);
       form.setError('root', {
         message: copy.validation.uploadFailed,
       });
@@ -113,25 +145,35 @@ export function DocumentsPageClient() {
   };
 
   return (
-    <section className="mx-auto w-full max-w-5xl space-y-6">
-      <header className="overflow-hidden rounded-2xl border border-border bg-card/95 shadow-sm dark:border-border dark:bg-card/95">
-        <div className="bg-gradient-to-r from-primary/15 via-background to-accent/60 px-5 py-5 dark:from-primary/20 dark:via-background dark:to-accent/50 md:px-6">
-          <div className="flex items-start gap-3">
-            <div className="rounded-xl border border-border bg-background/80 p-2 dark:border-border dark:bg-background/80">
-              <UploadCloud className="size-5 text-primary dark:text-primary" aria-hidden="true" />
-            </div>
+    <PageShell width="wide">
+      <Stack gap="md">
+      <PageHeader
+        title={copy.title}
+        description={copy.subtitle}
+        breadcrumbs={[
+          { label: 'Overview', href: '/dashboard/student' },
+          { label: 'Documents' },
+        ]}
+      />
 
-            <div className="min-w-0 space-y-1">
-              <h2 className="text-2xl font-semibold text-card-foreground dark:text-card-foreground md:text-4xl">
-                {copy.title}
-              </h2>
-              <p className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
-                {copy.subtitle}
-              </p>
-            </div>
+      {allApproved && (
+        <div className="flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-950/30">
+          <CheckCircle className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400" weight="duotone" aria-hidden="true" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-foreground">
+              {copy.allApproved.heading}
+            </p>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {copy.allApproved.body}
+            </p>
+            <Button asChild variant="link" className="mt-1 h-auto p-0 text-sm text-primary">
+              <Link href="/dashboard/student/proof">
+                {copy.allApproved.cta}
+              </Link>
+            </Button>
           </div>
         </div>
-      </header>
+      )}
 
       <section id="document-upload-form" className="scroll-mt-4">
         <StudentDocumentUploadForm
@@ -140,6 +182,13 @@ export function DocumentsPageClient() {
         fileInputKey={fileInputKey}
         isUploading={uploadDocumentMutation.isPending}
         onSubmit={handleUpload}
+      />
+
+      <DocumentUploadProgress
+        currentStage={uploadStage}
+        stageLabels={primitivesCopy.uploadProgress}
+        onComplete={handleProgressComplete}
+        className="mt-4"
       />
 
       {studentDocumentsQuery.isPending ? (
@@ -161,7 +210,8 @@ export function DocumentsPageClient() {
           <StudentDocumentsEmptyState copy={copy.states} />
         )
       ) : null}
-    </section>
-  </section>
+      </section>
+      </Stack>
+    </PageShell>
   );
 }
