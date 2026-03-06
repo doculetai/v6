@@ -1017,6 +1017,78 @@ Four event types, in reverse-chronological order:
 - Right column: submission queue items (documents, KYC, banking — each as a reviewable card with approve/reject actions).
 - Both columns scroll independently on longer records.
 
+**SCOPE CORRECTION — document types:**
+- Doculet does NOT handle embassy application documents. The platform is proof-of-funds only.
+- The only document students upload is a bank statement (when using the document upload path instead of Mono API).
+- CORRECTION: the Documents page tab design was previously noted as "Embassy docs / Bank statement tabs" — this is WRONG. The Documents page is the banking path only (bank statement upload + OCR review).
+- Any copy, tab labels, or section headers referencing "embassy documents" must be removed.
+
+**Redesigned student sidebar nav (6 items):**
+```
+Overview
+Onboarding          ← single-page form: school + funding type
+Verification        ← /dashboard/student/verification (T1 phone, T2 identity, T3 banking)
+Documents           ← bank statement upload (only used when Mono API not available)
+Proof of Funds      ← certificate: issue, share, history
+Settings
+```
+- Schools browsing is accessible from the Onboarding page's school selector and from a linked /schools page.
+- No separate "Schools" nav item — schools are part of the Onboarding step.
+- Support: floating help button only — no nav item.
+
+**Verification page — 3 stacked tier cards:**
+- Three vertically-stacked cards. One per tier.
+- Tier 1 (Phone): active by default on first visit. Subsequent tiers muted (reduced opacity) until previous is complete.
+- Tier 2 (Identity): unlocks after T1 complete.
+- Tier 3 (Banking): unlocks after T2 complete. Shows banking choice (Mono or upload) inside the card.
+- Completed tier card: shows status + masked data summary (no action button). Collapsed but visible.
+- Proof target progress bar appears above the tier cards: "₦ X / ₦ X target"
+
+**Applications page layout:**
+- Cards layout — one card per application.
+- Each card: school name, program name, current journey stage badge, certificate status.
+- "New application" button at the top.
+- No table view. Cards even for many applications.
+
+**School edit (from Overview):**
+- An "Edit" icon/link on the school card on the Overview page opens a sheet.
+- Sheet contains: school selector + program selector + confirm button.
+- Same fields as the Onboarding page. Change only allowed if no sponsor has confirmed.
+- On confirm: proof target recalculates to new program's threshold.
+
+**Student name usage:**
+- First name only in UI copy, greetings, page headers: "Welcome back, Kemi."
+- Full legal name in formal contexts: certificate, account identity block in sidebar header, admin views.
+- Legal name source: student enters at signup → KYC (Dojah) confirms and may update it.
+- If KYC updates the name: notify student and prompt them to review.
+
+**Staff account management:**
+- Doculet super-admin invites staff (admin, university staff) via email. No self-signup anywhere.
+- Staff receive an invite link, set up their account, and land on their role-appropriate dashboard.
+- No in-app team management UI needed at this stage.
+
+**Password reset flow:**
+- Primary: email link — student enters email, receives a link, clicks it, sets new password on a Doculet page.
+- Fallback: OTP to verified phone number — if email is inaccessible.
+- Students can choose their reset path from the login screen.
+
+**Settings IS the profile — no separate profile page:**
+- There is no student profile page distinct from Settings.
+- Settings > Profile tab contains all editable account details.
+- Settings > Security tab: password, auth.
+- Settings > Notifications tab: notification preferences.
+- Settings > Profile tab also contains: "Download my data" and "Delete account" actions.
+
+**Legal name source — dual:**
+- Student enters full legal name during signup.
+- KYC (Dojah) extracts the legal name from the ID document and may confirm or update it.
+- If KYC name differs from signup name: flag for student review.
+
+**Overall journey progress — overview progress bar only:**
+- A progress bar appears at the top of the Overview page only. Not in the sidebar.
+- No step counter ("3 of 6"). The bar communicates progress visually without counting.
+- Sidebar communicates progress via filled/muted states on nav items — no redundant counter.
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
