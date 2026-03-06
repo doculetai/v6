@@ -119,6 +119,8 @@ export const studentOnboardingCopy = {
         completingCta: "Completing onboarding...",
         openDashboardCta: "Open student dashboard",
         successTitle: "Onboarding completed",
+        nextStepCta: "Begin your verification",
+        overviewCta: "Go to your overview",
         successDescription:
           "Your profile is now ready. Continue to verification and funding actions.",
         summary: {
