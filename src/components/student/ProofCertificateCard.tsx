@@ -1,9 +1,13 @@
-import { AlertTriangle, Copy, Loader2, Shield, ShieldCheck, ShieldEllipsis } from 'lucide-react';
+'use client';
+
+import { CircleNotch, Copy, Shield, ShieldCheck, ShieldSlash, Warning } from '@phosphor-icons/react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { TrustSignal } from '@/components/ui/trust-signal';
 import { studentCopy } from '@/config/copy/student';
+import { uiPrimitives } from '@/config/copy/primitives';
 
 type ProofCertificate = {
   issued: boolean;
@@ -50,7 +54,7 @@ export function ProofCertificateCard({
   });
 
   return (
-    <Card className="relative overflow-hidden border-border bg-card/80 shadow-xl backdrop-blur-sm dark:border-border dark:bg-card/80">
+    <Card className="relative overflow-hidden border-border bg-card/80 shadow-xl backdrop-blur-sm ring-1 ring-primary/20">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/5"
@@ -58,16 +62,16 @@ export function ProofCertificateCard({
 
       <CardHeader className="relative space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/80 px-4 text-sm font-medium text-foreground dark:border-border dark:bg-background/80 dark:text-foreground">
-            <ShieldCheck className="size-5 text-primary dark:text-primary" aria-hidden="true" />
-            <span>{studentCopy.proof.certificate.title}</span>
+          <div className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/80 px-4 text-sm font-medium text-foreground">
+            <ShieldCheck weight="duotone" className="size-5 text-primary" aria-hidden="true" />
+            <span className="font-serif text-xl font-semibold text-foreground">{studentCopy.proof.certificate.title}</span>
           </div>
 
-          <div className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/80 px-4 text-xs font-medium text-foreground dark:border-border dark:bg-background/80 dark:text-foreground">
+          <div className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-background/80 px-4 text-xs font-medium text-foreground">
             {certificate.issued ? (
-              <Shield className="size-4 text-primary dark:text-primary" aria-hidden="true" />
+              <Shield weight="duotone" className="size-4 text-primary" aria-hidden="true" />
             ) : (
-              <ShieldEllipsis className="size-4 text-muted-foreground dark:text-muted-foreground" aria-hidden="true" />
+              <ShieldSlash weight="duotone" className="size-4 text-muted-foreground" aria-hidden="true" />
             )}
             <span>
               {certificate.issued
@@ -77,7 +81,7 @@ export function ProofCertificateCard({
           </div>
         </div>
 
-        <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
+        <CardDescription className="text-sm text-muted-foreground md:text-base">
           {studentCopy.proof.certificate.description}
         </CardDescription>
       </CardHeader>
@@ -86,16 +90,17 @@ export function ProofCertificateCard({
         <CertificateMeta certificate={certificate} />
 
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-foreground dark:text-foreground">
+          <h3 className="text-sm font-semibold text-foreground">
             {studentCopy.proof.certificate.trustTitle}
           </h3>
           <TrustSignals trust={trust} />
+          <TrustSignal message={uiPrimitives.trustSignals.certificate} className="mt-2" />
         </div>
 
-        <div className="space-y-3 rounded-xl border border-border bg-background/75 p-4 dark:border-border dark:bg-background/75">
+        <div className="space-y-3 rounded-xl border border-border bg-background/75 p-4">
           <label
             htmlFor="proof-share-link"
-            className="block text-xs font-medium text-muted-foreground dark:text-muted-foreground"
+            className="block text-xs font-medium text-muted-foreground"
           >
             {studentCopy.proof.certificate.shareLinkLabel}
           </label>
@@ -105,16 +110,16 @@ export function ProofCertificateCard({
               id="proof-share-link"
               readOnly
               value={shareLink ?? studentCopy.proof.certificate.noShareLink}
-              className="min-h-11 flex-1 border-border bg-background dark:border-border dark:bg-background"
+              className="min-h-11 flex-1 border-border bg-background"
             />
             <Button
               type="button"
               variant="outline"
               onClick={onCopyShareLink}
               disabled={!shareLink || isCopying}
-              className="min-h-11 gap-2"
+              className="min-h-11 w-full gap-2 sm:w-auto"
             >
-              <Copy className="size-5" aria-hidden="true" />
+              <Copy weight="duotone" className="size-5" aria-hidden="true" />
               <span>
                 {isCopying
                   ? studentCopy.proof.certificate.copiedLinkCta
@@ -130,22 +135,22 @@ export function ProofCertificateCard({
             className="min-h-11 w-full gap-2"
           >
             {isGeneratingShareLink ? (
-              <Loader2 className="size-5 animate-spin" aria-hidden="true" />
+              <CircleNotch weight="duotone" className="size-5 animate-spin" aria-hidden="true" />
             ) : (
-              <ShieldCheck className="size-5" aria-hidden="true" />
+              <ShieldCheck weight="duotone" className="size-5" aria-hidden="true" />
             )}
             <span>{generateCta}</span>
           </Button>
 
           {!canGenerateShareLink ? (
-            <p className="text-xs text-muted-foreground dark:text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {studentCopy.proof.locked.helper}
             </p>
           ) : null}
 
           {shareError ? (
-            <p className="inline-flex items-center gap-2 text-sm text-destructive dark:text-destructive">
-              <AlertTriangle className="size-4" aria-hidden="true" />
+            <p className="inline-flex items-center gap-2 text-sm text-destructive">
+              <Warning weight="duotone" className="size-4" aria-hidden="true" />
               <span>{shareError}</span>
             </p>
           ) : null}
@@ -161,7 +166,7 @@ type CertificateMetaProps = {
 
 function CertificateMeta({ certificate }: CertificateMetaProps) {
   return (
-    <div className="grid gap-3 rounded-xl border border-border bg-background/75 p-4 dark:border-border dark:bg-background/75 sm:grid-cols-2">
+    <div className="grid gap-3 rounded-xl border border-border bg-background/75 p-4  sm:grid-cols-2">
       <MetaItem
         label={studentCopy.proof.certificate.idLabel}
         value={certificate.certificateId ? truncateCertificateId(certificate.certificateId) : null}
@@ -212,9 +217,9 @@ type MetaItemProps = {
 
 function MetaItem({ label, value }: MetaItemProps) {
   return (
-    <div className="min-h-11 rounded-lg border border-border bg-background p-3 dark:border-border dark:bg-background">
-      <p className="text-xs text-muted-foreground dark:text-muted-foreground">{label}</p>
-      <p className="mt-1 text-sm font-medium text-foreground dark:text-foreground">
+    <div className="min-h-11 rounded-lg border border-border bg-background p-3">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 text-sm font-medium text-foreground">
         {value ?? studentCopy.proof.certificate.unavailableValue}
       </p>
     </div>

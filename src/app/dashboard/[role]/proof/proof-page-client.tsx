@@ -5,8 +5,12 @@ import { useMemo, useState, useTransition } from 'react';
 import { ProofCertificateCard } from '@/components/student/ProofCertificateCard';
 import { ProofChecklistCard } from '@/components/student/ProofChecklistCard';
 import { ProofEmptyState } from '@/components/student/ProofEmptyState';
+import { PageShell, Stack } from '@/components/layout/content-primitives';
+import { PageHeader } from '@/components/layout/page-header';
 import { studentCopy } from '@/config/copy/student';
+import { useSponsorshipsRealtime } from '@/lib/supabase/useSponsorshipsRealtime';
 import { cn } from '@/lib/utils';
+import { trpc } from '@/trpc/client';
 
 type ProofChecklist = {
   kycComplete: boolean;
@@ -59,6 +63,10 @@ export function ProofPageClient({
   initialData,
   generateProofShareLinkAction,
 }: ProofPageClientProps) {
+  const sessionQuery = trpc.dashboard.getSession.useQuery({ role: 'student' });
+  const userId = sessionQuery.data?.userId ?? '';
+  useSponsorshipsRealtime(userId);
+
   const [proofData, setProofData] = useState<StudentProofData>(initialData);
   const [shareError, setShareError] = useState<string | null>(null);
   const [isCopying, setIsCopying] = useState(false);
@@ -112,15 +120,16 @@ export function ProofPageClient({
   };
 
   return (
-    <section className="mx-auto w-full max-w-6xl space-y-6">
-      <header className="space-y-3">
-        <h2 className="text-3xl font-semibold text-foreground dark:text-foreground md:text-5xl">
-          {studentCopy.proof.title}
-        </h2>
-        <p className="max-w-2xl text-sm text-muted-foreground dark:text-muted-foreground md:text-base">
-          {studentCopy.proof.subtitle}
-        </p>
-      </header>
+    <PageShell width="default">
+      <Stack gap="md">
+      <PageHeader
+        title={studentCopy.proof.title}
+        description={studentCopy.proof.subtitle}
+        breadcrumbs={[
+          { label: 'Overview', href: '/dashboard/student' },
+          { label: 'Proof of Funds' },
+        ]}
+      />
 
       {!proofData.hasAnyProgress ? <ProofEmptyState /> : null}
 
@@ -143,7 +152,8 @@ export function ProofPageClient({
           onCopyShareLink={handleCopyShareLink}
         />
       </div>
-    </section>
+      </Stack>
+    </PageShell>
   );
 }
 
