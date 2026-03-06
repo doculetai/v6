@@ -606,6 +606,78 @@ Four event types, in reverse-chronological order:
 - This banner is the highest-priority element on the overview when the journey is incomplete.
 - Disappears when all steps are complete (replaced by the certified banner).
 
+**File upload constraints:**
+- Bank statements and formal letters: PDF only. Reject image-only uploads for these types.
+- Identity documents (ID cards, passport photos): JPG or PNG accepted.
+- Max file size: 10MB per file.
+- Max files per upload session: 5 files at once (queue pattern).
+- Show file type and size validation errors inline before the upload starts.
+
+**Feed and list pagination — page-based:**
+- Activity feed, document history, and all long lists use numbered page pagination (1, 2, 3…).
+- No infinite scroll. No "load more" button.
+- Default page size: define per context (suggest 20 items). Always show total count.
+- Page controls: previous / next arrows + current page number. No jump-to-page input needed.
+
+**Trust signal placements (3 locations):**
+1. Certificate page: Doculet seal (image asset), verification URL, certificate ID.
+2. Banking and KYC steps: provider logos inline — "Secured by Mono", "Identity verification by Dojah".
+3. Sidebar footer: subtle persistent note — encryption or regulatory reference. Small, muted. Never loud.
+- Do not repeat trust signals throughout the dashboard. These 3 locations are the complete set.
+
+**Touch gestures (mobile):**
+- Swipe down to dismiss bottom sheets (standard iOS/Android pattern).
+- Pull to refresh on the Overview page and Activity feed.
+- Swipe left on a document card to reveal contextual actions: Delete / Replace.
+- No other swipe gestures. No horizontal scroll carousels. No long-press menus.
+
+**Logo click behavior:**
+- Clicking the Doculet logo in the sidebar navigates to the student overview (dashboard home).
+- Logo always acts as the "home" link. Never navigates to the marketing site from within the dashboard.
+
+**Offline / connection lost:**
+- A persistent top banner appears while offline: "You are offline. Changes may not save."
+- Banner disappears automatically when connection is restored.
+- tRPC calls that fail while offline show their normal inline error states (section-level, not page-level).
+
+**Tooltip usage:**
+- Tooltips appear only on icon-only buttons (no visible text label).
+- If a button has a visible text label: no tooltip.
+- Tooltip content: verb phrase describing the action. "Delete document", "Copy link", "Download PDF".
+- Do not use tooltips for contextual help or explanations — use info text or description copy instead.
+
+**Agent student management:**
+- Agents have a Students list page: all assigned students shown as cards or table rows.
+- Each student card: name, school, current journey stage, last activity date.
+- Tap to open a student's journey summary — a read-only status view, not a full dashboard mirror.
+- Agent cannot take actions on behalf of the student (no impersonation in agent role).
+
+**Sponsor overview primary action:**
+- Primary CTA: fund a student — initiates a Paystack payment flow for a specific sponsorship.
+- Sponsor overview surfaces: student name, school, program, committed amount, payment status.
+- The "Fund" button is the most prominent action. Everything else is context.
+
+**Copy length rules (MANDATORY for student-facing UI):**
+- Card descriptions: maximum 2 lines. If it needs more, the copy is wrong — rewrite it shorter.
+- Banners and alert messages: maximum 1 line.
+- Button labels: maximum 3 words. Prefer 1–2 words. "Upload document" not "Upload your document now".
+- Section labels (uppercase headers): maximum 2 words.
+- Page headings (H1): match the nav label exactly. No embellishment.
+
+**Page headings — every page has an H1:**
+- Every dashboard page has a visible H1 heading that matches its sidebar nav label exactly.
+- Documents page → H1 "Documents". Proof page → H1 "Proof of Funds". Settings → H1 "Settings".
+- This is both an accessibility requirement and a navigation anchor.
+
+**Empty states — all roles:**
+- Pattern: icon (Phosphor Duotone, 32px) + heading + one CTA button. Nothing more.
+- Student role: "You have no documents yet. [Upload your first document]"
+- Sponsor role: "No active students. [Fund a student]"
+- University: "No pending applications. [Import students]"
+- Admin: "Queue is clear." (no CTA — this is a success state, not an action state)
+- Agent: "No students assigned. [Invite a student]"
+- Never: lengthy explanations, illustrations, multi-CTA empty states, or humor.
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
