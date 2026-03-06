@@ -30,7 +30,7 @@ export function ProofChecklistCard({ checklist }: ProofChecklistCardProps) {
 
   return (
     <Card className="border-border bg-card shadow-sm">
-      <CardHeader className="relative space-y-3">
+      <CardHeader className="space-y-3">
         <div className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-border bg-background/80 px-4 text-sm font-medium text-foreground">
           <ShieldCheck weight="duotone" className="size-5 text-primary" aria-hidden="true" />
           <span>{studentCopy.proof.progress.title}</span>
@@ -43,7 +43,7 @@ export function ProofChecklistCard({ checklist }: ProofChecklistCardProps) {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="relative space-y-5">
+      <CardContent className="space-y-5">
         <Progress
           value={progressValue}
           className="h-2 bg-muted [&_[data-slot=progress-indicator]]:duration-300"

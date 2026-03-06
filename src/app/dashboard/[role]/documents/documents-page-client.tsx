@@ -1,8 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckCircle } from '@phosphor-icons/react';
-import Link from 'next/link';
 import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -22,7 +20,6 @@ import { ActionSuccessBanner } from '@/components/ui/action-success-banner';
 import { DocumentUploadProgress, type UploadStage } from '@/components/ui/document-upload-progress';
 import { PageShell, Stack } from '@/components/layout/content-primitives';
 import { PageHeader } from '@/components/layout/page-header';
-import { Button } from '@/components/ui/button';
 import { studentCopy } from '@/config/copy/student';
 import { primitivesCopy } from '@/config/copy/primitives';
 import type { StudentDocumentType, SupportedDocumentMimeType } from '@/lib/documents';
@@ -169,7 +166,7 @@ export function DocumentsPageClient() {
         />
       ) : uploadStage === 'submitted' ? (
         <ActionSuccessBanner
-          message={copy.submitSuccessMessage}
+          message={copy.upload.submitSuccessMessage}
           nextAction={null}
           onDismiss={() => setUploadStage(null)}
         />
