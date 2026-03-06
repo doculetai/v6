@@ -1219,6 +1219,96 @@ Settings
 - The QR code is positioned in the bottom-right corner of the certificate.
 - Scanning the QR takes the viewer to the public certificate page (read-only, no login required).
 
+**Mono reconnect — state after reconnect:**
+- On reconnect, the new bank connection must pass admin review again before T3 is restored.
+- Reconnecting alone does not restore T3 completion automatically.
+
+**Maximum sponsors per application:**
+- No hard limit. Unlimited sponsors per application.
+
+**Proof of Funds page — pre-issuance state (all steps complete, fee unpaid):**
+- Fee card at top: "Pay ₦ [amount] to issue your certificate."
+- Blurred/locked cert preview below the fee card.
+- A note: "Once payment is received, your certificate will be reviewed and issued."
+
+**Certificate expiry notification:**
+- Email reminder at 30 days and 7 days before expiry.
+- In-app bell notification at 30 days before expiry.
+- Copy: "Your certificate expires in 30 days. Contact support to renew."
+
+**Schools browse page (/schools) filters:**
+- Search bar with autosuggest + filter by university name + filter by city.
+
+**Tier auto-expand on Verification page:**
+- Yes — when T1 (phone) completes, T2 card animates open automatically.
+- When T2 completes, T3 animates open. Progressive reveal.
+
+**Overview page — first CTA copy (Onboarding not complete):**
+- "Set up your profile" — primary CTA on the "Begin" card at the top of Overview.
+
+**Post-cert Overview heading:**
+- H1 changes to: "Your proof of funds is verified."
+- Cert card is elevated to top of content area.
+
+**Verification page progress format:**
+- Progress bar only. No percentage, no fraction/step counter.
+- The ₦ X / ₦ Y proof target amount labels the bar. The bar itself communicates tier progress visually.
+
+**OCR processing state:**
+- Review card appears immediately after upload completes.
+- Each field starts as a skeleton loader.
+- Fields populate as OCR processing completes.
+- If a field fails to extract: skeleton resolves to an empty input (student must fill in manually).
+
+**Verification tier indicator in sidebar:**
+- No tier sub-label or badge on the Verification nav item.
+- Student must visit the Verification page to see tier status.
+
+**Proof of Funds page heading (cert issued):**
+- H1: "Proof of Funds Certificate"
+
+**Pull-to-refresh (mobile):**
+- Supported. Native spinner at top, page data re-fetches.
+
+**Mobile sidebar behavior:**
+- On mobile: sidebar is hidden. Navigation is via the 4-item bottom tab bar only.
+- A hamburger (or equivalent) opens a full-screen nav sheet covering the entire screen including the tab area.
+- The nav sheet shows all 6 sidebar nav items + account identity at top.
+
+**Multi-application state isolation:**
+- Each application has fully isolated state: school, verification tiers, documents, sponsors, certificate.
+- Switching active applications switches all of this context.
+- Phone verification (T1) is the only exception — it is shared across applications (verified once).
+
+**Settings — email change:**
+- Yes, self-serve. Student enters new email in Settings > Profile.
+- Verification email sent to the new address. Change applies after clicking the link.
+
+**Settings — phone change:**
+- CORRECTION: Phone number CAN be changed (not immutable).
+- Settings > Security: student enters new number, receives OTP to the new number, confirms.
+
+**Second application while first in-progress:**
+- Blocked. Student cannot start a new application while another is active.
+- They must complete or withdraw the current application first.
+
+**KYC rejection reason (admin manual review):**
+- Admin's written rejection note is shown on the T2 tier card.
+- Also: email notification with the rejection note.
+
+**Application withdrawal:**
+- Yes — "Withdraw application" action on the application card in the Applications page.
+- Requires a confirmation dialog before withdrawing.
+- All sponsors on the application are notified by email: "[Student Name] has withdrawn their application at [School Name]. Their commitments have been removed."
+- Sponsor commitments are cancelled automatically on withdrawal.
+
+**Schools browse page — current selection highlighted:**
+- Yes — the student's currently selected school card is highlighted (checkmark/accent border).
+- Student can click a different card to change their selection (redirects back to Onboarding edit sheet flow).
+
+**Verification page H1:**
+- "Identity Verification"
+
 **CORRECTION — university admin document review:**
 - EARLIER STATEMENT WAS WRONG. University admins do NOT review documents.
 - Doculet admin reviews ALL student documents (bank statements, OCR verification).
