@@ -3,6 +3,7 @@ import type { inferRouterOutputs } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
+import { PageHeader } from '@/components/ui/page-header';
 import { studentCopy } from '@/config/copy/student';
 import type { AppRouter } from '@/server/root';
 import { api } from '@/trpc/server';
@@ -42,7 +43,7 @@ export default async function SchoolsRolePage({ params }: SchoolsRolePageProps) 
 
   try {
     [initialSchools, initialSelection] = await Promise.all([
-      caller.student.listSchools({}),
+      caller.student.listSchools({ limit: 50, offset: 0 }),
       caller.student.getStudentSchoolSelection(),
     ]);
   } catch (error) {
@@ -59,7 +60,13 @@ export default async function SchoolsRolePage({ params }: SchoolsRolePageProps) 
 
   return (
     <>
-      <h1 className="sr-only">{studentCopy.schools.title}</h1>
+      <PageHeader
+        title={studentCopy.schools.title}
+        breadcrumbs={[
+          { label: 'Overview', href: `/dashboard/${role}` },
+          { label: studentCopy.schools.title },
+        ]}
+      />
       <TRPCReactProvider>
         <SchoolsPageClient initialSchools={initialSchools} initialSelection={initialSelection} />
       </TRPCReactProvider>

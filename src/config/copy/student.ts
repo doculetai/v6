@@ -6,8 +6,8 @@ export const studentCopy = {
 
   schools: {
     title: "Find your school",
-    subtitle: "Search thousands of programs. Select one to set your funding target.",
-    searchHint: "Search by university, program, or city…",
+    subtitle: "Search universities across the United States and Nigeria. Select a program to set your funding target.",
+    searchHint: "Search by university, city, or state…",
     empty: {
       title: "No programs found",
       description: "Try a different search term or broaden your filters.",
@@ -16,7 +16,22 @@ export const studentCopy = {
     card: {
       apply: "Apply",
       viewDetails: "View details",
+      visitWebsite: "Visit website",
+      estimatedTuition: "Estimated annual tuition (out-of-state)",
     },
+    filters: {
+      allCountries: "All countries",
+      unitedStates: "United States",
+      nigeria: "Nigeria",
+      stateLabel: "State",
+      statePlaceholder: "All states",
+    },
+    institutionTypes: {
+      public: "Public",
+      private_nonprofit: "Private non-profit",
+      private_forprofit: "Private for-profit",
+    },
+    loadMore: "Show more schools",
   },
 
   verify: {
@@ -308,6 +323,11 @@ export const studentCopy = {
       errorDescription: "Please refresh in a moment to try again.",
       shareError: "Unable to generate a secure share link right now. Please try again.",
       retryCta: "Try again",
+      shareWithUniversity: {
+        heading: "Share with your university",
+        body: "Your certificate is ready. Send the secure link to your admissions office to confirm your proof of funds.",
+        cta: "Copy share link",
+      },
     },
   },
 

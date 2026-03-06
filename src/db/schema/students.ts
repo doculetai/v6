@@ -3,14 +3,38 @@ import { index, integer, pgTable, text, timestamp, uniqueIndex, uuid } from 'dri
 
 import { users } from './users';
 
-export const schools = pgTable('schools', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
-  country: text('country').notNull(),
-  logoUrl: text('logo_url'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
+export const schools = pgTable(
+  'schools',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    country: text('country').notNull(),
+    logoUrl: text('logo_url'),
+    city: text('city'),
+    state: text('state'),
+    zip: text('zip'),
+    websiteUrl: text('website_url'),
+    accreditor: text('accreditor'),
+    studentSize: integer('student_size'),
+    institutionType: text('institution_type', {
+      enum: ['public', 'private_nonprofit', 'private_forprofit'],
+    }),
+    scorecardId: integer('scorecard_id'),
+    outOfStateTuition: integer('out_of_state_tuition'),
+    dataSource: text('data_source', {
+      enum: ['manual', 'college_scorecard', 'ipeds'],
+    })
+      .default('manual')
+      .notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    scorecardIdUniqueIdx: uniqueIndex('schools_scorecard_id_unique_idx').on(table.scorecardId),
+    countryIdx: index('schools_country_idx').on(table.country),
+    stateIdx: index('schools_state_idx').on(table.state),
+  }),
+);
 
 export const programs = pgTable('programs', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -21,6 +45,7 @@ export const programs = pgTable('programs', {
   tuitionAmount: integer('tuition_amount').notNull(),
   currency: text('currency').notNull(),
   durationMonths: integer('duration_months').notNull(),
+  status: text('status', { enum: ['active', 'inactive'] }).default('active').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
@@ -49,6 +74,7 @@ export const studentProfiles = pgTable(
       .default('not_started')
       .notNull(),
     onboardingStep: integer('onboarding_step').default(1).notNull(),
+    verificationRequestId: uuid('verification_request_id'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
@@ -91,11 +117,16 @@ export const bankAccounts = pgTable(
     userId: uuid('user_id')
       .references(() => users.id, { onDelete: 'cascade' })
       .notNull(),
-    provider: text('provider', { enum: ['mono'] }).default('mono').notNull(),
+    provider: text('provider', { enum: ['mono', 'manual'] }).default('mono').notNull(),
     accountNumber: text('account_number').notNull(),
     bankName: text('bank_name').notNull(),
-    monoAccountId: text('mono_account_id').notNull(),
+    monoAccountId: text('mono_account_id'),
     paystackRecipientCode: text('paystack_recipient_code'),
+    accountCurrency: text('account_currency').default('NGN').notNull(),
+    accountType: text('account_type', { enum: ['savings', 'current', 'domiciliary'] }),
+    bankCountry: text('bank_country').default('NG').notNull(),
+    accountOwnership: text('account_ownership', { enum: ['self', 'parent_guardian', 'joint', 'sponsor'] }).default('self').notNull(),
+    accountHolderName: text('account_holder_name'),
     linkedAt: timestamp('linked_at').defaultNow().notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
