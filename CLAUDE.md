@@ -308,6 +308,30 @@ Always use relational language — who is the funder to the student, not the pay
 This applies to: onboarding wizard copy, summary cards, tRPC output display labels, and email templates.
 Never expose structural terms (escrow, third-party, corporate) in student-facing UI.
 
+### Journey Cohesion (mandatory for student dashboard)
+
+All four journey surfaces must stay in sync at all times:
+
+| Surface | Must derive from |
+|---------|-----------------|
+| Sidebar nav items | `src/lib/journey/student.ts` stage model |
+| Overview progress tracker | Same stage model — never independent state |
+| Quick action CTA | Next incomplete stage from the same model |
+| Emails + notifications | Same stage `id` and `label` as the sidebar |
+
+**The rule:** `src/lib/journey/student.ts` is the single source of truth.
+- Stage IDs and labels are defined there — all other surfaces reference them, never redefine.
+- A sidebar item exists because a journey stage exists. Not the other way around.
+- The sidebar's active/completed/upcoming state = the stage's `status` field from `computeStudentJourney()`.
+- The quick action CTA = `journeyState.nextAction` — same object, no duplicate logic.
+- Email subject/body references the stage label directly from the stage model copy.
+
+**Anti-patterns to catch in review:**
+- Sidebar label that doesn't match a stage label → cohesion break
+- Progress tracker showing different completion % than sidebar completed count → break
+- CTA pointing to a different step than `journeyState.nextAction` → break
+- Email saying "Step 3: Upload documents" when the stage is labelled "Documents" → break
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
