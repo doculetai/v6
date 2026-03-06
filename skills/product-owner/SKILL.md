@@ -16,7 +16,7 @@ Before evaluating anything, read:
 
 1. **`CLAUDE.md`** — Extract: 6 role personas and their emotional goals, copy compliance rules, design principles, brand voice guidelines.
 2. **`git diff main...HEAD`** (or `git diff --cached` if nothing staged) — Understand what changed: which files, which roles/routes are affected, what UI copy appears.
-3. **`docs/plans/`** — Scan for a plan doc matching the feature name or recently modified files. If found, read it to understand original intent and scope.
+3. **`docs/plans/`** — Scan for a plan doc matching the feature name or recently modified files. If `args.feature` is not provided, extract the current branch name using `git branch --show-current` and match against plan doc filenames in `docs/plans/`. If found, read it to understand original intent and scope. If no match, note "not found" and rely on the diff alone.
 4. **`args.feature`** — If provided, use it to narrow scope and find the matching plan doc.
 
 Summarise what you found before proceeding:
@@ -39,6 +39,8 @@ Does each changed surface match the correct role's emotional goal?
 
 Flag: any UI copy, empty state, error message, or loading state that does not match the persona's emotional context.
 
+Note: If a finding applies to both Lens 1 and Lens 6, record it under Lens 1 only.
+
 ### Lens 2: Scope Drift
 Compare what was built against the plan doc (if found) or infer intended scope from the feature name.
 - Did the implementation go beyond scope? (extra features, unplanned routes)
@@ -47,9 +49,11 @@ Compare what was built against the plan doc (if found) or infer intended scope f
 
 ### Lens 3: Copy Compliance
 All visible strings must come from `src/config/copy/` — never hardcoded in JSX.
-- Scan the diff for string literals in JSX/TSX outside of copy config files.
-- Check for hardcoded role names, button labels, error messages, or status text.
-- Flag any "string" inside JSX that is not a variable reference from copy config.
+- Scan the diff for string literals in JSX/TSX return values outside of `src/config/copy/` files.
+- Flag any quoted string directly in JSX (`"Submit"`, `"Loading..."`, `'Verified'`) that is not a reference to an import from `src/config/copy/`.
+- Pass: `{copy.label}`, `{studentCopy.button}`, `{t('key')}` — these are variable references.
+- Fail: `"Submit"`, `{'Error'}`, `<p>Please wait</p>` with literal text — these are hardcoded strings.
+- Check for hardcoded role names, button labels, error messages, and status text.
 
 ### Lens 4: Role-Awareness
 The dashboard must feel personalised per role. Each role has a distinct accent colour and the interface should adapt.
@@ -71,6 +75,8 @@ The platform has two coexisting emotional moods:
 
 Does the feature land the right mood? Does it celebrate forward motion while maintaining institutional composure? Or does it feel sterile, confusing, or casual (emoji, vague copy, missing confirmation)?
 
+Evaluate the end-to-end interaction arc, not individual copy strings (those belong in Lens 1). Does the complete flow — from entry to completion — land the intended mood, or does it feel sterile, abrupt, or celebrate prematurely?
+
 ## Phase 3 — Produce Verdict
 
 Format your output exactly as follows:
@@ -87,22 +93,22 @@ Format your output exactly as follows:
 ### Lens Review
 
 #### Persona Fit        ✓ PASS / ✗ FAIL
-[Specific finding — cite file or copy if failing]
+[If FAIL: specific finding — cite file or copy. If PASS: write "No issues found."]
 
 #### Scope Drift        ✓ PASS / ✗ FAIL
-[Specific finding]
+[If FAIL: specific finding — cite file or copy. If PASS: write "No issues found."]
 
 #### Copy Compliance    ✓ PASS / ✗ FAIL
-[Specific finding — list hardcoded strings if failing]
+[If FAIL: specific finding — cite file or copy. If PASS: write "No issues found."]
 
 #### Role-Awareness     ✓ PASS / ✗ FAIL
-[Specific finding]
+[If FAIL: specific finding — cite file or copy. If PASS: write "No issues found."]
 
 #### Trust Signals      ✓ PASS / ✗ FAIL
-[Specific finding]
+[If FAIL: specific finding — cite file or copy. If PASS: write "No issues found."]
 
 #### Emotional Goal     ✓ PASS / ✗ FAIL
-[Specific finding]
+[If FAIL: specific finding — cite file or copy. If PASS: write "No issues found."]
 
 ---
 
@@ -116,6 +122,7 @@ Format your output exactly as follows:
 2. ...
 
 ### Observations (ship as-is, but note for next iteration)
+[Always include this section. If no observations, write "None." Do not omit this section even on a GO verdict.]
 1. ...
 
 ---
