@@ -740,6 +740,76 @@ Four event types, in reverse-chronological order:
 - API health: requests this period, quota used, error rate, billing estimate.
 - Student pipeline: students started, completed each stage, certificate issued — conversion funnel view.
 
+**Self-funded student journey (branching):**
+- Self-funded students skip the sponsor invite step. Banking replaces it.
+- Their journey: Onboarding → Select school → Identity (KYC) → Banking → Documents → Proof.
+- Banking step: both Mono API connection and document upload are offered as equal options (same as sponsored banking step).
+- Architecture implication: `STAGE_ORDER` in `src/lib/journey/student.ts` must branch on `fundingType`. Self-funded = no `sponsor` stage, banking stage is present. Sponsored = `sponsor` stage present.
+- Never show a self-funded student a "No sponsor" empty state. The banking step IS their funding proof.
+
+**Tablet sidebar (768px – 1024px):**
+- Collapsed by default: icons visible, labels hidden.
+- Expands on hover (desktop pointer) or tap (touch tablet) to show full labels.
+- Full sidebar width on expand: same as desktop. Returns to icon-only on mouse-out or tap-away.
+- Transition: slide-expand, 150ms. Icon size stays at 24px in both states.
+
+**Certificate PDF — server-generated:**
+- Doculet generates the PDF server-side. Student taps "Download PDF", receives a file.
+- PDF uses correct fonts: IBM Plex Serif for the certificate title/name, IBM Plex Sans for body, IBM Plex Mono for the amount.
+- Doculet seal is an embedded image asset, not an SVG icon.
+- Browser print (Ctrl+P) is not a supported path. No print stylesheet required.
+
+**Admin queue actions (5 total):**
+1. Approve — accept the submission. Student notified.
+2. Reject — decline with a reason (shown verbatim to student). Student notified.
+3. Flag for follow-up — hold without approving/rejecting. Internal note only. Student not notified.
+4. Request additional document — structured request for a specific doc type. Student notified via email + bell.
+5. Escalate to senior review — pass to another admin. Internal handoff only.
+6. Approve with note — approve with an internal audit note attached. Note not shown to student.
+
+**Global search / command palette:**
+- Admin and agent roles only: Cmd+K opens a command palette.
+- Searchable: student names, submission IDs, school names, navigate to any admin page.
+- Students do not have global search. Per-page filters are sufficient for their use case.
+
+**Corporate sponsor:**
+- Not yet implemented. Personal sponsors only in current scope.
+- Design for personal sponsors only. Do not create corporate-specific UI flows yet.
+- "Corporate sponsor" type label exists as metadata but triggers no different UX path.
+
+**Data export (Settings > Profile):**
+- "Download my data" option in Settings > Profile tab.
+- Triggers a server-side job. Student receives an email when the ZIP is ready (usually within minutes).
+- ZIP contains: profile data, uploaded documents, verification history, activity log, certificate if issued.
+- Not instant — show a "We're preparing your export" confirmation and send it via email link.
+
+**Navigation guard (mid-upload):**
+- If student navigates away while an upload is in progress: browser native `beforeunload` confirm dialog.
+- No custom modal. The browser default is sufficient and requires no extra implementation.
+- After upload completes successfully: navigation guard is removed immediately.
+
+**KYC ID image visibility:**
+- A thumbnail of the captured ID document is shown in the KYC status card after submission.
+- Thumbnail is small (e.g. 80×52px), not fullscreen. Shows confirmation of what was captured.
+- Thumbnail is shown permanently in the KYC status card (not just during review).
+
+**Manual KYC review state (two surfaces):**
+- Journey sidebar step: "Under review" badge (amber, same pattern as document under review).
+- Verification page: a status card reading "Identity verification referred for manual review. We will be in touch." No action available.
+- Both surfaces must agree — consistent status vocabulary.
+
+**Account deletion:**
+- Available in Settings > Security tab: "Delete account" — a prominent but non-primary action.
+- Requires a confirmation flow: type "DELETE" to confirm. Then a final confirm button.
+- Effect: all personal data removed, certificate invalidated, verification URL returns 404.
+- Show a warning: "This action is permanent. Your proof-of-funds certificate will be invalidated."
+
+**School deactivated mid-journey:**
+- If a student's selected school is removed from the platform: they receive an email notification + an alert banner on their overview.
+- The school selection step reverts to incomplete. Journey is paused at that step.
+- Student must select a new school. All previously approved documents for the old school remain (not deleted).
+- The alert banner persists on the overview until the student selects a new school.
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
