@@ -1219,6 +1219,86 @@ Settings
 - The QR code is positioned in the bottom-right corner of the certificate.
 - Scanning the QR takes the viewer to the public certificate page (read-only, no login required).
 
+**Re-upload OCR flow:**
+- Yes — full OCR review card appears on every bank statement upload. No exceptions.
+- Student must confirm extracted fields each time they re-upload.
+
+**Cancel pending submission:**
+- Yes — "Cancel submission" action available on the document card while status is "Pending review".
+- Cancelling returns the document to the upload state. Student can then upload a different file.
+
+**Sponsor account deactivated — impact on student:**
+- Sponsor's commitment is removed from the application.
+- Student is notified by email and must invite a new sponsor to continue.
+
+**Settings > Security — session list:**
+- List of recent sessions: device type, browser, IP address, last seen timestamp.
+- Students can see their own session history to spot unauthorised access.
+
+**Overview verification stat card:**
+- Shows: ₦ X / ₦ Y (verified balance vs proof target amount). Not tiers, not a percentage.
+- Uses IBM Plex Mono for amounts.
+
+**Exchange rates — where shown:**
+- Both: Verification page proof target AND on the certificate.
+- Verification page: "Proof target: ₦ 2,000,000 (≈ £1,200 GBP)" — live exchange rate equivalent.
+- Certificate: NGN amount + foreign currency equivalent.
+- Exchange rate source: pulled daily from a live API (e.g. exchangeratesapi.io or CBN official rate).
+
+**OCR review card — field editing:**
+- Fully editable. Each field is an editable text input pre-filled with the OCR-extracted value.
+- Student can correct any field before clicking "Confirm".
+
+**Manual balance verification (document path):**
+- Admin reviews the bank statement image and enters the verified NGN balance manually.
+- Admin's entered balance becomes the official verified amount on the cert — not OCR extraction.
+
+**Post-OCR confirm state (document card):**
+- OCR review card collapses.
+- Document card shows: file thumbnail, 'Pending review' status badge, upload timestamp.
+
+**Onboarding page route:**
+- /dashboard/student/setup (not /onboarding)
+
+**Application created notification:**
+- Yes — email sent on first successful Onboarding form submission.
+- Copy: "Your application has been created" with school, program, and next step (Verification link).
+
+**Expired cert — Proof of Funds page:**
+- Cert content is shown but blurred/locked with an 'EXPIRED' overlay.
+- Banner at top: "This certificate expired on [date]. Contact support to renew."
+- Student can still see they have a cert but cannot share or download it.
+
+**Admin overview metrics (4 cards):**
+- Pending reviews (action needed)
+- Active applications (all in-progress)
+- Certs issued today
+- Fraud flags
+
+**Certificate preview:**
+- Admin can see a full rendered preview before clicking "Issue certificate".
+- Student sees only the blurred/locked preview (already established).
+- The cert is generated at issuance — no pre-generated cert stored before admin issues.
+
+**Partner API — student creation:**
+- Partner can create applications via API.
+- Student receives an invite email: "[Partner/University Name] has started a proof-of-funds application for you. Click to complete your verification."
+- Student then completes their account + verification steps.
+
+**Sponsor visibility into student verification:**
+- Journey stage only — no private details.
+- Sponsor sees: current journey stage badge + cert status on the student card.
+- No KYC data, no bank balance, no documents visible to sponsors.
+
+**Localisation:**
+- English only. No plans for additional languages.
+
+**Admin student detail — left column contents:**
+- Avatar, full legal name, email, phone
+- Verification tier badges (T1/T2/T3 completion status)
+- Fraud risk score
+- Proof target progress bar (₦ X / ₦ Y)
+
 **Mono reconnect — state after reconnect:**
 - On reconnect, the new bank connection must pass admin review again before T3 is restored.
 - Reconnecting alone does not restore T3 completion automatically.
