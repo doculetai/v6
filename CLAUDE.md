@@ -1096,6 +1096,103 @@ Settings
 - **Icon sizes:** nav=24px, inline=20px, small=16px — Phosphor Duotone only, weight="duotone" always
 - **Role accents:** Student #2B39A3, Sponsor #15803D, University #0369A1, Admin #C2410C, Agent #6D28D9, Partner #0F766E
 
+**Documents page — empty state (no bank statement uploaded):**
+- Upload prompt + requirements list. Not a full illustrated empty state.
+- Shows an upload button with a requirements list below:
+  - 3 months of statements
+  - Balance clearly visible
+  - Account name matches legal name
+  - PDF or JPG/PNG, max 10 MB
+- Requirements are platform-defined (not university-configured).
+
+**Upload navigation guard (mid-upload):**
+- Custom in-app confirmation sheet (not browser native).
+- Copy: "Upload in progress. If you leave, the upload will be cancelled."
+- Two buttons: "Cancel" (stay) and "Leave" (abort upload and navigate away).
+
+**Bank connection disconnected (Mono):**
+- Persistent alert banner on both the Overview page and the Verification page (Tier 3 card).
+- Copy: "Your bank connection was removed. Reconnect to maintain your verified balance."
+- CTA: "Reconnect" — opens the Mono connect flow again.
+
+**Agent access to student documents:**
+- Yes, read-only.
+- Agents can see document status (pending/approved/rejected) and the OCR summary (extracted name, bank, balance).
+- Agents cannot see or download the raw uploaded file.
+
+**Sponsor commitment confirmation:**
+- Yes — a review modal before the commitment is saved.
+- Modal shows: "You are committing ₦ X to [Student Full Name]'s application. This is not a payment."
+- Two buttons: "Confirm" and "Cancel".
+
+**Sponsor dashboard (post-commit):**
+- Student card layout. One card per sponsored student.
+- Card contents: student name, proof target amount, amount committed by this sponsor, current journey stage badge, certificate status.
+- No table view.
+
+**Certificate issuance trigger:**
+- Admin manual trigger only.
+- Admin reviews the complete application in their queue and clicks "Issue certificate".
+- No automatic issuance. System does not auto-issue even when all steps pass.
+
+**Certificate processing fee:**
+- Yes — student pays a platform fee via Paystack before the cert is generated.
+- Fee is configurable by Doculet admin (not fixed in code, not per-program).
+- Student pays on the Proof of Funds page when their application is complete and ready.
+
+**Certificate fee — Proof of Funds page (fee unpaid, verification complete):**
+- Fee payment card at the top: "Pay ₦ [amount] to issue your certificate." with a Pay button (Paystack popup).
+- Below the fee card: a blurred/locked certificate preview with a subtle lock overlay.
+- The student cannot share or download the cert until payment is made.
+
+**Certificate fee — Proof of Funds page location:**
+- The fee card appears at the end of the Proof of Funds page, not as a separate nav step.
+- After payment: Paystack popup closes, student returns to the Proof of Funds page, now showing "Under final review" state.
+
+**Certificate fee — unpaid reminder:**
+- Automated email at 48h and again at 7 days after the fee card first appears.
+- No in-app banner (fee card itself is the in-app prompt). No admin manual follow-up.
+
+**Proof of Funds page nav badge:**
+- Yes — a small dot badge on the "Proof of Funds" nav item when the cert has been issued and not yet viewed.
+- Dot style (not a number). Disappears once the student visits the page.
+
+**Post-certificate Overview page:**
+- Certificate card is elevated to the top of the Overview content area.
+- Progress bar removed (journey is complete).
+- CTA on the cert card: "Share your certificate" (primary action).
+
+**Proof of Funds page — primary actions (cert issued):**
+- Two equal CTAs: "Download PDF" and "Share".
+- "Share" expands to 4 options: WhatsApp (primary on mobile), copy link, email, PDF (secondary on desktop).
+
+**Sponsor un-commit:**
+- Yes — sponsor can edit or remove their commitment any time before the certificate is issued.
+- After cert is issued, commitment is locked and requires admin to modify.
+
+**Sponsor commit → student notification:**
+- Both email and in-app bell notification.
+- Copy: "[Sponsor Name] has committed ₦ X to your application."
+
+**Sidebar header identity (student):**
+- Avatar + full legal name + role label: "Kemi Adeyemi · Student"
+- Avatar: KYC photo if available, else initials.
+
+**Public certificate page — student vs third-party view:**
+- If the logged-in viewer is the certificate owner: extra share tools appear (WhatsApp, copy link, email, PDF download).
+- Third-party visitors: read-only cert view, no share tools.
+- Both see the same certificate content.
+
+**Multi-university applications:**
+- Yes — student can have multiple applications at multiple universities.
+- Each application is tracked independently with its own journey, sponsors, and certificate.
+- The applicationId must be present in all tRPC context that is application-scoped.
+
+**University admin — document review actions:**
+- Three actions: Approve, Reject (requires written note shown verbatim to student), or Request more information (prompts student to re-upload or provide clarification).
+- "Request more info" does not reject the document — it pauses it in a waiting state.
+- All three actions are available in the admin review queue card.
+
 **Sponsor commitment flow:**
 - Sponsor sees the student's proof target (program funding threshold).
 - Sponsor enters the amount they are committing and clicks "Commit".
