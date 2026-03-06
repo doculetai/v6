@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react';
+import type { Icon } from '@phosphor-icons/react';
 
 export type NavGroup = {
   id: string;
@@ -7,20 +7,23 @@ export type NavGroup = {
 
 export type NavQuickAction = {
   label: string;
-  icon: LucideIcon;
+  icon: Icon;
   href: string;
 };
 
 export type NavItem = {
   label: string;
   href: string;
-  icon: LucideIcon;
+  icon: Icon;
   badge?: number;
   description?: string;
   group?: string;
   children?: NavItem[];
   isPrimary?: boolean;
   mobileHidden?: boolean;
+  disabled?: boolean;
+  disabledReason?: string;
+  disabledBeforeStage?: number;
 };
 
 export type NavConfig = {

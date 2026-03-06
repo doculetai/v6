@@ -1,7 +1,10 @@
-import { Home } from 'lucide-react';
+'use client';
+
+import { House } from '@phosphor-icons/react';
 
 import type { DashboardRole } from '@/config/roles';
 import { isDashboardRole } from '@/config/roles';
+import type { StudentTrustStage } from '@/lib/student-trust-stage';
 
 import { adminNavConfig } from './admin';
 import { agentNavConfig } from './agent';
@@ -20,11 +23,28 @@ const navConfigByRole: Record<DashboardRole, NavConfig> = {
   partner: partnerNavConfig,
 };
 
-export function getNavConfig(role: string): NavConfig {
+type GetNavConfigOptions = {
+  studentTrustStage?: StudentTrustStage;
+};
+
+export function getNavConfig(role: string, options: GetNavConfigOptions = {}): NavConfig {
   if (!isDashboardRole(role)) {
-    return { groups: [], items: [], quickAction: { label: 'Home', icon: Home, href: '/' } };
+    return { groups: [], items: [], quickAction: { label: 'Home', icon: House, href: '/' } };
   }
-  return navConfigByRole[role];
+  const config = navConfigByRole[role];
+
+  if (role === 'student' && options.studentTrustStage !== undefined) {
+    const stage = options.studentTrustStage;
+    const items = config.items.map((item) => {
+      if (item.disabledBeforeStage !== undefined && stage < item.disabledBeforeStage) {
+        return { ...item, disabled: true };
+      }
+      return item;
+    });
+    return { ...config, items };
+  }
+
+  return config;
 }
 
 // Backward compat — returns flat item list

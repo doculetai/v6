@@ -1,4 +1,6 @@
-import { ArrowRight, Award, FileText, GraduationCap, Home, ShieldCheck } from 'lucide-react';
+'use client';
+
+import { ArrowRight, Trophy, FileText, GraduationCap, House, Gear, Question, ShieldCheck } from '@phosphor-icons/react';
 
 import type { NavConfig } from './types';
 
@@ -11,7 +13,7 @@ export const studentNavConfig: NavConfig = {
     {
       label: 'Overview',
       href: '/dashboard/student',
-      icon: Home,
+      icon: House,
       description: 'Dashboard summary and next steps',
       isPrimary: true,
     },
@@ -28,6 +30,8 @@ export const studentNavConfig: NavConfig = {
       icon: ShieldCheck,
       description: 'Identity and KYC verification',
       group: 'journey',
+      disabledBeforeStage: 1,
+      disabledReason: 'Complete your application setup first',
     },
     {
       label: 'Documents',
@@ -35,14 +39,30 @@ export const studentNavConfig: NavConfig = {
       icon: FileText,
       description: 'Upload and manage your documents',
       group: 'journey',
+      disabledBeforeStage: 1,
+      disabledReason: 'Complete your application setup first',
     },
     {
       label: 'Proof of Funds',
       href: '/dashboard/student/proof',
-      icon: Award,
+      icon: Trophy,
       description: 'View and share your certificate',
       group: 'credentials',
       isPrimary: true,
+      disabledBeforeStage: 2,
+      disabledReason: 'Complete verification and documents first',
+    },
+    {
+      label: 'Support',
+      href: '/dashboard/student/support',
+      icon: Question,
+      description: 'Get help with your proof journey',
+    },
+    {
+      label: 'Settings',
+      href: '/dashboard/student/settings',
+      icon: Gear,
+      description: 'Account and session settings',
     },
   ],
   quickAction: {
