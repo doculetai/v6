@@ -1,8 +1,8 @@
 import { TRPCError } from '@trpc/server';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 
-import { programs, studentProfiles, profiles } from '@/db/schema';
+import { programs, studentProfiles, profiles, sponsorships, documents, certificates } from '@/db/schema';
 
 import { roleProcedure } from '../trpc';
 
@@ -58,7 +58,7 @@ export const onboardingProcedures = {
     .query(async ({ ctx }) => {
       const [existingStudentProfile, schoolsWithPrograms] = await Promise.all([
         ctx.db.query.studentProfiles.findFirst({
-          where: eq(studentProfiles.userId, ctx.user.id),
+          where: eq(studentProfiles.userId, ctx.user!.id),
         }),
         ctx.db.query.schools.findMany({
           orderBy: (table, { asc }) => [asc(table.name)],
@@ -110,7 +110,7 @@ export const onboardingProcedures = {
       }
 
       const existingStudentProfile = await ctx.db.query.studentProfiles.findFirst({
-        where: eq(studentProfiles.userId, ctx.user.id),
+        where: eq(studentProfiles.userId, ctx.user!.id),
         columns: { id: true, onboardingStep: true },
       });
 
@@ -123,10 +123,10 @@ export const onboardingProcedures = {
             onboardingStep: Math.max(existingStudentProfile.onboardingStep, 2),
             updatedAt: new Date(),
           })
-          .where(eq(studentProfiles.userId, ctx.user.id));
+          .where(eq(studentProfiles.userId, ctx.user!.id));
       } else {
         await ctx.db.insert(studentProfiles).values({
-          userId: ctx.user.id,
+          userId: ctx.user!.id,
           schoolId: input.schoolId,
           programId: input.programId,
           onboardingStep: 2,
@@ -142,7 +142,7 @@ export const onboardingProcedures = {
     .output(onboardingProgressOutputSchema)
     .mutation(async ({ ctx, input }) => {
       const existingStudentProfile = await ctx.db.query.studentProfiles.findFirst({
-        where: eq(studentProfiles.userId, ctx.user.id),
+        where: eq(studentProfiles.userId, ctx.user!.id),
         columns: { id: true, onboardingStep: true },
       });
 
@@ -154,10 +154,10 @@ export const onboardingProcedures = {
             onboardingStep: Math.max(existingStudentProfile.onboardingStep, 3),
             updatedAt: new Date(),
           })
-          .where(eq(studentProfiles.userId, ctx.user.id));
+          .where(eq(studentProfiles.userId, ctx.user!.id));
       } else {
         await ctx.db.insert(studentProfiles).values({
-          userId: ctx.user.id,
+          userId: ctx.user!.id,
           fundingType: input.fundingType,
           onboardingStep: 3,
           updatedAt: new Date(),
@@ -171,7 +171,7 @@ export const onboardingProcedures = {
     .output(onboardingProgressOutputSchema)
     .mutation(async ({ ctx }) => {
       const existingStudentProfile = await ctx.db.query.studentProfiles.findFirst({
-        where: eq(studentProfiles.userId, ctx.user.id),
+        where: eq(studentProfiles.userId, ctx.user!.id),
         columns: { schoolId: true, programId: true, fundingType: true },
       });
 
@@ -191,14 +191,62 @@ export const onboardingProcedures = {
         await tx
           .update(studentProfiles)
           .set({ onboardingStep: 4, updatedAt: new Date() })
-          .where(eq(studentProfiles.userId, ctx.user.id));
+          .where(eq(studentProfiles.userId, ctx.user!.id));
 
         await tx
           .update(profiles)
           .set({ onboardingComplete: true, updatedAt: new Date() })
-          .where(eq(profiles.userId, ctx.user.id));
+          .where(eq(profiles.userId, ctx.user!.id));
       });
 
       return { onboardingComplete: true, currentStep: 4 };
+    }),
+
+  getTrustStageData: roleProcedure('student')
+    .output(
+      z.object({
+        onboardingComplete: z.boolean(),
+        kycComplete: z.boolean(),
+        schoolComplete: z.boolean(),
+        bankComplete: z.boolean(),
+        sponsorComplete: z.boolean(),
+        documentsComplete: z.boolean(),
+        certificateIssued: z.boolean(),
+      }),
+    )
+    .query(async ({ ctx }) => {
+      const userId = ctx.user!.id;
+
+      const [profileRow, sponsorRow, docRow, certRow] = await Promise.all([
+        ctx.db.query.studentProfiles.findFirst({
+          where: eq(studentProfiles.userId, userId),
+          columns: { kycStatus: true, bankStatus: true, schoolId: true },
+        }),
+        ctx.db.query.sponsorships.findFirst({
+          where: and(
+            eq(sponsorships.studentId, userId),
+            inArray(sponsorships.status, ['active', 'completed']),
+          ),
+          columns: { id: true },
+        }),
+        ctx.db.query.documents.findFirst({
+          where: and(eq(documents.userId, userId), eq(documents.status, 'approved')),
+          columns: { id: true },
+        }),
+        ctx.db.query.certificates.findFirst({
+          where: and(eq(certificates.studentId, userId), eq(certificates.status, 'active')),
+          columns: { id: true },
+        }),
+      ]);
+
+      return {
+        onboardingComplete: ctx.profile.onboardingComplete ?? false,
+        kycComplete: profileRow?.kycStatus === 'verified',
+        schoolComplete: !!profileRow?.schoolId,
+        bankComplete: profileRow?.bankStatus === 'verified',
+        sponsorComplete: !!sponsorRow,
+        documentsComplete: !!docRow,
+        certificateIssued: !!certRow,
+      };
     }),
 };
