@@ -52,15 +52,15 @@ describe('computeStudentTrustStage', () => {
 });
 
 describe('getStudentQuickAction', () => {
-  it('stage 0: points to onboarding', () => {
+  it('stage 0: points to setup', () => {
     const qa = getStudentQuickAction(0);
-    expect(qa.href).toBe('/dashboard/student/onboarding');
-    expect(qa.label).toBe('Set up your application');
+    expect(qa.href).toBe('/dashboard/student/setup');
+    expect(qa.label).toBe('Set up your profile');
   });
 
-  it('stage 1: points to verify', () => {
+  it('stage 1: points to verification', () => {
     const qa = getStudentQuickAction(1);
-    expect(qa.href).toBe('/dashboard/student/verify');
+    expect(qa.href).toBe('/dashboard/student/verification');
   });
 
   it('stage 2: points to proof', () => {

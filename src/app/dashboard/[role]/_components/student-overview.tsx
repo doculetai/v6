@@ -5,9 +5,11 @@ import {
   Files,
   GraduationCap,
   ShieldCheck,
-} from '@phosphor-icons/react/dist/ssr';
+} from '@/components/icons';
 import Link from 'next/link';
 
+import { ActivityTimeline } from '@/components/ui/activity-timeline';
+import type { ActivityTimelineItem } from '@/components/ui/activity-timeline';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -18,29 +20,87 @@ import {
 } from '@/components/layout/content-primitives';
 import { JourneyProgress } from '@/components/ui/journey-progress';
 import { studentHomeCopy } from '@/config/copy/dashboard-shell';
+import type { StudentDocumentType } from '@/lib/documents';
 import { studentDocumentTypeValues } from '@/lib/documents';
 import { getFirstName } from '@/lib/get-first-name';
+import { formatCurrency } from '@/lib/utils';
 import { computeStudentJourney } from '@/lib/journey/student';
 import { api } from '@/trpc/server';
 
 import { StatCard } from './overview-shared';
+import { StudentOverviewSheets } from './student-overview-sheets';
+
+type DocumentItem = {
+  id: string;
+  type: StudentDocumentType;
+  status: 'pending' | 'approved' | 'rejected' | 'more_info_requested';
+  createdAt: Date;
+  reviewedAt: Date | null;
+};
+
+type ActivityCopy = typeof studentHomeCopy.recentActivity;
+
+function deriveActivityItems(
+  docs: DocumentItem[],
+  activityCopy: ActivityCopy,
+): ActivityTimelineItem[] {
+  const items: ActivityTimelineItem[] = [];
+
+  for (const doc of docs) {
+    const typeLabel = activityCopy.documentTypeLabels[doc.type] ?? doc.type;
+
+    items.push({
+      id: `upload-${doc.id}`,
+      title: activityCopy.documentUploaded(typeLabel),
+      timestamp: doc.createdAt.toISOString(),
+      tone: 'info',
+    });
+
+    if (doc.status === 'approved' && doc.reviewedAt) {
+      items.push({
+        id: `approved-${doc.id}`,
+        title: activityCopy.documentApproved(typeLabel),
+        timestamp: doc.reviewedAt.toISOString(),
+        tone: 'success',
+      });
+    } else if (doc.status === 'rejected' && doc.reviewedAt) {
+      items.push({
+        id: `rejected-${doc.id}`,
+        title: activityCopy.documentRejected(typeLabel),
+        timestamp: doc.reviewedAt.toISOString(),
+        tone: 'error',
+      });
+    } else if (doc.status === 'pending') {
+      items.push({
+        id: `pending-${doc.id}`,
+        title: activityCopy.documentPending(typeLabel),
+        timestamp: doc.createdAt.toISOString(),
+        tone: 'neutral',
+      });
+    }
+  }
+
+  return items.slice(0, 10);
+}
 
 type StudentOverviewProps = {
   email: string;
+  phone: string | null;
   caller: Awaited<ReturnType<typeof api>>;
 };
 
-export async function StudentOverview({ email, caller }: StudentOverviewProps) {
+export async function StudentOverview({ email, phone, caller }: StudentOverviewProps) {
   const firstName = getFirstName(email);
   const totalRequired = studentDocumentTypeValues.length;
   const copy = studentHomeCopy;
 
-  const [verificationResult, schoolSelectionResult, documentsResult, schoolsResult] =
+  const [verificationResult, schoolSelectionResult, documentsResult, schoolsResult, balanceResult] =
     await Promise.allSettled([
       caller.student.getVerificationStatus(),
       caller.student.getStudentSchoolSelection(),
       caller.student.listDocuments(),
       caller.student.listSchools({}),
+      caller.student.getBalanceStatus(),
     ]);
 
   const verification =
@@ -49,6 +109,8 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
     schoolSelectionResult.status === 'fulfilled' ? schoolSelectionResult.value : null;
   const documents = documentsResult.status === 'fulfilled' ? documentsResult.value : [];
   const schools = schoolsResult.status === 'fulfilled' ? schoolsResult.value : [];
+  const balance =
+    balanceResult.status === 'fulfilled' ? balanceResult.value : null;
 
   const selectedSchool = schools.find((s) => s.id === schoolSelection?.schoolId) ?? null;
   const selectedProgram =
@@ -64,16 +126,17 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
   const approvedCount = documents.filter((d) => d.status === 'approved').length;
   const bankConnected = verification?.monoConnection.isConnected ?? false;
   const bankName = verification?.monoConnection.bankName ?? null;
+  const phoneVerified = Boolean(phone);
+  const kycFailedAttempts = verification?.kycFailedAttempts ?? 0;
 
   const allDocsApproved = approvedCount >= totalRequired && uploadedCount >= totalRequired;
+  const verificationComplete = completionPercent >= 100;
   const journeyState = computeStudentJourney(
     {
-      schoolSelected: Boolean(schoolSelection?.schoolId),
-      completionPercent,
-      uploadedCount,
-      totalRequired,
-      bankConnected,
-      allDocsApproved,
+      onboardingComplete: Boolean(schoolSelection?.schoolId),
+      verificationComplete,
+      documentsComplete: allDocsApproved,
+      proofReady: false, // cert issuance status not yet fetched on overview
     },
     copy.journey,
   );
@@ -104,6 +167,7 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
                 : copy.stats.verification.notStartedLabel
             }
             accent={completionPercent > 0}
+            href="/dashboard/student/proof"
           />
           <StatCard
             icon={<Files className="size-4.5" weight="duotone" aria-hidden="true" />}
@@ -115,13 +179,21 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
                 : copy.stats.documents.approvedCount(approvedCount)
             }
             accent={uploadedCount > 0}
+            href="/dashboard/student/documents"
           />
           <StatCard
             icon={<Money className="size-4.5" weight="duotone" aria-hidden="true" />}
             label={copy.stats.bankAccount.label}
             value={bankConnected ? copy.stats.bankAccount.linkedLabel : copy.stats.bankAccount.notLinkedLabel}
-            sub={bankName ?? (bankConnected ? '' : copy.stats.bankAccount.requiredSub)}
+            sub={
+              balance?.hasVerifiedBalance && balance.verifiedAmountKobo != null
+                ? copy.stats.bankAccount.verifiedBalanceLabel(
+                    formatCurrency(balance.verifiedAmountKobo / 100),
+                  )
+                : bankName ?? (bankConnected ? '' : copy.stats.bankAccount.requiredSub)
+            }
             accent={bankConnected}
+            href="/dashboard/student/documents#bank"
           />
         </Grid>
 
@@ -175,7 +247,25 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
             )}
           </CardContent>
         </Card>
+        {documents.length > 0 ? (
+          <Card className="border-border bg-card mt-6">
+            <CardContent className="pt-5">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-4">
+                {copy.recentActivity.sectionLabel}
+              </p>
+              <ActivityTimeline
+                items={deriveActivityItems(documents, copy.recentActivity)}
+                emptyLabel={copy.recentActivity.empty}
+              />
+            </CardContent>
+          </Card>
+        ) : null}
       </Section>
+
+      <StudentOverviewSheets
+        phoneVerified={phoneVerified}
+        kycFailedAttempts={kycFailedAttempts}
+      />
     </PageShell>
   );
 }

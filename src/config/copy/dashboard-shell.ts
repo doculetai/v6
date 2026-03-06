@@ -24,8 +24,27 @@ export const dashboardShellCopy = {
   },
   notifications: {
     ariaLabel: 'Notifications',
+    title: 'Notifications',
     empty: 'No notifications',
     markAllRead: 'Mark all as read',
+    groups: {
+      today: 'Today',
+      yesterday: 'Yesterday',
+      earlier: 'Earlier',
+    },
+    typeGroups: {
+      documents: 'Documents',
+      payments: 'Payments',
+      verification: 'Verification',
+      invites: 'Invites',
+      general: 'General',
+    },
+    relativeTime: {
+      now: 'Just now',
+      minutes: (n: number) => `${n}m ago`,
+      hours: (n: number) => `${n}h ago`,
+      days: (n: number) => `${n}d ago`,
+    },
   },
   notificationPreferences: {
     title: 'Notification preferences',
@@ -93,6 +112,7 @@ export const studentHomeCopy = {
       linkedLabel: 'Linked',
       notLinkedLabel: 'Not linked',
       requiredSub: 'Required for disbursements',
+      verifiedBalanceLabel: (amount: string) => `Verified: ${amount}`,
     },
   },
   empty: {
@@ -121,7 +141,7 @@ export const studentHomeCopy = {
         label: 'Verify your identity',
         description: 'Complete identity checks to unlock higher funding tiers.',
         cta: 'Continue verification',
-        href: '/dashboard/student/verify',
+        href: '/dashboard/student?action=verify',
       },
       uploadDocuments: {
         label: 'Upload your documents',
@@ -133,19 +153,33 @@ export const studentHomeCopy = {
         label: 'Link your bank account',
         description: 'Connect your account to receive disbursements.',
         cta: 'Link account',
-        href: '/dashboard/student/verify',
+        href: '/dashboard/student/documents#bank',
       },
     },
   },
+  recentActivity: {
+    sectionLabel: 'Recent Activity',
+    empty: 'No recent activity to show.',
+    documentUploaded: (type: string) => `Uploaded ${type}`,
+    documentApproved: (type: string) => `${type} approved`,
+    documentRejected: (type: string) => `${type} needs attention`,
+    documentPending: (type: string) => `${type} under review`,
+    documentTypeLabels: {
+      passport: 'Passport',
+      bank_statement: 'Bank statement',
+      offer_letter: 'Offer letter',
+      affidavit: 'Affidavit',
+      cac: 'CAC document',
+    } as Record<string, string>,
+  },
   journey: {
     stages: {
-      school: 'Select school',
-      identity: 'Verify identity',
-      documents: 'Upload documents',
-      bank: 'Link bank',
-      proof: 'View proof',
+      onboarding: 'Profile setup',
+      verification: 'Verification',
+      documents: 'Documents',
+      proof: 'Certificate',
     },
-    completionMessage: 'Your profile is complete and ready for sponsor review.',
+    completionMessage: 'Your proof of funds is verified.',
   },
 } as const;
 
@@ -154,7 +188,7 @@ export const dashboardOverviewCopy: Record<DashboardRole, OverviewCopy> = {
     title: 'Welcome back, Student',
     description: 'Review your funding progress and keep your verification timeline moving.',
     ctaLabel: 'Continue verification',
-    ctaHref: '/dashboard/student/verify',
+    ctaHref: '/dashboard/student?action=verify',
   },
   sponsor: {
     title: 'Welcome back, Sponsor',

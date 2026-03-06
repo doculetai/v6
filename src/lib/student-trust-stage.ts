@@ -25,15 +25,14 @@ export function computeStudentTrustStage(input: StudentTrustStageInput): Student
 }
 
 // Icon-free — safe to import in Server Components and Client Components alike.
-// Icons are resolved in Sidebar.tsx (client component) to avoid RSC createContext errors.
 type QuickActionBase = { label: string; href: string };
 
 export function getStudentQuickAction(stage: StudentTrustStage): QuickActionBase {
   switch (stage) {
     case 0:
-      return { label: 'Set up your application', href: '/dashboard/student/onboarding' };
+      return { label: 'Set up your profile', href: '/dashboard/student/setup' };
     case 1:
-      return { label: 'Continue your application', href: '/dashboard/student/verify' };
+      return { label: 'Continue verification', href: '/dashboard/student/verification' };
     case 2:
       return { label: 'View your proof', href: '/dashboard/student/proof' };
     case 3:
