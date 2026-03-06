@@ -1219,6 +1219,138 @@ Settings
 - The QR code is positioned in the bottom-right corner of the certificate.
 - Scanning the QR takes the viewer to the public certificate page (read-only, no login required).
 
+**CORRECTION — university admin document review:**
+- EARLIER STATEMENT WAS WRONG. University admins do NOT review documents.
+- Doculet admin reviews ALL student documents (bank statements, OCR verification).
+- University admins manage programmes ONLY: add/edit/deactivate programmes, set proof targets, review rosters.
+- Review actions (Approve, Reject, Request more info) belong to Doculet admin only.
+
+**Final student sidebar nav (7 items — revised):**
+```
+Overview
+Onboarding          ← single-page form: school + funding type
+Verification        ← T1 phone / T2 identity / T3 banking
+Documents           ← bank statement upload + OCR review (when Mono unavailable)
+Proof of Funds      ← certificate: fee payment, issue, share, history
+Applications        ← accessible from Overview card only (NOT a sidebar nav item)
+Settings
+```
+Note: Applications is NOT in the sidebar nav. It is accessible via a card/link on the Overview page.
+Final ordered sidebar: Overview → Onboarding → Verification → Documents → Proof of Funds → Settings (6 items).
+
+**Cert fee payment UX:**
+- Fee card appears on the Proof of Funds page when all verification steps are complete.
+- Fee amount: platform-configurable by Doculet admin.
+- After Paystack payment succeeds: popup closes, student returns to Proof of Funds page showing "Under final review" state.
+- Automated reminder emails at 48h and 7 days if fee unpaid.
+- No automated reminder banner — the fee card itself is the persistent in-app prompt.
+
+**Certificate issuance notification:**
+- All three channels when cert is issued: email, in-app bell notification, dot badge on "Proof of Funds" nav item.
+- Dot badge disappears once the student visits the Proof of Funds page.
+
+**Sponsor visibility to student:**
+- Sponsor card on Overview shows: sponsor's full name, email address, committed amount.
+
+**Welcome email:**
+- Yes — simple welcome email on account creation.
+- Copy: "Welcome to Doculet. Here's how to get started." with a link to the dashboard and a brief next-step CTA.
+
+**Multi-sponsor cards on Overview:**
+- One card per sponsor, stacked vertically.
+- Each card: sponsor name, email, committed amount, and their share of the proof target.
+
+**Amount typography (throughout platform):**
+- All NGN amounts use IBM Plex Mono font.
+- Positive/confirmed amounts: brand accent colour (blue for students, green for sponsors, etc.).
+- Pending/unconfirmed amounts: muted colour.
+- Primary amounts (proof target, cert total): heading-2 size (20px). Secondary (individual contributions): body size (14px).
+
+**Locked/blocked nav pages:**
+- All nav items are clickable at all times (no greyed-out unclickable items).
+- If a student visits a page before completing prerequisites: the page shows a blocked state card: "Complete [previous step] first." with a CTA to the blocking step.
+
+**Paused journey sidebar:**
+- Sidebar unchanged — all nav items remain accessible.
+- Paused state communicated only via an alert banner on the Overview page.
+
+**Proof target location:**
+- Both: shown on Onboarding after school selection ("This program requires ₦ 2,000,000 in verified funds") AND as a progress bar above tier cards on the Verification page.
+
+**WhatsApp share content:**
+- Link + brief description: "I've verified my proof of funds with Doculet. Verify here: [link]"
+
+**Certificate PDF — watermark + seal:**
+- Yes — Doculet official seal/stamp (logo mark, institutional style, bottom-left corner of cert).
+- Yes — subtle diagonal watermark (e.g. "DOCULET.AI VERIFIED") across the face of the cert.
+- Both features are present on the PDF.
+
+**Sponsor invite email content:**
+- "[Sponsor Name] has invited you to apply for proof-of-funds sponsorship at [School Name]. [Accept invite]"
+- No committed amount shown in the invite email.
+
+**Sponsor invite — new user flow:**
+- Invite email can go to any email address (student does not need an account first).
+- Clicking the invite link takes the student to a Doculet signup page pre-filled with their email.
+- After signing up, the invite is automatically linked to their new account.
+
+**Sponsor invite expiry:**
+- Invite link expires after 7 days.
+- Only the sponsor is notified of expiry: "Your invite to [email] has expired."
+- Student receives no expiry notification.
+
+**Sponsor account requirements:**
+- Sponsor must have a full Doculet account: email + password + name + phone.
+- No lightweight/anonymous sponsor path.
+
+**Completed Onboarding — page view:**
+- Read-only summary: school name, program, funding type displayed.
+- An "Edit" button opens an edit sheet with the same fields.
+- Same edit restriction applies: school change blocked if a sponsor has already confirmed.
+
+**Certificate content (5 elements):**
+- Full legal name
+- School name
+- Program name
+- Verified NGN amount (in IBM Plex Mono)
+- Certificate issue date + expiry date
+
+**Certificate ID:**
+- Yes — unique reference number printed on the cert (e.g. DOC-2026-XXXXX).
+- Also: the public verification URL is printed as text below or near the QR code.
+
+**Reviewer identity shown to student:**
+- Student sees "Reviewed by Doculet" or "Reviewed by [University Name]" — not the individual admin's name.
+
+**Admin queue scope:**
+- Doculet admin: platform-wide queue covering all universities.
+- University admin: NO document review queue. Programme management only.
+- Document review (Approve / Reject / Request more info) is Doculet admin only.
+
+**University admin primary surface:**
+- Review queue... wait — CORRECTED: university admins have NO review queue.
+- University admin primary surface: programme management (add/edit/deactivate programmes, set proof targets, view student roster).
+
+**Partner dashboard primary surface:**
+- Overview stats (students processed, certs issued, API calls today) + API health panel below.
+
+**Agent sidebar nav (5 items):**
+```
+Overview
+Students            ← list of assigned students, read-only
+Activity            ← log of their students' journey events
+Commissions         ← offline commission tracking
+Settings
+```
+
+**Sponsor portfolio view:**
+- Active sponsorships shown by default (one card per student).
+- A toggle reveals archived/expired sponsorships.
+
+**Bank balance refresh:**
+- On-demand only — manual refresh button triggers a new Mono balance fetch.
+- No automatic polling. No scheduled refresh. Balance at connection time is stored; student manually refreshes.
+
 **KYC timeout (Dojah network failure, not a rejection):**
 - 1 silent retry automatically.
 - If still failing: inline error shown: "Verification unavailable. Please try again in a few minutes." with a "Try again" button.
