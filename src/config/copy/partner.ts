@@ -26,6 +26,7 @@ export const partnerCopy = {
       certificatesIssued: "Certificates issued",
       activeApiKeys: "Active API keys",
       apiCallsThisMonth: "API calls this month",
+      apiCallsToday: "API calls today",
     },
     usage: {
       title: "API usage",
@@ -57,6 +58,27 @@ export const partnerCopy = {
     },
   },
 
+  programs: {
+    title: 'Programs',
+    subtitle: 'Manage programs and offerings.',
+    empty: { title: 'No programs', description: 'Add programs for your integration.' },
+  },
+  applications: {
+    title: 'Applications',
+    subtitle: 'Student application review.',
+    empty: { title: 'No applications', description: 'Student applications will appear here.' },
+  },
+  disbursements: {
+    title: 'Disbursements',
+    subtitle: 'Payment tracking.',
+    empty: { title: 'No disbursements', description: 'Disbursement history will appear here.' },
+  },
+  compliance: {
+    title: 'Compliance',
+    subtitle: 'Organization verification.',
+    empty: { title: 'Compliance', description: 'Verification status will appear here.' },
+  },
+
   apiKeys: {
     title: "API keys",
     subtitle:
@@ -73,10 +95,10 @@ export const partnerCopy = {
       },
       scopesLabel: "Scopes",
       scopes: {
-        verificationsRead: "Verifications — read",
-        certificatesRead: "Certificates — read",
-        webhooksWrite: "Webhooks — write",
-        studentsRead: "Students — read",
+        'students:read': "Students — read",
+        'students:write': "Students — write",
+        'certificates:read': "Certificates — read",
+        'certificates:verify': "Certificates — verify",
       },
       confirmCta: "Create key",
       creatingCta: "Creating…",

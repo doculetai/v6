@@ -15,6 +15,7 @@ const serverEnvSchema = z.object({
   DOJAH_PRIVATE_KEY: z.string().optional(),
   PAYSTACK_SECRET_KEY: z.string().optional(),
   NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: z.string().optional(),
+  CERTIFICATE_SHARE_SECRET: z.string().min(16, 'CERTIFICATE_SHARE_SECRET must be at least 16 chars'),
 });
 
 function validateEnv(): z.infer<typeof serverEnvSchema> {
@@ -33,6 +34,7 @@ function validateEnv(): z.infer<typeof serverEnvSchema> {
     DOJAH_PRIVATE_KEY: process.env.DOJAH_PRIVATE_KEY,
     PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
     NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+    CERTIFICATE_SHARE_SECRET: process.env.CERTIFICATE_SHARE_SECRET,
   });
 
   if (!parsed.success) {

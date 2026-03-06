@@ -1,18 +1,39 @@
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { createTRPCContext } from '@/server/context';
+import { env } from '@/lib/env';
 
 export async function redirectIfAuthenticated() {
-  const ctx = await createTRPCContext();
-  const userId = ctx.session?.user.id;
+  const cookieStore = await cookies();
 
-  if (userId) {
-    const profile = await ctx.db.query.profiles.findFirst({
-      where: (table, { eq }) => eq(table.userId, userId),
-    });
+  const supabase = createServerClient(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
+          } catch {
+            // Cookie writes are not always available in Server Components
+          }
+        },
+      },
+    },
+  );
 
-    if (profile) {
-      redirect(`/dashboard/${profile.role}`);
-    }
-  }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return;
+
+  const role = cookieStore.get('x-user-role')?.value ?? 'student';
+  redirect(`/dashboard/${role}`);
 }

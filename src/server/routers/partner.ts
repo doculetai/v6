@@ -1,7 +1,8 @@
 import { TRPCError } from '@trpc/server';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
+import { getPartnerUsageToday } from '@/db/queries/partner-api-usage';
 import { listPartnerStudents } from '@/db/queries/partner';
 import { partnerApiKeys, partnerProfiles } from '@/db/schema';
 
@@ -20,7 +21,7 @@ export const partnerRouter = createTRPCRouter({
     .output(z.array(PartnerStudentSchema))
     .query(async ({ ctx }) => {
       const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (table, { eq: eqFn }) => eqFn(table.userId, ctx.user.id),
+        where: (table, { eq: eqFn }) => eqFn(table.userId, ctx.user!.id),
       });
 
       if (!partnerProfile) {
@@ -37,11 +38,13 @@ export const partnerRouter = createTRPCRouter({
         verifiedStudents: z.number(),
         activeApiKeys: z.number(),
         organizationName: z.string(),
+        apiCallsToday: z.number(),
+        apiDailyLimit: z.number(),
       }),
     )
     .query(async ({ ctx }) => {
       const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
       });
 
       if (!partnerProfile) {
@@ -50,10 +53,12 @@ export const partnerRouter = createTRPCRouter({
           verifiedStudents: 0,
           activeApiKeys: 0,
           organizationName: 'Partner',
+          apiCallsToday: 0,
+          apiDailyLimit: 10_000,
         };
       }
 
-      const [students, apiKeys] = await Promise.all([
+      const [students, apiKeys, usage] = await Promise.all([
         ctx.db.query.partnerStudents.findMany({
           where: (t, { eq: eqFn }) => eqFn(t.partnerId, partnerProfile.id),
           columns: { tier: true },
@@ -63,13 +68,46 @@ export const partnerRouter = createTRPCRouter({
             andFn(eqFn(t.partnerId, partnerProfile.id), isNullFn(t.revokedAt)),
           columns: { id: true },
         }),
+        getPartnerUsageToday(ctx.db, partnerProfile.id),
       ]);
+
+      const apiDailyLimit = parseInt(process.env.PARTNER_API_DAILY_LIMIT ?? '10000', 10);
 
       return {
         totalStudents: students.length,
         verifiedStudents: students.filter((s) => s.tier >= 2).length,
         activeApiKeys: apiKeys.length,
         organizationName: partnerProfile.organizationName,
+        apiCallsToday: usage.total,
+        apiDailyLimit,
+      };
+    }),
+
+  getApiUsage: roleProcedure('partner')
+    .output(
+      z.object({
+        total: z.number(),
+        dailyLimit: z.number(),
+        byEndpoint: z.array(z.object({ endpoint: z.string(), requestCount: z.number() })),
+      }),
+    )
+    .query(async ({ ctx }) => {
+      const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
+        columns: { id: true },
+      });
+
+      if (!partnerProfile) {
+        return { total: 0, dailyLimit: 10_000, byEndpoint: [] };
+      }
+
+      const usage = await getPartnerUsageToday(ctx.db, partnerProfile.id);
+      const dailyLimit = parseInt(process.env.PARTNER_API_DAILY_LIMIT ?? '10000', 10);
+
+      return {
+        total: usage.total,
+        dailyLimit,
+        byEndpoint: usage.byEndpoint,
       };
     }),
 
@@ -89,7 +127,7 @@ export const partnerRouter = createTRPCRouter({
     )
     .query(async ({ ctx }) => {
       const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
         columns: { id: true },
       });
       if (!partnerProfile) return [];
@@ -111,7 +149,9 @@ export const partnerRouter = createTRPCRouter({
     }),
 
   createApiKey: roleProcedure('partner')
-    .input(z.object({ scopes: z.array(z.string()).min(1) }))
+    .input(z.object({
+      scopes: z.array(z.enum(['students:read', 'certificates:verify', 'certificates:read', 'students:write'])).min(1),
+    }))
     .output(
       z.object({
         id: z.string(),
@@ -123,7 +163,7 @@ export const partnerRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
         columns: { id: true },
       });
       if (!partnerProfile) throw new TRPCError({ code: 'NOT_FOUND' });
@@ -161,7 +201,7 @@ export const partnerRouter = createTRPCRouter({
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
       const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
         columns: { id: true },
       });
       if (!partnerProfile) throw new TRPCError({ code: 'NOT_FOUND' });
@@ -188,7 +228,7 @@ export const partnerRouter = createTRPCRouter({
     )
     .query(async ({ ctx }) => {
       const profile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
       });
       if (!profile) {
         return { brandLogoUrl: null, brandColor: null, organizationName: 'Partner', webhookUrl: null };
@@ -216,7 +256,7 @@ export const partnerRouter = createTRPCRouter({
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
         columns: { id: true },
       });
       if (!existing) throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
@@ -229,7 +269,7 @@ export const partnerRouter = createTRPCRouter({
           ...(input.webhookUrl !== undefined && { webhookUrl: input.webhookUrl }),
           updatedAt: new Date(),
         })
-        .where(eq(partnerProfiles.userId, ctx.user.id));
+        .where(eq(partnerProfiles.userId, ctx.user!.id));
     }),
 
   getPartnerSettings: roleProcedure('partner')
@@ -237,20 +277,28 @@ export const partnerRouter = createTRPCRouter({
       z.object({
         organizationName: z.string(),
         webhookUrl: z.string().nullable(),
+        webhookSigningSecretConfigured: z.boolean(),
         brandColor: z.string().nullable(),
         brandLogoUrl: z.string().nullable(),
       }),
     )
     .query(async ({ ctx }) => {
       const profile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
       });
       if (!profile) {
-        return { organizationName: 'Partner', webhookUrl: null, brandColor: null, brandLogoUrl: null };
+        return {
+          organizationName: 'Partner',
+          webhookUrl: null,
+          webhookSigningSecretConfigured: false,
+          brandColor: null,
+          brandLogoUrl: null,
+        };
       }
       return {
         organizationName: profile.organizationName,
         webhookUrl: profile.webhookUrl ?? null,
+        webhookSigningSecretConfigured: Boolean(profile.webhookSigningSecret),
         brandColor: profile.brandColor ?? null,
         brandLogoUrl: profile.brandLogoUrl ?? null,
       };
@@ -261,12 +309,13 @@ export const partnerRouter = createTRPCRouter({
       z.object({
         organizationName: z.string().min(2).max(120).optional(),
         webhookUrl: z.string().url().nullable().optional(),
+        webhookSigningSecret: z.string().min(16).nullable().optional(),
       }),
     )
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
         columns: { id: true },
       });
       if (!existing) throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
@@ -276,8 +325,11 @@ export const partnerRouter = createTRPCRouter({
         .set({
           ...(input.organizationName !== undefined && { organizationName: input.organizationName }),
           ...(input.webhookUrl !== undefined && { webhookUrl: input.webhookUrl }),
+          ...(input.webhookSigningSecret !== undefined && {
+            webhookSigningSecret: input.webhookSigningSecret,
+          }),
           updatedAt: new Date(),
         })
-        .where(eq(partnerProfiles.userId, ctx.user.id));
+        .where(eq(partnerProfiles.userId, ctx.user!.id));
     }),
 });

@@ -12,6 +12,9 @@ import {
   hasProofProgress,
 } from './student-proof-utils';
 
+import { sendCertificateIssuedEmail } from '@/lib/email/send-certificate-issued-email';
+import { enqueueWebhooks } from '@/lib/outbound-webhooks';
+
 import { roleProcedure } from '../trpc';
 
 const proofChecklistSchema = z.object({
@@ -57,19 +60,13 @@ const generateProofShareLinkOutputSchema = z.object({
 });
 
 function getCertificateShareSecret(): string {
-  const secret =
-    process.env.CERTIFICATE_SHARE_SECRET ??
-    process.env.NEXTAUTH_SECRET ??
-    process.env.SUPABASE_SERVICE_ROLE_KEY ??
-    process.env.DATABASE_URL;
-
+  const secret = process.env.CERTIFICATE_SHARE_SECRET;
   if (!secret) {
     throw new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
-      message: 'Certificate signing secret is not configured.',
+      message: 'CERTIFICATE_SHARE_SECRET is not configured.',
     });
   }
-
   return secret;
 }
 
@@ -188,7 +185,7 @@ export const proofProcedures = {
   getProofCertificate: roleProcedure('student')
     .output(getProofCertificateOutputSchema)
     .query(async ({ ctx }) => {
-      const snapshot = await getProofSnapshot(ctx.user.id, ctx.db);
+      const snapshot = await getProofSnapshot(ctx.user!.id, ctx.db);
 
       return {
         checklist: snapshot.checklist,
@@ -217,7 +214,7 @@ export const proofProcedures = {
     .input(z.void())
     .output(generateProofShareLinkOutputSchema)
     .mutation(async ({ ctx }) => {
-      const snapshot = await getProofSnapshot(ctx.user.id, ctx.db);
+      const snapshot = await getProofSnapshot(ctx.user!.id, ctx.db);
 
       if (!snapshot.canGenerateShareLink) {
         throw new TRPCError({
@@ -237,7 +234,7 @@ export const proofProcedures = {
 
       const issuedAt = new Date();
       const token = createTamperEvidentToken({
-        studentId: ctx.user.id,
+        studentId: ctx.user!.id,
         issuedAt,
         secret: getCertificateShareSecret(),
       });
@@ -245,7 +242,7 @@ export const proofProcedures = {
       const [createdCertificate] = await ctx.db
         .insert(certificates)
         .values({
-          studentId: ctx.user.id,
+          studentId: ctx.user!.id,
           token,
           issuedAt,
           status: 'active',
@@ -262,6 +259,26 @@ export const proofProcedures = {
 
       if (!createdCertificate) {
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+      }
+
+      const studentEmail = ctx.user!.email;
+      if (studentEmail) {
+        try {
+          await sendCertificateIssuedEmail(studentEmail);
+        } catch {
+          // Logged; do not fail the mutation
+        }
+      }
+
+      try {
+        await enqueueWebhooks('certificate.issued', {
+          certificateId: createdCertificate.id,
+          studentId: ctx.user!.id,
+          issuedAt: createdCertificate.issuedAt.toISOString(),
+          sharePath: getSharePathFromToken(createdCertificate.token),
+        });
+      } catch {
+        // Logged; do not fail the mutation
       }
 
       return {

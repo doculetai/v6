@@ -1,10 +1,10 @@
-import { and, desc, eq, gte, ilike, inArray, lt } from 'drizzle-orm';
+import { and, desc, eq, gte, ilike, inArray, lt, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
 import type { DrizzleDB } from '@/db';
 import { documents, schools, studentProfiles, users } from '@/db/schema';
 
-export type DocumentStatus = 'pending' | 'approved' | 'rejected' | 'more_info_requested';
+export type DocumentStatus = 'pending' | 'approved' | 'rejected' | 'more_info_requested' | 'expired';
 export type StatusFilter = DocumentStatus | 'all';
 
 export interface OperationsQueueRow {
@@ -26,6 +26,7 @@ export interface OperationsStats {
   approved: number;
   rejected: number;
   moreInfoRequested: number;
+  expired: number;
   approvedToday: number;
   rejectedToday: number;
 }
@@ -81,10 +82,13 @@ export async function getOperationsStats(db: DrizzleDB): Promise<OperationsStats
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
 
-  const [allDocs, approvedToday, rejectedToday] = await Promise.all([
-    db.select({ id: documents.id, status: documents.status }).from(documents),
+  const [statusRows, approvedTodayRow, rejectedTodayRow] = await Promise.all([
     db
-      .select({ id: documents.id })
+      .select({ status: documents.status, count: sql<number>`count(*)::int` })
+      .from(documents)
+      .groupBy(documents.status),
+    db
+      .select({ count: sql<number>`count(*)::int` })
       .from(documents)
       .where(
         and(
@@ -94,7 +98,7 @@ export async function getOperationsStats(db: DrizzleDB): Promise<OperationsStats
         ),
       ),
     db
-      .select({ id: documents.id })
+      .select({ count: sql<number>`count(*)::int` })
       .from(documents)
       .where(
         and(
@@ -106,8 +110,8 @@ export async function getOperationsStats(db: DrizzleDB): Promise<OperationsStats
   ]);
 
   const statusCounts: Record<string, number> = {};
-  for (const doc of allDocs) {
-    statusCounts[doc.status] = (statusCounts[doc.status] ?? 0) + 1;
+  for (const row of statusRows) {
+    statusCounts[row.status] = row.count;
   }
 
   return {
@@ -115,8 +119,9 @@ export async function getOperationsStats(db: DrizzleDB): Promise<OperationsStats
     approved: statusCounts['approved'] ?? 0,
     rejected: statusCounts['rejected'] ?? 0,
     moreInfoRequested: statusCounts['more_info_requested'] ?? 0,
-    approvedToday: approvedToday.length,
-    rejectedToday: rejectedToday.length,
+    expired: statusCounts['expired'] ?? 0,
+    approvedToday: approvedTodayRow[0]?.count ?? 0,
+    rejectedToday: rejectedTodayRow[0]?.count ?? 0,
   };
 }
 

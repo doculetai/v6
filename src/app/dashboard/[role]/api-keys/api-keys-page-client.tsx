@@ -20,7 +20,7 @@ type Props = {
   copy: typeof partnerCopy.apiKeys;
 };
 
-const ALL_SCOPES = ['verificationsRead', 'certificatesRead', 'webhooksWrite', 'studentsRead'] as const;
+const ALL_SCOPES = ['students:read', 'students:write', 'certificates:read', 'certificates:verify'] as const;
 type ScopeKey = (typeof ALL_SCOPES)[number];
 
 export function ApiKeysPageClient({ initialKeys, copy }: Props) {

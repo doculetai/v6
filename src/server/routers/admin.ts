@@ -1,21 +1,45 @@
+import { captureException } from '@sentry/nextjs';
+import { TRPCError } from '@trpc/server';
+import { and, eq, ilike, inArray, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
+import {
+  certificates,
+  disbursements,
+  documents,
+  kycVerifications,
+  profiles,
+  sponsorships,
+  users,
+} from '@/db/schema';
 import {
   bulkReviewDocuments,
   getOperationsQueue,
   getOperationsStats,
   reviewDocument,
 } from '@/db/queries/admin-operations';
+import {
+  createPlatformFeeConfig,
+  endPlatformFeeConfig,
+  listPlatformFeeConfig,
+  updatePlatformFeeConfig,
+} from '@/db/queries/platform-fees';
+import { listTransactions } from '@/db/queries/admin-transactions';
+import { insertAuditLog } from '@/db/queries/audit-log';
+import { sendDocumentStatusEmail } from '@/lib/email/send-document-status-email';
+import { enqueueWebhooks } from '@/lib/outbound-webhooks';
+import { removeDocumentFile } from '@/lib/storage';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
-const documentStatusSchema = z.enum(['pending', 'approved', 'rejected', 'more_info_requested']);
+const documentStatusSchema = z.enum(['pending', 'approved', 'rejected', 'more_info_requested', 'expired']);
 const statusFilterSchema = z.enum([
   'all',
   'pending',
   'approved',
   'rejected',
   'more_info_requested',
+  'expired',
 ]);
 
 const operationsQueueRowSchema = z.object({
@@ -37,6 +61,7 @@ const operationsStatsSchema = z.object({
   approved: z.number(),
   rejected: z.number(),
   moreInfoRequested: z.number(),
+  expired: z.number(),
   approvedToday: z.number(),
   rejectedToday: z.number(),
 });
@@ -66,29 +91,177 @@ export const adminRouter = createTRPCRouter({
     .input(
       z.object({
         documentId: z.string(),
-        status: documentStatusSchema,
+        status: z.enum(['approved', 'rejected', 'more_info_requested']),
         reason: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await reviewDocument(ctx.db, input.documentId, ctx.user.id, {
+      const [doc] = await ctx.db
+        .select({ userId: documents.userId })
+        .from(documents)
+        .where(eq(documents.id, input.documentId))
+        .limit(1);
+      if (!doc) throw new TRPCError({ code: 'NOT_FOUND', message: 'Document not found' });
+
+      const [user] = await ctx.db
+        .select({ email: users.email })
+        .from(users)
+        .where(eq(users.id, doc.userId))
+        .limit(1);
+
+      await reviewDocument(ctx.db, input.documentId, ctx.user!.id, {
         status: input.status,
         reason: input.reason,
       });
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user!.id,
+        action: 'admin.reviewDocument',
+        entityType: 'document',
+        entityId: input.documentId,
+        meta: { status: input.status, reason: input.reason },
+        ip: ctx.ip ?? undefined,
+        userAgent: ctx.userAgent ?? undefined,
+      });
+
+      if (user?.email) {
+        try {
+          await sendDocumentStatusEmail({
+            toEmail: user.email,
+            status: input.status,
+            reason: input.reason,
+          });
+        } catch {
+          // Logged; do not fail the mutation
+        }
+      }
+
+      if (input.status === 'approved') {
+        try {
+          await enqueueWebhooks('document.approved', {
+            documentId: input.documentId,
+            userId: doc.userId,
+            status: 'approved',
+          });
+        } catch {
+          // Logged; do not fail
+        }
+      } else if (input.status === 'rejected' || input.status === 'more_info_requested') {
+        try {
+          await enqueueWebhooks(
+            input.status === 'rejected' ? 'document.rejected' : 'document.more_info_requested',
+            {
+              documentId: input.documentId,
+              userId: doc.userId,
+              status: input.status,
+              rejectionReason: input.reason ?? null,
+            },
+          );
+        } catch {
+          // Logged; do not fail
+        }
+      }
     }),
 
   bulkReviewDocuments: roleProcedure('admin')
     .input(
       z.object({
         documentIds: z.array(z.string()).min(1).max(100),
-        status: documentStatusSchema,
+        status: z.enum(['approved', 'rejected', 'more_info_requested']),
         reason: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await bulkReviewDocuments(ctx.db, input.documentIds, ctx.user.id, {
+      const docs = await ctx.db
+        .select({ id: documents.id, userId: documents.userId })
+        .from(documents)
+        .where(inArray(documents.id, input.documentIds));
+
+      const userIds = [...new Set(docs.map((d) => d.userId))];
+      const userRows = await ctx.db
+        .select({ id: users.id, email: users.email })
+        .from(users)
+        .where(inArray(users.id, userIds));
+      const emailByUserId = new Map(userRows.map((u) => [u.id, u.email]));
+
+      await bulkReviewDocuments(ctx.db, input.documentIds, ctx.user!.id, {
         status: input.status,
         reason: input.reason,
+      });
+
+      for (const doc of docs) {
+        const email = emailByUserId.get(doc.userId);
+        if (email) {
+          try {
+            await sendDocumentStatusEmail({
+              toEmail: email,
+              status: input.status,
+              reason: input.reason,
+            });
+          } catch {
+            // Logged; do not fail the mutation
+          }
+        }
+        if (input.status === 'approved') {
+          try {
+            await enqueueWebhooks('document.approved', {
+              documentId: doc.id,
+              userId: doc.userId,
+              status: 'approved',
+            });
+          } catch {
+            // Logged
+          }
+        } else if (input.status === 'rejected' || input.status === 'more_info_requested') {
+          try {
+            await enqueueWebhooks(
+              input.status === 'rejected' ? 'document.rejected' : 'document.more_info_requested',
+              {
+                documentId: doc.id,
+                userId: doc.userId,
+                status: input.status,
+                rejectionReason: input.reason ?? null,
+              },
+            );
+          } catch {
+            // Logged
+          }
+        }
+      }
+    }),
+
+  deleteDocument: roleProcedure('admin')
+    .input(z.object({ documentId: z.string().uuid() }))
+    .output(z.void())
+    .mutation(async ({ ctx, input }) => {
+      const doc = await ctx.db.query.documents.findFirst({
+        where: eq(documents.id, input.documentId),
+      });
+      if (!doc) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Document not found' });
+      }
+
+      await removeDocumentFile(doc.storageUrl);
+
+      try {
+        await ctx.db.delete(documents).where(eq(documents.id, input.documentId));
+      } catch (err) {
+        captureException(err, {
+          tags: { domain: 'admin', operation: 'deleteDocument' },
+          extra: { documentId: input.documentId },
+        });
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Document removed from storage but database delete failed',
+        });
+      }
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user!.id,
+        action: 'admin.deleteDocument',
+        entityType: 'document',
+        ip: ctx.ip ?? undefined,
+        userAgent: ctx.userAgent ?? undefined,
+        entityId: input.documentId,
+        meta: {},
       });
     }),
 
@@ -108,33 +281,65 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx }) => {
-      const [allProfiles, allSponsorships, allDisbursements, allDocuments, allCerts, allKyc] =
-        await Promise.all([
-          ctx.db.query.profiles.findMany({ columns: { role: true } }),
-          ctx.db.query.sponsorships.findMany({ columns: { amountKobo: true, status: true } }),
-          ctx.db.query.disbursements.findMany({ columns: { amountKobo: true, status: true } }),
-          ctx.db.query.documents.findMany({ columns: { status: true } }),
-          ctx.db.query.certificates.findMany({ columns: { id: true } }),
-          ctx.db.query.kycVerifications.findMany({ columns: { status: true, userId: true } }),
-        ]);
+      const [
+        profileCounts,
+        sponsorshipAgg,
+        disbursementAgg,
+        docCounts,
+        certCount,
+        kycCount,
+      ] = await Promise.all([
+        ctx.db
+          .select({ role: profiles.role, count: sql<number>`count(*)::int` })
+          .from(profiles)
+          .groupBy(profiles.role),
+        ctx.db
+          .select({
+            total: sql<number>`count(*)::int`,
+            committedKobo: sql<number>`coalesce(sum(case when ${sponsorships.status} = 'active' then ${sponsorships.amountKobo} else 0 end), 0)::int`,
+          })
+          .from(sponsorships),
+        ctx.db
+          .select({
+            disbursedKobo: sql<number>`coalesce(sum(case when ${disbursements.status} = 'disbursed' then ${disbursements.amountKobo} else 0 end), 0)::int`,
+          })
+          .from(disbursements),
+        ctx.db
+          .select({ status: documents.status, count: sql<number>`count(*)::int` })
+          .from(documents)
+          .groupBy(documents.status),
+        ctx.db
+          .select({ count: sql<number>`count(*)::int` })
+          .from(certificates),
+        ctx.db
+          .select({ count: sql<number>`count(distinct ${kycVerifications.userId})::int` })
+          .from(kycVerifications)
+          .where(eq(kycVerifications.status, 'verified')),
+      ]);
+
+      const roleMap: Record<string, number> = {};
+      let totalUsers = 0;
+      for (const row of profileCounts) {
+        roleMap[row.role] = row.count;
+        totalUsers += row.count;
+      }
+
+      const docMap: Record<string, number> = {};
+      for (const row of docCounts) {
+        docMap[row.status] = row.count;
+      }
 
       return {
-        totalUsers: allProfiles.length,
-        totalStudents: allProfiles.filter((p) => p.role === 'student').length,
-        totalSponsors: allProfiles.filter((p) => p.role === 'sponsor').length,
-        totalSponsorships: allSponsorships.length,
-        totalCommittedKobo: allSponsorships
-          .filter((s) => s.status === 'active')
-          .reduce((sum, s) => sum + s.amountKobo, 0),
-        totalDisbursedKobo: allDisbursements
-          .filter((d) => d.status === 'disbursed')
-          .reduce((sum, d) => sum + d.amountKobo, 0),
-        pendingDocuments: allDocuments.filter((d) => d.status === 'pending').length,
-        approvedDocuments: allDocuments.filter((d) => d.status === 'approved').length,
-        issuedCertificates: allCerts.length,
-        kycVerifiedStudents: new Set(
-          allKyc.filter((k) => k.status === 'verified').map((k) => k.userId),
-        ).size,
+        totalUsers,
+        totalStudents: roleMap['student'] ?? 0,
+        totalSponsors: roleMap['sponsor'] ?? 0,
+        totalSponsorships: sponsorshipAgg[0]?.total ?? 0,
+        totalCommittedKobo: sponsorshipAgg[0]?.committedKobo ?? 0,
+        totalDisbursedKobo: disbursementAgg[0]?.disbursedKobo ?? 0,
+        pendingDocuments: docMap['pending'] ?? 0,
+        approvedDocuments: docMap['approved'] ?? 0,
+        issuedCertificates: certCount[0]?.count ?? 0,
+        kycVerifiedStudents: kycCount[0]?.count ?? 0,
       };
     }),
 
@@ -166,45 +371,47 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      // Fetch all users, then join with profiles in memory for simplicity.
-      // For large datasets a proper SQL join would be preferred, but this
-      // keeps the code readable and TypeScript-friendly.
-      const allUsers = await ctx.db.query.users.findMany({
-        orderBy: (t, { desc }) => [desc(t.createdAt)],
-      });
-
-      const allProfiles = await ctx.db.query.profiles.findMany({
-        columns: { userId: true, role: true, onboardingComplete: true },
-      });
-
-      const profileMap = new Map(allProfiles.map((p) => [p.userId, p]));
-
-      // Filter by search (email) and role
-      let filtered = allUsers;
+      const conditions = [];
       if (input.search) {
-        const term = input.search.toLowerCase();
-        filtered = filtered.filter((u) => u.email.toLowerCase().includes(term));
+        conditions.push(ilike(users.email, `%${input.search}%`));
       }
       if (input.role) {
-        const roleFilter = input.role;
-        filtered = filtered.filter((u) => profileMap.get(u.id)?.role === roleFilter);
+        conditions.push(eq(profiles.role, input.role));
       }
 
-      const total = filtered.length;
-      const paginated = filtered.slice(input.offset, input.offset + input.limit);
+      const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+      const [rows, totalRow] = await Promise.all([
+        ctx.db
+          .select({
+            id: users.id,
+            email: users.email,
+            role: profiles.role,
+            onboardingComplete: profiles.onboardingComplete,
+            createdAt: users.createdAt,
+          })
+          .from(users)
+          .leftJoin(profiles, eq(profiles.userId, users.id))
+          .where(whereClause)
+          .orderBy(sql`${users.createdAt} desc`)
+          .limit(input.limit)
+          .offset(input.offset),
+        ctx.db
+          .select({ count: sql<number>`count(*)::int` })
+          .from(users)
+          .leftJoin(profiles, eq(profiles.userId, users.id))
+          .where(whereClause),
+      ]);
 
       return {
-        users: paginated.map((u) => {
-          const profile = profileMap.get(u.id);
-          return {
-            id: u.id,
-            email: u.email,
-            role: profile?.role ?? null,
-            onboardingComplete: profile?.onboardingComplete ?? false,
-            createdAt: u.createdAt,
-          };
-        }),
-        total,
+        users: rows.map((r) => ({
+          id: r.id,
+          email: r.email,
+          role: r.role ?? null,
+          onboardingComplete: r.onboardingComplete ?? false,
+          createdAt: r.createdAt,
+        })),
+        total: totalRow[0]?.count ?? 0,
       };
     }),
 
@@ -356,4 +563,155 @@ export const adminRouter = createTRPCRouter({
 
       return flags;
     }),
+
+  listPlatformFeeConfig: roleProcedure('admin')
+    .output(
+      z.array(
+        z.object({
+          id: z.string(),
+          feeType: z.enum(['percentage', 'fixed']),
+          valueKobo: z.number(),
+          currency: z.string(),
+          effectiveFrom: z.date(),
+          effectiveTo: z.date().nullable(),
+          createdAt: z.date(),
+          updatedAt: z.date(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => listPlatformFeeConfig(ctx.db)),
+
+  createPlatformFeeConfig: roleProcedure('admin')
+    .input(
+      z.object({
+        feeType: z.enum(['percentage', 'fixed']),
+        valueKobo: z.number().int().min(0),
+        currency: z.string().min(1).max(10),
+        effectiveFrom: z.date().optional(),
+      }),
+    )
+    .output(
+      z.object({
+        id: z.string(),
+        feeType: z.enum(['percentage', 'fixed']),
+        valueKobo: z.number(),
+        currency: z.string(),
+        effectiveFrom: z.date(),
+        effectiveTo: z.date().nullable(),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const row = await createPlatformFeeConfig(ctx.db, input);
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user!.id,
+        action: 'admin.createPlatformFeeConfig',
+        entityType: 'platform_fee_config',
+        entityId: row.id,
+        meta: { feeType: row.feeType, valueKobo: row.valueKobo, currency: row.currency },
+        ip: ctx.ip ?? undefined,
+        userAgent: ctx.userAgent ?? undefined,
+      });
+      return row;
+    }),
+
+  updatePlatformFeeConfig: roleProcedure('admin')
+    .input(
+      z.object({
+        id: z.string().uuid(),
+        valueKobo: z.number().int().min(0).optional(),
+        effectiveFrom: z.date().optional(),
+      }),
+    )
+    .output(
+      z
+        .object({
+          id: z.string(),
+          feeType: z.enum(['percentage', 'fixed']),
+          valueKobo: z.number(),
+          currency: z.string(),
+          effectiveFrom: z.date(),
+          effectiveTo: z.date().nullable(),
+          createdAt: z.date(),
+          updatedAt: z.date(),
+        })
+        .nullable(),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...rest } = input;
+      const row = await updatePlatformFeeConfig(ctx.db, id, rest);
+      if (row) {
+        await insertAuditLog(ctx.db, {
+          actorId: ctx.user!.id,
+          action: 'admin.updatePlatformFeeConfig',
+          entityType: 'platform_fee_config',
+          entityId: id,
+          meta: rest,
+          ip: ctx.ip ?? undefined,
+          userAgent: ctx.userAgent ?? undefined,
+        });
+      }
+      return row;
+    }),
+
+  endPlatformFeeConfig: roleProcedure('admin')
+    .input(z.object({ id: z.string().uuid(), effectiveTo: z.date().optional() }))
+    .output(
+      z
+        .object({
+          id: z.string(),
+          feeType: z.enum(['percentage', 'fixed']),
+          valueKobo: z.number(),
+          currency: z.string(),
+          effectiveFrom: z.date(),
+          effectiveTo: z.date().nullable(),
+          createdAt: z.date(),
+          updatedAt: z.date(),
+        })
+        .nullable(),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const row = await endPlatformFeeConfig(ctx.db, input.id, input.effectiveTo);
+      if (row) {
+        await insertAuditLog(ctx.db, {
+          actorId: ctx.user!.id,
+          action: 'admin.endPlatformFeeConfig',
+          entityType: 'platform_fee_config',
+          entityId: input.id,
+          ip: ctx.ip ?? undefined,
+          userAgent: ctx.userAgent ?? undefined,
+        });
+      }
+      return row;
+    }),
+
+  listTransactions: roleProcedure('admin')
+    .input(
+      z.object({
+        type: z.enum(['disbursement', 'platform_fee', 'refund', 'reversal', 'credit', 'debit']).optional(),
+        entityType: z.string().optional(),
+        entityId: z.string().optional(),
+        dateFrom: z.date().optional(),
+        dateTo: z.date().optional(),
+        limit: z.number().min(1).max(100).optional().default(50),
+        offset: z.number().min(0).optional().default(0),
+      }),
+    )
+    .output(
+      z.array(
+        z.object({
+          id: z.string(),
+          type: z.string(),
+          entityType: z.string(),
+          entityId: z.string().nullable(),
+          amountKobo: z.number(),
+          currency: z.string(),
+          userId: z.string().nullable(),
+          meta: z.string().nullable(),
+          createdAt: z.date(),
+        }),
+      ),
+    )
+    .query(async ({ ctx, input }) => listTransactions(ctx.db, input)),
 });

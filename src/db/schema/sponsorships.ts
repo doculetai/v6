@@ -20,21 +20,28 @@ export const sponsorProfiles = pgTable('sponsor_profiles', {
   ...timestamps,
 });
 
-export const sponsorships = pgTable('sponsorships', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  studentId: uuid('student_id')
-    .references(() => users.id, { onDelete: 'cascade' })
-    .notNull(),
-  sponsorId: uuid('sponsor_id')
-    .references(() => users.id, { onDelete: 'cascade' })
-    .notNull(),
-  status: text('status', { enum: ['pending', 'active', 'completed', 'cancelled'] })
-    .default('pending')
-    .notNull(),
-  amountKobo: integer('amount_kobo').notNull(),
-  currency: text('currency').notNull(),
-  ...timestamps,
-});
+export const sponsorships = pgTable(
+  'sponsorships',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    studentId: uuid('student_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+    sponsorId: uuid('sponsor_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+    status: text('status', { enum: ['pending', 'active', 'completed', 'cancelled'] })
+      .default('pending')
+      .notNull(),
+    amountKobo: integer('amount_kobo').notNull(),
+    currency: text('currency').notNull(),
+    ...timestamps,
+  },
+  (t) => [
+    index('sponsorships_student_status_idx').on(t.studentId, t.status),
+    index('sponsorships_sponsor_status_idx').on(t.sponsorId, t.status),
+  ],
+);
 
 export const disbursements = pgTable('disbursements', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -48,6 +55,7 @@ export const disbursements = pgTable('disbursements', {
     .default('scheduled')
     .notNull(),
   paystackReference: text('paystack_reference'),
+  idempotencyKey: text('idempotency_key').unique(),
   ...timestamps,
 });
 
