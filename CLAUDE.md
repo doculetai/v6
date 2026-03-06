@@ -466,6 +466,73 @@ No stated SLA for admin review. Copy must not promise a timeline.
 - On click: opens a support sheet (not a new page, not a new tab).
 - Sidebar Support nav item is removed. Floating button is the sole access point.
 
+**Dark mode:**
+- Light mode only for now. Dark mode tokens exist in the system but are not a current requirement.
+- Do not add `dark:` variants to new components unless explicitly asked.
+
+**Sidebar identity (student):**
+- Initials avatar (circle with 1–2 initials) + full name + "Student" role badge.
+- Avatar background: role accent colour (`#2B39A3` for student). Text: white.
+- Position: top of sidebar, above nav items.
+
+**Sponsor invite flow:**
+- Student enters sponsor's name + email address in a form.
+- Doculet sends a branded invite email. Sponsor clicks link, registers, and connects.
+- Student sees invite status (sent / accepted / committed) on the overview sponsor card.
+
+**Sponsor card (overview):**
+- A dedicated card on the Overview page (not a separate nav page).
+- Shows: sponsor name, sponsor type (relational label), committed amount in NGN, relationship status.
+- Status vocabulary for sponsorship: Invited → Accepted → Committed → Released.
+
+**Document status vocabulary (4 states — use exactly these labels):**
+- `pending` — "Pending" — uploaded, in admin queue. Muted badge.
+- `under_review` — "Under review" — admin has opened it. Warning/amber badge.
+- `approved` — "Approved" — accepted. Success/green badge.
+- `rejected` — "Rejected" — declined, resubmission required. Destructive/red badge.
+
+**Rejection reason visibility:**
+- Full admin note is shown verbatim on the student's document card.
+- Show it in a clearly labelled block: "Reason:" followed by the admin's note.
+- Copy pattern: "Rejected · [Admin reason] · Upload a replacement below."
+
+**Document re-submission:**
+- Replace in place. The rejected card shows the rejection reason + an "Upload replacement" button.
+- Student uploads a new file from the same card. No navigation away, no delete-and-restart.
+- After replacement: status returns to `pending`, rejection reason is archived (not deleted).
+
+**Document empty state:**
+- A dashed-border upload area: document type label, one-line description of what's needed, Upload button.
+- Pattern per document type: "Admission letter · Official acceptance letter from your institution · [Upload]"
+- Not a greyed-out list row. The dashed area is an explicit invitation to act.
+
+**Activity feed content (Overview › Activity tab):**
+Four event types, in reverse-chronological order:
+- Document events: uploaded, approved, rejected (per document type).
+- KYC milestones: phone verified, identity verified (each tier separately).
+- Sponsor events: sponsor invited, sponsor accepted, sponsor committed funds.
+- Certificate events: certificate issued, certificate shared.
+- Each event: icon + label + relative timestamp. No avatar, no body text.
+
+**Certificate visual content (all four elements present):**
+1. Student full legal name + university name + program name.
+2. Verified amount — `₦ 1,500,000` — in IBM Plex Mono, prominently sized.
+3. Doculet official seal + issue date + unique certificate ID (for verification URL).
+4. Sponsor name and relational type ("Sponsored by Emeka Obi · Family sponsor").
+- Certificate is a styled printable surface (not a plain card). IBM Plex Serif for the title/name. Seal image asset, not icon.
+
+**Mobile bottom tab bar (4 items, no overflow):**
+- Tabs: Overview, Documents, Proof, Settings.
+- Banking is accessed within the Documents tab (tab within Documents page), not a separate tab.
+- Support via floating help button. No Support tab.
+- Active tab: role accent (`#2B39A3`). Inactive: muted-foreground.
+
+**Multi-application switcher:**
+- A dedicated Applications page. Student navigates there to see all applications as cards.
+- Each card: school name, program, current stage, status badge.
+- To switch: tap the card. Context switches to that application.
+- Current application shown in the sidebar header below the identity block (small label: "Application: University of Lagos").
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
