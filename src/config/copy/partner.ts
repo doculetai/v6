@@ -5,6 +5,7 @@ export const partnerCopy = {
     title: "Partner dashboard",
     subtitle: "Your platform, your brand. Powered by Doculet.",
     overview: {
+      welcomeTitle: (name: string) => `Welcome back, ${name}`,
       subtitle: (orgName: string | null) =>
         orgName
           ? `${orgName} — integration performance at a glance.`
@@ -19,6 +20,7 @@ export const partnerCopy = {
           `${verified} of ${total} students have completed KYC verification.`,
         empty: "No students enrolled yet. Use the API Keys page to get your integration started.",
       },
+      apiResetSub: "Resets at midnight UTC",
       cta: "View students",
     },
     stats: {
@@ -60,13 +62,46 @@ export const partnerCopy = {
 
   programs: {
     title: 'Programs',
-    subtitle: 'Manage programs and offerings.',
-    empty: { title: 'No programs', description: 'Add programs for your integration.' },
+    subtitle: 'Browse available university programs and tuition requirements.',
+    searchPlaceholder: 'Search by university name...',
+    table: {
+      university: 'University',
+      program: 'Program',
+      tuition: 'Tuition',
+      duration: 'Duration',
+      country: 'Country',
+    },
+    durationLabel: (months: number) =>
+      months >= 12
+        ? `${Math.floor(months / 12)} yr${Math.floor(months / 12) > 1 ? 's' : ''}${months % 12 ? ` ${months % 12} mo` : ''}`
+        : `${months} mo`,
+    empty: { title: 'No programs available', description: 'University programs will appear here once configured.' },
+    error: {
+      title: 'Failed to load programs',
+      description: 'Please refresh the page to try again.',
+    },
   },
   applications: {
     title: 'Applications',
-    subtitle: 'Student application review.',
-    empty: { title: 'No applications', description: 'Student applications will appear here.' },
+    subtitle: 'Student applications submitted through your integration.',
+    table: {
+      student: 'Student',
+      email: 'Email',
+      status: 'Status',
+      program: 'Program',
+      submitted: 'Submitted',
+    },
+    statusLabels: {
+      pending: 'Pending',
+      active: 'Active',
+      completed: 'Completed',
+      cancelled: 'Cancelled',
+    } as Record<string, string>,
+    empty: { title: 'No applications yet', description: 'Student applications submitted through your API integration will appear here.' },
+    error: {
+      title: 'Failed to load applications',
+      description: 'Please refresh the page to try again.',
+    },
   },
   disbursements: {
     title: 'Disbursements',
@@ -75,8 +110,36 @@ export const partnerCopy = {
   },
   compliance: {
     title: 'Compliance',
-    subtitle: 'Organization verification.',
-    empty: { title: 'Compliance', description: 'Verification status will appear here.' },
+    subtitle: 'Verify your organisation meets platform requirements.',
+    cards: {
+      kyc: {
+        title: 'KYC verification',
+        description: 'Identity verification for your organisation.',
+      },
+      apiKeys: {
+        title: 'API key configuration',
+        description: 'At least one active API key is required.',
+      },
+      webhook: {
+        title: 'Webhook configuration',
+        description: 'Configure a webhook URL to receive verification events.',
+      },
+      documentation: {
+        title: 'Organisation details',
+        description: 'Organisation name and contact information on file.',
+      },
+    },
+    statusLabels: {
+      verified: 'Verified',
+      configured: 'Configured',
+      pending: 'Pending',
+      actionNeeded: 'Action needed',
+    },
+    empty: { title: 'Compliance status unavailable', description: 'Could not load your compliance information.' },
+    error: {
+      title: 'Failed to load compliance',
+      description: 'Please refresh the page to try again.',
+    },
   },
 
   apiKeys: {
@@ -263,6 +326,106 @@ export const partnerCopy = {
       saveError: 'Failed to save settings. Please try again.',
       tryAgain: 'Try again',
     },
+  },
+
+  apiLogs: {
+    title: 'API request logs',
+    subtitle: 'Detailed history of API requests made with your keys.',
+    table: {
+      method: 'Method',
+      endpoint: 'Endpoint',
+      status: 'Status',
+      duration: 'Duration',
+      environment: 'Environment',
+      timestamp: 'Timestamp',
+    },
+    environmentLabels: {
+      production: 'Production',
+      sandbox: 'Sandbox',
+    } as Record<string, string>,
+    empty: {
+      title: 'No API requests yet',
+      description: 'API request history will appear here once you start making calls.',
+    },
+    error: {
+      title: 'Failed to load logs',
+      description: 'Please refresh the page to try again.',
+    },
+  },
+
+  team: {
+    title: 'Team',
+    subtitle: 'Manage who has access to your partner dashboard.',
+    table: {
+      name: 'Name',
+      email: 'Email',
+      role: 'Role',
+      added: 'Added',
+      actions: 'Actions',
+    },
+    addMember: 'Add team member',
+    addMemberDescription: 'Invite a colleague to access your partner dashboard.',
+    form: {
+      nameLabel: 'Full name',
+      namePlaceholder: 'e.g. Tunde Okonkwo',
+      emailLabel: 'Email address',
+      emailPlaceholder: 'e.g. tunde@company.com',
+      roleLabel: 'Role',
+      submitLabel: 'Add member',
+      submittingLabel: 'Adding\u2026',
+    },
+    roleLabels: {
+      admin: 'Admin',
+      developer: 'Developer',
+      viewer: 'Viewer',
+    } as Record<string, string>,
+    removeConfirmTitle: 'Remove team member',
+    removeConfirmDescription: 'Are you sure? This person will lose access immediately.',
+    removeConfirmAction: 'Remove',
+    removeCancel: 'Cancel',
+    success: 'Team member added.',
+    removeSuccess: 'Team member removed.',
+    error: 'Failed to update team. Please try again.',
+    empty: {
+      title: 'No team members',
+      description: 'Add colleagues to collaborate on your integration.',
+    },
+  },
+
+  journey: {
+    stages: {
+      create_api_key: 'Create API key',
+      configure_integration: 'Configure integration',
+      enroll_students: 'Enrol students',
+      monitor_throughput: 'Monitor throughput',
+    },
+    nextActions: {
+      create_api_key: {
+        label: 'Create your first API key',
+        description: 'Generate an API key to start integrating with the Doculet platform.',
+        cta: 'Manage API keys',
+        href: '/dashboard/partner/api-keys',
+      },
+      configure_integration: {
+        label: 'Configure your integration',
+        description: 'Make your first API call to verify the integration is working.',
+        cta: 'View API docs',
+        href: '/dashboard/partner/api-keys',
+      },
+      enroll_students: {
+        label: 'Enrol students via API',
+        description: 'Use the API to submit student verification requests.',
+        cta: 'View students',
+        href: '/dashboard/partner/students',
+      },
+      monitor_throughput: {
+        label: 'Monitor verification throughput',
+        description: 'Track student verification rates and API performance.',
+        cta: 'View analytics',
+        href: '/dashboard/partner/analytics',
+      },
+    },
+    completionMessage: 'Integration active. Students enrolling and verifying through your platform.',
   },
 
   nav: {

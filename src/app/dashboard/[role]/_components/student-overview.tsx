@@ -1,11 +1,11 @@
 import {
   ArrowRight,
-  Banknote,
-  CheckCircle2,
-  FileStack,
+  Money,
+  CheckCircle,
+  Files,
   GraduationCap,
   ShieldCheck,
-} from 'lucide-react';
+} from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -15,27 +15,24 @@ import {
   PageHeader,
   PageShell,
   Section,
-  Stack,
 } from '@/components/layout/content-primitives';
+import { JourneyProgress } from '@/components/ui/journey-progress';
 import { studentHomeCopy } from '@/config/copy/dashboard-shell';
 import { studentDocumentTypeValues } from '@/lib/documents';
+import { getFirstName } from '@/lib/get-first-name';
+import { computeStudentJourney } from '@/lib/journey/student';
 import { api } from '@/trpc/server';
 
-import { NextStepCard, StatCard } from './overview-shared';
+import { StatCard } from './overview-shared';
 
 type StudentOverviewProps = {
   email: string;
   caller: Awaited<ReturnType<typeof api>>;
 };
 
-function getFirstName(email: string): string {
-  const raw = email.split('@')[0] ?? '';
-  return raw.charAt(0).toUpperCase() + raw.slice(1);
-}
-
 export async function StudentOverview({ email, caller }: StudentOverviewProps) {
-  const totalRequired = studentDocumentTypeValues.length;
   const firstName = getFirstName(email);
+  const totalRequired = studentDocumentTypeValues.length;
   const copy = studentHomeCopy;
 
   const [verificationResult, schoolSelectionResult, documentsResult, schoolsResult] =
@@ -68,131 +65,116 @@ export async function StudentOverview({ email, caller }: StudentOverviewProps) {
   const bankConnected = verification?.monoConnection.isConnected ?? false;
   const bankName = verification?.monoConnection.bankName ?? null;
 
-  type StepKey = keyof typeof copy.nextSteps.items;
-  const stepOrder: StepKey[] = [
-    'selectSchool',
-    'verifyIdentity',
-    'uploadDocuments',
-    'linkBankAccount',
-  ];
-  const activeSteps = stepOrder.filter((key) => {
-    if (key === 'selectSchool') return !schoolSelection?.schoolId;
-    if (key === 'verifyIdentity') return completionPercent < 100;
-    if (key === 'uploadDocuments') return uploadedCount < totalRequired;
-    if (key === 'linkBankAccount') return !bankConnected;
-    return false;
-  });
-  const prioritySteps = activeSteps.slice(0, 2);
+  const allDocsApproved = approvedCount >= totalRequired && uploadedCount >= totalRequired;
+  const journeyState = computeStudentJourney(
+    {
+      schoolSelected: Boolean(schoolSelection?.schoolId),
+      completionPercent,
+      uploadedCount,
+      totalRequired,
+      bankConnected,
+      allDocsApproved,
+    },
+    copy.journey,
+  );
 
   return (
     <PageShell width="wide">
       <Section>
         <PageHeader
-          title={copy.title}
+          title={copy.welcomeTitle(firstName)}
           description={copy.journeySubtitle}
         />
-        <Grid cols={{ sm: 3 }} gap="md">
-        <StatCard
-          icon={<ShieldCheck className="size-4.5" aria-hidden="true" />}
-          label={copy.stats.verification.label}
-          value={copy.stats.verification.percent(completionPercent)}
-          sub={
-            highestTier > 0
-              ? copy.stats.verification.tierPassed(highestTier)
-              : copy.stats.verification.notStartedLabel
-          }
-          accent={completionPercent > 0}
+
+        <JourneyProgress
+          stages={journeyState.stages}
+          nextAction={journeyState.nextAction}
+          allComplete={journeyState.allComplete}
+          completionMessage={journeyState.completionMessage}
         />
-        <StatCard
-          icon={<FileStack className="size-4.5" aria-hidden="true" />}
-          label={copy.stats.documents.label}
-          value={copy.stats.documents.countLabel(uploadedCount, totalRequired)}
-          sub={
-            approvedCount === uploadedCount && uploadedCount > 0
-              ? copy.stats.documents.allApprovedLabel
-              : `${approvedCount} approved`
-          }
-          accent={uploadedCount > 0}
-        />
-        <StatCard
-          icon={<Banknote className="size-4.5" aria-hidden="true" />}
-          label={copy.stats.bankAccount.label}
-          value={bankConnected ? copy.stats.bankAccount.linkedLabel : copy.stats.bankAccount.notLinkedLabel}
-          sub={bankName ?? (bankConnected ? '' : 'Required for disbursements')}
-          accent={bankConnected}
-        />
+
+        <Grid cols={{ sm: 3 }} gap="md" className="mt-6">
+          <StatCard
+            icon={<ShieldCheck className="size-4.5" weight="duotone" aria-hidden="true" />}
+            label={copy.stats.verification.label}
+            value={copy.stats.verification.percent(completionPercent)}
+            sub={
+              highestTier > 0
+                ? copy.stats.verification.tierPassed(highestTier)
+                : copy.stats.verification.notStartedLabel
+            }
+            accent={completionPercent > 0}
+          />
+          <StatCard
+            icon={<Files className="size-4.5" weight="duotone" aria-hidden="true" />}
+            label={copy.stats.documents.label}
+            value={copy.stats.documents.countLabel(uploadedCount, totalRequired)}
+            sub={
+              approvedCount === uploadedCount && uploadedCount > 0
+                ? copy.stats.documents.allApprovedLabel
+                : copy.stats.documents.approvedCount(approvedCount)
+            }
+            accent={uploadedCount > 0}
+          />
+          <StatCard
+            icon={<Money className="size-4.5" weight="duotone" aria-hidden="true" />}
+            label={copy.stats.bankAccount.label}
+            value={bankConnected ? copy.stats.bankAccount.linkedLabel : copy.stats.bankAccount.notLinkedLabel}
+            sub={bankName ?? (bankConnected ? '' : copy.stats.bankAccount.requiredSub)}
+            accent={bankConnected}
+          />
         </Grid>
 
-        <Card className="border-border bg-card dark:border-border dark:bg-card mt-6">
-        <CardContent className="flex flex-col gap-3 pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-              <GraduationCap className="size-4.5" aria-hidden="true" />
-            </div>
-            <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {copy.school.sectionLabel}
-              </p>
-              {selectedSchool ? (
-                <>
-                  <p className="mt-0.5 text-base font-semibold text-foreground">
-                    {selectedSchool.name}
-                  </p>
-                  {selectedProgram ? (
-                    <p className="text-sm text-muted-foreground">
-                      {selectedProgram.name}
-                      {' · '}
-                      {copy.school.durationLabel(selectedProgram.durationMonths)}
+        <Card className="border-border bg-card mt-6">
+          <CardContent className="flex flex-col gap-3 pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                <GraduationCap className="size-4.5" weight="duotone" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  {copy.school.sectionLabel}
+                </p>
+                {selectedSchool ? (
+                  <>
+                    <p className="mt-0.5 text-base font-semibold text-foreground">
+                      {selectedSchool.name}
                     </p>
-                  ) : null}
-                </>
-              ) : (
-                <>
-                  <p className="mt-0.5 text-sm font-medium text-foreground">
-                    {copy.school.notSelectedTitle}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {copy.school.notSelectedDescription}
-                  </p>
-                </>
-              )}
+                    {selectedProgram ? (
+                      <p className="text-sm text-muted-foreground">
+                        {selectedProgram.name}
+                        {' · '}
+                        {copy.school.durationLabel(selectedProgram.durationMonths)}
+                      </p>
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    <p className="mt-0.5 text-sm font-medium text-foreground">
+                      {copy.school.notSelectedTitle}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {copy.school.notSelectedDescription}
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-          {selectedSchool ? (
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
-              <CheckCircle2 className="size-3.5" aria-hidden="true" />
-              Selected
-            </span>
-          ) : (
-            <Button asChild size="sm" variant="outline" className="shrink-0">
-              <Link href={copy.school.ctaHref} className="inline-flex items-center gap-1.5">
-                {copy.school.ctaLabel}
-                <ArrowRight className="size-3.5" aria-hidden="true" />
-              </Link>
-            </Button>
-          )}
-        </CardContent>
-      </Card>
-
-        {prioritySteps.length > 0 ? (
-        <Stack gap="md" className="mt-6">
-          <h2 className="text-sm font-semibold text-foreground">{copy.nextSteps.heading}</h2>
-          <Grid cols={{ sm: 2 }} gap="md">
-            {prioritySteps.map((key, i) => (
-              <NextStepCard key={key} step={copy.nextSteps.items[key]} index={i} />
-            ))}
-          </Grid>
-        </Stack>
-      ) : (
-        <Card className="border-border bg-card dark:border-border dark:bg-card mt-6">
-          <CardContent className="flex items-center gap-3 pt-5">
-            <CheckCircle2 className="size-5 text-primary" aria-hidden="true" />
-            <p className="text-sm text-muted-foreground">
-              All steps complete. Your profile is ready for sponsor review.
-            </p>
+            {selectedSchool ? (
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
+                <CheckCircle className="size-3.5" weight="duotone" aria-hidden="true" />
+                {copy.school.selectedLabel}
+              </span>
+            ) : (
+              <Button asChild size="sm" variant="outline" className="shrink-0">
+                <Link href={copy.school.ctaHref} className="inline-flex items-center gap-1.5">
+                  {copy.school.ctaLabel}
+                  <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+                </Link>
+              </Button>
+            )}
           </CardContent>
         </Card>
-      )}
       </Section>
     </PageShell>
   );

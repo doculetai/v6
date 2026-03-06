@@ -39,6 +39,142 @@ export const adminCopy = {
     },
   },
 
+  queue: {
+    title: 'Review queue',
+    subtitle: 'Prioritized items for review.',
+    empty: { title: 'Queue is empty', description: 'Items will appear here when they need review.' },
+  },
+  documents: {
+    title: 'Document browser',
+    subtitle: 'Browse and search all documents.',
+    empty: { title: 'No documents', description: 'Submitted documents will appear here.' },
+  },
+  statementReview: {
+    title: 'Statement review',
+    subtitle: 'Deep analysis of bank statements.',
+    table: {
+      student: 'Student',
+      uploadDate: 'Uploaded',
+      status: 'Status',
+      action: 'Action',
+    },
+    statusLabels: {
+      pending: 'Pending',
+      approved: 'Approved',
+      rejected: 'Rejected',
+      more_info_requested: 'More info needed',
+      expired: 'Expired',
+    },
+    actions: {
+      view: 'View',
+    },
+    pagination: {
+      previous: 'Previous',
+      next: 'Next',
+      showing: (from: number, to: number, total: number) =>
+        `Showing ${from}–${to} of ${total}`,
+    },
+    empty: { title: 'No reviews', description: 'Statement reviews will appear here.' },
+    error: { title: 'Failed to load statement reviews', description: 'Please refresh the page to try again.' },
+  },
+  fraud: {
+    title: 'Fraud detection',
+    subtitle: 'Flagged items and fraud signals.',
+    empty: { title: 'No fraud flags', description: 'Flagged items will appear here.' },
+  },
+  payments: {
+    title: 'Payments',
+    subtitle: 'Payment and revenue tracking.',
+    empty: { title: 'No payments', description: 'Payment records will appear here.' },
+  },
+  ledger: {
+    title: 'Transactions ledger',
+    subtitle: 'Money flow audit trail — disbursements, fees, refunds.',
+    table: {
+      type: 'Type',
+      entity: 'Entity',
+      amount: 'Amount',
+      currency: 'Currency',
+      date: 'Date',
+    },
+    filters: {
+      type: 'Type',
+      entityType: 'Entity type',
+      dateFrom: 'From date',
+      dateTo: 'To date',
+      apply: 'Apply',
+    },
+    types: {
+      disbursement: 'Disbursement',
+      platform_fee: 'Platform fee',
+      refund: 'Refund',
+      reversal: 'Reversal',
+      credit: 'Credit',
+      debit: 'Debit',
+    },
+    empty: { title: 'No transactions', description: 'Transaction entries will appear here.' },
+  },
+  platformFees: {
+    title: 'Platform fees',
+    subtitle: 'Configure fee rules per currency (percentage or fixed).',
+    table: {
+      currency: 'Currency',
+      feeType: 'Type',
+      value: 'Value',
+      effectiveFrom: 'Effective from',
+      effectiveTo: 'End date',
+      actions: 'Actions',
+    },
+    feeTypes: {
+      percentage: 'Percentage',
+      fixed: 'Fixed (kobo)',
+    },
+    add: 'Add fee rule',
+    edit: 'Edit',
+    end: 'End',
+    endConfirmBody:
+      'This will end the fee rule. It will no longer apply to new disbursements.',
+    form: {
+      currency: 'Currency',
+      feeType: 'Type',
+      valueKobo: 'Value (basis points for %, kobo for fixed)',
+      effectiveFrom: 'Effective from',
+      save: 'Save',
+      cancel: 'Cancel',
+    },
+    empty: { title: 'No fee rules', description: 'Add a fee rule to deduct platform fees on disbursements.' },
+  },
+  audit: {
+    title: 'Audit log',
+    subtitle: 'Platform activity and audit trail.',
+    table: {
+      timestamp: 'Timestamp',
+      action: 'Action',
+      entityType: 'Entity type',
+      actor: 'Actor',
+      details: 'Details',
+    },
+    filters: {
+      action: 'Filter by action',
+      entityType: 'Filter by entity type',
+      apply: 'Apply',
+      clear: 'Clear',
+    },
+    pagination: {
+      previous: 'Previous',
+      next: 'Next',
+      showing: (from: number, to: number, total: number) =>
+        `Showing ${from}–${to} of ${total}`,
+    },
+    empty: { title: 'No audit entries', description: 'Audit log entries will appear here.' },
+    error: { title: 'Failed to load audit log', description: 'Please refresh the page to try again.' },
+  },
+  system: {
+    title: 'System health',
+    subtitle: 'Services and infrastructure status.',
+    empty: { title: 'Loading', description: 'System status will appear here.' },
+  },
+
   documentReview: {
     title: "Document review queue",
     subtitle: "Review and approve submitted documents. Every decision is logged.",
@@ -142,6 +278,26 @@ export const adminCopy = {
       confirmCta: "Suspend account",
       cancel: "Cancel",
     },
+    kycOverrideDialog: {
+      title: "Override KYC verification?",
+      description: "This will mark the user as KYC verified without provider confirmation. Use only after manually reviewing their identity documents.",
+      noteLabel: "Admin note (required)",
+      noteHint: "Document why this override is justified.",
+      confirmCta: "Verify manually",
+      cancel: "Cancel",
+      success: "KYC status updated to verified.",
+    },
+    issueCertDialog: {
+      title: "Manually issue certificate?",
+      description: "This will generate a proof-of-funds certificate for this student with the payment status set to waived.",
+      noteLabel: "Admin note (required)",
+      noteHint: "Document why this certificate is being issued manually.",
+      confirmCta: "Issue certificate",
+      cancel: "Cancel",
+      success: "Certificate issued.",
+    },
+    reinstateSuccess: "Account reinstated.",
+    suspendSuccess: "Account suspended.",
     empty: {
       title: "No users found",
       description: "Adjust your filters or search term to find users.",
@@ -168,6 +324,7 @@ export const adminCopy = {
       approved: "Approved",
       rejected: "Rejected",
       moreInfoRequested: "More info needed",
+      expired: "Expired",
     },
     table: {
       student: "Student",
@@ -183,6 +340,7 @@ export const adminCopy = {
       approved: "Approved",
       rejected: "Rejected",
       moreInfoRequested: "More info needed",
+      expired: "Expired",
     },
     tierLabels: {
       tier1: "Tier 1",
@@ -212,6 +370,11 @@ export const adminCopy = {
       rejectCta: "Reject document",
       requestInfoCta: "Request more info",
       cancel: "Cancel",
+      viewDocument: "View document",
+      deleteCta: "Delete document",
+      deleteConfirmTitle: "Delete document?",
+      deleteConfirmDescription:
+        "This will permanently remove the document from storage and the database. The student will need to re-upload.",
     },
     bulkBar: {
       approve: "Approve batch",
@@ -254,6 +417,9 @@ export const adminCopy = {
       repeated_kyc_failure: 'Repeated KYC failure',
       repeated_document_rejection: 'Repeated document rejection',
       unverified_with_active_sponsorship: 'Unverified with active sponsorship',
+      duplicate_kyc_reference: 'Duplicate KYC reference',
+      ghost_students: 'Agent with high incomplete rate',
+      rapid_sponsor_switching: 'Rapid sponsor switching',
     },
     severityLabels: {
       low: 'Low',
@@ -261,6 +427,18 @@ export const adminCopy = {
       high: 'High',
     },
     error: { title: 'Failed to load risk flags', description: 'Please refresh the page to try again.' },
+  },
+
+  peakSeason: {
+    title: 'Peak season',
+    badge: 'Peak season active',
+    metrics: {
+      currentWeekVolume: 'This week',
+      baselineWeeklyVolume: 'Baseline weekly',
+      volumeMultiplier: 'Volume multiplier',
+    },
+    normal: 'Volume is within normal range.',
+    error: { title: 'Failed to load peak season data', description: 'Please refresh the page to try again.' },
   },
 
   settings: {
@@ -278,6 +456,64 @@ export const adminCopy = {
         comingSoon: 'Alert routing to email, Slack, or webhooks is managed by the Doculet operations team. Contact support to configure notification channels.',
       },
     },
+  },
+
+  impersonation: {
+    banner: (email: string) => `Viewing as ${email}`,
+    endSession: 'End session',
+    startCta: 'View as user',
+    confirmTitle: 'View as this user?',
+    confirmDescription: 'You will see the platform as this user sees it. All actions are logged in the audit trail.',
+    confirmCta: 'Start viewing',
+    cancel: 'Cancel',
+    cannotImpersonateAdmin: 'Admin accounts cannot be impersonated.',
+    cannotImpersonateSelf: 'You cannot impersonate yourself.',
+    sessionEnded: 'Impersonation session ended.',
+  },
+
+  overview: {
+    welcomeTitle: 'Platform overview',
+    subtitle: 'Platform health at a glance. Every action audited.',
+    stats: {
+      pendingReview: { label: 'Pending review', sub: 'documents awaiting decision' },
+      approvedToday: { label: 'Approved today', sub: 'documents cleared' },
+      rejectedToday: { label: 'Rejected today', sub: 'documents returned' },
+      riskFlags: { label: 'Risk flags', sub: 'items requiring attention' },
+    },
+    recentOperations: {
+      heading: 'Recent operations',
+      empty: 'No pending operations. All queues are clear.',
+      viewAll: 'View all operations',
+    },
+  },
+
+  journey: {
+    stages: {
+      review_queue: 'Review queue',
+      resolve_flags: 'Resolve flags',
+      platform_health: 'Platform health',
+    },
+    nextActions: {
+      review_queue: {
+        label: 'Review pending items',
+        description: 'Items in the queue need your attention before they can proceed.',
+        cta: 'Open operations',
+        href: '/dashboard/admin/operations',
+      },
+      resolve_flags: {
+        label: 'Resolve flagged items',
+        description: 'Flagged items require investigation and resolution.',
+        cta: 'View risk flags',
+        href: '/dashboard/admin/risk',
+      },
+      platform_health: {
+        label: 'Monitor platform health',
+        description: 'All queues are clear. Monitor system health and performance.',
+        cta: 'View system status',
+        href: '/dashboard/admin/operations',
+      },
+    },
+    completionMessage: 'All queues clear. Platform is operating normally.',
   },
 
   nav: {

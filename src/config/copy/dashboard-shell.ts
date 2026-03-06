@@ -71,6 +71,7 @@ export function getFallbackUserName(role: DashboardRole): string {
 }
 
 export const studentHomeCopy = {
+  welcomeTitle: (name: string) => `Welcome, ${name}`,
   title: 'Your proof journey',
   journeySubtitle: 'Your proof-of-funds journey at a glance.',
   stats: {
@@ -85,11 +86,13 @@ export const studentHomeCopy = {
       label: 'Documents',
       countLabel: (submitted: number, total: number) => `${submitted} of ${total} submitted`,
       allApprovedLabel: 'All approved',
+      approvedCount: (n: number) => `${n} approved`,
     },
     bankAccount: {
       label: 'Bank Account',
       linkedLabel: 'Linked',
       notLinkedLabel: 'Not linked',
+      requiredSub: 'Required for disbursements',
     },
   },
   empty: {
@@ -97,6 +100,7 @@ export const studentHomeCopy = {
   },
   school: {
     sectionLabel: 'Selected School',
+    selectedLabel: 'Selected',
     notSelectedTitle: 'No school selected yet',
     notSelectedDescription: 'Browse partner institutions to set your funding target.',
     ctaLabel: 'Browse schools',
@@ -132,6 +136,16 @@ export const studentHomeCopy = {
         href: '/dashboard/student/verify',
       },
     },
+  },
+  journey: {
+    stages: {
+      school: 'Select school',
+      identity: 'Verify identity',
+      documents: 'Upload documents',
+      bank: 'Link bank',
+      proof: 'View proof',
+    },
+    completionMessage: 'Your profile is complete and ready for sponsor review.',
   },
 } as const;
 

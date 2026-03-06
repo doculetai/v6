@@ -5,6 +5,7 @@ export const agentCopy = {
     title: "Agent dashboard",
     subtitle: "Grow your student portfolio. Earn on every verification.",
     overview: {
+      welcomeTitle: (name: string) => `Welcome back, ${name}`,
       subtitle: "Guide your active students through their funding journey.",
       stats: {
         assignedStudents: { label: "Assigned Students", sub: "in your caseload" },
@@ -59,6 +60,80 @@ export const agentCopy = {
         description:
           "Student activity will appear here as they complete verification steps.",
       },
+    },
+  },
+
+  invites: {
+    title: 'Invites',
+    subtitle: 'Track every student you have invited and their onboarding progress.',
+    table: {
+      email: 'Email',
+      school: 'School',
+      status: 'Status',
+      assignedAt: 'Invited',
+    },
+    statusLabels: {
+      invited: 'Invited',
+      onboarding: 'Onboarding',
+      verified: 'Verified',
+      completed: 'Completed',
+    },
+    empty: {
+      title: 'No invites yet',
+      description: 'Students you invite will appear here as they begin onboarding.',
+      cta: 'Invite students',
+    },
+    error: {
+      title: 'Failed to load invites',
+      description: 'Please refresh the page to try again.',
+    },
+  },
+  bulkInvite: {
+    title: 'Bulk invite',
+    subtitle: 'Invite up to 20 students at once by entering their email addresses.',
+    placeholder: 'Enter one email per line, e.g.\nstudent1@example.com\nstudent2@example.com',
+    submitLabel: 'Send invitations',
+    submittingLabel: 'Sending\u2026',
+    maxEmails: 20,
+    validation: {
+      noEmails: 'Enter at least one email address.',
+      tooMany: 'You can invite a maximum of 20 students at once.',
+      invalidEmail: (email: string) => `Invalid email: ${email}`,
+      duplicateEmail: (email: string) => `Duplicate email: ${email}`,
+    },
+    success: {
+      title: 'Invitations sent',
+      description: (count: number) =>
+        count === 1
+          ? '1 invitation was sent successfully.'
+          : `${count} invitations were sent successfully.`,
+    },
+    empty: {
+      title: 'Bulk invite',
+      description: 'Enter student email addresses below to send invitations in bulk.',
+    },
+    error: {
+      title: 'Failed to send invitations',
+      description: 'Please check the email addresses and try again.',
+    },
+  },
+  sponsors: {
+    title: 'Sponsors',
+    subtitle: 'Sponsors linked to your students through their sponsorship arrangements.',
+    table: {
+      name: 'Sponsor',
+      email: 'Email',
+      studentsCount: 'Students',
+      totalFundedKobo: 'Total funded',
+      joinedAt: 'Joined',
+    },
+    empty: {
+      title: 'No sponsors yet',
+      description: 'Sponsors will appear here when your students receive sponsorships.',
+    },
+    error: {
+      title: 'Failed to load sponsors',
+      description: 'Please refresh the page to try again.',
     },
   },
 
@@ -271,6 +346,42 @@ export const agentCopy = {
       heading: 'Bulk tools & advanced operations',
       description: 'Bulk operations and advanced tools will be available here as your portfolio grows.',
     },
+  },
+
+  journey: {
+    stages: {
+      invite_students: 'Invite students',
+      guide_onboarding: 'Guide onboarding',
+      facilitate_matching: 'Facilitate matching',
+      earn_commissions: 'Earn commissions',
+    },
+    nextActions: {
+      invite_students: {
+        label: 'Invite your first student',
+        description: 'Use the Actions page to invite students into your caseload.',
+        cta: 'Invite students',
+        href: '/dashboard/agent/actions',
+      },
+      guide_onboarding: {
+        label: 'Guide students through verification',
+        description: 'Help your assigned students complete identity and document checks.',
+        cta: 'View students',
+        href: '/dashboard/agent/students',
+      },
+      facilitate_matching: {
+        label: 'Connect students with sponsors',
+        description: 'Help students find and invite sponsors to fund their education.',
+        cta: 'View students',
+        href: '/dashboard/agent/students',
+      },
+      earn_commissions: {
+        label: 'Track your commissions',
+        description: 'Review earned commissions and request payouts.',
+        cta: 'View commissions',
+        href: '/dashboard/agent/commissions',
+      },
+    },
+    completionMessage: 'Your students are progressing well. Keep building your portfolio.',
   },
 
   nav: {

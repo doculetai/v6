@@ -5,6 +5,7 @@ export const sponsorCopy = {
     title: "Sponsor dashboard",
     subtitle: "Fund education with confidence. Every naira tracked.",
     overview: {
+      welcomeTitle: (name: string) => `Welcome back, ${name}`,
       subtitle: "Track your commitments and upcoming disbursements.",
       stats: {
         totalCommitted: { label: "Total Committed", sub: "across active sponsorships" },
@@ -23,6 +24,11 @@ export const sponsorCopy = {
         unknownStudentLabel: "Unknown",
       },
       cta: "Review pending requests",
+      pendingInvitesBanner: {
+        message: "You have pending invites from students waiting for your review.",
+        cta: "Review invites",
+        href: "/dashboard/sponsor/students",
+      },
     },
     stats: {
       totalCommitted: "Total committed (₦)",
@@ -52,6 +58,8 @@ export const sponsorCopy = {
   studentDetail: {
     title: "Student profile",
     subtitle: "Review funding requirements and verification status.",
+    backToStudents: "Back to students",
+    nextDisbursement: "Next disbursement",
     sections: {
       profile: "Personal details",
       school: "School & program",
@@ -141,6 +149,7 @@ export const sponsorCopy = {
       scheduled: "Scheduled",
       status: "Status",
       reference: "Reference",
+      actions: "Actions",
     },
     statusLabels: {
       all: "All",
@@ -153,6 +162,19 @@ export const sponsorCopy = {
     },
     downloadStatement: "Download statement",
     filterByStatus: "Filter by status",
+    actions: {
+      pay: "Initiate payment",
+      payingCta: "Initiating...",
+      cancel: "Cancel",
+      cancelConfirmTitle: "Cancel this disbursement?",
+      cancelConfirmDescription: "The scheduled payment will not be processed. You can initiate a new payment later.",
+      cancelConfirmCta: "Cancel disbursement",
+      cancelSuccess: "Disbursement cancelled.",
+    },
+    feedback: {
+      initiateSuccess: "Payment initiated. Status will update when the transfer completes.",
+      initiateError: "Unable to initiate payment. Please try again.",
+    },
   },
 
   students: {
@@ -176,12 +198,47 @@ export const sponsorCopy = {
       amount: 'Amount',
       status: 'Status',
       since: 'Since',
+      actions: 'Actions',
+      updateAmount: 'Update amount',
+      cancelSponsorship: 'Cancel sponsorship',
+      cancelConfirmTitle: 'Cancel this sponsorship?',
+      cancelConfirmDescription: 'The student will be notified and will need to find alternative funding. This action cannot be undone.',
+      cancelConfirmCta: 'Cancel sponsorship',
+      cancelSuccess: 'Sponsorship cancelled.',
+      updateAmountTitle: 'Update commitment amount',
+      updateAmountCta: 'Save',
+      updateAmountSuccess: 'Commitment amount updated.',
     },
     statusLabels: {
       pending: 'Pending',
       active: 'Active',
       completed: 'Completed',
       cancelled: 'Cancelled',
+    },
+  },
+
+  commitments: {
+    title: 'Commitments',
+    subtitle: 'Your financial pledges and commitment status.',
+    empty: { title: 'No commitments yet', description: 'Commit to a student to fund their education.' },
+    table: {
+      student: 'Student',
+      amount: 'Amount',
+      status: 'Status',
+      since: 'Since',
+    },
+    statusLabels: { pending: 'Pending', active: 'Active', completed: 'Completed', cancelled: 'Cancelled' },
+  },
+  impact: {
+    title: 'Impact',
+    subtitle: 'Summary of your contribution to student success.',
+    empty: { title: 'No impact data yet', description: 'Your contribution summary will appear after you sponsor students.' },
+    stats: {
+      totalDisbursed: 'Total disbursed',
+      studentsHelped: 'Students helped',
+      certificatesIssued: 'Certificates issued',
+      activeCommitments: 'Active commitments',
+      completedCommitments: 'Completed commitments',
     },
   },
 
@@ -227,6 +284,42 @@ export const sponsorCopy = {
       loadError: 'Unable to load settings. Please try again.',
       tryAgain: 'Try again',
     },
+  },
+
+  journey: {
+    stages: {
+      review_invites: 'Review invitations',
+      commit_funds: 'Commit funds',
+      track_disbursements: 'Track disbursements',
+      view_certificates: 'View certificates',
+    },
+    nextActions: {
+      review_invites: {
+        label: 'Review pending invitations',
+        description: 'Students have requested your support. Review their profiles and respond.',
+        cta: 'Review students',
+        href: '/dashboard/sponsor/students',
+      },
+      commit_funds: {
+        label: 'Fund a student',
+        description: 'Commit funds to an accepted student to begin the disbursement process.',
+        cta: 'View students',
+        href: '/dashboard/sponsor/students',
+      },
+      track_disbursements: {
+        label: 'Monitor disbursements',
+        description: 'Track the progress of your scheduled fund transfers.',
+        cta: 'View disbursements',
+        href: '/dashboard/sponsor/disbursements',
+      },
+      view_certificates: {
+        label: 'Review issued certificates',
+        description: 'View proof-of-funds certificates issued for your sponsored students.',
+        cta: 'View students',
+        href: '/dashboard/sponsor/students',
+      },
+    },
+    completionMessage: 'All sponsorships are active and disbursements on track.',
   },
 
   nav: {
