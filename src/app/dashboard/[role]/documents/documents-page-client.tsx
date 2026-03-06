@@ -151,14 +151,14 @@ export function DocumentsPageClient() {
         title={copy.title}
         description={copy.subtitle}
         breadcrumbs={[
-          { label: 'Overview', href: '/dashboard/student' },
-          { label: 'Documents' },
+          { label: studentCopy.nav.overview, href: '/dashboard/student' },
+          { label: studentCopy.nav.documents },
         ]}
       />
 
       {allApproved && (
-        <div className="flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-950/30">
-          <CheckCircle className="mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400" weight="duotone" aria-hidden="true" />
+        <div className="flex items-start gap-3 rounded-xl border border-success/20 bg-success/5 p-4">
+          <CheckCircle className="mt-0.5 size-5 shrink-0 text-success" weight="duotone" aria-hidden="true" />
           <div className="flex-1">
             <p className="text-sm font-semibold text-foreground">
               {copy.allApproved.heading}

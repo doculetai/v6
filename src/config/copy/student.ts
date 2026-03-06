@@ -449,6 +449,10 @@ export const studentCopy = {
     documents: "Documents",
     proof: "Proof",
     invite: "Invite sponsor",
+    breadcrumbs: {
+      applicationSetup: "Application Setup",
+      proofOfFunds: "Proof of Funds",
+    },
   },
 
   errors: commonErrors,

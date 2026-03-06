@@ -167,8 +167,8 @@ export function OnboardingPageClient() {
         title={onboardingCopy.title}
         description={onboardingCopy.subtitle}
         breadcrumbs={[
-          { label: 'Overview', href: '/dashboard/student' },
-          { label: 'Application Setup' },
+          { label: studentCopy.nav.overview, href: '/dashboard/student' },
+          { label: studentCopy.nav.breadcrumbs.applicationSetup },
         ]}
       />
       <OnboardingHero currentStep={currentStep} stepLabels={stepLabels} />

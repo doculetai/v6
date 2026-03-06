@@ -134,7 +134,7 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
         breadcrumbs={breadcrumbs}
       />
 
-      <Card className="border-border bg-card/95 dark:bg-card/90">
+      <Card className="border-border bg-card">
         <CardHeader className="space-y-3">
           <div className="flex items-center justify-between gap-3">
             <CardTitle className="text-xl text-card-foreground md:text-2xl">
@@ -170,12 +170,12 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
               return (
                 <article
                   key={tierItem.tier}
-                  className="rounded-xl border border-border bg-background/80 p-4 dark:bg-background/60"
+                  className="rounded-xl border border-border bg-muted p-4"
                 >
                   <div className="mb-3 flex items-start justify-between gap-2">
                     <div>
                       <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                        {`Tier ${tierItem.tier}`}
+                        {`${copy.kycSection.dojahForm.tierLabel} ${tierItem.tier}`}
                       </p>
                       <h3 className="text-base font-semibold text-foreground">
                         {tierCopy?.label}
@@ -219,7 +219,7 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
             onSuccess={() => void utils.student.getVerificationStatus.invalidate()}
           />
         ) : (
-          <Card className="border-border bg-card/95 dark:bg-card/90">
+          <Card className="border-border bg-card">
             <CardHeader className="space-y-3">
               <div className="inline-flex items-center gap-2 text-card-foreground">
                 <ShieldCheck className="size-5" weight="duotone" aria-hidden="true" />
@@ -231,7 +231,7 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
             <CardContent>
               {/* Show failure guidance if there are failed attempts */}
               {statusQuery.data.kycFailedAttempts > 0 ? (
-                <div className="mb-4 rounded-lg border border-border bg-background/80 p-3 dark:bg-background/60">
+                <div className="mb-4 rounded-lg border border-border bg-muted p-3">
                   <p className="text-sm text-muted-foreground">
                     {copy.kycFailure.firstAttempt}
                   </p>
@@ -301,7 +301,7 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
         )}
 
         {/* Bank verification — connect or upload statement */}
-        <Card className="border-border bg-card/95 dark:bg-card/90">
+        <Card className="border-border bg-card">
           <CardHeader className="space-y-3">
             <div className="inline-flex items-center gap-2 text-card-foreground">
               <Wallet className="size-5" weight="duotone" aria-hidden="true" />
@@ -312,7 +312,7 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             {statusQuery.data.monoConnection.isConnected ? (
-              <div className="rounded-lg border border-border bg-background/80 p-3 text-sm dark:bg-background/60">
+              <div className="rounded-lg border border-border bg-muted p-3 text-sm">
                 <p className="font-medium text-foreground">{copy.bankSection.connectedLabel}</p>
                 <p className="text-muted-foreground">
                   {`${statusQuery.data.monoConnection.bankName} (${statusQuery.data.monoConnection.accountNumberMasked})`}
@@ -346,7 +346,7 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
                         onChange={(event) => {
                           setMonoAccountId(event.target.value);
                         }}
-                        placeholder="Mono account ID (dev only)"
+                        placeholder={copy.bankSection.monoForm.monoAccountIdLabel}
                         required
                       />
                     </div>
@@ -387,7 +387,7 @@ export function VerifyPageClient({ initialData }: VerifyPageClientProps) {
           className={
             feedback.kind === 'error'
               ? 'border-destructive/30 bg-destructive/5 dark:border-destructive/40 dark:bg-destructive/10'
-              : 'border-border bg-card/95 dark:bg-card/90'
+              : 'border-border bg-card'
           }
         >
           <CardContent className="flex items-start gap-2 py-4">

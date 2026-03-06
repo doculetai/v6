@@ -126,8 +126,8 @@ export function ProofPageClient({
         title={studentCopy.proof.title}
         description={studentCopy.proof.subtitle}
         breadcrumbs={[
-          { label: 'Overview', href: '/dashboard/student' },
-          { label: 'Proof of Funds' },
+          { label: studentCopy.nav.overview, href: '/dashboard/student' },
+          { label: studentCopy.nav.breadcrumbs.proofOfFunds },
         ]}
       />
 
