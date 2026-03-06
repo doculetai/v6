@@ -114,8 +114,15 @@ export const studentRouter = createTRPCRouter({
 - T-shirt sizes: xs(4px), sm(8px), md(16px), lg(24px), xl(32px)
 - Use layout components, not raw `space-y-*`
 
+### Layout Primitives (MANDATORY for dashboard)
+- Dashboard pages (`src/app/dashboard/**`) MUST use content-primitives:
+  - PageShell, Section, Container, Grid, Stack, PageHeader from `@/components/layout/content-primitives`
+- NEVER use raw `<section className="mx-auto max-w-...">` or `<div className="grid grid-cols-...">` for page-level layout.
+- Enforced by `npm run layout-check` and `scripts/swarm/layout-audit.sh`.
+
 ### Icons
-- Lucide only — no other icon libraries
+- Phosphor Duotone only (`@phosphor-icons/react`) — no other icon libraries
+- Always use `weight="duotone"` on icon JSX
 - Nav: 24px, Inline: 20px, Small: 16px
 
 ## Coding Standards
@@ -151,10 +158,13 @@ export const studentRouter = createTRPCRouter({
 - WCAG 2.1 AA contrast minimum
 - `cn()` utility for class merging
 
+### Layout & Copy (MANDATORY)
+- Dashboard layout: use PageShell, Section, Grid, Stack, PageHeader — never raw section/div with mx-auto max-w- or grid grid-cols-.
+- All copy: from `src/config/copy/` or primitivesCopy — never hardcoded in JSX.
+
 ### No Mocks, No Stubs (MANDATORY)
 - NEVER use `vi.mock()`, `jest.mock()`, `msw`, or any mocking library
 - All test data: typed fixtures in `tests/fixtures/` matching real DB schema
-- All copy: from `src/config/copy/` — never hardcoded in JSX
 - If code can't be tested without a mock → restructure the code
 - Pure query functions in `src/db/queries/` are testable without mocks
 
@@ -166,7 +176,9 @@ export const studentRouter = createTRPCRouter({
 ## Dev Scripts
 
 - `npm run dev` — Next.js (Turbopack)
-- `npm run check` — lint + typecheck + tests (parallel)
+- `npm run check` — lint + typecheck + tests + layout-check (parallel)
+- `npm run layout-check` — enforce content-primitives in dashboard (fails on raw layout patterns)
+- `npm run design-check` — layout-audit + copy-audit (design framework enforcement)
 - `npm run test` — Vitest unit tests
 - `npm run test:e2e` — Playwright E2E
 - `npm run db:generate` — Drizzle generate migrations
@@ -196,3 +208,66 @@ Goldmayo Daniel / doculet.ai — NO AI attribution anywhere
 - **Simplicity First**: minimum code for current task
 - **No Laziness**: find root causes, no temporary fixes
 - **Minimal Impact**: only touch what's necessary
+
+## Feature Shipping Checklist (MANDATORY)
+
+Every feature follows this skill sequence before merge:
+
+| Stage | Skill | When |
+|-------|-------|------|
+| Before building | `/frontend-design` | Any new page or major UI |
+| During development | `/audit` | After first working version |
+| During development | `/clarify` | When copy feels vague or off-brand |
+| During development | `/normalize` | After integrating with design system |
+| Before merge | `/product-owner` | Required — GO verdict needed to ship |
+| Final pass | `/polish` | Before opening PR |
+
+**`/product-owner` is the merge gate.** It evaluates 9 lenses: persona fit, scope drift, copy compliance, role-awareness, trust signals, emotional goal, copy voice, visual quality, and user journey completeness. A NO-GO blocks the PR.
+
+When `/product-owner` returns findings, use these impeccable skills to fix them:
+- Copy Voice issues → `/clarify`
+- Visual Quality issues → `/audit` then `/normalize`
+- User Journey gaps → `/harden` or `/onboard`
+- Persona Fit issues → `/clarify` + `/critique`
+- Emotional Goal drift → `/delight` or `/distill`
+
+---
+
+## Design Context
+
+### Users
+6 roles using the platform for proof-of-funds verification in international education:
+- **Student** — Anxious, hopeful. Job: prove they can afford their program. Context: Nigerian students preparing for university enrollment.
+- **Sponsor** — Cautious, needs trust. Job: fund education and stay accountable. Sub-types: corporate (audit-first), parent (emotional), self-funded.
+- **University** — Busy, needs bulk ops. Job: process applications efficiently.
+- **Admin** — Methodical, risk-aware. Job: operate the platform safely.
+- **Agent** — Entrepreneurial. Job: help students through the process.
+- **Partner** — Technical, ROI-focused. Job: embed Doculet in their institution.
+
+### Brand Personality
+**Bold, Modern, Confident.** Nigerian-market fintech that feels like a trusted institution, not a startup experiment. Voice per persona: warm/encouraging (student), clear/professional (sponsor), efficient/authoritative (university). Obsidian Blues palette, Doculet seal on certificates.
+
+### Emotional Goals
+- **Confidence + Calm** when viewing status, balances, verification state
+- **Progress + Achievement** when completing milestones, receiving certificates
+- Both moods coexist: the interface celebrates forward motion while maintaining institutional composure
+
+### Aesthetic Direction
+- **Tone:** "Safe & in good hands" — bank-grade authority, warm not clinical. Like a private banker's portal, not a SaaS dashboard.
+- **Reference:** Wise + Revolut (consumer fintech warmth, friendly, clear financial flows). Stripe Dashboard (clean, precise, credible) for data hierarchy.
+- **Anti-reference:** Generic SaaS dashboards (cookie-cutter Bootstrap/template, flat gray-on-white monotony). Overly playful apps (rounded bubbly UI, gradients, emojis, cartoon illustrations). Veriff (clinical, sterile).
+- **Colors:** Warm white `#FDFCFA` base. Brand blue `#2B39A3` (logo) as signature. Role-tinted active states (see Role Accents below). No pure white/black.
+- **Role Accents (active nav colour per role):** Student `#2B39A3`, Sponsor `#15803D`, University `#0369A1`, Admin `#C2410C`, Agent `#6D28D9`, Partner `#0F766E`.
+- **Typography:** IBM Plex Sans (UI primary — set globally). IBM Plex Mono (amounts, codes). IBM Plex Serif (certificates only). Section headers: 10-11px, ALL CAPS, tracked wide.
+- **Sidebar:** Stripe-clean white with warm tint. Role accent only on active item (border + bg wash + text). Section labels muted gray. Logo at full 36px PNG, not icon substitute.
+- **Unforgettable element:** Role-tinted sidebar (each user's dashboard feels uniquely theirs) + Doculet seal on certificates.
+- **NO EMOJIS** — never in UI, copy, code comments, or commit messages. Zero tolerance.
+
+### Design Principles
+1. **Trust first** — Exact amounts in NGN, masked BVN/NIN, clear status badges. Every UI element should signal stability.
+2. **Role-aware** — Each role has a distinct accent colour. The dashboard feels personalised without being chaotic.
+3. **Persona-appropriate voice** — Copy from `config/copy/`; never hardcode.
+4. **Precision over decoration** — No glassmorphism, no gradient text, no card grids. Clean lines, deliberate spacing.
+5. **Layout primitives mandatory** — PageShell, Section, Grid, Stack, PageHeader; never raw mx-auto max-w-.
+6. **Accessibility** — WCAG 2.1 AA, 44x44px touch targets, focus-visible rings.
+7. **No emojis anywhere** — UI, copy configs, code, commits. The brand is institutional, not casual.
