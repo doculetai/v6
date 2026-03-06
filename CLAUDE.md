@@ -875,6 +875,77 @@ Four event types, in reverse-chronological order:
 - This page hosts the 3-tier verification journey: phone → identity → banking.
 - Each tier is a section on the page, not a separate page.
 
+**Sensitive data masking (BVN, NIN, account numbers):**
+- Always masked: last 4 digits visible, rest replaced with asterisks.
+- Display pattern: "BVN: ****4521", "NIN: *****3407", "Account: ****8821"
+- Masking applies everywhere — overview cards, KYC status, settings. Never show full value post-submission.
+- During the OCR review step only: full account number is shown briefly for student to confirm, then masked.
+
+**Help / support — chat widget:**
+- Floating help button opens a third-party chat widget (Intercom, Crisp, or equivalent).
+- Not a custom modal. Not a FAQs sheet. The chat widget handles ticketing, FAQs, and live/async responses.
+- Design implication: no custom support form or support page in the codebase. The widget is the support surface.
+
+**Fraud detection UI (admin):**
+- Every submission card in the admin queue shows a fraud risk score: Low / Medium / High.
+- Colour-coded: Low = muted, Medium = warning/amber, High = destructive/red.
+- High-risk submissions are visually prominent — not buried in the queue.
+- Admin can still approve or reject a high-risk submission; the score is advisory, not blocking.
+
+**Public certificate verification page:**
+- URL: `/certificate/[token]` — publicly accessible, no login required.
+- Displays the full certificate: same design as the student's cert view, but read-only.
+- If revoked: shows a "Revoked" state replacing the cert content.
+- If expired: shows the cert with an "Expired" overlay/banner.
+- No Doculet account required to view. Designed for embassies and universities.
+
+**Sponsor registration flow (from invite link):**
+1. Sponsor clicks invite link → landing page explaining what Doculet is and who invited them.
+2. Email + password signup (no OAuth).
+3. Name + phone number form.
+4. Sponsor profile confirmed → lands on their dashboard showing the student's proof request.
+- Sponsor's onboarding is minimal and purposeful. No wizard. No journey steps.
+
+**Expired certificate state:**
+- Certificate page shows an "Expired" banner at the top of the cert.
+- The cert content remains fully visible (student can still reference it).
+- A renewal CTA is shown: "Renew certificate" — initiates a re-verification or re-issuance flow.
+- Public verification URL shows the cert with an "Expired" indicator.
+
+**KYC re-verification:**
+- Student can resubmit KYC from the Verification page after a rejection or identity change.
+- The Verification page shows the current tier status with a "Resubmit" action on failed/rejected tiers.
+- Subject to attempt limits (enforced server-side, not in the UI).
+
+**University programme management (3 methods):**
+1. Self-serve form: University staff navigate to Programs page, add/edit programs via a form.
+2. Doculet admin manages: universities request changes via support; Doculet admin makes updates.
+3. CSV import: universities upload a programs CSV for batch creation and updates.
+- All three are valid paths. The form is the primary self-serve option.
+
+**Phone number display format:**
+- International format throughout: "+234 801 234 5678"
+- Applies to: sidebar identity, verification status, sponsor cards, activity feed, admin views.
+- No local format (08xx). No normalisation to local on display.
+
+**Certificate analytics (admin):**
+- Admin can view verification access count and timestamps for any student's certificate.
+- Shown on the student's record in the admin view: list of verification accesses with timestamp and (if available) requester context.
+- This is the same data the student sees in their Proof History tab, with admin seeing all students.
+
+**Sidebar quick action button — removed:**
+- The sidebar quick action ("Continue application") is removed.
+- The overview page's "Continue your verification" banner is the sole next-step CTA.
+- Sidebar is navigation only — no embedded CTAs.
+- This change also removes the `quickAction` field from `studentNavConfig`.
+
+**Awaiting cert issuance state ("Under final review"):**
+- When a student has completed all journey steps but admin hasn't issued the cert yet:
+- Journey tracker: all steps show complete (green/filled).
+- Proof page: shows "Under final review — your proof of funds package is complete. We are preparing your certificate."
+- No action available for the student. No countdown. Calm, institutional holding state.
+- Admin sees this student in the "Ready to issue" queue.
+
 ### Token Quick-Reference (for design consistency)
 - **Border-radius:** sm=8px, md/DEFAULT=16px, lg=24px, full=9999px
 - **Typography scale:** caption 12px/16px, body 14px/20px, heading-3 16px/20px, heading-2 20px/24px
