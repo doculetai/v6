@@ -28,7 +28,6 @@ import { computeStudentJourney } from '@/lib/journey/student';
 import { api } from '@/trpc/server';
 
 import { StatCard } from './overview-shared';
-import { StudentOverviewSheets } from './student-overview-sheets';
 
 type DocumentItem = {
   id: string;
@@ -262,10 +261,6 @@ export async function StudentOverview({ email, phone, caller }: StudentOverviewP
         ) : null}
       </Section>
 
-      <StudentOverviewSheets
-        phoneVerified={phoneVerified}
-        kycFailedAttempts={kycFailedAttempts}
-      />
     </PageShell>
   );
 }
