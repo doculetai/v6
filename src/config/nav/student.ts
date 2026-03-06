@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Trophy, FileText, GraduationCap, House, Gear, Question, ShieldCheck } from '@phosphor-icons/react';
+import { ArrowRight, Trophy, FileText, GraduationCap, House, Gear, Question } from '@phosphor-icons/react';
 
 import type { NavConfig } from './types';
 
@@ -23,15 +23,6 @@ export const studentNavConfig: NavConfig = {
       icon: GraduationCap,
       description: 'Browse and apply to programs',
       group: 'journey',
-    },
-    {
-      label: 'Verify',
-      href: '/dashboard/student/verify',
-      icon: ShieldCheck,
-      description: 'Identity and KYC verification',
-      group: 'journey',
-      disabledBeforeStage: 1,
-      disabledReason: 'Complete your application setup first',
     },
     {
       label: 'Documents',
