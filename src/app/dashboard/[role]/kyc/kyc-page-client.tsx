@@ -1,10 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertTriangle, CheckCircle2, Clock, XCircle } from 'lucide-react';
+import { Warning, CheckCircle, Clock, XCircle } from '@/components/icons';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 
 import { Badge } from '@/components/ui/badge';
@@ -83,6 +82,7 @@ type IdentityFormProps = {
 };
 
 function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityFormProps) {
+  const utils = trpc.useUtils();
   const {
     register,
     handleSubmit,
@@ -94,6 +94,7 @@ function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityForm
 
   const mutation = trpc.sponsor.startDojahIdentityCheck.useMutation({
     onSuccess: () => {
+      void utils.sponsor.getSponsorKycStatus.invalidate();
       onSuccess();
     },
     onError: () => {
@@ -102,7 +103,7 @@ function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityForm
   });
 
   const onSubmit = handleSubmit((values) => {
-    mutation.mutate({ tier, identityType: values.identityType, identityNumber: values.identityNumber });
+    mutation.mutate({ identityType: values.identityType, identityNumber: values.identityNumber });
   });
 
   return (
@@ -178,7 +179,6 @@ function TierCard({
   copy,
   onFeedback,
 }: TierCardProps) {
-  const router = useRouter();
   const [showForm, setShowForm] = useState(false);
 
   // Tier 1 (index 0) is always verified — auto-verified via email auth
@@ -186,7 +186,7 @@ function TierCard({
     return (
       <Card className="border-border bg-card">
         <CardHeader className="flex flex-row items-start gap-3 pb-2">
-          <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
+          <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
           <div className="min-w-0">
             <CardTitle className="text-base font-semibold text-card-foreground">
               {tier.tierHeading} — {tier.label}
@@ -224,11 +224,11 @@ function TierCard({
   ) : null;
 
   const headingIcon = isVerified ? (
-    <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
+    <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
   ) : isFailed ? (
-    <XCircle className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden="true" />
+    <XCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden="true" />
   ) : (
-    <Clock className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+    <Clock weight="duotone" className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
   );
 
   return (
@@ -258,7 +258,6 @@ function TierCard({
               onSuccess={() => {
                 setShowForm(false);
                 onFeedback({ kind: 'success', message: copy.feedback.started });
-                router.refresh();
               }}
               onError={(message) => {
                 onFeedback({ kind: 'error', message });
@@ -297,9 +296,9 @@ function FeedbackBanner({ feedback }: { feedback: FeedbackState }) {
     >
       <CardContent className="flex items-start gap-2 py-4">
         {feedback.kind === 'error' ? (
-          <AlertTriangle className="mt-0.5 size-5 text-destructive" aria-hidden="true" />
+          <Warning weight="duotone" className="mt-0.5 size-5 text-destructive" aria-hidden="true" />
         ) : (
-          <CheckCircle2 className="mt-0.5 size-5 text-primary" aria-hidden="true" />
+          <CheckCircle weight="duotone" className="mt-0.5 size-5 text-primary" aria-hidden="true" />
         )}
         <p
           className={
