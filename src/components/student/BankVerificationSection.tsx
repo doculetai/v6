@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle, FileText, Wallet, Warning } from '@/components/icons';
+import { CheckCircle, FileText, Wallet, Warning, WarningCircle } from '@/components/icons';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { TrustSignal } from '@/components/ui/trust-signal';
 import { uiPrimitives } from '@/config/copy/primitives';
 import { studentCopy } from '@/config/copy/student';
+import { routes } from '@/config/routes';
 import { useMonoConnect } from '@/lib/hooks/useMonoConnect';
 import { trpc } from '@/trpc/client';
 
@@ -34,16 +35,19 @@ export function BankVerificationSection({
 }: BankVerificationSectionProps) {
   const copy = studentCopy.bankVerification;
   const [error, setError] = useState<string | null>(null);
+  const [monoFailed, setMonoFailed] = useState(false);
 
   const monoPublicKey = process.env.NEXT_PUBLIC_MONO_PUBLIC_KEY ?? '';
 
   const monoMutation = trpc.student.connectMonoBankAccount.useMutation({
     onSuccess: () => {
       setError(null);
+      setMonoFailed(false);
       onBankConnected();
     },
     onError: () => {
       setError(copy.errorConnect);
+      setMonoFailed(true);
     },
   });
 
@@ -55,6 +59,12 @@ export function BankVerificationSection({
   });
 
   const isBusy = monoMutation.isPending || monoConnect.isLoading;
+
+  function handleRetry() {
+    setError(null);
+    setMonoFailed(false);
+    void monoConnect.open();
+  }
 
   return (
     <Card className="border-border bg-card" id="bank">
@@ -106,6 +116,35 @@ export function BankVerificationSection({
               <p className="text-muted-foreground">{accountNumberMasked}</p>
             </div>
           </div>
+        ) : monoFailed ? (
+          <div className="rounded-md border border-destructive/40 bg-destructive/5 p-4 space-y-3">
+            <div className="flex items-start gap-3">
+              <WarningCircle className="mt-0.5 size-5 shrink-0 text-destructive" weight="duotone" aria-hidden="true" />
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-destructive">{copy.monoFailed.heading}</p>
+                <p className="text-sm text-muted-foreground">
+                  {error ?? copy.monoFailed.descriptionFallback}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={handleRetry}
+                disabled={isBusy}
+              >
+                {copy.monoFailed.retryCta}
+              </Button>
+              <Button asChild size="sm">
+                <Link href={routes.dashboard.student.documents}>
+                  <FileText className="mr-2 size-4" weight="duotone" aria-hidden="true" />
+                  {copy.monoFailed.uploadCta}
+                </Link>
+              </Button>
+            </div>
+          </div>
         ) : (
           <>
             <Button
@@ -122,10 +161,10 @@ export function BankVerificationSection({
 
             <p className="text-xs text-muted-foreground">{copy.monoConnectDescription}</p>
 
-            {monoConnect.error || error ? (
+            {monoConnect.error ? (
               <div className="flex items-start gap-2 text-sm text-destructive">
                 <Warning className="mt-0.5 size-4 shrink-0" weight="duotone" aria-hidden="true" />
-                <p>{error ?? copy.errorWidget}</p>
+                <p>{copy.errorWidget}</p>
               </div>
             ) : null}
 

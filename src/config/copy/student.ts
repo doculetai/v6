@@ -318,6 +318,12 @@ export const studentCopy = {
     errorConnect: 'Unable to connect bank account. Please try again.',
     errorWidget: 'Unable to load the bank connection widget.',
     loadingCta: 'Connecting...',
+    monoFailed: {
+      heading: 'Bank connection failed',
+      descriptionFallback: 'We could not verify your bank balance. Try connecting again or upload a bank statement.',
+      retryCta: 'Try again',
+      uploadCta: 'Upload a bank statement',
+    },
   },
 
   ocrCard: {
