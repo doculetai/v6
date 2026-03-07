@@ -13,8 +13,7 @@ export function LandingSteps() {
             {copy.steps.label}
           </p>
           <h2
-            className="font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
-            style={{ fontSize: 'clamp(28px, 4vw, 44px)' }}
+            className="text-[var(--fs-section-h2)] font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
           >
             {copy.steps.headline}
           </h2>

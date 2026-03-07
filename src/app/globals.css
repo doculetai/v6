@@ -228,3 +228,12 @@ body {
 @theme inline {
   --animate-cert-float: cert-float 6s ease-in-out infinite;
 }
+
+/* Fluid type scale — landing page */
+:root {
+  --fs-hero-h1: clamp(64px, 9vw, 112px);
+  --fs-hero-sub: clamp(18px, 2.5vw, 26px);
+  --fs-section-h2: clamp(28px, 4vw, 44px);
+  --fs-stat-watermark: clamp(32px, 4vw, 48px);
+  --fs-cta-h2: clamp(28px, 4vw, 40px);
+}

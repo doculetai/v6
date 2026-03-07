@@ -15,14 +15,10 @@ export function LandingFaq() {
         <LandingReveal>
           <div className="mb-2 flex items-end justify-between">
             <h2
-              className="font-serif font-semibold tracking-tight text-[#2B39A3]"
-              style={{ fontSize: 'clamp(28px, 4vw, 44px)' }}
+              className="text-[var(--fs-section-h2)] font-serif font-semibold tracking-tight text-[#2B39A3]"
             >
               {copy.faq.headline}
             </h2>
-            <span className="hidden text-sm text-muted-foreground md:block">
-              {copy.faq.items.length} questions
-            </span>
           </div>
           <div className="h-px bg-[linear-gradient(90deg,rgba(43,57,163,0.3),rgba(43,57,163,0.08),transparent)]" />
         </LandingReveal>

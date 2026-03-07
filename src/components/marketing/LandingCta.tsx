@@ -15,8 +15,7 @@ export function LandingCta() {
           height={48}
         />
         <h2
-          className="font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
-          style={{ fontSize: 'clamp(28px, 4vw, 40px)' }}
+          className="text-[var(--fs-cta-h2)] font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
         >
           {copy.cta.headline}
         </h2>

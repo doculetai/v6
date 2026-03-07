@@ -28,14 +28,12 @@ export function LandingHero() {
             <LandingReveal delay={80}>
               <div>
                 <p
-                  className="font-serif font-semibold leading-none tracking-[-0.02em] text-[#2B39A3]"
-                  style={{ fontSize: 'clamp(64px, 9vw, 112px)' }}
+                  className="text-[var(--fs-hero-h1)] font-serif font-semibold leading-none tracking-[-0.02em] text-[#2B39A3]"
                 >
                   {copy.hero.headline}
                 </p>
                 <p
-                  className="mt-4 font-serif font-light leading-snug text-muted-foreground"
-                  style={{ fontSize: 'clamp(18px, 2.5vw, 26px)' }}
+                  className="mt-4 text-[var(--fs-hero-sub)] font-serif font-light leading-snug text-muted-foreground"
                 >
                   {copy.hero.sub}
                 </p>

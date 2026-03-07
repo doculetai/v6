@@ -123,7 +123,7 @@ export function LandingNav() {
               onClick={() => setMenuOpen(false)}
               className="mt-6 py-4 text-xl font-semibold text-[#2563EB]"
             >
-              {copy.nav.cta} →
+              {copy.nav.cta}
             </Link>
           </div>
         </div>

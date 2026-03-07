@@ -144,7 +144,7 @@ export const landingCopy = {
       {
         question: 'How long does verification take?',
         answer:
-          'Tier 1 (identity only) is usually instant. Tier 2 (identity + bank) takes a short time for live connection, or longer for PDF upload. Tier 3 (+ sponsor + admin review) takes additional time for our team to review. Most students complete the full process in under a week.',
+          'Tier 1 (identity only) is usually instant. Tier 2 (identity + bank) varies by path — live bank connection is faster, PDF upload goes to our team for review. Tier 3 (+ sponsor and admin review) takes additional time. Timelines depend on the path you choose and how quickly you submit your documents.',
       },
       {
         question: 'Can I upload a PDF or do I need to connect my bank?',
