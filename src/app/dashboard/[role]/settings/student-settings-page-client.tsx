@@ -1,9 +1,10 @@
 'use client';
 
-import { Container, Stack } from '@/components/layout/content-primitives';
-import { PageHeader } from '@/components/ui/page-header';
+import { PageShell, Section, Stack } from '@/components/layout/content-primitives';
+import { PageHeader } from '@/components/layout/page-header';
 import { useDashboardBreadcrumbs } from '@/lib/hooks/useDashboardBreadcrumbs';
 import { AccountClosureCard } from '@/components/settings/AccountClosureCard';
+import { DataExportCard } from '@/components/settings/DataExportCard';
 import { MFASettingsCard } from '@/components/settings/MFASettingsCard';
 import { NotificationPreferencesCard } from '@/components/settings/NotificationPreferencesCard';
 import { PasswordChangeCard } from '@/components/settings/PasswordChangeCard';
@@ -21,13 +22,14 @@ type Props = {
 export function StudentSettingsPageClient({ settings }: Props) {
   const breadcrumbs = useDashboardBreadcrumbs(studentCopy.settings.title);
   return (
-    <Container width="md">
-      <Stack gap="md">
-        <PageHeader
-          title={studentCopy.settings.title}
-          subtitle={studentCopy.settings.subtitle}
-          breadcrumbs={breadcrumbs}
-        />
+    <PageShell width="default">
+      <Section>
+        <Stack gap="md">
+          <PageHeader
+            title={studentCopy.settings.title}
+            subtitle={studentCopy.settings.subtitle}
+            breadcrumbs={breadcrumbs}
+          />
         {settings && (
           <>
             <ChangeSchoolCard settings={settings} />
@@ -38,9 +40,11 @@ export function StudentSettingsPageClient({ settings }: Props) {
         <PasswordChangeCard />
         <NotificationPreferencesCard />
         <MFASettingsCard />
+        <DataExportCard />
         <AccountClosureCard />
         <SessionManagementWithData />
-      </Stack>
-    </Container>
+        </Stack>
+      </Section>
+    </PageShell>
   );
 }
