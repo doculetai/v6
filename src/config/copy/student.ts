@@ -5,6 +5,15 @@ import { studentOnboardingCopy } from "./student-onboarding.copy";
 export const studentCopy = {
   ...studentOnboardingCopy,
 
+  firstSession: {
+    eyebrow: 'GET STARTED',
+    heading: 'Begin your application',
+    description:
+      'Complete your profile, verify your identity, and upload your documents to receive your proof of funds certificate.',
+    cta: 'Begin your application',
+    href: routes.dashboard.student.onboarding,
+  },
+
   schools: {
     title: "Schools",
     subtitle: "Search universities across the United States and Nigeria. Select your program to set your funding target.",

@@ -30,6 +30,7 @@ import { StudentSponsorInviteCard } from '@/components/student/StudentSponsorInv
 import { SponsorCommittedCard } from '@/components/student/SponsorCommittedCard';
 import { SponsorWithdrawnCard } from '@/components/student/SponsorWithdrawnCard';
 import { CertIssuedOverviewCard } from '@/components/student/CertIssuedOverviewCard';
+import { BeginApplicationCard } from '@/components/student/BeginApplicationCard';
 
 import { StatCard } from './overview-shared';
 import { routes } from '@/config/routes';
@@ -467,8 +468,8 @@ export async function StudentOverview({
             </>
           ) : (
             <>
-              {/* Pre-cert: first-time banner */}
-              {isBrandNew ? <FirstTimeBanner /> : null}
+              {/* Pre-cert: begin application card — shown until onboarding is complete */}
+              {!onboardingComplete ? <BeginApplicationCard /> : null}
 
               {/* Tabs: Journey | Activity */}
               <Tabs defaultValue="journey">
