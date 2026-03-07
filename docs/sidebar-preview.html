@@ -1178,6 +1178,18 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 .final-review-card h2 { font-size:20px; font-weight:700; color:#0F172A; margin-bottom:10px; }
 .final-review-card p { font-size:14px; color:#64748B; line-height:1.65; max-width:380px; margin:0 auto; }
 
+/* ── Payment banner ── */
+.payment-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border-radius: 10px;
+  background: rgba(21,128,61,0.08); border: 1px solid rgba(21,128,61,0.2);
+  margin-bottom: 16px;
+}
+.payment-banner-icon { flex-shrink: 0; color: #15803D; }
+.payment-banner-text { flex: 1; }
+.payment-banner-title { font-size: 14px; font-weight: 600; color: #15803D; margin-bottom: 2px; }
+.payment-banner-sub { font-size: 12px; color: rgba(21,128,61,0.8); }
+
 /* ── Cert sharing card ── */
 .cert-share-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
 .cert-share-btn {
@@ -2083,6 +2095,20 @@ var STUDENT_STATE_OVERRIDES = {
       h1: 'Proof of Funds',
       eyebrow: 'Certificate status',
     },
+  },
+
+  /* ── payment_received: cert fee paid, cert being prepared ── */
+  payment_received: {
+    'Proof of Funds': {
+      type: 'under-final-review',
+      h1: 'Proof of Funds',
+      eyebrow: 'Certificate status',
+      paymentBanner: {
+        title: 'Payment received',
+        sub: 'Certificate processing fee of \u20a6 15,000 confirmed. Your certificate is being prepared.',
+        amount: '\u20a6 15,000'
+      }
+    }
   },
 
   /* ── t3_upload_rejected: bank statement rejected by admin ── */
@@ -5136,6 +5162,22 @@ function renderBlockedPage(page, main) {
 
 /* ── Render under-final-review state ── */
 function renderUnderFinalReview(page, main) {
+  /* Payment banner — shown when cert fee has been paid */
+  if (page.paymentBanner) {
+    var banner = el('div', 'payment-banner');
+    var bIcon = el('div', 'payment-banner-icon');
+    var bSvg = svgIcon('<path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>');
+    bSvg.setAttribute('width', '20');
+    bSvg.setAttribute('height', '20');
+    bIcon.appendChild(bSvg);
+    banner.appendChild(bIcon);
+    var bText = el('div', 'payment-banner-text');
+    bText.appendChild(txt(el('div', 'payment-banner-title'), page.paymentBanner.title));
+    bText.appendChild(txt(el('div', 'payment-banner-sub'), page.paymentBanner.sub));
+    banner.appendChild(bText);
+    main.appendChild(banner);
+  }
+
   /* Journey tracker — all green */
   var steps = ['Onboarding','Phone','Identity','Banking','Documents','Certificate'];
   var trackerCard = el('div', 'section-card');
@@ -5637,6 +5679,7 @@ var ROLE_STATES = {
     { group:'Anxiety peaks',   id:'docs_rejected',         label:'Doc rejected'      },
     { group:'Anxiety peaks',   id:'t3_upload_rejected',    label:'T3 rejected'       },
     { group:'Anxiety peaks',   id:'under_final_review',    label:'Final review'      },
+    { group:'Anxiety peaks',   id:'payment_received',      label:'Payment received'  },
     { group:'Anxiety peaks',   id:'t2_failed',             label:'T2 failed'         },
     { group:'Anxiety peaks',   id:'sponsor_withdrawn',     label:'Sponsor withdrew'  },
     { group:'Limbo states',    id:'t2_manual_review',      label:'T2 review'         },
