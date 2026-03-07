@@ -11,7 +11,7 @@ export const studentCopy = {
     description:
       'Complete your profile, verify your identity, and upload your documents to receive your proof of funds certificate.',
     cta: 'Begin your application',
-    href: routes.dashboard.student.onboarding,
+    href: routes.dashboard.student.setup,
   },
 
   schools: {

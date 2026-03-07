@@ -123,35 +123,6 @@ function SchoolAlert() {
   );
 }
 
-function FirstTimeBanner() {
-  const copy = studentHomeCopy.firstTime;
-  return (
-    <div
-      className="flex flex-col gap-4 rounded-xl border border-border bg-card px-5 py-5 sm:flex-row sm:items-center sm:justify-between border-l-4 border-l-primary"
-    >
-      <div className="min-w-0">
-        <p
-          className="text-[10px] font-semibold uppercase tracking-widest text-primary"
-        >
-          {copy.eyebrow}
-        </p>
-        <p className="mt-1 text-sm font-semibold text-foreground">{copy.heading}</p>
-        <p className="mt-0.5 text-sm text-muted-foreground">{copy.description}</p>
-      </div>
-      <Button
-        asChild
-        size="sm"
-        className="mt-1 min-h-11 shrink-0 sm:mt-0"
-      >
-        <Link href={copy.ctaHref} className="inline-flex items-center gap-1.5">
-          {copy.cta}
-          <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
-        </Link>
-      </Button>
-    </div>
-  );
-}
-
 function CertifiedBanner({
   firstName,
   schoolName,
