@@ -26,8 +26,10 @@ import { getFirstName } from '@/lib/get-first-name';
 import { formatCurrency } from '@/lib/utils';
 import { computeStudentJourney } from '@/lib/journey/student';
 import { api } from '@/trpc/server';
+import { StudentSponsorInviteCard } from '@/components/student/StudentSponsorInviteCard';
 
 import { StatCard } from './overview-shared';
+import { routes } from '@/config/routes';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -266,6 +268,7 @@ export async function StudentOverview({
     schoolsResult,
     balanceResult,
     proofCertificateResult,
+    sponsorInvitesResult,
   ] = await Promise.allSettled([
     caller.student.getVerificationStatus(),
     caller.student.getStudentSchoolSelection(),
@@ -273,6 +276,7 @@ export async function StudentOverview({
     caller.student.listSchools({}),
     caller.student.getBalanceStatus(),
     caller.student.getProofCertificate(),
+    caller.student.listSponsorInvites(),
   ]);
 
   const verification =
@@ -284,6 +288,8 @@ export async function StudentOverview({
   const balance = balanceResult.status === 'fulfilled' ? balanceResult.value : null;
   const proofCertificate =
     proofCertificateResult.status === 'fulfilled' ? proofCertificateResult.value : null;
+  const sponsorInvites =
+    sponsorInvitesResult.status === 'fulfilled' ? sponsorInvitesResult.value : [];
 
   const selectedSchool = schools.find((s) => s.id === schoolSelection?.schoolId) ?? null;
   const selectedProgram =
@@ -322,6 +328,11 @@ export async function StudentOverview({
     (verification?.tiers[0]?.isComplete === true) || documents.length > 0;
   const isBrandNew =
     !onboardingComplete && !verificationComplete && !documentsComplete && !hasAnyVerificationActivity;
+
+  const requiresSponsor =
+    verification?.fundingType === 'sponsor' || verification?.fundingType === 'corporate';
+  const hasAcceptedSponsor = sponsorInvites.some((inv) => inv.status === 'accepted');
+  const showSponsorInviteCard = requiresSponsor && !hasAcceptedSponsor && !proofReady;
 
   const activityItems = deriveActivityItems(
     (documents as Array<{
@@ -396,6 +407,9 @@ export async function StudentOverview({
                   />
                 </div>
 
+                {/* Sponsor invite card — only for sponsor/corporate funding with no accepted sponsor yet */}
+                {showSponsorInviteCard ? <StudentSponsorInviteCard /> : null}
+
                 {/* Stat cards */}
                 <Grid cols={{ sm: 3 }} gap="md">
                   <StatCard
@@ -407,7 +421,7 @@ export async function StudentOverview({
                     }
                     sub={highestTier > 0 ? copy.stats.verification.tierPassed(highestTier) : ''}
                     accent={completionPercent > 0}
-                    href="/dashboard/student/verification"
+                    href={routes.dashboard.student.verification}
                   />
                   <StatCard
                     label={copy.stats.documents.label}
@@ -418,7 +432,7 @@ export async function StudentOverview({
                         : copy.stats.documents.approvedCount(approvedCount)
                     }
                     accent={uploadedCount > 0}
-                    href="/dashboard/student/documents"
+                    href={routes.dashboard.student.documents}
                   />
                   <StatCard
                     label={copy.stats.bankAccount.label}
@@ -445,7 +459,7 @@ export async function StudentOverview({
                         : copy.stats.bankAccount.selectProgramSub
                     }
                     accent={bankConnected}
-                    href="/dashboard/student/documents#bank"
+                    href={routes.dashboard.student.documentsBank}
                   />
                 </Grid>
 
