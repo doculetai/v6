@@ -1,6 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { captureException } from '@sentry/nextjs';
-import { eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 import {
@@ -48,6 +48,10 @@ const verificationStatusSchema = z.object({
   kycFailedAttempts: z.number().int().min(0),
   kycFailureReason: z.string().nullable(),
   eligibleForManualReview: z.boolean(),
+  bankStatementRejection: z.object({
+    status: z.enum(['pending', 'approved', 'rejected', 'more_info_requested', 'expired']).nullable(),
+    rejectionNote: z.string().nullable(),
+  }).nullable(),
 });
 
 const dojahIdentityTypeValues = ['bvn', 'nin', 'passport'] as const;
@@ -79,11 +83,17 @@ function toDojahTier(value: number | null | undefined): 2 | 3 | null {
   return null;
 }
 
+type BankStatementRejection = {
+  status: 'pending' | 'approved' | 'rejected' | 'more_info_requested' | 'expired' | null;
+  rejectionNote: string | null;
+} | null;
+
 function toVerificationStatusOutput(
   snapshot: Awaited<ReturnType<typeof getStudentVerificationSnapshot>>,
   extras: {
     phoneLastFour: string | null;
     proofTargetKobo: number | null;
+    bankStatementRejection: BankStatementRejection;
   },
 ) {
   const tier3OrTier2 = snapshot.latestKycByTier[3] ?? snapshot.latestKycByTier[2] ?? null;
@@ -121,6 +131,7 @@ function toVerificationStatusOutput(
     kycFailedAttempts: snapshot.kycFailedAttempts,
     kycFailureReason: snapshot.kycFailureReason,
     eligibleForManualReview: snapshot.kycFailedAttempts >= 2,
+    bankStatementRejection: extras.bankStatementRejection,
   };
 }
 
@@ -201,7 +212,7 @@ export const verificationProcedures = {
     .output(verificationStatusSchema)
     .query(async ({ ctx }) => {
       try {
-        const [snapshot, profileWithProgram] = await Promise.all([
+        const [snapshot, profileWithProgram, latestBankStatement] = await Promise.all([
           getStudentVerificationSnapshot(
             ctx.db,
             ctx.user.id,
@@ -219,14 +230,33 @@ export const verificationProcedures = {
               },
             },
           }),
+          ctx.db.query.documents.findFirst({
+            where: and(
+              eq(documents.userId, ctx.user.id),
+              eq(documents.type, 'bank_statement'),
+            ),
+            columns: {
+              status: true,
+              rejectionReason: true,
+            },
+            orderBy: [desc(documents.createdAt)],
+          }),
         ]);
 
         const phoneDigits = (ctx.user.phone ?? '').replace(/\D/g, '');
         const phoneLastFour = phoneDigits.length >= 4 ? phoneDigits.slice(-4) : null;
 
+        const bankStatementRejection: BankStatementRejection = latestBankStatement
+          ? {
+              status: latestBankStatement.status,
+              rejectionNote: latestBankStatement.rejectionReason ?? null,
+            }
+          : null;
+
         return toVerificationStatusOutput(snapshot, {
           phoneLastFour,
           proofTargetKobo: profileWithProgram?.program?.tuitionAmount ?? null,
+          bankStatementRejection,
         });
       } catch (error) {
         captureException(error, {

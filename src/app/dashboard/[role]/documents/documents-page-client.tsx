@@ -16,14 +16,18 @@ import {
   StudentDocumentsLoadingState,
 } from '@/components/student/documents/student-documents-states';
 import { StudentDocumentUploadForm } from '@/components/student/documents/student-document-upload-form';
+import { BankVerificationSection } from '@/components/student/BankVerificationSection';
+import { OcrSummaryCard } from '@/components/student/OcrSummaryCard';
+import { DocumentPreviewModal } from '@/components/shared/DocumentPreviewModal';
 import { ActionSuccessBanner } from '@/components/ui/action-success-banner';
 import { DocumentUploadProgress, type UploadStage } from '@/components/ui/document-upload-progress';
-import { PageShell, Stack } from '@/components/layout/content-primitives';
+import { PageShell, Section, Stack } from '@/components/layout/content-primitives';
 import { PageHeader } from '@/components/layout/page-header';
 import { studentCopy } from '@/config/copy/student';
 import { primitivesCopy } from '@/config/copy/primitives';
 import type { StudentDocumentType, SupportedDocumentMimeType } from '@/lib/documents';
 import { useDocumentsRealtime } from '@/lib/supabase/useDocumentsRealtime';
+import { formatCurrency } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
 
 function buildFileInputKey() {
@@ -64,6 +68,8 @@ export function DocumentsPageClient() {
   const utils = trpc.useUtils();
   const [fileInputKey, setFileInputKey] = useState(buildFileInputKey);
   const [uploadStage, setUploadStage] = useState<UploadStage | null>(null);
+  const [dismissOcrCard, setDismissOcrCard] = useState(false);
+  const [previewDocumentId, setPreviewDocumentId] = useState<string | null>(null);
 
   const handleProgressComplete = useCallback(() => {
     // Clear progress after completion animation
@@ -91,9 +97,41 @@ export function DocumentsPageClient() {
     formEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  const verificationQuery = trpc.student.getVerificationStatus.useQuery(undefined, {
+    staleTime: 30_000,
+  });
+
+  const bankConnected = verificationQuery.data?.monoConnection.isConnected ?? false;
+  const bankName = verificationQuery.data?.monoConnection.bankName ?? null;
+  const bankAccountMasked = verificationQuery.data?.monoConnection.accountNumberMasked ?? null;
+  const bankStatementRejection = verificationQuery.data?.bankStatementRejection ?? null;
+
+  const handleBankConnected = useCallback(() => {
+    void utils.student.getVerificationStatus.invalidate();
+  }, [utils]);
+
+  const handleBankStatementResubmit = useCallback(() => {
+    const formEl = document.getElementById('document-upload-form');
+    formEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
   const studentDocumentsQuery = trpc.student.listDocuments.useQuery(undefined, {
     staleTime: 15_000,
   });
+  const latestOcrRunQuery = trpc.student.getLatestOcrRun.useQuery(undefined, {
+    staleTime: 10_000,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      if (!status) return false;
+      return status === 'completed' || status === 'failed' ? false : 3_000;
+    },
+  });
+
+  const latestOcrRun = latestOcrRunQuery.data;
+  const showOcrCard =
+    !dismissOcrCard &&
+    latestOcrRun?.status === 'completed' &&
+    (latestOcrRun.extractedName !== null || latestOcrRun.extractedBalance !== null);
 
   const allApproved =
     (studentDocumentsQuery.data?.length ?? 0) > 0 &&
@@ -101,7 +139,11 @@ export function DocumentsPageClient() {
 
   const uploadDocumentMutation = trpc.student.uploadDocument.useMutation({
     onSuccess: async () => {
-      await utils.student.listDocuments.invalidate();
+      setDismissOcrCard(false);
+      await Promise.all([
+        utils.student.listDocuments.invalidate(),
+        utils.student.getLatestOcrRun.invalidate(),
+      ]);
     },
   });
 
@@ -148,10 +190,6 @@ export function DocumentsPageClient() {
       <PageHeader
         title={copy.title}
         description={copy.subtitle}
-        breadcrumbs={[
-          { label: studentCopy.nav.overview, href: '/dashboard/student' },
-          { label: studentCopy.nav.documents },
-        ]}
       />
 
       {allApproved ? (
@@ -172,7 +210,50 @@ export function DocumentsPageClient() {
         />
       ) : null}
 
-      <section id="document-upload-form" className="scroll-mt-4">
+      <BankVerificationSection
+        isConnected={bankConnected}
+        bankName={bankName}
+        accountNumberMasked={bankAccountMasked}
+        onBankConnected={handleBankConnected}
+        bankStatementStatus={bankStatementRejection?.status ?? null}
+        bankStatementRejectionNote={bankStatementRejection?.rejectionNote ?? null}
+        onResubmit={handleBankStatementResubmit}
+      />
+
+      {latestOcrRun?.status === 'failed' ? (
+        <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+          <p className="text-sm font-medium text-destructive">Automatic statement scan failed</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {latestOcrRun.errorMessage ?? 'Your document is still queued for manual review.'}
+          </p>
+        </div>
+      ) : null}
+
+      {latestOcrRun && latestOcrRun.status !== 'completed' && latestOcrRun.status !== 'failed' ? (
+        <div className="rounded-xl border border-border bg-card p-4">
+          <p className="text-sm font-medium text-foreground">Statement analysis in progress</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {latestOcrRun.currentStep ?? 'Analyzing your bank statement'} ({latestOcrRun.progress}%)
+          </p>
+        </div>
+      ) : null}
+
+      {showOcrCard ? (
+        <OcrSummaryCard
+          documentId={latestOcrRun.documentId}
+          extractedName={latestOcrRun.extractedName}
+          extractedAmount={
+            latestOcrRun.extractedBalance !== null
+              ? formatCurrency(latestOcrRun.extractedBalance, 'NGN')
+              : null
+          }
+          confidence={latestOcrRun.confidence}
+          onPreview={() => setPreviewDocumentId(latestOcrRun.documentId)}
+          onDismiss={() => setDismissOcrCard(true)}
+        />
+      ) : null}
+
+      <Section id="document-upload-form" padding="none" className="scroll-mt-4">
         <StudentDocumentUploadForm
         copy={copy}
         form={form}
@@ -207,7 +288,21 @@ export function DocumentsPageClient() {
           <StudentDocumentsEmptyState copy={copy.states} />
         )
       ) : null}
-      </section>
+      </Section>
+
+      {previewDocumentId ? (
+        <DocumentPreviewModal
+          documentId={previewDocumentId}
+          open={Boolean(previewDocumentId)}
+          onOpenChange={(open) => {
+            if (!open) {
+              setPreviewDocumentId(null);
+            }
+          }}
+          documentTypeLabel={copy.types.bankStatement}
+          reviewActions={null}
+        />
+      ) : null}
       </Stack>
     </PageShell>
   );

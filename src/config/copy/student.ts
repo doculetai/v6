@@ -289,6 +289,11 @@ export const studentCopy = {
       verified: 'Verified',
       pendingReview: 'Statement under review',
       notVerified: 'Not verified',
+      rejected: 'Rejected',
+    },
+    rejection: {
+      prefix: 'Bank statement rejected',
+      resubmitCta: 'Upload a new statement',
     },
     connectedBank: '{bankName} (****{last4})',
     errorConnect: 'Unable to connect bank account. Please try again.',
