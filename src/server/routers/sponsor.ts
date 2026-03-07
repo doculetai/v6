@@ -20,6 +20,7 @@ import {
 import { callDojahKyc } from '@/lib/services/dojah';
 import { initiatePaystackTransfer } from '@/lib/paystack/initiate-transfer';
 import { sendSponsorshipStatusEmail } from '@/lib/email/send-sponsorship-status-email';
+import { sendSponsorResponseEmail } from '@/lib/email/send-sponsor-response-email';
 
 import { createTRPCRouter, publicProcedure, roleProcedure } from '../trpc';
 
@@ -142,6 +143,18 @@ export const sponsorRouter = createTRPCRouter({
           code: 'PRECONDITION_FAILED',
           message: 'Unable to resolve student email for this invitation.',
         });
+      }
+
+      // Notify student of the sponsor's decision — non-blocking
+      if (input.status === 'accepted' || input.status === 'declined') {
+        try {
+          await sendSponsorResponseEmail({
+            toEmail: student.email,
+            status: input.status,
+          });
+        } catch {
+          // Email failure must not abort the invite response
+        }
       }
 
       return toSponsorInviteOutput({

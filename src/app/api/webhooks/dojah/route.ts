@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { db } from '@/db';
 import { processDojahWebhook } from '@/db/queries/dojah-webhook';
+import { sendKycStatusEmail } from '@/lib/email/send-kyc-status-email';
 
 function verifyDojahSignature(rawBody: string, signature: string): boolean {
   const secret = process.env.DOJAH_WEBHOOK_SECRET;
@@ -59,11 +60,20 @@ export async function POST(req: NextRequest) {
 
   const status = rawStatus === 'successful' ? 'verified' : 'failed';
 
+  let result;
   try {
-    await processDojahWebhook(db, referenceId, status);
+    result = await processDojahWebhook(db, referenceId, status);
   } catch (error) {
     captureException(error, { tags: { webhook: 'dojah' } });
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
+  }
+
+  if (result.processed && result.userEmail) {
+    try {
+      await sendKycStatusEmail({ toEmail: result.userEmail, status: result.status });
+    } catch {
+      // Email failure must not block webhook acknowledgement
+    }
   }
 
   return NextResponse.json({ received: true });

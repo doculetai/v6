@@ -1,13 +1,24 @@
 import { and, eq } from 'drizzle-orm';
 
 import type { DrizzleDB } from '@/db';
-import { kycVerifications, studentProfiles } from '@/db/schema';
+import { kycVerifications, studentProfiles, users } from '@/db/schema';
+
+type DojahWebhookResult = {
+  processed: true;
+  userId: string;
+  userEmail: string | null;
+  status: 'verified' | 'failed';
+} | {
+  processed: false;
+};
 
 export async function processDojahWebhook(
   db: DrizzleDB,
   referenceId: string,
   status: 'verified' | 'failed',
-): Promise<void> {
+): Promise<DojahWebhookResult> {
+  let resolvedUserId: string | null = null;
+
   await db.transaction(async (tx) => {
     const [record] = await tx
       .select()
@@ -36,6 +47,8 @@ export async function processDojahWebhook(
 
     if (updated.length === 0) return; // another concurrent request won the race
 
+    resolvedUserId = record.userId;
+
     // Sync student profile kycStatus
     await tx
       .update(studentProfiles)
@@ -45,4 +58,19 @@ export async function processDojahWebhook(
       })
       .where(eq(studentProfiles.userId, record.userId));
   });
+
+  if (!resolvedUserId) return { processed: false };
+
+  const [userRow] = await db
+    .select({ email: users.email })
+    .from(users)
+    .where(eq(users.id, resolvedUserId))
+    .limit(1);
+
+  return {
+    processed: true,
+    userId: resolvedUserId,
+    userEmail: userRow?.email ?? null,
+    status,
+  };
 }

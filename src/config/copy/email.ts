@@ -128,6 +128,46 @@ export const emailCopy = {
     footer:
       'Doculet.ai is used by your institution to verify proof of funds for enrollment. If this email was unexpected, contact your institution directly.',
   },
+
+  kycVerified: {
+    subject: 'Identity verification complete — Doculet.ai',
+    heading: 'Identity verified',
+    body:
+      'Your identity has been verified. Your application has advanced to the next verification step. Sign in to continue.',
+    ctaLabel: 'Continue Verification',
+    footer:
+      'Your identity was verified using the details you submitted. Sign in to your dashboard to view your full verification status.',
+  },
+
+  kycFailed: {
+    subject: 'Identity verification unsuccessful — Doculet.ai',
+    heading: 'Identity verification unsuccessful',
+    body:
+      'Your identity check could not be completed. This may be due to a mismatch in your submitted details. Sign in to review the reason and resubmit.',
+    ctaLabel: 'Review Verification',
+    footer:
+      'If you believe this is an error, sign in to your dashboard and submit a manual review request.',
+  },
+
+  sponsorAcceptedInvite: {
+    subject: 'Your sponsor has accepted — Doculet.ai',
+    heading: 'Your sponsor has accepted',
+    body:
+      'Your sponsorship invitation has been accepted. Your application is progressing. Sign in to your dashboard to view the current status.',
+    ctaLabel: 'Open Dashboard',
+    footer:
+      'If you have questions about your sponsorship, sign in to your dashboard for a full record of your application.',
+  },
+
+  sponsorDeclinedInvite: {
+    subject: 'Sponsorship invitation declined — Doculet.ai',
+    heading: 'Sponsorship invitation declined',
+    body:
+      'Your sponsorship invitation was declined by the recipient. You may invite a new sponsor or adjust your funding arrangement from your dashboard.',
+    ctaLabel: 'Manage Sponsorship',
+    footer:
+      'If you believe this was an error, contact the sponsor directly and resend an invitation from your dashboard.',
+  },
 } as const;
 
 export type EmailCopy = typeof emailCopy;
