@@ -1,7 +1,19 @@
 'use client';
 
-import { CalendarClock, FileText, Upload } from 'lucide-react';
+import { useState } from 'react';
+import {
+  CalendarBlank,
+  Eye,
+  FileText,
+  FilePdf,
+  IdentificationCard,
+  Scroll,
+  Stamp,
+  Buildings,
+  UploadSimple,
+} from '@/components/icons';
 
+import { DocumentPreviewModal } from '@/components/shared/DocumentPreviewModal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { StudentCopy } from '@/config/copy/student';
@@ -39,8 +51,24 @@ function getTypeLabel(
   return match?.label ?? typeValue;
 }
 
+const documentTypeIcons: Record<string, typeof FileText> = {
+  passport: IdentificationCard,
+  offer_letter: Scroll,
+  affidavit: Stamp,
+  cac: Buildings,
+  bank_statement: FilePdf,
+};
+
+function getDocumentIcon(type: StudentDocumentType) {
+  return documentTypeIcons[type] ?? FileText;
+}
+
 export function StudentDocumentList({ copy, documents, onReuploadClick }: StudentDocumentListProps) {
+  const [previewDocId, setPreviewDocId] = useState<string | null>(null);
+  const previewDoc = documents.find((d) => d.id === previewDocId);
+
   return (
+    <>
     <Card className="border-border bg-card/95 shadow-sm backdrop-blur dark:border-border dark:bg-card/95">
       <CardHeader className="space-y-2">
         <CardTitle className="text-xl text-card-foreground dark:text-card-foreground md:text-2xl">
@@ -57,6 +85,9 @@ export function StudentDocumentList({ copy, documents, onReuploadClick }: Studen
             const typeLabel = getTypeLabel(document.type, copy.typeOptions);
             const dateLabel = formatDocumentDate(document.createdAt);
             const showRejectionReason = document.status === 'rejected';
+            const showMoreInfoNote = document.status === 'more_info_requested';
+
+            const DocIcon = getDocumentIcon(document.type);
 
             return (
               <li
@@ -64,24 +95,38 @@ export function StudentDocumentList({ copy, documents, onReuploadClick }: Studen
                 className="rounded-xl border border-border bg-background/70 p-4 dark:border-border dark:bg-background/70"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <FileText
-                        className="size-5 shrink-0 text-muted-foreground dark:text-muted-foreground"
+                  <div className="flex min-w-0 items-start gap-3">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                      <DocIcon
+                        className="size-5 text-muted-foreground"
+                        weight="duotone"
                         aria-hidden="true"
                       />
-                      <p className="break-words text-sm font-medium text-foreground dark:text-foreground md:text-base">
+                    </div>
+                    <div className="min-w-0 space-y-1">
+                      <p className="break-words text-sm font-medium text-foreground md:text-base">
                         {typeLabel}
                       </p>
+                      <p className="flex items-center gap-1.5 text-xs text-muted-foreground md:text-sm">
+                        <CalendarBlank className="size-3.5 shrink-0" weight="duotone" aria-hidden="true" />
+                        <span>{`${copy.list.submittedAtLabel}: ${dateLabel}`}</span>
+                      </p>
                     </div>
-
-                    <p className="flex items-center gap-2 text-xs text-muted-foreground dark:text-muted-foreground md:text-sm">
-                      <CalendarClock className="size-5 shrink-0" aria-hidden="true" />
-                      <span>{`${copy.list.submittedAtLabel}: ${dateLabel}`}</span>
-                    </p>
                   </div>
 
-                  <StudentDocumentStatusBadge status={document.status} statusCopy={copy.status} />
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="size-11 p-0"
+                      onClick={() => setPreviewDocId(document.id)}
+                      aria-label={`Preview ${typeLabel}`}
+                    >
+                      <Eye className="size-5 text-muted-foreground" weight="duotone" aria-hidden="true" />
+                    </Button>
+                    <StudentDocumentStatusBadge status={document.status} statusCopy={copy.status} />
+                  </div>
                 </div>
 
                 {showRejectionReason ? (
@@ -102,8 +147,33 @@ export function StudentDocumentList({ copy, documents, onReuploadClick }: Studen
                         className="h-11 min-w-[44px] gap-2"
                         onClick={() => onReuploadClick(document.type)}
                       >
-                        <Upload className="size-4" aria-hidden="true" />
-                        {copy.reuploadCta}
+                        <UploadSimple className="size-4" weight="duotone" aria-hidden="true" />
+                        {copy.list.reuploadReplacementCta}
+                      </Button>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                {showMoreInfoNote ? (
+                  <div className="mt-3 space-y-2">
+                    <div className="rounded-md border border-amber-200 bg-amber-50/50 px-3 py-2 dark:border-amber-800 dark:bg-amber-950/30">
+                      <p className="text-xs font-medium text-amber-800 dark:text-amber-300 md:text-sm">
+                        {copy.list.moreInfoNoteLabel}
+                      </p>
+                      <p className="mt-1 break-words text-sm text-amber-800 dark:text-amber-300">
+                        {document.rejectionReason ?? copy.list.rejectionReasonFallback}
+                      </p>
+                    </div>
+                    {onReuploadClick ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-11 min-w-[44px] gap-2"
+                        onClick={() => onReuploadClick(document.type)}
+                      >
+                        <UploadSimple className="size-4" weight="duotone" aria-hidden="true" />
+                        {copy.list.moreInfoResubmitCta}
                       </Button>
                     ) : null}
                   </div>
@@ -114,5 +184,16 @@ export function StudentDocumentList({ copy, documents, onReuploadClick }: Studen
         </ul>
       </CardContent>
     </Card>
+
+    {previewDocId ? (
+      <DocumentPreviewModal
+        documentId={previewDocId}
+        open={Boolean(previewDocId)}
+        onOpenChange={(open) => { if (!open) setPreviewDocId(null); }}
+        documentTypeLabel={previewDoc ? getTypeLabel(previewDoc.type, copy.typeOptions) : undefined}
+        reviewActions={null}
+      />
+    ) : null}
+    </>
   );
 }

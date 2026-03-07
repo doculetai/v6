@@ -212,6 +212,9 @@ export const studentCopy = {
       rejectionReasonLabel: "Reason",
       rejectionReasonFallback: "No rejection reason provided.",
       viewCta: "View",
+      reuploadReplacementCta: "Upload a replacement",
+      moreInfoNoteLabel: "More information requested",
+      moreInfoResubmitCta: "Resubmit with the requested information",
     },
     states: {
       loadingTitle: "Loading your documents",
