@@ -189,13 +189,11 @@ function SponsorTypeCard({ type, selected, label, description, onSelect }: Spons
       }`}
     >
       <div className="flex items-start gap-3">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted">
-          {type === 'corporate' ? (
-            <Buildings className="size-4 text-muted-foreground" weight="duotone" aria-hidden="true" />
-          ) : (
-            <Handshake className="size-4 text-muted-foreground" weight="duotone" aria-hidden="true" />
-          )}
-        </div>
+        {type === 'corporate' ? (
+          <Buildings className="mt-0.5 size-4 shrink-0 text-muted-foreground" weight="duotone" aria-hidden="true" />
+        ) : (
+          <Handshake className="mt-0.5 size-4 shrink-0 text-muted-foreground" weight="duotone" aria-hidden="true" />
+        )}
         <div>
           <p className="text-sm font-medium text-foreground">{label}</p>
           <p className="mt-1 text-xs text-muted-foreground">{description}</p>
