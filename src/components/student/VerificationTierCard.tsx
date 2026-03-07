@@ -98,11 +98,7 @@ export function VerificationTierCard({
 
           {isComplete && summaryLine ? (
             <p className="mt-0.5 text-sm text-muted-foreground">{summaryLine}</p>
-          ) : isManualReview ? (
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              {manualReviewNote ?? t2ManualCopy.manualReviewNote}
-            </p>
-          ) : isFailed ? null : (
+          ) : isManualReview ? null : isFailed ? null : (
             <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
           )}
 
@@ -124,7 +120,7 @@ export function VerificationTierCard({
                   {t2FailureCopy.attemptsLeft(attemptsLeft)}
                 </p>
               )}
-              {onRetryKyc && (
+              {onRetryKyc && (attemptsLeft === undefined || attemptsLeft > 0) && (
                 <Button size="sm" className="mt-1" onClick={onRetryKyc}>
                   {t2FailureCopy.resubmitCta}
                 </Button>
