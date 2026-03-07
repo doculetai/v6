@@ -97,6 +97,7 @@ export const studentHomeCopy = {
   tabs: {
     journey: 'Journey',
     activity: 'Activity',
+    ariaLabel: 'Application progress',
   },
   firstTime: {
     eyebrow: 'Application',

@@ -135,8 +135,7 @@ function FirstTimeBanner() {
       <Button
         asChild
         size="sm"
-        className="mt-1 shrink-0 sm:mt-0"
-        style={{ minHeight: '44px' }}
+        className="mt-1 min-h-11 shrink-0 sm:mt-0"
       >
         <Link href={copy.ctaHref} className="inline-flex items-center gap-1.5">
           {copy.cta}
@@ -187,8 +186,7 @@ function CertifiedBanner({
         asChild
         variant="outline"
         size="sm"
-        className="shrink-0"
-        style={{ minHeight: '44px' }}
+        className="min-h-11 shrink-0"
       >
         <Link href={copy.ctaHref} className="inline-flex items-center gap-1.5">
           {copy.cta}
@@ -241,7 +239,7 @@ function SchoolStrip({
           {copy.selectedLabel}
         </span>
       ) : (
-        <Button asChild size="sm" variant="outline" className="shrink-0" style={{ minHeight: '44px' }}>
+        <Button asChild size="sm" variant="outline" className="min-h-11 shrink-0">
           <Link href={copy.ctaHref} className="inline-flex items-center gap-1.5">
             {copy.ctaLabel}
             <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
@@ -380,6 +378,7 @@ export async function StudentOverview({
           <Tabs defaultValue="journey">
             {/* Tab list — editorial underline style via inline override */}
             <TabsList
+              aria-label={copy.tabs.ariaLabel}
               className="h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0"
             >
               <TabsTrigger
