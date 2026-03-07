@@ -161,6 +161,7 @@ export const studentHomeCopy = {
     sectionLabel: 'Activity',
     empty: 'No activity recorded yet.',
     emptyHeading: 'No activity yet',
+      emptyDescription: 'Document uploads and verification events will appear here as you progress.',
     documentUploaded: (type: string) => `Uploaded ${type}`,
     documentApproved: (type: string) => `${type} approved`,
     documentRejected: (type: string) => `${type} needs attention`,

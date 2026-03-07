@@ -234,13 +234,14 @@ function SchoolStrip({
 function ActivityEmptyState() {
   const copy = studentHomeCopy.recentActivity;
   return (
-    <div className="flex flex-col items-center gap-3 py-10 text-center">
+    <div className="flex flex-col items-center gap-2 py-10 text-center">
       <List
         className="size-8 text-muted-foreground/50"
         weight="duotone"
         aria-hidden="true"
       />
       <p className="text-sm font-medium text-muted-foreground">{copy.emptyHeading}</p>
+      <p className="max-w-xs text-sm text-muted-foreground/70">{copy.emptyDescription}</p>
     </div>
   );
 }
@@ -439,7 +440,7 @@ export async function StudentOverview({
                     sub={
                       selectedProgram
                         ? bankConnected
-                          ? bankName ?? ''
+                          ? bankName ?? copy.stats.bankAccount.linkedLabel
                           : copy.stats.bankAccount.requiredSub
                         : copy.stats.bankAccount.selectProgramSub
                     }
