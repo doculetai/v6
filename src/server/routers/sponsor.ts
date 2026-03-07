@@ -19,6 +19,7 @@ import {
 } from '@/db/schema';
 import { callDojahKyc } from '@/lib/services/dojah';
 import { initiatePaystackTransfer } from '@/lib/paystack/initiate-transfer';
+import { sendSponsorshipStatusEmail } from '@/lib/email/send-sponsorship-status-email';
 
 import { createTRPCRouter, publicProcedure, roleProcedure } from '../trpc';
 
@@ -676,7 +677,7 @@ export const sponsorRouter = createTRPCRouter({
       try {
         await insertNotification(ctx.db, {
           userId: sponsorship.studentId,
-          type: 'system',
+          type: 'invite_rejected',
           title: 'Sponsor commitment withdrawn',
           body: 'A sponsor has withdrawn their commitment to your application.',
           link: '/dashboard/student/overview',
@@ -685,6 +686,18 @@ export const sponsorRouter = createTRPCRouter({
         });
       } catch {
         // Notification failure must not abort the withdrawal
+      }
+
+      try {
+        const studentUser = await ctx.db.query.users.findFirst({
+          where: (t, { eq: eqFn }) => eqFn(t.id, sponsorship.studentId),
+          columns: { email: true },
+        });
+        if (studentUser?.email) {
+          await sendSponsorshipStatusEmail({ toEmail: studentUser.email, status: 'withdrawn' });
+        }
+      } catch {
+        // Email failure must not abort the withdrawal
       }
     }),
 
