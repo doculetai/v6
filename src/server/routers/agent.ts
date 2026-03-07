@@ -1,7 +1,11 @@
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { agentProfiles } from '@/db/schema';
+import { requestCommissionPayout } from '@/db/queries/agent-commissions';
+import { insertNotification } from '@/db/queries/notifications';
+import { sendAgentInviteEmail } from '@/lib/email/send-agent-invite-email';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
@@ -197,6 +201,126 @@ export const agentRouter = createTRPCRouter({
           assignedAt: a.assignedAt,
         };
       });
+    }),
+
+  listAgentSponsors: roleProcedure('agent')
+    .output(
+      z.array(
+        z.object({
+          sponsorId: z.string(),
+          sponsorEmail: z.string().nullable(),
+          studentsCount: z.number(),
+          totalFundedKobo: z.number(),
+          joinedAt: z.date(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      const assignments = await ctx.db.query.agentStudentAssignments.findMany({
+        where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
+        columns: { studentId: true },
+      });
+
+      if (assignments.length === 0) return [];
+
+      const studentIds = assignments.map((a) => a.studentId);
+      const sponsorships = await ctx.db.query.sponsorships.findMany({
+        where: (t, { inArray: inArrayFn }) => inArrayFn(t.studentId, studentIds),
+        columns: { sponsorId: true, amountKobo: true, createdAt: true },
+      });
+
+      if (sponsorships.length === 0) return [];
+
+      const uniqueSponsorIds = [...new Set(sponsorships.map((s) => s.sponsorId))];
+      const sponsorUsers = await ctx.db.query.users.findMany({
+        where: (t, { inArray: inArrayFn }) => inArrayFn(t.id, uniqueSponsorIds),
+        columns: { id: true, email: true },
+      });
+      const emailMap = new Map(sponsorUsers.map((u) => [u.id, u.email]));
+
+      const grouped = new Map<string, { totalFundedKobo: number; studentsCount: number; joinedAt: Date }>();
+      for (const s of sponsorships) {
+        const existing = grouped.get(s.sponsorId);
+        if (existing) {
+          existing.totalFundedKobo += s.amountKobo;
+          existing.studentsCount += 1;
+          if (s.createdAt < existing.joinedAt) existing.joinedAt = s.createdAt;
+        } else {
+          grouped.set(s.sponsorId, {
+            totalFundedKobo: s.amountKobo,
+            studentsCount: 1,
+            joinedAt: s.createdAt,
+          });
+        }
+      }
+
+      return [...grouped.entries()].map(([sponsorId, data]) => ({
+        sponsorId,
+        sponsorEmail: emailMap.get(sponsorId) ?? null,
+        ...data,
+      }));
+    }),
+
+  bulkInviteStudents: roleProcedure('agent')
+    .input(z.object({ emails: z.array(z.string().email()).min(1).max(100) }))
+    .output(z.object({ sentCount: z.number(), failedEmails: z.array(z.string()) }))
+    .mutation(async ({ ctx, input }) => {
+      const profile = await ctx.db.query.agentProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        columns: { fullName: true },
+      });
+
+      let sentCount = 0;
+      const failedEmails: string[] = [];
+
+      await Promise.allSettled(
+        input.emails.map(async (email) => {
+          try {
+            await sendAgentInviteEmail({
+              toEmail: email,
+              agentName: profile?.fullName ?? null,
+              agentId: ctx.user.id,
+            });
+            sentCount++;
+          } catch {
+            failedEmails.push(email);
+          }
+        }),
+      );
+
+      return { sentCount, failedEmails };
+    }),
+
+  requestPayout: roleProcedure('agent')
+    .input(z.object({ commissionIds: z.array(z.string().uuid()).min(1) }))
+    .output(z.object({ requestedCount: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const count = await requestCommissionPayout(ctx.db, input.commissionIds, ctx.user.id);
+
+      if (count === 0) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message:
+            'No eligible commissions found. Commissions must be pending and belong to your account.',
+        });
+      }
+
+      // Fire-and-forget admin notification — failure must not abort the payout request.
+      try {
+        await insertNotification(ctx.db, {
+          userId: ctx.user.id,
+          type: 'system',
+          title: 'Payout request submitted',
+          body: `Your payout request for ${count} commission${count === 1 ? '' : 's'} has been received and is under review.`,
+          link: '/dashboard/agent/commissions',
+          category: 'operations',
+          priority: 'normal',
+        });
+      } catch {
+        // Non-blocking — notification failure does not affect payout request.
+      }
+
+      return { requestedCount: count };
     }),
 
   listAgentCommissions: roleProcedure('agent')
