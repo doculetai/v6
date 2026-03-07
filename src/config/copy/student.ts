@@ -413,6 +413,10 @@ export const studentCopy = {
       cta: "Continue verification",
       illustrationLabel: "Shield and document checklist illustration",
     },
+    underFinalReview: {
+      heading: 'Under final review',
+      desc: 'Your proof of funds package is complete. We are preparing your certificate.',
+    },
     states: {
       loadingTitle: "Loading certificate",
       loadingDescription: "Fetching your latest verification and audit records.",

@@ -2,10 +2,11 @@
 
 import { useMemo, useState, useTransition } from 'react';
 
+import { CertificatePaymentCard } from '@/components/student/CertificatePaymentCard';
 import { ProofCertificateCard } from '@/components/student/ProofCertificateCard';
 import { ProofChecklistCard } from '@/components/student/ProofChecklistCard';
 import { ProofEmptyState } from '@/components/student/ProofEmptyState';
-import { PageShell, Stack } from '@/components/layout/content-primitives';
+import { PageShell, Section, Stack, Grid } from '@/components/layout/content-primitives';
 import { PageHeader } from '@/components/layout/page-header';
 import { studentCopy } from '@/config/copy/student';
 import { useSponsorshipsRealtime } from '@/lib/supabase/useSponsorshipsRealtime';
@@ -28,6 +29,7 @@ type ProofCertificate = {
   certificateId: string | null;
   issuedAt: string | null;
   sharePath: string | null;
+  paymentStatus: 'unpaid' | 'paid' | 'waived' | null;
 };
 
 type ProofTrust = {
@@ -90,6 +92,7 @@ export function ProofPageClient({
               certificateId: result.certificateId,
               issuedAt: result.issuedAt,
               sharePath: result.sharePath,
+              paymentStatus: previousData.certificate.paymentStatus,
             },
             canGenerateShareLink: true,
           }));
@@ -97,6 +100,16 @@ export function ProofPageClient({
         .catch(() => {
           setShareError(studentCopy.proof.states.shareError);
         });
+    });
+  };
+
+  const trackShareMutation = trpc.student.trackCertificateShare.useMutation();
+
+  const handleTrackShare = (method: 'whatsapp' | 'email' | 'download' | 'link') => {
+    if (!proofData.certificate.certificateId) return;
+    trackShareMutation.mutate({
+      certificateId: proofData.certificate.certificateId,
+      method,
     });
   };
 
@@ -119,40 +132,70 @@ export function ProofPageClient({
       });
   };
 
+  const checklistComplete =
+    proofData.checklist.completedCount === proofData.checklist.totalCount &&
+    proofData.checklist.totalCount > 0;
+  const paymentCleared =
+    proofData.certificate.paymentStatus === 'paid' ||
+    proofData.certificate.paymentStatus === 'waived';
+  const isUnderFinalReview =
+    checklistComplete && paymentCleared && !proofData.certificate.issued;
+
   return (
     <PageShell width="default">
-      <Stack gap="md">
-      <PageHeader
-        title={studentCopy.proof.title}
-        description={studentCopy.proof.subtitle}
-        breadcrumbs={[
-          { label: studentCopy.nav.overview, href: '/dashboard/student' },
-          { label: studentCopy.nav.breadcrumbs.proofOfFunds },
-        ]}
-      />
+      <Section>
+        <Stack gap="md">
+          <PageHeader
+            title={studentCopy.proof.title}
+            description={studentCopy.proof.subtitle}
+          />
 
       {!proofData.hasAnyProgress ? <ProofEmptyState /> : null}
 
-      <div
-        className={cn(
-          'grid gap-6',
-          proofData.hasAnyProgress ? 'md:grid-cols-2 xl:grid-cols-[1.1fr_1fr]' : 'md:grid-cols-1',
-        )}
+      <Grid
+        cols={proofData.hasAnyProgress ? { md: 2 } : 1}
+        gap="md"
+        className={cn(proofData.hasAnyProgress && 'xl:grid-cols-[1.1fr_1fr]')}
       >
         <ProofChecklistCard checklist={proofData.checklist} />
-        <ProofCertificateCard
-          certificate={proofData.certificate}
-          trust={proofData.trust}
-          canGenerateShareLink={proofData.canGenerateShareLink}
-          shareLink={shareLink}
-          isGeneratingShareLink={isGeneratingShareLink}
-          shareError={shareError}
-          isCopying={isCopying}
-          onGenerateShareLink={handleGenerateShareLink}
-          onCopyShareLink={handleCopyShareLink}
+        {!isUnderFinalReview ? (
+          <ProofCertificateCard
+            certificate={proofData.certificate}
+            trust={proofData.trust}
+            canGenerateShareLink={proofData.canGenerateShareLink}
+            shareLink={shareLink}
+            isGeneratingShareLink={isGeneratingShareLink}
+            shareError={shareError}
+            isCopying={isCopying}
+            onGenerateShareLink={handleGenerateShareLink}
+            onCopyShareLink={handleCopyShareLink}
+            onTrackShare={handleTrackShare}
+          />
+        ) : null}
+      </Grid>
+
+      {isUnderFinalReview ? (
+        <Section>
+          <div className="rounded-lg border border-border bg-card p-6 text-center space-y-2 max-w-md mx-auto">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {studentCopy.proof.underFinalReview.heading}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {studentCopy.proof.underFinalReview.desc}
+            </p>
+          </div>
+        </Section>
+      ) : null}
+
+      {proofData.certificate.issued && proofData.certificate.certificateId ? (
+        <CertificatePaymentCard
+          certificateId={proofData.certificate.certificateId}
+          paymentStatus={proofData.certificate.paymentStatus ?? 'unpaid'}
+          paidAt={null}
         />
-      </div>
-      </Stack>
+      ) : null}
+        </Stack>
+      </Section>
     </PageShell>
   );
 }
