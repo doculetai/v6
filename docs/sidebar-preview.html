@@ -838,6 +838,17 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
   font-family: var(--font); transition: background 100ms;
 }
 .btn-moreinfo:hover { background: #FDE68A; }
+.filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-chip {
+  font-size: 12px; font-weight: 500; padding: 6px 14px;
+  border-radius: 20px; border: 1px solid rgba(0,0,0,0.12);
+  background: transparent; cursor: pointer; color: #374151;
+  transition: all 0.15s;
+}
+.filter-chip:hover { background: rgba(0,0,0,0.05); }
+.filter-chip.active {
+  background: #2B39A3; color: #fff; border-color: #2B39A3;
+}
 .btn-freeze {
   font-size: 12px; font-weight: 500; padding: 6px 12px;
   border-radius: 8px; border: 1px solid rgba(194,65,12,0.3);
@@ -1751,11 +1762,11 @@ var PAGES = {
         { label:'Rejected',    value:'1', sub:'returned today',      mono:true },
       ],
       queue: [
-        { student:'kemi.adesanya',  name:'Kemi Adesanya',   doc:'Bank statement — GTB',    submitted:'7 Mar 11:20', wait:'3h 2m'  },
-        { student:'ngozi.eze',      name:'Ngozi Eze',        doc:'Passport copy',            submitted:'7 Mar 12:00', wait:'2h 22m' },
-        { student:'taiwo.okonkwo',  name:'Taiwo Okonkwo',   doc:'NIN slip',                submitted:'7 Mar 13:15', wait:'1h 7m'  },
-        { student:'adaeze.obiora',  name:'Adaeze Obiora',   doc:'Bank statement — Zenith', submitted:'7 Mar 13:44', wait:'38m'    },
-        { student:'bola.afolabi',   name:'Bola Afolabi',    doc:'School offer letter',     submitted:'7 Mar 14:01', wait:'21m'    },
+        { student:'kemi.adesanya',  name:'Kemi Adesanya',   doc:'Bank statement — GTB',    submitted:'7 Mar 11:20', wait:'3h 2m',  category:'banking'   },
+        { student:'ngozi.eze',      name:'Ngozi Eze',        doc:'Passport copy',            submitted:'7 Mar 12:00', wait:'2h 22m', category:'documents' },
+        { student:'taiwo.okonkwo',  name:'Taiwo Okonkwo',   doc:'NIN slip',                submitted:'7 Mar 13:15', wait:'1h 7m',  category:'documents' },
+        { student:'adaeze.obiora',  name:'Adaeze Obiora',   doc:'Bank statement — Zenith', submitted:'7 Mar 13:44', wait:'38m',    category:'banking'   },
+        { student:'bola.afolabi',   name:'Bola Afolabi',    doc:'School offer letter',     submitted:'7 Mar 14:01', wait:'21m',    category:'documents' },
       ],
     },
     'Analytics': {
@@ -2735,9 +2746,10 @@ var STATE_OVERRIDES = {
             student:'Adebayo Emmanuel Okafor', initials:'AO', type:'Bank statement', detail:'GTB \u00b7 2.4 MB \u00b7 Submitted 7 Mar',
             status:'needs_review', school:'UNILAG \u2014 Computer Science BSc', amount:'\u20a6 3,200,000',
             rejectionDraft: 'Statement date is outside the 3-month window. Provide a statement dated January 2026 or later.',
+            category:'banking',
           },
-          { student:'Funke Adeola', initials:'FA', type:'Passport copy', detail:'JPG \u00b7 1.2 MB \u00b7 Submitted 7 Mar', status:'needs_review', school:'UI \u2014 Medicine MBBS', amount:'\u20a6 5,000,000' },
-          { student:'Chidi Okonkwo', initials:'CO', type:'NIN slip',    detail:'JPG \u00b7 0.9 MB \u00b7 Submitted 6 Mar', status:'needs_review', school:'OAU \u2014 Law LLB',   amount:'\u20a6 2,800,000' },
+          { student:'Funke Adeola', initials:'FA', type:'Passport copy', detail:'JPG \u00b7 1.2 MB \u00b7 Submitted 7 Mar', status:'needs_review', school:'UI \u2014 Medicine MBBS', amount:'\u20a6 5,000,000', category:'documents' },
+          { student:'Chidi Okonkwo', initials:'CO', type:'NIN slip',    detail:'JPG \u00b7 0.9 MB \u00b7 Submitted 6 Mar', status:'needs_review', school:'OAU \u2014 Law LLB',   amount:'\u20a6 2,800,000', category:'documents' },
         ],
       },
     },
@@ -2752,8 +2764,9 @@ var STATE_OVERRIDES = {
           {
             student:'Kemi Adesanya', initials:'KA', type:'Cert ready', detail:'All documents approved \u00b7 T3 verified \u00b7 Awaiting issuance',
             status:'cert_ready', school:'UNILAG \u2014 Computer Science BSc', amount:'\u20a6 3,200,000',
+            category:'cert_ready',
           },
-          { student:'Funke Adeola', initials:'FA', type:'Bank statement', detail:'GTB \u00b7 2.4 MB \u00b7 Submitted 7 Mar', status:'needs_review', school:'UI \u2014 Medicine MBBS', amount:'\u20a6 5,000,000' },
+          { student:'Funke Adeola', initials:'FA', type:'Bank statement', detail:'GTB \u00b7 2.4 MB \u00b7 Submitted 7 Mar', status:'needs_review', school:'UI \u2014 Medicine MBBS', amount:'\u20a6 5,000,000', category:'banking' },
         ],
       },
     },
@@ -5155,6 +5168,22 @@ function renderDocumentsUpload(page, main) {
 function renderOpsQueue(page, main) {
   if (page.stats) main.appendChild(buildStatGrid(page.stats, 4));
 
+  /* Build filter bar above the queue card */
+  var filterBar = el('div', 'filter-bar');
+  var filterDefs = [
+    { label:'All',       key:'all'       },
+    { label:'Documents', key:'documents' },
+    { label:'Banking',   key:'banking'   },
+    { label:'Cert ready',key:'cert_ready'},
+  ];
+  filterDefs.forEach(function(f) {
+    var chip = el('button', 'filter-chip' + (f.key === 'all' ? ' active' : ''));
+    chip.textContent = f.label;
+    chip.dataset.filter = f.key;
+    filterBar.appendChild(chip);
+  });
+  main.appendChild(filterBar);
+
   var scard = el('div', 'section-card');
   var sh = el('div', 'section-header');
   sh.appendChild(txt(el('span', 'section-title'), 'Review queue \u2014 FIFO'));
@@ -5164,9 +5193,14 @@ function renderOpsQueue(page, main) {
   sh.appendChild(txt(el('span', 'td-muted'), String(items.length) + ' items'));
   scard.appendChild(sh);
 
+  var allRows = [];
+
   items.forEach(function(item) {
     var row = el('div');
     row.style.cssText = 'padding:14px 16px;border-bottom:1px solid rgba(0,0,0,0.05);';
+    /* Assign data-category for filter chips */
+    var cat = item.category || (item.status === 'cert_ready' ? 'cert_ready' : 'documents');
+    row.dataset.category = cat;
 
     var top = el('div'); top.style.cssText = 'display:flex;align-items:center;gap:12px;margin-bottom:10px;';
 
@@ -5230,8 +5264,21 @@ function renderOpsQueue(page, main) {
     }
 
     scard.appendChild(row);
+    allRows.push(row);
   });
   main.appendChild(scard);
+
+  /* Wire filter chips — runs after scard is in main so rows are in DOM */
+  var filterChips = filterBar.querySelectorAll('.filter-chip');
+  function applyFilter(selected) {
+    filterChips.forEach(function(c) { c.classList.toggle('active', c.dataset.filter === selected); });
+    allRows.forEach(function(r) {
+      r.style.display = (selected === 'all' || r.dataset.category === selected) ? '' : 'none';
+    });
+  }
+  filterChips.forEach(function(chip) {
+    chip.addEventListener('click', function() { applyFilter(chip.dataset.filter); });
+  });
 }
 
 function renderCommitments(page, main) {
