@@ -1,22 +1,22 @@
 import {
   ArrowRight,
-  Money,
   CheckCircle,
-  Files,
-  GraduationCap,
-  ShieldCheck,
+  List,
+  SealCheck,
+  Warning,
 } from '@/components/icons';
 import Link from 'next/link';
 
 import { ActivityTimeline } from '@/components/ui/activity-timeline';
 import type { ActivityTimelineItem } from '@/components/ui/activity-timeline';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Grid,
   PageHeader,
   PageShell,
   Section,
+  Stack,
 } from '@/components/layout/content-primitives';
 import { JourneyProgress } from '@/components/ui/journey-progress';
 import { studentHomeCopy } from '@/config/copy/dashboard-shell';
@@ -29,13 +29,28 @@ import { api } from '@/trpc/server';
 
 import { StatCard } from './overview-shared';
 
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
 type DocumentItem = {
   id: string;
   type: StudentDocumentType;
-  status: 'pending' | 'approved' | 'rejected' | 'more_info_requested';
+  status: 'pending' | 'approved' | 'rejected' | 'more_info_requested' | 'expired';
   createdAt: Date;
   reviewedAt: Date | null;
 };
+
+type StudentOverviewProps = {
+  email: string;
+  phone?: string | null;
+  schoolDeactivated?: boolean;
+  caller: Awaited<ReturnType<typeof api>>;
+};
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
 type ActivityCopy = typeof studentHomeCopy.recentActivity;
 
@@ -82,25 +97,209 @@ function deriveActivityItems(
   return items.slice(0, 10);
 }
 
-type StudentOverviewProps = {
-  email: string;
-  phone: string | null;
-  caller: Awaited<ReturnType<typeof api>>;
-};
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
 
-export async function StudentOverview({ email, phone, caller }: StudentOverviewProps) {
+function SchoolAlert() {
+  const copy = studentHomeCopy.schoolAlert;
+  return (
+    <div
+      role="alert"
+      className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-5 py-4"
+    >
+      <Warning
+        className="mt-0.5 size-5 shrink-0 text-destructive"
+        weight="duotone"
+        aria-hidden="true"
+      />
+      <p className="text-sm text-destructive">{copy.message}</p>
+    </div>
+  );
+}
+
+function FirstTimeBanner() {
+  const copy = studentHomeCopy.firstTime;
+  return (
+    <div
+      className="flex flex-col gap-4 rounded-xl border border-border bg-card px-5 py-5 sm:flex-row sm:items-center sm:justify-between"
+      style={{ borderLeftWidth: '4px', borderLeftColor: '#2B39A3' }}
+    >
+      <div className="min-w-0">
+        <p
+          className="text-[10px] font-semibold uppercase tracking-widest"
+          style={{ color: '#2B39A3' }}
+        >
+          Application
+        </p>
+        <p className="mt-1 text-sm font-semibold text-foreground">{copy.heading}</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">{copy.description}</p>
+      </div>
+      <Button
+        asChild
+        size="sm"
+        className="mt-1 shrink-0 sm:mt-0"
+        style={{ minHeight: '44px' }}
+      >
+        <Link href={copy.ctaHref} className="inline-flex items-center gap-1.5">
+          {copy.cta}
+          <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+function CertifiedBanner({
+  firstName,
+  schoolName,
+}: {
+  firstName: string;
+  schoolName: string | null;
+}) {
+  const copy = studentHomeCopy.certified;
+  const description = schoolName
+    ? copy.description(firstName, schoolName)
+    : copy.descriptionNoSchool(firstName);
+
+  return (
+    <div
+      className="flex flex-col gap-4 rounded-xl border border-border bg-card px-5 py-5 sm:flex-row sm:items-center sm:justify-between"
+      style={{ borderLeftWidth: '4px', borderLeftColor: '#2B39A3' }}
+    >
+      <div className="flex items-start gap-4">
+        <div
+          className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+          style={{ backgroundColor: '#2B39A3' + '14' }}
+        >
+          <SealCheck
+            className="size-5"
+            weight="duotone"
+            style={{ color: '#2B39A3' }}
+            aria-hidden="true"
+          />
+        </div>
+        <div className="min-w-0">
+          <p
+            className="text-[10px] font-semibold uppercase tracking-widest"
+            style={{ color: '#2B39A3' }}
+          >
+            {copy.eyebrow}
+          </p>
+          <p className="mt-1 text-sm font-semibold text-foreground">{copy.heading}</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
+        </div>
+      </div>
+      <Button
+        asChild
+        variant="outline"
+        size="sm"
+        className="shrink-0"
+        style={{ minHeight: '44px' }}
+      >
+        <Link href={copy.ctaHref} className="inline-flex items-center gap-1.5">
+          {copy.cta}
+          <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+        </Link>
+      </Button>
+    </div>
+  );
+}
+
+function SchoolStrip({
+  schoolName,
+  programName,
+  durationMonths,
+}: {
+  schoolName: string | null;
+  programName: string | null;
+  durationMonths: number | null;
+}) {
+  const copy = studentHomeCopy.school;
+
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card px-5 py-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          {copy.sectionLabel}
+        </p>
+        {schoolName ? (
+          <>
+            <p className="mt-1 text-sm font-semibold text-foreground">{schoolName}</p>
+            {programName ? (
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {programName}
+                {durationMonths ? ` · ${copy.durationLabel(durationMonths)}` : null}
+              </p>
+            ) : null}
+          </>
+        ) : (
+          <>
+            <p className="mt-1 text-sm font-medium text-foreground">{copy.notSelectedTitle}</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">{copy.notSelectedDescription}</p>
+          </>
+        )}
+      </div>
+      {schoolName ? (
+        <span
+          className="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium"
+          style={{ color: '#2B39A3' }}
+        >
+          <CheckCircle className="size-3.5" weight="duotone" aria-hidden="true" />
+          {copy.selectedLabel}
+        </span>
+      ) : (
+        <Button asChild size="sm" variant="outline" className="shrink-0" style={{ minHeight: '44px' }}>
+          <Link href={copy.ctaHref} className="inline-flex items-center gap-1.5">
+            {copy.ctaLabel}
+            <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+          </Link>
+        </Button>
+      )}
+    </div>
+  );
+}
+
+function ActivityEmptyState() {
+  const copy = studentHomeCopy.recentActivity;
+  return (
+    <div className="flex flex-col items-center gap-3 py-10 text-center">
+      <List
+        className="size-8 text-muted-foreground/50"
+        weight="duotone"
+        aria-hidden="true"
+      />
+      <p className="text-sm font-medium text-muted-foreground">{copy.emptyHeading}</p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
+
+export async function StudentOverview({
+  email,
+  schoolDeactivated = false,
+  caller,
+}: StudentOverviewProps) {
   const firstName = getFirstName(email);
   const totalRequired = studentDocumentTypeValues.length;
   const copy = studentHomeCopy;
 
-  const [verificationResult, schoolSelectionResult, documentsResult, schoolsResult, balanceResult] =
-    await Promise.allSettled([
-      caller.student.getVerificationStatus(),
-      caller.student.getStudentSchoolSelection(),
-      caller.student.listDocuments(),
-      caller.student.listSchools({}),
-      caller.student.getBalanceStatus(),
-    ]);
+  const [
+    verificationResult,
+    schoolSelectionResult,
+    documentsResult,
+    schoolsResult,
+    balanceResult,
+  ] = await Promise.allSettled([
+    caller.student.getVerificationStatus(),
+    caller.student.getStudentSchoolSelection(),
+    caller.student.listDocuments(),
+    caller.student.listSchools({}),
+    caller.student.getBalanceStatus(),
+  ]);
 
   const verification =
     verificationResult.status === 'fulfilled' ? verificationResult.value : null;
@@ -108,8 +307,7 @@ export async function StudentOverview({ email, phone, caller }: StudentOverviewP
     schoolSelectionResult.status === 'fulfilled' ? schoolSelectionResult.value : null;
   const documents = documentsResult.status === 'fulfilled' ? documentsResult.value : [];
   const schools = schoolsResult.status === 'fulfilled' ? schoolsResult.value : [];
-  const balance =
-    balanceResult.status === 'fulfilled' ? balanceResult.value : null;
+  const balance = balanceResult.status === 'fulfilled' ? balanceResult.value : null;
 
   const selectedSchool = schools.find((s) => s.id === schoolSelection?.schoolId) ?? null;
   const selectedProgram =
@@ -125,142 +323,166 @@ export async function StudentOverview({ email, phone, caller }: StudentOverviewP
   const approvedCount = documents.filter((d) => d.status === 'approved').length;
   const bankConnected = verification?.monoConnection.isConnected ?? false;
   const bankName = verification?.monoConnection.bankName ?? null;
-  const phoneVerified = Boolean(phone);
-  const kycFailedAttempts = verification?.kycFailedAttempts ?? 0;
-
   const allDocsApproved = approvedCount >= totalRequired && uploadedCount >= totalRequired;
   const verificationComplete = completionPercent >= 100;
+  const onboardingComplete = Boolean(schoolSelection?.schoolId);
+  const documentsComplete = allDocsApproved;
+
+  // For this overview page, proofReady is treated as allComplete
+  // (cert issuance fetched separately; if all 3 upstream stages are done it may be ready)
+  const proofReady = onboardingComplete && verificationComplete && documentsComplete;
+
   const journeyState = computeStudentJourney(
     {
-      onboardingComplete: Boolean(schoolSelection?.schoolId),
+      onboardingComplete,
       verificationComplete,
-      documentsComplete: allDocsApproved,
-      proofReady: false, // cert issuance status not yet fetched on overview
+      documentsComplete,
+      proofReady,
     },
     copy.journey,
   );
+
+  const isBrandNew =
+    !onboardingComplete && !verificationComplete && !documentsComplete;
+
+  const activityItems = deriveActivityItems(documents as DocumentItem[], copy.recentActivity);
 
   return (
     <PageShell width="wide">
       <Section>
         <PageHeader
-          title={copy.welcomeTitle(firstName)}
-          description={copy.journeySubtitle}
+          title={copy.title}
+          description={`${copy.welcomeTitle(firstName)}. ${copy.journeySubtitle}`}
         />
 
-        <JourneyProgress
-          stages={journeyState.stages}
-          nextAction={journeyState.nextAction}
-          allComplete={journeyState.allComplete}
-          completionMessage={journeyState.completionMessage}
-        />
+        <Stack gap="md">
+          {/* School deactivated alert — always at top when present */}
+          {schoolDeactivated ? <SchoolAlert /> : null}
 
-        <Grid cols={{ sm: 3 }} gap="md" className="mt-6">
-          <StatCard
-            icon={<ShieldCheck className="size-4.5" weight="duotone" aria-hidden="true" />}
-            label={copy.stats.verification.label}
-            value={copy.stats.verification.percent(completionPercent)}
-            sub={
-              highestTier > 0
-                ? copy.stats.verification.tierPassed(highestTier)
-                : copy.stats.verification.notStartedLabel
-            }
-            accent={completionPercent > 0}
-            href="/dashboard/student/verification"
-          />
-          <StatCard
-            icon={<Files className="size-4.5" weight="duotone" aria-hidden="true" />}
-            label={copy.stats.documents.label}
-            value={copy.stats.documents.countLabel(uploadedCount, totalRequired)}
-            sub={
-              approvedCount === uploadedCount && uploadedCount > 0
-                ? copy.stats.documents.allApprovedLabel
-                : copy.stats.documents.approvedCount(approvedCount)
-            }
-            accent={uploadedCount > 0}
-            href="/dashboard/student/documents"
-          />
-          <StatCard
-            icon={<Money className="size-4.5" weight="duotone" aria-hidden="true" />}
-            label={copy.stats.bankAccount.label}
-            value={bankConnected ? copy.stats.bankAccount.linkedLabel : copy.stats.bankAccount.notLinkedLabel}
-            sub={
-              balance?.hasVerifiedBalance && balance.verifiedAmountKobo != null
-                ? copy.stats.bankAccount.verifiedBalanceLabel(
-                    formatCurrency(balance.verifiedAmountKobo / 100),
-                  )
-                : bankName ?? (bankConnected ? '' : copy.stats.bankAccount.requiredSub)
-            }
-            accent={bankConnected}
-            href="/dashboard/student/documents#bank"
-          />
-        </Grid>
+          {/* State banners — mutually exclusive */}
+          {proofReady ? (
+            <CertifiedBanner
+              firstName={firstName}
+              schoolName={selectedSchool?.name ?? null}
+            />
+          ) : isBrandNew ? (
+            <FirstTimeBanner />
+          ) : null}
 
-        <Card className="border-border bg-card mt-6">
-          <CardContent className="flex flex-col gap-3 pt-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                <GraduationCap className="size-4.5" weight="duotone" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  {copy.school.sectionLabel}
+          {/* Tabs: Journey | Activity */}
+          <Tabs defaultValue="journey">
+            {/* Tab list — editorial underline style via inline override */}
+            <TabsList
+              className="h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0"
+            >
+              <TabsTrigger
+                value="journey"
+                className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-[#2B39A3] data-[state=active]:text-foreground data-[state=active]:shadow-none"
+              >
+                {copy.tabs.journey}
+              </TabsTrigger>
+              <TabsTrigger
+                value="activity"
+                className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-[#2B39A3] data-[state=active]:text-foreground data-[state=active]:shadow-none"
+              >
+                {copy.tabs.activity}
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Journey tab */}
+            <TabsContent value="journey" className="mt-6 outline-none">
+              <Stack gap="md">
+                {/* Journey stages tracker */}
+                <div className="rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
+                  <JourneyProgress
+                    stages={journeyState.stages}
+                    nextAction={journeyState.nextAction}
+                    allComplete={journeyState.allComplete}
+                    completionMessage={journeyState.completionMessage}
+                  />
+                </div>
+
+                {/* Stat cards */}
+                <Grid cols={{ sm: 3 }} gap="md">
+                  <StatCard
+                    label={copy.stats.verification.label}
+                    value={copy.stats.verification.percent(completionPercent)}
+                    sub={
+                      highestTier > 0
+                        ? copy.stats.verification.tierPassed(highestTier)
+                        : copy.stats.verification.notStartedLabel
+                    }
+                    accent={completionPercent > 0}
+                    href="/dashboard/student/verification"
+                  />
+                  <StatCard
+                    label={copy.stats.documents.label}
+                    value={copy.stats.documents.countLabel(uploadedCount, totalRequired)}
+                    sub={
+                      approvedCount === uploadedCount && uploadedCount > 0
+                        ? copy.stats.documents.allApprovedLabel
+                        : copy.stats.documents.approvedCount(approvedCount)
+                    }
+                    accent={uploadedCount > 0}
+                    href="/dashboard/student/documents"
+                  />
+                  <StatCard
+                    label={copy.stats.bankAccount.label}
+                    value={
+                      selectedProgram
+                        ? copy.stats.bankAccount.balanceVsTarget(
+                            formatCurrency(
+                              balance?.hasVerifiedBalance && balance.verifiedAmountKobo != null
+                                ? balance.verifiedAmountKobo / 100
+                                : 0,
+                            ),
+                            formatCurrency(selectedProgram.tuitionAmount / 100),
+                          )
+                        : bankConnected
+                          ? copy.stats.bankAccount.linkedLabel
+                          : copy.stats.bankAccount.notStartedLabel
+                    }
+                    valueClassName="font-mono tabular-nums"
+                    sub={
+                      selectedProgram
+                        ? bankConnected
+                          ? bankName ?? ''
+                          : copy.stats.bankAccount.requiredSub
+                        : copy.stats.bankAccount.selectProgramSub
+                    }
+                    accent={bankConnected}
+                    href="/dashboard/student/documents#bank"
+                  />
+                </Grid>
+
+                {/* School strip */}
+                <SchoolStrip
+                  schoolName={selectedSchool?.name ?? null}
+                  programName={selectedProgram?.name ?? null}
+                  durationMonths={selectedProgram?.durationMonths ?? null}
+                />
+              </Stack>
+            </TabsContent>
+
+            {/* Activity tab */}
+            <TabsContent value="activity" className="mt-6 outline-none">
+              <div className="rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
+                <p className="mb-4 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  {copy.recentActivity.sectionLabel}
                 </p>
-                {selectedSchool ? (
-                  <>
-                    <p className="mt-0.5 text-base font-semibold text-foreground">
-                      {selectedSchool.name}
-                    </p>
-                    {selectedProgram ? (
-                      <p className="text-sm text-muted-foreground">
-                        {selectedProgram.name}
-                        {' · '}
-                        {copy.school.durationLabel(selectedProgram.durationMonths)}
-                      </p>
-                    ) : null}
-                  </>
+                {activityItems.length > 0 ? (
+                  <ActivityTimeline
+                    items={activityItems}
+                    emptyLabel={copy.recentActivity.empty}
+                  />
                 ) : (
-                  <>
-                    <p className="mt-0.5 text-sm font-medium text-foreground">
-                      {copy.school.notSelectedTitle}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {copy.school.notSelectedDescription}
-                    </p>
-                  </>
+                  <ActivityEmptyState />
                 )}
               </div>
-            </div>
-            {selectedSchool ? (
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
-                <CheckCircle className="size-3.5" weight="duotone" aria-hidden="true" />
-                {copy.school.selectedLabel}
-              </span>
-            ) : (
-              <Button asChild size="sm" variant="outline" className="shrink-0">
-                <Link href={copy.school.ctaHref} className="inline-flex items-center gap-1.5">
-                  {copy.school.ctaLabel}
-                  <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
-                </Link>
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-        {documents.length > 0 ? (
-          <Card className="border-border bg-card mt-6">
-            <CardContent className="pt-5">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-4">
-                {copy.recentActivity.sectionLabel}
-              </p>
-              <ActivityTimeline
-                items={deriveActivityItems(documents, copy.recentActivity)}
-                emptyLabel={copy.recentActivity.empty}
-              />
-            </CardContent>
-          </Card>
-        ) : null}
+            </TabsContent>
+          </Tabs>
+        </Stack>
       </Section>
-
     </PageShell>
   );
 }

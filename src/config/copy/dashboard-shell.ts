@@ -80,8 +80,8 @@ export const dashboardShellCopy = {
     emptyTitle: 'Complete your profile to continue',
     emptyDescription:
       'Finish setting up your profile to see your verification progress and funding status.',
-    errorTitle: 'We could not load your dashboard',
-    errorDescription: 'Please refresh this page in a moment to try again.',
+    errorTitle: 'Unable to load your dashboard',
+    errorDescription: 'Please refresh this page to try again.',
   },
 } as const;
 
@@ -91,8 +91,34 @@ export function getFallbackUserName(role: DashboardRole): string {
 
 export const studentHomeCopy = {
   welcomeTitle: (name: string) => `Welcome, ${name}`,
-  title: 'Your proof journey',
-  journeySubtitle: 'Your proof-of-funds journey at a glance.',
+  title: 'Overview',
+  journeySubtitle: 'Your progress toward proof of funds.',
+  tabs: {
+    journey: 'Journey',
+    activity: 'Activity',
+  },
+  firstTime: {
+    heading: 'Your application is not yet started',
+    description: 'Complete four steps to receive your proof of funds certificate.',
+    cta: 'Begin your application',
+    ctaHref: '/dashboard/student/setup',
+  },
+  inProgress: {
+    heading: 'Continue your application',
+    description: 'You have outstanding steps. Resume where you left off.',
+  },
+  certified: {
+    eyebrow: 'Certificate issued',
+    heading: 'Proof of funds certificate issued',
+    description: (name: string, school: string) =>
+      `${name} — ${school}`,
+    descriptionNoSchool: (name: string) => `Issued to ${name}`,
+    cta: 'View your certificate',
+    ctaHref: '/dashboard/student/proof',
+  },
+  schoolAlert: {
+    message: 'Your selected school is no longer active. Contact support to continue your application.',
+  },
   stats: {
     verification: {
       label: 'Verification',
@@ -111,55 +137,27 @@ export const studentHomeCopy = {
       label: 'Bank Account',
       linkedLabel: 'Linked',
       notLinkedLabel: 'Not linked',
-      requiredSub: 'Required for disbursements',
+      notStartedLabel: 'Not started',
+      requiredSub: 'Link to verify your funds',
+      selectProgramSub: 'Select a school and program first',
+      balanceVsTarget: (balance: string, target: string) => `${balance} / ${target}`,
       verifiedBalanceLabel: (amount: string) => `Verified: ${amount}`,
     },
   },
-  empty: {
-    cta: 'Start onboarding',
-  },
   school: {
-    sectionLabel: 'Selected School',
-    selectedLabel: 'Selected',
-    notSelectedTitle: 'No school selected yet',
+    sectionLabel: 'Institution',
+    selectedLabel: 'Enrolled',
+    notSelectedTitle: 'No institution selected',
     notSelectedDescription: 'Browse partner institutions to set your funding target.',
-    ctaLabel: 'Browse schools',
+    ctaLabel: 'Browse institutions',
     ctaHref: '/dashboard/student/schools',
-    programLabel: 'Program',
+    programLabel: 'Programme',
     durationLabel: (months: number) => `${months} months`,
   },
-  nextSteps: {
-    heading: 'Next Steps',
-    items: {
-      selectSchool: {
-        label: 'Choose your school',
-        description: 'Browse partner institutions and set your funding target.',
-        cta: 'Browse schools',
-        href: '/dashboard/student/schools',
-      },
-      verifyIdentity: {
-        label: 'Verify your identity',
-        description: 'Complete identity checks to unlock higher funding tiers.',
-        cta: 'Continue verification',
-        href: '/dashboard/student?action=verify',
-      },
-      uploadDocuments: {
-        label: 'Upload your documents',
-        description: 'Submit required documents for sponsor review.',
-        cta: 'Upload now',
-        href: '/dashboard/student/documents',
-      },
-      linkBankAccount: {
-        label: 'Link your bank account',
-        description: 'Connect your account to receive disbursements.',
-        cta: 'Link account',
-        href: '/dashboard/student/documents#bank',
-      },
-    },
-  },
   recentActivity: {
-    sectionLabel: 'Recent Activity',
-    empty: 'No recent activity to show.',
+    sectionLabel: 'Activity',
+    empty: 'No activity recorded yet.',
+    emptyHeading: 'No activity yet',
     documentUploaded: (type: string) => `Uploaded ${type}`,
     documentApproved: (type: string) => `${type} approved`,
     documentRejected: (type: string) => `${type} needs attention`,
@@ -188,7 +186,7 @@ export const dashboardOverviewCopy: Record<DashboardRole, OverviewCopy> = {
     title: 'Welcome back, Student',
     description: 'Review your funding progress and keep your verification timeline moving.',
     ctaLabel: 'Continue verification',
-    ctaHref: '/dashboard/student?action=verify',
+    ctaHref: '/dashboard/student/verification',
   },
   sponsor: {
     title: 'Welcome back, Sponsor',
