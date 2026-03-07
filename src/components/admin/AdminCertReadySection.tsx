@@ -240,7 +240,7 @@ export function AdminCertReadySection({ students, onIssued }: AdminCertReadySect
               onClick={handleConfirmIssue}
               disabled={issueMutation.isPending}
             >
-              {issueMutation.isPending ? 'Issuing…' : copy.issueDialog.confirmCta}
+              {issueMutation.isPending ? copy.issueDialog.issuing : copy.issueDialog.confirmCta}
             </Button>
           </DialogFooter>
         </DialogContent>

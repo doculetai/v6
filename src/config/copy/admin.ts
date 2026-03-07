@@ -337,6 +337,7 @@ export const adminCopy = {
       waivePaymentLabel: "Waive payment",
       waivePaymentDescription: "Override the payment requirement for this student.",
       confirmCta: "Issue certificate",
+      issuing: "Issuing…",
       cancel: "Cancel",
     },
     issueSuccess: "Certificate issued.",
