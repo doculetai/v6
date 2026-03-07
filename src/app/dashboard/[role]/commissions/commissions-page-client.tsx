@@ -1,11 +1,13 @@
 'use client';
 
-import { AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { WarningCircle } from '@/components/icons';
 
 import { EmptyState } from '@/components/ui/empty-state';
-import { PageHeader } from '@/components/ui/page-header';
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import type { agentCopy } from '@/config/copy/agent';
 import { cn, formatNGN } from '@/lib/utils';
+import { trpc } from '@/trpc/client';
 
 import {
   type AgentCommission,
@@ -20,23 +22,45 @@ type Commission = AgentCommission;
 type Props = {
   commissions: Commission[] | null;
   copy: typeof agentCopy.commissions;
-}
+};
 
 // ── Mobile card ───────────────────────────────────────────────────────────────
 
 function CommissionCard({
   commission,
   copy,
+  selected,
+  onToggle,
 }: {
   commission: Commission;
   copy: Props['copy'];
+  selected: boolean;
+  onToggle: () => void;
 }) {
+  const isPending = commission.status === 'pending';
+
   return (
-    <div className="rounded-lg border border-border bg-card p-4 space-y-3">
+    <div
+      className={cn(
+        'rounded-lg border bg-card p-4 space-y-3 transition-colors',
+        isPending && selected ? 'border-primary/50 bg-primary/5' : 'border-border',
+      )}
+    >
       <div className="flex items-start justify-between gap-2">
-        <p className="truncate text-sm font-medium text-foreground">
-          {commission.description ?? copy.table.event}
-        </p>
+        <div className="flex items-center gap-2 min-w-0">
+          {isPending && (
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={onToggle}
+              aria-label={`Select commission from ${formatDate(commission.createdAt)}`}
+              className="size-4 shrink-0 rounded border-border accent-primary"
+            />
+          )}
+          <p className="truncate text-sm font-medium text-foreground">
+            {commission.description ?? copy.table.event}
+          </p>
+        </div>
         <span
           className={cn(
             'inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-xs font-medium',
@@ -65,32 +89,130 @@ function CommissionCard({
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function CommissionsPageClient({ commissions, copy }: Props) {
+export function CommissionsPageClient({ commissions: initialCommissions, copy }: Props) {
+  const [commissions, setCommissions] = useState<Commission[] | null>(initialCommissions);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [payoutError, setPayoutError] = useState<string | null>(null);
+  const [payoutSuccess, setPayoutSuccess] = useState(false);
+
+  const requestPayout = trpc.agent.requestPayout.useMutation({
+    onSuccess: (result) => {
+      setSelectedIds(new Set());
+      setPayoutSuccess(true);
+      setPayoutError(null);
+      // Optimistically transition selected commissions to 'processing'
+      setCommissions((prev) =>
+        prev === null
+          ? null
+          : prev.map((c) =>
+              selectedIds.has(c.id) && c.status === 'pending'
+                ? { ...c, status: 'processing' as const }
+                : c,
+            ),
+      );
+      void result;
+    },
+    onError: (err) => {
+      setPayoutError(err.message);
+    },
+  });
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
   if (commissions === null) {
     return (
-      <div className="space-y-6">
+      <PageShell>
         <PageHeader title={copy.title} subtitle={copy.subtitle} />
         <div className="flex flex-col items-center gap-3 rounded-lg border border-border bg-card py-12 text-center">
-          <AlertCircle className="size-8 text-destructive/60" aria-hidden="true" />
+          <WarningCircle weight="duotone" className="size-8 text-destructive/60" aria-hidden="true" />
           <p className="text-sm font-medium text-foreground">{copy.error.title}</p>
           <p className="max-w-xs text-xs text-muted-foreground">{copy.error.description}</p>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
+  const pendingCommissions = commissions.filter((c) => c.status === 'pending');
+  const pendingTotalKobo = pendingCommissions.reduce((sum, c) => sum + c.amountKobo, 0);
+  const hasSelected = selectedIds.size > 0;
+
   return (
-    <div className="space-y-6">
+    <PageShell>
       <PageHeader title={copy.title} subtitle={copy.subtitle} />
 
       {commissions.length === 0 ? (
         <EmptyState heading={copy.empty.title} body={copy.empty.description} />
       ) : (
         <>
+          {/* Payout summary bar */}
+          {pendingCommissions.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 px-4 py-3">
+              <div>
+                <p className="text-xs text-muted-foreground">{copy.payoutDialog.amountLabel}</p>
+                <p className="font-mono text-sm font-medium text-foreground">
+                  {formatNGN(pendingTotalKobo)}
+                </p>
+              </div>
+
+              <div className="flex flex-col items-end gap-1">
+                <button
+                  type="button"
+                  disabled={!hasSelected || requestPayout.isPending}
+                  onClick={() => {
+                    setPayoutError(null);
+                    setPayoutSuccess(false);
+                    requestPayout.mutate({ commissionIds: [...selectedIds] });
+                  }}
+                  className={cn(
+                    'rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                    hasSelected && !requestPayout.isPending
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+                      : 'cursor-not-allowed bg-muted text-muted-foreground',
+                  )}
+                >
+                  {requestPayout.isPending ? copy.requestingPayout : copy.requestPayout}
+                </button>
+                {!hasSelected && (
+                  <p className="text-xs text-muted-foreground">
+                    {copy.payoutSelectHint}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Feedback messages */}
+          {payoutSuccess && (
+            <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-primary">
+              {copy.payoutSuccess}
+            </div>
+          )}
+          {payoutError && (
+            <div className="rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+              {payoutError}
+            </div>
+          )}
+
           {/* Mobile: stacked cards */}
           <div className="space-y-3 md:hidden">
             {commissions.map((commission) => (
-              <CommissionCard key={commission.id} commission={commission} copy={copy} />
+              <CommissionCard
+                key={commission.id}
+                commission={commission}
+                copy={copy}
+                selected={selectedIds.has(commission.id)}
+                onToggle={() => toggleSelect(commission.id)}
+              />
             ))}
           </div>
 
@@ -99,6 +221,7 @@ export function CommissionsPageClient({ commissions, copy }: Props) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/40">
+                  <th className="w-10 px-4 py-3" aria-label="Select" />
                   <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                     {copy.table.event}
                   </th>
@@ -117,8 +240,24 @@ export function CommissionsPageClient({ commissions, copy }: Props) {
                 {commissions.map((commission) => (
                   <tr
                     key={commission.id}
-                    className="bg-card transition-colors hover:bg-muted/30"
+                    className={cn(
+                      'transition-colors',
+                      commission.status === 'pending' && selectedIds.has(commission.id)
+                        ? 'bg-primary/5'
+                        : 'bg-card hover:bg-muted/30',
+                    )}
                   >
+                    <td className="px-4 py-3">
+                      {commission.status === 'pending' && (
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.has(commission.id)}
+                          onChange={() => toggleSelect(commission.id)}
+                          aria-label={`Select commission from ${formatDate(commission.createdAt)}`}
+                          className="size-4 rounded border-border accent-primary"
+                        />
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-foreground">
                       {commission.description ?? '\u2014'}
                     </td>
@@ -145,6 +284,6 @@ export function CommissionsPageClient({ commissions, copy }: Props) {
           </div>
         </>
       )}
-    </div>
+    </PageShell>
   );
 }

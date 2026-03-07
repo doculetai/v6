@@ -1,3 +1,4 @@
+import { routes } from '@/config/routes';
 import { commonErrors } from "./shared";
 
 export const agentCopy = {
@@ -174,9 +175,12 @@ export const agentCopy = {
       description: "Please refresh the page.",
     },
     requestPayout: "Request payout",
+    requestingPayout: "Submitting\u2026",
+    payoutSelectHint: "Select commissions above to request payout",
+    payoutSuccess: "Payout request submitted. Your commissions are under review.",
     payoutDialog: {
       title: "Request payout",
-      description: "Payouts are processed within 2 business days.",
+      description: "Payouts are processed after review.",
       amountLabel: "Available balance (₦)",
       bankAccountLabel: "Payout account",
       confirmCta: "Confirm payout request",
@@ -360,35 +364,65 @@ export const agentCopy = {
         label: 'Invite your first student',
         description: 'Use the Actions page to invite students into your caseload.',
         cta: 'Invite students',
-        href: '/dashboard/agent/actions',
+        href: routes.dashboard.agent.actions,
       },
       guide_onboarding: {
         label: 'Guide students through verification',
         description: 'Help your assigned students complete identity and document checks.',
         cta: 'View students',
-        href: '/dashboard/agent/students',
+        href: routes.dashboard.agent.students,
       },
       facilitate_matching: {
         label: 'Connect students with sponsors',
         description: 'Help students find and invite sponsors to fund their education.',
         cta: 'View students',
-        href: '/dashboard/agent/students',
+        href: routes.dashboard.agent.students,
       },
       earn_commissions: {
         label: 'Track your commissions',
         description: 'Review earned commissions and request payouts.',
         cta: 'View commissions',
-        href: '/dashboard/agent/commissions',
+        href: routes.dashboard.agent.commissions,
       },
     },
     completionMessage: 'Your students are progressing well. Keep building your portfolio.',
   },
 
+  analytics: {
+    title: 'Analytics',
+    subtitle: 'Your referral performance and commission trends over time.',
+    stats: {
+      totalReferrals: { label: 'Total referrals', sub: 'students onboarded' },
+      converted: { label: 'Converted', sub: 'completed verification' },
+      conversionRate: { label: 'Conversion rate', sub: 'referrals to verified' },
+      totalEarned: { label: 'Total earned', sub: 'lifetime commissions' },
+    },
+    performance: {
+      title: 'Referral performance',
+      description: 'Track how your referrals convert through each stage.',
+      stages: {
+        invited: 'Invited',
+        onboarding: 'Onboarding',
+        verifying: 'Verifying',
+        verified: 'Verified',
+        complete: 'Complete',
+      },
+    },
+    empty: {
+      title: 'No analytics data yet',
+      description: 'Referral analytics will appear here as your students progress through verification.',
+    },
+    error: {
+      title: 'Failed to load analytics',
+      description: 'Please refresh the page to try again.',
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
-    commissions: "Commissions",
-    referral: "Referral",
     students: "Students",
+    commissions: "Commissions",
+    activity: "Activity",
     settings: "Settings",
   },
 
