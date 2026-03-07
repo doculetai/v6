@@ -1070,6 +1070,16 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 .btn-ghost-sm { background:none; border:1px solid rgba(0,0,0,.12); border-radius:6px; padding:5px 10px; font-size:12px; cursor:pointer; color:#0F172A; line-height:1.4; }
 .btn-ghost-sm:hover { background:rgba(0,0,0,.04); }
 
+/* Team table (admin settings) */
+.team-table { width: 100%; border-collapse: collapse; }
+.team-table th { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(100,116,139,0.7); padding: 8px 12px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.team-table td { padding: 12px 12px; font-size: 14px; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle; }
+.team-table tr:last-child td { border-bottom: none; }
+.team-avatar { width: 32px; height: 32px; border-radius: 50%; background: #2B39A3; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-right: 8px; vertical-align: middle; }
+.role-select-inline { font-size: 13px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.12); background: #fff; cursor: pointer; }
+.invite-team-form { display: flex; gap: 8px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
+.invite-team-form input { flex: 1; min-width: 160px; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.12); font-size: 13px; }
+
 /* Clickable table row hover */
 .tr-clickable { cursor:pointer; transition:background .1s; }
 .tr-clickable:hover { background:#F8F9FA; }
@@ -2832,6 +2842,16 @@ var STATE_OVERRIDES = {
         ],
       },
     },
+
+    /* team_settings: admin settings page with Team tab active */
+    team_settings: {
+      'Settings': {
+        type: 'settings',
+        h1: 'Settings',
+        eyebrow: 'Platform configuration',
+        activeTab: 'team',
+      },
+    },
   },
 
   /* ══ AGENT ══ */
@@ -3835,8 +3855,68 @@ function showStudentDetailModal(student) {
 }
 
 /* ── Render settings page (tabs switch content) ── */
+function buildAdminTeamTab(container) {
+  var members = [
+    { name: 'Goldmayo Daniel', initials: 'GD', role: 'super_admin', email: 'goldmayo@doculet.ai' },
+    { name: 'Amaka Obi', initials: 'AO', role: 'reviewer', email: 'amaka@doculet.ai' },
+    { name: 'Emeka Nweke', initials: 'EN', role: 'support', email: 'emeka@doculet.ai' }
+  ];
+  var roles = ['super_admin', 'reviewer', 'support', 'read_only'];
+  var roleLabels = { super_admin: 'Super admin', reviewer: 'Reviewer', support: 'Support', read_only: 'Read only' };
+
+  // Members table
+  var table = el('table', 'team-table');
+  var thead = el('thead', '');
+  var hRow = el('tr', '');
+  ['Member', 'Role', 'Actions'].forEach(function(h) {
+    var th = el('th', ''); txt(th, h); hRow.appendChild(th);
+  });
+  thead.appendChild(hRow); table.appendChild(thead);
+  var tbody = el('tbody', '');
+  members.forEach(function(m) {
+    var tr = el('tr', '');
+    // Avatar + name + email
+    var tdMember = el('td', '');
+    var av = el('span', 'team-avatar'); txt(av, m.initials);
+    var nameSpan = el('span', ''); nameSpan.style.fontWeight = '500'; txt(nameSpan, m.name);
+    var emailSpan = el('div', ''); emailSpan.style.cssText = 'font-size:12px;color:rgba(100,116,139,0.7);margin-top:1px;'; txt(emailSpan, m.email);
+    var nameWrap = el('div', ''); nameWrap.style.display = 'inline-block'; nameWrap.appendChild(nameSpan); nameWrap.appendChild(emailSpan);
+    tdMember.appendChild(av); tdMember.appendChild(nameWrap);
+    // Role dropdown
+    var tdRole = el('td', '');
+    var sel = el('select', 'role-select-inline');
+    roles.forEach(function(r) {
+      var opt = el('option', ''); opt.value = r; txt(opt, roleLabels[r]);
+      if (r === m.role) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    tdRole.appendChild(sel);
+    // Actions
+    var tdAct = el('td', '');
+    var removeBtn = el('button', ''); removeBtn.style.cssText = 'font-size:12px;color:#C2410C;background:none;border:none;cursor:pointer;'; txt(removeBtn, 'Remove');
+    tdAct.appendChild(removeBtn);
+    tr.appendChild(tdMember); tr.appendChild(tdRole); tr.appendChild(tdAct);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  container.appendChild(table);
+
+  // Invite form
+  var inviteForm = el('div', 'invite-team-form');
+  var emailInput = el('input', ''); emailInput.type = 'email'; emailInput.placeholder = 'Email address';
+  var roleSelect = el('select', 'role-select-inline');
+  roles.forEach(function(r) { var o = el('option', ''); o.value = r; txt(o, roleLabels[r]); roleSelect.appendChild(o); });
+  var inviteBtn = el('button', 'btn-primary'); inviteBtn.style.fontSize = '13px'; inviteBtn.style.padding = '8px 16px'; txt(inviteBtn, 'Send invite');
+  inviteForm.appendChild(emailInput); inviteForm.appendChild(roleSelect); inviteForm.appendChild(inviteBtn);
+  container.appendChild(inviteForm);
+}
+
 function renderSettings(page, main) {
-  var tabs = page.tabs || ['Profile', 'Security', 'Notifications'];
+  var defaultTabs = currentRole === 'admin'
+    ? ['General', 'Security', 'Platform fees', 'Team']
+    : ['Profile', 'Security', 'Notifications'];
+  var tabs = page.tabs || defaultTabs;
+  if (currentRole === 'admin' && tabs.indexOf('Team') === -1) tabs = tabs.concat(['Team']);
   var tabRow = el('div', 'settings-tabs');
   var contentArea = el('div');
 
@@ -3969,6 +4049,9 @@ function renderSettings(page, main) {
       form.appendChild(el('div', 'form-divider'));
       var sr = el('div', 'form-save'); var sb = el('button', 'btn-primary'); sb.textContent = 'Save configuration'; sr.appendChild(sb); form.appendChild(sr);
 
+    } else if (tabName === 'Team') {
+      buildAdminTeamTab(form);
+
     } else {
       body.appendChild(txt(el('p', 'td-muted'), 'Settings for ' + tabName));
     }
@@ -3976,8 +4059,12 @@ function renderSettings(page, main) {
     body.appendChild(form); card.appendChild(body); contentArea.appendChild(card);
   }
 
-  tabs.forEach(function(t, i) {
-    var btn = el('button', 'tab-btn' + (i === 0 ? ' active' : ''));
+  var initialTab = page.activeTab
+    ? (tabs.find(function(t) { return t.toLowerCase() === page.activeTab.toLowerCase(); }) || tabs[0])
+    : tabs[0];
+
+  tabs.forEach(function(t) {
+    var btn = el('button', 'tab-btn' + (t === initialTab ? ' active' : ''));
     btn.textContent = t;
     btn.addEventListener('click', function() {
       tabRow.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -3988,7 +4075,7 @@ function renderSettings(page, main) {
   });
   main.appendChild(tabRow);
   main.appendChild(contentArea);
-  showSettingsTab(tabs[0]);
+  showSettingsTab(initialTab);
 }
 
 /* ── Render API keys page ── */
@@ -6128,6 +6215,7 @@ var ROLE_STATES = {
     { group:'Users',          id:'frozen_user',    label:'Frozen user'    },
     { group:'Sub-roles',      id:'reviewer_view',  label:'Reviewer view',  _label:'Reviewer view'  },
     { group:'Sub-roles',      id:'support_view',   label:'Support view',   _label:'Support view'   },
+    { group:'System',         id:'team_settings',  label:'Team settings'   },
   ],
 
   agent: [
