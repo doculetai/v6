@@ -28,6 +28,8 @@ export type StudentVerificationSnapshot = {
   latestBankAccount: typeof bankAccounts.$inferSelect | null;
   bankAccountMasked: string | null;
   progress: StudentVerificationProgress;
+  kycFailedAttempts: number;
+  kycFailureReason: string | null;
 };
 
 type ProfileQueryClient = Pick<DrizzleDB, 'query' | 'insert'>;
@@ -227,12 +229,23 @@ export async function getStudentVerificationSnapshot(
     profileUpdatedAt: profile.updatedAt,
   });
 
+  const kycFailedAttempts = recentKycChecks.filter((check) => check.status === 'failed').length;
+
+  // The latest T2 KYC check's referenceId is the best proxy for failure reason until
+  // a failureReason column is added to the schema. For now we surface null so the UI
+  // falls back to the default reason message.
+  const latestFailedT2 =
+    recentKycChecks.find((check) => check.tier === 2 && check.status === 'failed') ?? null;
+  const kycFailureReason: string | null = latestFailedT2?.referenceId ?? null;
+
   return {
     profile,
     latestKycByTier,
     latestBankAccount: latestBankAccount ?? null,
     bankAccountMasked: latestBankAccount ? maskAccountNumber(latestBankAccount.accountNumber) : null,
     progress,
+    kycFailedAttempts,
+    kycFailureReason,
   };
 }
 

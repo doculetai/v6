@@ -9,10 +9,12 @@ import { VerificationTierCard } from '@/components/student/VerificationTierCard'
 import {
   PageShell,
   Section,
+  Stack,
   PageHeader,
 } from '@/components/layout/content-primitives';
 import { studentVerificationCopy } from '@/config/copy/student-verification.copy';
 import { formatCurrency } from '@/lib/utils';
+import { routes } from '@/config/routes';
 
 export type VerificationPageData = {
   phoneVerified: boolean;
@@ -20,6 +22,7 @@ export type VerificationPageData = {
   kycComplete: boolean;
   kycStatus: 'none' | 'pending' | 'verified' | 'failed' | 'manual_review';
   kycFailedAttempts: number;
+  kycFailureReason: string | null;
   bankConnected: boolean;
   bankName: string | null;
   accountNumberMasked: string | null;
@@ -63,13 +66,22 @@ export function VerificationPageClient({ data }: VerificationPageClientProps) {
   // Derive tier statuses
   const t1Status = data.phoneVerified ? 'complete' : 'active';
 
-  const t2Status: 'complete' | 'active' | 'upcoming' | 'manual_review' = !data.phoneVerified
-    ? 'upcoming'
-    : data.kycStatus === 'manual_review'
-      ? 'manual_review'
-      : data.kycComplete
-        ? 'complete'
-        : 'active';
+  const t2Status: 'complete' | 'active' | 'upcoming' | 'manual_review' | 'failed' =
+    !data.phoneVerified
+      ? 'upcoming'
+      : data.kycStatus === 'manual_review'
+        ? 'manual_review'
+        : data.kycStatus === 'failed'
+          ? 'failed'
+          : data.kycComplete
+            ? 'complete'
+            : 'active';
+
+  const MAX_KYC_ATTEMPTS = 3;
+  const kycAttemptsLeft =
+    data.kycStatus === 'failed'
+      ? Math.max(0, MAX_KYC_ATTEMPTS - data.kycFailedAttempts)
+      : undefined;
 
   const t3Status: 'complete' | 'active' | 'upcoming' = !data.kycComplete
     ? 'upcoming'
@@ -93,11 +105,8 @@ export function VerificationPageClient({ data }: VerificationPageClientProps) {
 
         {/* Proof target progress bar */}
         {hasTarget && (
-          <div className="mt-4 mb-6">
-            <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
-              <span>{targetLabel}</span>
-              <span>{data.completionPercent}%</span>
-            </div>
+          <Stack gap="xs">
+            <div className="text-xs text-muted-foreground">{targetLabel}</div>
             <div
               className="h-2 rounded-full bg-muted overflow-hidden"
               role="progressbar"
@@ -111,11 +120,11 @@ export function VerificationPageClient({ data }: VerificationPageClientProps) {
                 style={{ width: `${Math.min(data.completionPercent, 100)}%` }}
               />
             </div>
-          </div>
+          </Stack>
         )}
 
         {/* Tier cards */}
-        <div className="space-y-4 mt-6">
+        <Stack gap="sm">
           <VerificationTierCard
             tier={1}
             title={copy.tier1.title}
@@ -141,6 +150,9 @@ export function VerificationPageClient({ data }: VerificationPageClientProps) {
             ctaLabel={copy.tier2.cta}
             onCta={() => setKycOpen(true)}
             manualReviewNote={copy.tier2.manualReviewNote}
+            failureReason={data.kycFailureReason}
+            attemptsLeft={kycAttemptsLeft}
+            onRetryKyc={t2Status === 'failed' ? () => setKycOpen(true) : undefined}
           />
 
           <VerificationTierCard
@@ -154,9 +166,9 @@ export function VerificationPageClient({ data }: VerificationPageClientProps) {
                 : undefined
             }
             ctaLabel={copy.tier3.cta}
-            onCta={() => router.push('/dashboard/student/documents#bank')}
+            onCta={() => router.push(routes.dashboard.student.documentsBank)}
           />
-        </div>
+        </Stack>
       </Section>
 
       <PhoneVerificationSheet

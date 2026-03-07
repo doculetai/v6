@@ -1,3 +1,14 @@
+export const kycFailureReasonKeys = [
+  'name_mismatch',
+  'nin_not_found',
+  'bvn_not_found',
+  'id_expired',
+  'image_unclear',
+  'attempts_exhausted',
+] as const;
+
+export type KycFailureReasonKey = (typeof kycFailureReasonKeys)[number];
+
 export const studentVerificationCopy = {
   title: 'Identity Verification',
   description: 'Complete all three tiers to verify your proof of funds.',
@@ -18,6 +29,21 @@ export const studentVerificationCopy = {
     completedSummary: 'Identity verified',
     manualReviewNote:
       'Your identity is under manual review. We will notify you when it is complete.',
+    failure: {
+      title: 'Identity check failed',
+      action: 'Correct and resubmit',
+      resubmitCta: 'Resubmit identity',
+      attemptsLeft: (n: number) => `${n} attempt${n === 1 ? '' : 's'} remaining`,
+      reasons: {
+        name_mismatch: 'Name on your ID does not match your signup name',
+        nin_not_found: 'NIN could not be found in the database',
+        bvn_not_found: 'BVN could not be found in the database',
+        id_expired: 'Your ID document has expired',
+        image_unclear: 'We could not read your ID document. Upload a clear image.',
+        attempts_exhausted: 'Maximum attempts reached. Contact support to continue.',
+        default: 'Your identity could not be verified',
+      } satisfies Record<KycFailureReasonKey | 'default', string>,
+    },
   },
   tier3: {
     title: 'Bank account',

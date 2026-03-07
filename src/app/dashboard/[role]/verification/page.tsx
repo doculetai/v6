@@ -40,25 +40,21 @@ export default async function VerificationPage({ params }: Props) {
 
   const data: VerificationPageData = {
     phoneVerified: t1Complete,
-    phoneLastFour: null, // not exposed in current schema
+    phoneLastFour: v?.phoneLastFour ?? null,
     kycComplete: t2Complete,
     kycStatus,
     kycFailedAttempts: v?.kycFailedAttempts ?? 0,
+    kycFailureReason: v?.kycFailureReason ?? null,
     bankConnected: v?.monoConnection.isConnected ?? false,
     bankName: v?.monoConnection.bankName ?? null,
     accountNumberMasked: v?.monoConnection.accountNumberMasked ?? null,
     completionPercent: v?.completionPercent ?? 0,
-    proofTargetKobo: null, // proof target not yet exposed — add when available
+    proofTargetKobo: v?.proofTargetKobo ?? null,
     verifiedAmountKobo:
       balance?.hasVerifiedBalance && balance.verifiedAmountKobo != null
         ? balance.verifiedAmountKobo
         : null,
   };
 
-  return (
-    <>
-      <h1 className="sr-only">Identity Verification</h1>
-      <VerificationPageClient data={data} />
-    </>
-  );
+  return <VerificationPageClient data={data} />;
 }

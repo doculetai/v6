@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { captureException } from '@sentry/nextjs';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 import {
@@ -8,7 +9,9 @@ import {
   startDojahIdentityCheck,
   verificationStatusValues,
 } from '@/db/queries/student-verification';
+import { documents, studentProfiles } from '@/db/schema';
 import { callDojahKyc } from '@/lib/services/dojah';
+import { resolveNextKycTier } from '@/lib/kyc/resolve-tier';
 import { createPaystackRecipient } from '@/lib/paystack/create-recipient';
 import { updateBankRecipientCode } from '@/db/queries/update-bank-recipient';
 
@@ -16,7 +19,9 @@ import { roleProcedure } from '../trpc';
 
 const verificationStatusSchema = z.object({
   fundingType: z.enum(['self', 'sponsor', 'corporate']).nullable(),
+  phoneLastFour: z.string().nullable(),
   completionPercent: z.number().int().min(0).max(100),
+  proofTargetKobo: z.number().int().nullable(),
   overallStatus: z.enum(verificationStatusValues),
   tiers: z.array(
     z.object({
@@ -40,12 +45,14 @@ const verificationStatusSchema = z.object({
     linkedAt: z.date().nullable(),
     daysSinceLinked: z.number().int().nullable(),
   }),
+  kycFailedAttempts: z.number().int().min(0),
+  kycFailureReason: z.string().nullable(),
+  eligibleForManualReview: z.boolean(),
 });
 
 const dojahIdentityTypeValues = ['bvn', 'nin', 'passport'] as const;
 
 const startDojahIdentityCheckInputSchema = z.object({
-  tier: z.union([z.literal(2), z.literal(3)]),
   identityType: z.enum(dojahIdentityTypeValues),
   identityNumber: z.string().trim().min(6).max(32).regex(/^[a-zA-Z0-9]+$/),
 });
@@ -63,7 +70,7 @@ const connectMonoBankAccountInputSchema = z.object({
 const connectMonoBankAccountOutputSchema = z.object({
   bankName: z.string(),
   accountNumberMasked: z.string(),
-  monoAccountId: z.string(),
+  monoAccountId: z.string().nullable(),
   linkedAt: z.date(),
 });
 
@@ -74,13 +81,19 @@ function toDojahTier(value: number | null | undefined): 2 | 3 | null {
 
 function toVerificationStatusOutput(
   snapshot: Awaited<ReturnType<typeof getStudentVerificationSnapshot>>,
+  extras: {
+    phoneLastFour: string | null;
+    proofTargetKobo: number | null;
+  },
 ) {
   const tier3OrTier2 = snapshot.latestKycByTier[3] ?? snapshot.latestKycByTier[2] ?? null;
   const latestTier = toDojahTier(tier3OrTier2?.tier);
 
   return {
     fundingType: snapshot.profile.fundingType,
+    phoneLastFour: extras.phoneLastFour,
     completionPercent: snapshot.progress.completionPercent,
+    proofTargetKobo: extras.proofTargetKobo,
     overallStatus: snapshot.progress.overallStatus,
     tiers: snapshot.progress.tiers,
     latestDojahCheck: {
@@ -105,6 +118,9 @@ function toVerificationStatusOutput(
         daysSinceLinked,
       };
     })(),
+    kycFailedAttempts: snapshot.kycFailedAttempts,
+    kycFailureReason: snapshot.kycFailureReason,
+    eligibleForManualReview: snapshot.kycFailedAttempts >= 2,
   };
 }
 
@@ -185,14 +201,33 @@ export const verificationProcedures = {
     .output(verificationStatusSchema)
     .query(async ({ ctx }) => {
       try {
-        const snapshot = await getStudentVerificationSnapshot(
-          ctx.db,
-          ctx.user.id,
-          ctx.user.email,
-          ctx.user.phone,
-        );
+        const [snapshot, profileWithProgram] = await Promise.all([
+          getStudentVerificationSnapshot(
+            ctx.db,
+            ctx.user.id,
+            ctx.user.email,
+            ctx.user.phone,
+          ),
+          ctx.db.query.studentProfiles.findFirst({
+            where: eq(studentProfiles.userId, ctx.user.id),
+            columns: {},
+            with: {
+              program: {
+                columns: {
+                  tuitionAmount: true,
+                },
+              },
+            },
+          }),
+        ]);
 
-        return toVerificationStatusOutput(snapshot);
+        const phoneDigits = (ctx.user.phone ?? '').replace(/\D/g, '');
+        const phoneLastFour = phoneDigits.length >= 4 ? phoneDigits.slice(-4) : null;
+
+        return toVerificationStatusOutput(snapshot, {
+          phoneLastFour,
+          proofTargetKobo: profileWithProgram?.program?.tuitionAmount ?? null,
+        });
       } catch (error) {
         captureException(error, {
           tags: { router: 'student', procedure: 'getVerificationStatus', role: 'student' },
@@ -211,15 +246,41 @@ export const verificationProcedures = {
     .mutation(async ({ ctx, input }) => {
       let dojahReferenceId: string | undefined;
       try {
+        // Auto-resolve which tier to verify based on current state
+        const snapshot = await getStudentVerificationSnapshot(
+          ctx.db,
+          ctx.user.id,
+          ctx.user.email,
+          ctx.user.phone,
+        );
+        const tier = resolveNextKycTier({
+          hasEmail: Boolean(ctx.user.email),
+          hasPhone: Boolean(ctx.user.phone),
+          tier2Status: snapshot.progress.tiers[1]?.status ?? 'not_started',
+          tier3Status: snapshot.progress.tiers[2]?.status ?? 'not_started',
+          bankConnected: snapshot.latestBankAccount !== null,
+        });
+
+        if (!tier || tier === 1) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: tier === 1
+              ? 'Please verify your phone number first.'
+              : 'No identity check is needed right now. Your verification may already be in progress.',
+          });
+        }
+
         dojahReferenceId = await callDojahKyc(input.identityType, input.identityNumber);
         const record = await startDojahIdentityCheck(ctx.db, {
           userId: ctx.user.id,
-          tier: input.tier,
+          tier,
           referenceId: dojahReferenceId,
         });
 
-        return { referenceId: record.referenceId, tier: input.tier, status: 'pending' };
+        return { referenceId: record.referenceId, tier, status: 'pending' };
       } catch (error) {
+        if (error instanceof TRPCError) throw error;
+
         captureException(error, {
           tags: {
             router: 'student',
@@ -228,8 +289,6 @@ export const verificationProcedures = {
             identityType: input.identityType,
           },
           extra: {
-            tier: input.tier,
-            // Include dojahReferenceId so ops can manually recover if DB write failed after Dojah succeeded
             dojahReferenceId: dojahReferenceId ?? 'not_yet_obtained',
           },
         });
@@ -287,6 +346,124 @@ export const verificationProcedures = {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Unable to connect bank account. Please try again.',
+        });
+      }
+    }),
+
+  sendContactOtp: roleProcedure('student')
+    .input(z.object({
+      channel: z.enum(['phone', 'email']),
+      value: z.string().trim().min(5).max(254),
+    }))
+    .output(z.object({ sent: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const updatePayload = input.channel === 'phone'
+          ? { phone: input.value }
+          : { email: input.value };
+
+        const { error } = await ctx.supabase.auth.updateUser(updatePayload);
+
+        if (error) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: error.message,
+          });
+        }
+
+        return { sent: true };
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+
+        captureException(error, {
+          tags: { router: 'student', procedure: 'sendContactOtp', role: 'student', channel: input.channel },
+        });
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Unable to send verification code.',
+        });
+      }
+    }),
+
+  verifyContactOtp: roleProcedure('student')
+    .input(z.object({
+      channel: z.enum(['phone', 'email']),
+      value: z.string().trim().min(5).max(254),
+      token: z.string().trim().length(6).regex(/^[0-9]+$/),
+    }))
+    .output(z.object({ verified: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const otpPayload = input.channel === 'phone'
+          ? { phone: input.value, token: input.token, type: 'phone_change' as const }
+          : { email: input.value, token: input.token, type: 'email_change' as const };
+
+        const { error } = await ctx.supabase.auth.verifyOtp(otpPayload);
+
+        if (error) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: error.message,
+          });
+        }
+
+        return { verified: true };
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+
+        captureException(error, {
+          tags: { router: 'student', procedure: 'verifyContactOtp', role: 'student', channel: input.channel },
+        });
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Unable to verify code.',
+        });
+      }
+    }),
+
+  requestManualKycReview: roleProcedure('student')
+    .input(
+      z.object({
+        governmentIdStorageUrl: z.string().url(),
+        selfieStorageUrl: z.string().url(),
+      }),
+    )
+    .output(z.object({ submitted: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.db.transaction(async (tx) => {
+          await tx.insert(documents).values([
+            {
+              userId: ctx.user.id,
+              type: 'passport',
+              storageUrl: input.governmentIdStorageUrl,
+              status: 'pending',
+            },
+            {
+              userId: ctx.user.id,
+              type: 'affidavit',
+              storageUrl: input.selfieStorageUrl,
+              status: 'pending',
+            },
+          ]);
+
+          await tx
+            .update(studentProfiles)
+            .set({ kycStatus: 'pending', updatedAt: new Date() })
+            .where(eq(studentProfiles.userId, ctx.user.id));
+        });
+
+        return { submitted: true };
+      } catch (error) {
+        captureException(error, {
+          tags: { router: 'student', procedure: 'requestManualKycReview', role: 'student' },
+        });
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Unable to submit manual review request.',
         });
       }
     }),
