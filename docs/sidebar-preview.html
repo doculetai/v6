@@ -818,6 +818,20 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
   font-family: var(--font); transition: background 100ms;
 }
 .btn-reject:hover { background: #FECACA; }
+.template-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.template-chip {
+  font-size: 11px; font-weight: 500; padding: 4px 10px;
+  border-radius: 20px; border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.04); cursor: pointer;
+  color: #374151; transition: background 0.15s;
+}
+.template-chip:hover { background: rgba(43,57,163,0.08); border-color: rgba(43,57,163,0.2); color: #2B39A3; }
+.template-chip.selected { background: rgba(43,57,163,0.1); border-color: rgba(43,57,163,0.3); color: #2B39A3; }
+.char-counter {
+  font-size: 11px; color: rgba(100,116,139,0.6);
+  text-align: right; margin-top: 4px;
+}
+.char-counter.over-limit { color: #C2410C; }
 .btn-moreinfo {
   font-size: 11.5px; font-weight: 600; color: #92400E; background: #FEF3C7;
   border: none; border-radius: 6px; padding: 5px 10px; cursor: pointer;
@@ -4539,9 +4553,46 @@ function showAdminReviewModal(type, item) {
     } else if (type === 'reject') {
       var g = el('div', 'form-group');
       g.appendChild(txt(el('label', 'modal-label'), 'Rejection reason (shown verbatim to student)'));
+
+      var chips = el('div', 'template-chips');
+      var templates = [
+        { label: 'BVN mismatch',         text: 'The BVN on this document does not match the name on your profile.' },
+        { label: 'Balance insufficient',  text: 'The balance shown does not meet the minimum proof of funds requirement.' },
+        { label: 'Statement outdated',    text: 'This bank statement is more than 3 months old. Please provide a recent statement.' },
+        { label: 'Name mismatch',         text: 'The account name on this statement does not match your registered name.' },
+        { label: 'Unclear image',         text: 'This document is not legible. Please re-upload a clear, high-quality image.' },
+      ];
       var ta = el('textarea', 'form-input');
       ta.rows = 3; ta.placeholder = 'State the failure, the reason, and the required action. Be precise.';
+
+      var counter = el('div', 'char-counter');
+      counter.textContent = '0 / 280';
+
+      templates.forEach(function(tpl) {
+        var chip = el('button', 'template-chip');
+        chip.type = 'button';
+        chip.textContent = tpl.label;
+        chip.addEventListener('click', function() {
+          chips.querySelectorAll('.template-chip').forEach(function(c) { c.classList.remove('selected'); });
+          chip.classList.add('selected');
+          ta.value = tpl.text;
+          var len = ta.value.length;
+          counter.textContent = len + ' / 280';
+          if (len > 280) { counter.classList.add('over-limit'); } else { counter.classList.remove('over-limit'); }
+        });
+        chips.appendChild(chip);
+      });
+
+      ta.addEventListener('input', function() {
+        chips.querySelectorAll('.template-chip').forEach(function(c) { c.classList.remove('selected'); });
+        var len = ta.value.length;
+        counter.textContent = len + ' / 280';
+        if (len > 280) { counter.classList.add('over-limit'); } else { counter.classList.remove('over-limit'); }
+      });
+
+      g.appendChild(chips);
       g.appendChild(ta);
+      g.appendChild(counter);
       body.appendChild(g);
       body.appendChild(txt(el('p', 'modal-note'), 'Example: "Name on document does not match registered name. Resubmit with correct NIN slip."'));
     } else {
