@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import { ThemeProvider } from '@/components/theme-provider';
 import { defaultTheme } from '@/config/theme';
-import { plexSans, plexSerif } from '@/lib/fonts';
+import { plexMono, plexSans, plexSerif } from '@/lib/fonts';
 
 import './globals.css';
 
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${plexSans.variable} ${plexSerif.variable} antialiased`}>
+      <body className={`${plexSans.variable} ${plexSerif.variable} ${plexMono.variable} antialiased`}>
         <ThemeProvider theme={defaultTheme}>{children}</ThemeProvider>
       </body>
     </html>

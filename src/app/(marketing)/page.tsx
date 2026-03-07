@@ -19,7 +19,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-foreground">
       <LandingNav />
-      <main>
+      <main id="main-content">
         <LandingHero />
         <LandingProblem />
         <LandingSteps />

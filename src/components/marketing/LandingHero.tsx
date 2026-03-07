@@ -9,7 +9,6 @@ import { CertificateCard } from './LandingCertificateMockup';
 export function LandingHero() {
   return (
     <section
-      id="main-content"
       className="relative overflow-hidden border-b border-border bg-[#F8FAFC]"
     >
       <div className="pointer-events-none absolute -right-10 top-14 h-[500px] w-[500px] rounded-full bg-[#2B39A3] opacity-[0.04]" aria-hidden="true" />

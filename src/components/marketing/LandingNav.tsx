@@ -80,7 +80,13 @@ export function LandingNav() {
       </nav>
 
       {menuOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-white px-8 pt-6 md:hidden">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          className="fixed inset-0 z-50 flex flex-col bg-white px-8 pt-6 md:hidden"
+          onKeyDown={(e) => { if (e.key === 'Escape') setMenuOpen(false); }}
+        >
           <div className="flex items-center justify-between">
             <Link href={routes.home} className="flex items-center gap-2.5">
               <Image

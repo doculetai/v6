@@ -38,6 +38,7 @@ export function LandingFaq() {
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? null : i)}
                     aria-expanded={isOpen}
+                    aria-controls={`faq-panel-${i}`}
                     className="flex w-full items-center justify-between px-5 py-4 text-left text-sm font-semibold text-foreground transition-colors hover:bg-muted/30 md:px-6 md:py-5"
                   >
                     {item.question}
@@ -51,7 +52,7 @@ export function LandingFaq() {
                     />
                   </button>
                   {isOpen && (
-                    <div className="border-t border-border px-5 pb-5 pt-4 md:px-6">
+                    <div id={`faq-panel-${i}`} className="border-t border-border px-5 pb-5 pt-4 md:px-6">
                       <p className="text-sm leading-relaxed text-muted-foreground">
                         {item.answer}
                       </p>
