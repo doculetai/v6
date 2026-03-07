@@ -175,16 +175,14 @@ export function ProofPageClient({
       </Grid>
 
       {isUnderFinalReview ? (
-        <Section>
-          <div className="rounded-lg border border-border bg-card p-6 text-center space-y-2 max-w-md mx-auto">
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {studentCopy.proof.underFinalReview.heading}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {studentCopy.proof.underFinalReview.desc}
-            </p>
-          </div>
-        </Section>
+        <div className="rounded-lg border border-border bg-card p-6 text-center space-y-2 max-w-md mx-auto">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {studentCopy.proof.underFinalReview.heading}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {studentCopy.proof.underFinalReview.desc}
+          </p>
+        </div>
       ) : null}
 
       {proofData.certificate.issued && proofData.certificate.certificateId ? (

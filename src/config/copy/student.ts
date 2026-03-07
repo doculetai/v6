@@ -607,12 +607,6 @@ export const studentCopy = {
     },
   },
 
-  overview: {
-    postCert: {
-      heading: 'Your proof of funds is verified.',
-    },
-  },
-
   nav: {
     overview: "Overview",
     schools: "Schools",
