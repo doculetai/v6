@@ -4,12 +4,31 @@ import { z } from 'zod';
 
 import { agentProfiles } from '@/db/schema';
 import { requestCommissionPayout } from '@/db/queries/agent-commissions';
+import { getAgentActivity } from '@/db/queries/agent-activity';
 import { insertNotification } from '@/db/queries/notifications';
 import { sendAgentInviteEmail } from '@/lib/email/send-agent-invite-email';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
-// ── Output schema ────────────────────────────────────────────────────────────
+// ── Output schemas ───────────────────────────────────────────────────────────
+
+const AgentActivityEventTypeSchema = z.enum([
+  'document_uploaded',
+  't2_verified',
+  't3_verified',
+  'cert_issued',
+  'doc_approved',
+  'doc_rejected',
+]);
+
+const AgentActivityItemSchema = z.object({
+  id: z.string(),
+  studentId: z.string(),
+  studentName: z.string(),
+  eventType: AgentActivityEventTypeSchema,
+  eventLabel: z.string(),
+  createdAt: z.date(),
+});
 
 const AgentSettingsOutputSchema = z.object({
   fullName: z.string().nullable(),
@@ -352,5 +371,17 @@ export const agentRouter = createTRPCRouter({
         paidAt: r.paidAt ?? null,
         createdAt: r.createdAt,
       }));
+    }),
+
+  getActivity: roleProcedure('agent')
+    .input(
+      z.object({
+        limit: z.number().int().min(1).max(50).default(20),
+        cursor: z.string().optional(),
+      }),
+    )
+    .output(z.array(AgentActivityItemSchema))
+    .query(async ({ ctx, input }) => {
+      return getAgentActivity(ctx.db, ctx.user.id, input.limit, input.cursor);
     }),
 });
