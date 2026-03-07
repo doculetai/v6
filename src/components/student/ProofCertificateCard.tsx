@@ -1,6 +1,17 @@
 'use client';
 
-import { CircleNotch, Copy, Shield, ShieldCheck, ShieldSlash, Warning } from '@phosphor-icons/react';
+import {
+  ArrowSquareOut,
+  CircleNotch,
+  Copy,
+  DownloadSimple,
+  Envelope,
+  Shield,
+  ShieldCheck,
+  ShieldSlash,
+  Warning,
+  WhatsappLogo,
+} from '@/components/icons';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
@@ -35,6 +46,8 @@ type ProofCertificateCardProps = {
   isCopying: boolean;
   onGenerateShareLink: () => void;
   onCopyShareLink: () => void;
+  onTrackShare?: (method: 'whatsapp' | 'email' | 'download' | 'link') => void;
+  onOpenSharingSheet?: () => void;
 };
 
 export function ProofCertificateCard({
@@ -47,6 +60,8 @@ export function ProofCertificateCard({
   isCopying,
   onGenerateShareLink,
   onCopyShareLink,
+  onTrackShare,
+  onOpenSharingSheet,
 }: ProofCertificateCardProps) {
   const generateCta = getGenerateCtaLabel({
     issued: certificate.issued,
@@ -155,6 +170,15 @@ export function ProofCertificateCard({
             </p>
           ) : null}
         </div>
+
+        {certificate.issued && shareLink ? (
+          <CertificateShareButtons
+            shareLink={shareLink}
+            certificateToken={certificate.sharePath?.replace('/certificate/', '') ?? null}
+            onTrackShare={onTrackShare}
+            onOpenSharingSheet={onOpenSharingSheet}
+          />
+        ) : null}
       </CardContent>
     </Card>
   );
@@ -264,4 +288,97 @@ function formatCurrency(amountKobo: number, currency: string): string {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(amountInMajorUnit);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Share Buttons                                                      */
+/* ------------------------------------------------------------------ */
+
+type CertificateShareButtonsProps = {
+  shareLink: string;
+  certificateToken: string | null;
+  onTrackShare?: (method: 'whatsapp' | 'email' | 'download' | 'link') => void;
+  onOpenSharingSheet?: () => void;
+};
+
+function CertificateShareButtons({
+  shareLink,
+  certificateToken,
+  onTrackShare,
+  onOpenSharingSheet,
+}: CertificateShareButtonsProps) {
+  const copy = studentCopy.proof.share;
+
+  const handleWhatsApp = () => {
+    const message = copy.whatsappMessage.replace('{url}', shareLink);
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+    onTrackShare?.('whatsapp');
+  };
+
+  const handleEmail = () => {
+    const subject = encodeURIComponent(copy.emailSubject);
+    const body = encodeURIComponent(copy.emailBody.replace('{url}', shareLink));
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+    onTrackShare?.('email');
+  };
+
+  const handleDownload = () => {
+    if (!certificateToken) return;
+    window.open(`/api/certificate/${certificateToken}/pdf`, '_blank');
+    onTrackShare?.('download');
+  };
+
+  return (
+    <div className="space-y-3 rounded-xl border border-border bg-muted p-4">
+      <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        {copy.sectionTitle}
+      </h3>
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        {onOpenSharingSheet ? (
+          <Button
+            type="button"
+            onClick={onOpenSharingSheet}
+            className="min-h-11 w-full justify-start gap-2 sm:col-span-2"
+          >
+            <ArrowSquareOut weight="duotone" className="size-5" aria-hidden="true" />
+            <span>{copy.shareCta}</span>
+          </Button>
+        ) : null}
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleWhatsApp}
+          className="min-h-11 w-full justify-start gap-2"
+        >
+          <WhatsappLogo weight="duotone" className="size-5 text-success" aria-hidden="true" />
+          <span>{copy.whatsappCta}</span>
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleEmail}
+          className="min-h-11 w-full justify-start gap-2"
+        >
+          <Envelope weight="duotone" className="size-5" aria-hidden="true" />
+          <span>{copy.emailCta}</span>
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleDownload}
+          disabled={!certificateToken}
+          className="min-h-11 w-full justify-start gap-2"
+        >
+          <DownloadSimple weight="duotone" className="size-5" aria-hidden="true" />
+          <span>{copy.downloadCta}</span>
+        </Button>
+      </div>
+
+      <p className="text-xs text-muted-foreground">{copy.trackingNote}</p>
+    </div>
+  );
 }

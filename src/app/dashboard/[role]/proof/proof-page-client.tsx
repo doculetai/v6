@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from 'react';
 
 import { CertificatePaymentCard } from '@/components/student/CertificatePaymentCard';
+import { CertSharingSheet } from '@/components/student/CertSharingSheet';
 import { ProofCertificateCard } from '@/components/student/ProofCertificateCard';
 import { ProofChecklistCard } from '@/components/student/ProofChecklistCard';
 import { ProofEmptyState } from '@/components/student/ProofEmptyState';
@@ -73,6 +74,7 @@ export function ProofPageClient({
   const [shareError, setShareError] = useState<string | null>(null);
   const [isCopying, setIsCopying] = useState(false);
   const [isGeneratingShareLink, startGeneratingShareLink] = useTransition();
+  const [isSharingSheetOpen, setIsSharingSheetOpen] = useState(false);
 
   const shareLink = useMemo(
     () => getAbsoluteShareLink(proofData.certificate.sharePath),
@@ -170,6 +172,11 @@ export function ProofPageClient({
             onGenerateShareLink={handleGenerateShareLink}
             onCopyShareLink={handleCopyShareLink}
             onTrackShare={handleTrackShare}
+            onOpenSharingSheet={
+              proofData.certificate.issued && shareLink
+                ? () => setIsSharingSheetOpen(true)
+                : undefined
+            }
           />
         ) : null}
       </Grid>
@@ -194,6 +201,18 @@ export function ProofPageClient({
       ) : null}
         </Stack>
       </Section>
+
+      {proofData.certificate.issued &&
+      shareLink &&
+      proofData.certificate.sharePath ? (
+        <CertSharingSheet
+          open={isSharingSheetOpen}
+          onOpenChange={setIsSharingSheetOpen}
+          verificationUrl={shareLink}
+          downloadUrl={`/api/certificate/${proofData.certificate.sharePath.replace('/certificate/', '')}/pdf`}
+          certId={proofData.certificate.certificateId ?? ''}
+        />
+      ) : null}
     </PageShell>
   );
 }
