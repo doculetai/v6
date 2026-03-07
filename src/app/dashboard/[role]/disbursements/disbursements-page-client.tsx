@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { EmptyState } from '@/components/ui/empty-state';
 import { sponsorCopy } from '@/config/copy/sponsor';
@@ -35,9 +35,9 @@ const badgeLabels = sponsorCopy.disbursements.statusLabels;
 
 function StatusBadge({ status }: { status: Disbursement['status'] }) {
   const classes: Record<Disbursement['status'], string> = {
-    scheduled: 'bg-primary/10 text-primary',
+    scheduled: 'bg-[#15803D]/10 text-[#15803D]',
     processing: 'bg-muted text-muted-foreground',
-    disbursed: 'bg-primary/10 text-primary',
+    disbursed: 'bg-[#15803D]/10 text-[#15803D]',
     failed: 'bg-destructive/10 text-destructive',
   };
 
@@ -56,7 +56,19 @@ function StatusBadge({ status }: { status: Disbursement['status'] }) {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function DisbursementsPageClient({ disbursements, copy }: DisbursementsPageClientProps) {
-  const [activeFilter, setActiveFilter] = useState<FilterStatus>('all');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeFilter = (searchParams.get('status') ?? 'all') as FilterStatus;
+
+  const setActiveFilter = (value: FilterStatus) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value === 'all') {
+      params.delete('status');
+    } else {
+      params.set('status', value);
+    }
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
 
   const filters: { value: FilterStatus; label: string }[] = [
     { value: 'all', label: copy.statusLabels.all },
@@ -85,8 +97,8 @@ export function DisbursementsPageClient({ disbursements, copy }: DisbursementsPa
             className={cn(
               'rounded-full border px-3 py-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
               activeFilter === filter.value
-                ? 'border-primary bg-primary/10 text-primary'
-                : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground',
+                ? 'border-[#15803D] bg-[#15803D]/10 text-[#15803D]'
+                : 'border-border bg-card text-muted-foreground hover:border-[#15803D]/40 hover:text-foreground',
             )}
           >
             {filter.label}
