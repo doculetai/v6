@@ -3,15 +3,14 @@ import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
 import type { DashboardRole } from '@/config/roles';
+import { BlockedStatePage } from '@/components/ui/blocked-state-page';
 import { studentCopy } from '@/config/copy/student';
-import { universityCopy } from '@/config/copy/university';
-import { PageHeader } from '@/components/ui/page-header';
 import { api } from '@/trpc/server';
 
 export const metadata: Metadata = { title: 'Documents — Doculet' };
 
 import { DocumentsPageClient } from './documents-page-client';
-import { UniversityDocumentsPageClient } from './university-documents-page-client';
+import { routes } from '@/config/routes';
 
 type StudentDocumentsPageProps = {
   params: Promise<{ role: string }>;
@@ -20,37 +19,18 @@ type StudentDocumentsPageProps = {
 export default async function StudentDocumentsPage({ params }: StudentDocumentsPageProps) {
   const { role } = await params;
 
-  // University branch
-  if (role === 'university') {
-    const caller = await api();
-    const [docsResult] = await Promise.allSettled([
-      caller.university.getUniversityDocumentQueue(),
-    ]);
-    const docs = docsResult.status === 'fulfilled' ? docsResult.value : [];
-    return (
-      <div className="space-y-6">
-        <h1 className="sr-only">{universityCopy.documents.title}</h1>
-        <PageHeader
-          title={universityCopy.documents.title}
-          subtitle={universityCopy.documents.subtitle}
-        />
-        <UniversityDocumentsPageClient documents={docs} copy={universityCopy.documents} />
-      </div>
-    );
-  }
-
   if (role !== 'student') {
     notFound();
   }
 
   let session: { profileRole: DashboardRole | null; onboardingComplete: boolean };
+  const caller = await api();
 
   try {
-    const caller = await api();
     session = await caller.dashboard.getSession({ role: 'student' });
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
-      redirect('/login');
+      redirect(routes.auth.login);
     }
 
     if (error instanceof TRPCError && error.code === 'FORBIDDEN') {
@@ -61,7 +41,7 @@ export default async function StudentDocumentsPage({ params }: StudentDocumentsP
   }
 
   if (session.profileRole !== 'student') {
-    redirect('/dashboard/student');
+    redirect(routes.dashboard.student.overview);
   }
 
   const { enforceStudentOnboardingGate } = await import('@/lib/auth/student-onboarding-gate');
@@ -70,10 +50,12 @@ export default async function StudentDocumentsPage({ params }: StudentDocumentsP
     onboardingComplete: session.onboardingComplete,
   });
 
-  return (
-    <>
-      <h1 className="sr-only">{studentCopy.documents.title}</h1>
-      <DocumentsPageClient />
-    </>
-  );
+  const verificationResult = await caller.student.getVerificationStatus().catch(() => null);
+  const t2Complete = Boolean(verificationResult?.tiers.find((t) => t.tier === 2)?.isComplete);
+
+  if (!t2Complete) {
+    return <BlockedStatePage {...studentCopy.blocked.documents} />;
+  }
+
+  return <DocumentsPageClient />;
 }

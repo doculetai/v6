@@ -620,6 +620,30 @@ export const studentCopy = {
     },
   },
 
+  blocked: {
+    verification: {
+      pageTitle: 'Verification',
+      blockedTitle: 'Verification is locked',
+      blockedReason: 'Complete your onboarding setup first.',
+      ctaLabel: 'Go to setup',
+      ctaHref: routes.dashboard.student.setup,
+    },
+    documents: {
+      pageTitle: 'Documents',
+      blockedTitle: 'Documents are locked',
+      blockedReason: 'Complete your identity verification first.',
+      ctaLabel: 'Go to verification',
+      ctaHref: routes.dashboard.student.verification,
+    },
+    proof: {
+      pageTitle: 'Proof of Funds',
+      blockedTitle: 'Proof of Funds is locked',
+      blockedReason: 'Complete verification and upload your required documents first.',
+      ctaLabel: 'Go to documents',
+      ctaHref: routes.dashboard.student.documents,
+    },
+  },
+
   errors: commonErrors,
 } as const;
 
