@@ -107,7 +107,7 @@ function JourneyProgress({
         </div>
         <div className="h-1 w-full overflow-hidden rounded-full bg-border">
           <div
-            className="h-full rounded-full bg-primary transition-all duration-500"
+            className="h-full rounded-full bg-primary transition-all duration-200 ease-out"
             style={{ width: `${progressPct}%` }}
             aria-hidden="true"
           />
