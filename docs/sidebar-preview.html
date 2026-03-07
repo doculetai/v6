@@ -1185,6 +1185,21 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 .sponsor-invite-name { font-size:14px; font-weight:600; color:#0F172A; }
 .sponsor-invite-sub { font-size:12px; color:#64748B; margin-top:2px; }
 .sponsor-invite-badge { font-size:11px; font-weight:600; padding:3px 9px; border-radius:6px; background:rgba(217,119,6,0.1); color:#D97706; }
+
+/* ── OTP error state ── */
+.tier-error-msg {
+  font-size: 13px; color: #C2410C; margin: 8px 0;
+  padding: 8px 12px; background: rgba(194,65,12,0.06);
+  border-radius: 8px; border-left: 3px solid #C2410C;
+}
+.resend-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: #2B39A3;
+  background: none; border: none; cursor: pointer; padding: 0;
+  margin-top: 6px;
+}
+.resend-btn:disabled { color: rgba(100,116,139,0.5); cursor: not-allowed; }
+.resend-countdown { font-family: var(--font-mono); font-size: 12px; }
 </style>
 </head>
 <body>
@@ -2367,6 +2382,31 @@ var STUDENT_STATE_OVERRIDES = {
       blockedTitle: 'Documents are locked',
       blockedReason: 'Complete identity verification (T2) before uploading documents.',
       blockedCta: 'Go to Verification',
+    },
+  },
+
+  /* t1_otp_error: student entered wrong OTP code during phone verification */
+  t1_otp_error: {
+    'Verification': {
+      type: 'verification-tiers',
+      h1: 'Verification',
+      eyebrow: 'Proof target progress',
+      target: '\u20a6 3,000,000',
+      verified: '\u20a6 0',
+      pct: 0,
+      tiers: [
+        {
+          id: 't1', title: 'T1 \u2014 Phone verification',
+          desc: 'Verify your Nigerian phone number to unlock identity verification.',
+          status: 'error',
+          detail: 'Incorrect code. You have 2 attempts remaining.',
+          action: 'resend',
+          actionLabel: 'Resend code',
+          cooldown: 27,
+        },
+        { id:'t2', title:'T2 \u2014 Identity verification', desc:'Confirm your identity using BVN, NIN, or government-issued ID.', status:'locked' },
+        { id:'t3', title:'T3 \u2014 Banking verification', desc:'Connect your bank or upload a recent statement to prove your balance.', status:'locked' },
+      ],
     },
   },
 
@@ -4417,10 +4457,15 @@ function renderVerificationTiers(page, main) {
     var isMonoFailed   = tier.status === 'mono_failed';
     var isT3Choice     = tier.status === 't3-choice';
     var isOcrReview    = tier.status === 'ocr-review';
+    var isError        = tier.status === 'error';
 
     var card = el('div', 'tier-card' + (isLocked ? ' locked' : ''));
     var iconWrap;
-    if (isRejected) {
+    if (isError) {
+      iconWrap = el('div', 'tier-icon active');
+      iconWrap.style.background = '#FFF7ED'; iconWrap.style.color = '#C2410C';
+      iconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="0.5" fill="currentColor" stroke="currentColor"/></svg>';
+    } else if (isRejected) {
       iconWrap = el('div', 'tier-icon active');
       iconWrap.style.background = '#FEF2F2'; iconWrap.style.color = '#DC2626';
       iconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="0.5" fill="currentColor" stroke="currentColor"/></svg>';
@@ -4499,6 +4544,42 @@ function renderVerificationTiers(page, main) {
         else if (tier.id === 't1') showPhoneVerifyModal();
       });
       body.appendChild(cta);
+    }
+
+    /* Error state — wrong OTP, show error message + resend button with cooldown */
+    if (isError) {
+      var errBadge = el('div'); errBadge.style.marginTop = '8px';
+      errBadge.appendChild(txt(el('span', 'badge badge-red'), 'Verification failed \u2014 retry required'));
+      body.appendChild(errBadge);
+
+      if (tier.detail) {
+        var errMsg = txt(el('div', 'tier-error-msg'), tier.detail);
+        body.appendChild(errMsg);
+      }
+
+      (function(tierRef) {
+        var cooldownSec = tierRef.cooldown || 30;
+        var resendBtn = el('button', 'resend-btn');
+        resendBtn.disabled = true;
+        var countdownSpan = txt(el('span', 'resend-countdown'), '0:' + (cooldownSec < 10 ? '0' : '') + cooldownSec);
+        resendBtn.appendChild(document.createTextNode('Resend in\u00a0'));
+        resendBtn.appendChild(countdownSpan);
+        body.appendChild(resendBtn);
+
+        var remaining = cooldownSec;
+        var timer = setInterval(function() {
+          remaining -= 1;
+          if (remaining <= 0) {
+            clearInterval(timer);
+            resendBtn.disabled = false;
+            resendBtn.innerHTML = '';
+            resendBtn.textContent = tierRef.actionLabel || 'Resend code';
+            resendBtn.addEventListener('click', function() { showPhoneVerifyModal(); });
+          } else {
+            countdownSpan.textContent = '0:' + (remaining < 10 ? '0' : '') + remaining;
+          }
+        }, 1000);
+      })(tier);
     }
 
     /* Rejected state — show admin note + resubmit */
