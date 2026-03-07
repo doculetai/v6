@@ -18,7 +18,6 @@ import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { NotificationsBell } from './NotificationsBell';
-import { RoleIndicator } from './sidebar/RoleIndicator';
 import { SidebarFooter } from './sidebar/SidebarFooter';
 import { SidebarQuickAction } from './sidebar/SidebarQuickAction';
 import { SidebarToggle } from './sidebar/SidebarToggle';
@@ -168,7 +167,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
       >
         {/* ── Logo ── */}
         <div className={cn(
-          'flex shrink-0 items-center gap-2.5 px-4 py-4',
+          'flex shrink-0 items-center gap-2.5 border-b border-sidebar-border px-4 py-4',
           visualCollapsed && 'justify-center px-3',
         )}>
           <Link
@@ -191,9 +190,6 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
             )}
           </Link>
         </div>
-
-        {/* ── Role indicator ── */}
-        <RoleIndicator role={role} isCollapsed={visualCollapsed} />
 
         {/* ── Quick action (optional — not all roles have one) ── */}
         {quickAction && (
@@ -426,29 +422,20 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       aria-current={isActive ? 'page' : undefined}
       title={isCollapsed ? item.label : undefined}
       style={isActive ? {
-        backgroundColor: 'rgba(255, 255, 255, 0.09)',
+        backgroundColor: 'var(--role-accent)',
       } : undefined}
       className={cn(
         'group relative flex min-h-[44px] items-center gap-3 rounded-md px-3 text-[13.5px] transition-colors duration-100',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)]',
         isActive
-          ? 'font-semibold text-sidebar-foreground'
+          ? 'font-semibold text-white'
           : 'font-[450] text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground',
         isCollapsed && 'justify-center px-0',
       )}
     >
-      {/* Left accent indicator */}
-      <span
-        style={isActive ? { backgroundColor: 'var(--role-accent)' } : undefined}
-        className={cn(
-          'absolute left-0 top-1/2 h-6 w-[4px] -translate-y-1/2 rounded-r-full transition-[transform,opacity] duration-150',
-          isActive ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0',
-        )}
-      />
-
       <span className={cn(
         'relative flex h-8 w-8 shrink-0 items-center justify-center',
-        !isActive && 'text-sidebar-foreground/55',
+        isActive ? 'text-white' : 'text-sidebar-foreground/55',
       )}>
         <Icon className="size-[18px]" weight="duotone" aria-hidden="true" />
         {item.badge !== undefined && item.badge > 0 && isCollapsed && (
