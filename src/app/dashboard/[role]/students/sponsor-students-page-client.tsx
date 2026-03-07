@@ -33,7 +33,7 @@ type SponsoredStudent = {
   studentEmail: string | null;
   amountKobo: number;
   currency: string;
-  status: 'pending' | 'active' | 'completed' | 'cancelled';
+  status: 'pending' | 'active' | 'completed' | 'cancelled' | 'withdrawn';
   createdAt: Date;
 };
 

@@ -17,6 +17,11 @@ export const sponsorProfiles = pgTable('sponsor_profiles', {
     .default('not_started')
     .notNull(),
   companyName: text('company_name'),
+  bankStatus: text('bank_status', {
+    enum: ['not_started', 'pending', 'linked', 'failed'],
+  })
+    .default('not_started')
+    .notNull(),
   ...timestamps,
 });
 
@@ -30,11 +35,15 @@ export const sponsorships = pgTable(
     sponsorId: uuid('sponsor_id')
       .references(() => users.id, { onDelete: 'cascade' })
       .notNull(),
-    status: text('status', { enum: ['pending', 'active', 'completed', 'cancelled'] })
+    status: text('status', { enum: ['pending', 'active', 'completed', 'cancelled', 'withdrawn'] })
       .default('pending')
       .notNull(),
     amountKobo: integer('amount_kobo').notNull(),
     currency: text('currency').notNull(),
+    relationship: text('relationship'),
+    balanceCheckStatus: text('balance_check_status')
+      .default('unchecked')
+      .notNull(),
     ...timestamps,
   },
   (t) => [

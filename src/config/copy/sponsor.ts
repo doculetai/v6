@@ -1,6 +1,39 @@
+import { routes } from '@/config/routes';
 import { commonErrors } from "./shared";
 
 export const sponsorCopy = {
+  onboarding: {
+    title: "Set up your sponsor account",
+    subtitle: "A few details so we can match you with students and track your commitments.",
+    steps: {
+      welcome: {
+        title: "Welcome",
+        heading: "Thank you for choosing to sponsor education",
+        description: "Doculet connects you with verified students and provides full transparency on how your funds are used. Every naira is tracked from commitment to disbursement.",
+        cta: "Continue",
+      },
+      profile: {
+        title: "Your details",
+        heading: "Tell us about yourself",
+        description: "This information helps students and institutions verify your identity.",
+        sponsorTypeLabel: "Sponsor type",
+        sponsorTypeOptions: {
+          individual: { label: "Individual", description: "I am sponsoring as a private individual or family member." },
+          corporate: { label: "Organisation", description: "I am sponsoring on behalf of a company or institution." },
+        },
+        companyNameLabel: "Organisation name",
+        companyNamePlaceholder: "Enter your organisation name",
+        cta: "Save and continue",
+      },
+      complete: {
+        title: "Ready",
+        heading: "Your account is ready",
+        description: "You can now review student invitations and commit funds. Your dashboard shows all your sponsorship activity in one place.",
+        cta: "Go to dashboard",
+      },
+    },
+    progress: "{current} of {total}",
+  },
   dashboard: {
     title: "Sponsor dashboard",
     subtitle: "Fund education with confidence. Every naira tracked.",
@@ -20,14 +53,14 @@ export const sponsorCopy = {
       },
       recentStudents: {
         heading: "Recent Students",
-        empty: "No active sponsorships yet. Review pending student requests to get started.",
+        empty: "No active sponsorships yet. Review pending student requests to begin.",
         unknownStudentLabel: "Unknown",
       },
       cta: "Review pending requests",
       pendingInvitesBanner: {
         message: "You have pending invites from students waiting for your review.",
         cta: "Review invites",
-        href: "/dashboard/sponsor/students",
+        href: routes.dashboard.sponsor.students,
       },
     },
     stats: {
@@ -193,7 +226,7 @@ export const sponsorCopy = {
       receivedLabel: 'Received',
     },
     active: {
-      empty: { title: 'No active sponsorships', description: 'Accept a student request to get started.' },
+      empty: { title: 'No active sponsorships', description: 'Accept a student request to begin.' },
       student: 'Student',
       amount: 'Amount',
       status: 'Status',
@@ -214,6 +247,7 @@ export const sponsorCopy = {
       active: 'Active',
       completed: 'Completed',
       cancelled: 'Cancelled',
+      withdrawn: 'Withdrawn',
     },
   },
 
@@ -227,7 +261,7 @@ export const sponsorCopy = {
       status: 'Status',
       since: 'Since',
     },
-    statusLabels: { pending: 'Pending', active: 'Active', completed: 'Completed', cancelled: 'Cancelled' },
+    statusLabels: { pending: 'Pending', active: 'Active', completed: 'Completed', cancelled: 'Cancelled', withdrawn: 'Withdrawn' },
   },
   impact: {
     title: 'Impact',
@@ -260,7 +294,7 @@ export const sponsorCopy = {
     profile: {
       title: 'Sponsor profile',
       sponsorTypeLabel: 'Sponsor type',
-      sponsorTypes: { individual: 'Individual', corporate: 'Corporate', self: 'Self-funded' },
+      sponsorTypes: { individual: 'Individual', corporate: 'Organisation', self: 'Paying for own education' },
       companyNameLabel: 'Company name',
       companyNameHint: 'Required for corporate sponsors',
       kycStatusLabel: 'KYC status',
@@ -298,28 +332,39 @@ export const sponsorCopy = {
         label: 'Review pending invitations',
         description: 'Students have requested your support. Review their profiles and respond.',
         cta: 'Review students',
-        href: '/dashboard/sponsor/students',
+        href: routes.dashboard.sponsor.students,
       },
       commit_funds: {
         label: 'Fund a student',
         description: 'Commit funds to an accepted student to begin the disbursement process.',
         cta: 'View students',
-        href: '/dashboard/sponsor/students',
+        href: routes.dashboard.sponsor.students,
       },
       track_disbursements: {
         label: 'Monitor disbursements',
         description: 'Track the progress of your scheduled fund transfers.',
         cta: 'View disbursements',
-        href: '/dashboard/sponsor/disbursements',
+        href: routes.dashboard.sponsor.disbursements,
       },
       view_certificates: {
         label: 'Review issued certificates',
         description: 'View proof-of-funds certificates issued for your sponsored students.',
         cta: 'View students',
-        href: '/dashboard/sponsor/students',
+        href: routes.dashboard.sponsor.students,
       },
     },
     completionMessage: 'All sponsorships are active and disbursements on track.',
+  },
+
+  welcome: {
+    title: 'Welcome to Doculet',
+    subtitle: 'Here is how sponsoring works on Doculet.',
+    steps: [
+      { label: 'Review student requests', description: 'Students will invite you to sponsor their education. Review and accept invitations from the Students page.' },
+      { label: 'Commit funding', description: 'Set the amount you are committing per student. Funds are tracked transparently through the platform.' },
+      { label: 'Track disbursements', description: 'Monitor scheduled payments and view proof-of-funds certificates once students are verified.' },
+    ],
+    dismiss: 'Got it',
   },
 
   nav: {
