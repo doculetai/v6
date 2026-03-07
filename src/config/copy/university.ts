@@ -1,43 +1,55 @@
+import { routes } from '@/config/routes';
 import { commonErrors } from "./shared";
 
 export const universityCopy = {
+  onboarding: {
+    title: "Set up your university account",
+    subtitle: "Configure your institution profile so students can select your programs.",
+    steps: {
+      welcome: {
+        title: "Welcome",
+        heading: "Welcome to Doculet",
+        description: "Doculet streamlines proof-of-funds verification for your prospective students. Set up your institution profile to continue.",
+        cta: "Continue",
+      },
+      profile: {
+        title: "Institution details",
+        heading: "Your institution",
+        description: "Confirm your institution details. Students will see this information when selecting their school.",
+        institutionNameLabel: "Institution name",
+        institutionNamePlaceholder: "Enter your institution name",
+        countryLabel: "Country",
+        countryPlaceholder: "Select country",
+        cta: "Save and continue",
+      },
+      complete: {
+        title: "Ready",
+        heading: "Your account is ready",
+        description: "You can now manage your programmes, track student applications, and monitor enrolment progress. Your dashboard shows all activity across your institution.",
+        cta: "Go to dashboard",
+      },
+    },
+    progress: "{current} of {total}",
+  },
   overview: {
     welcomeTitle: "University overview",
     title: "Overview",
-    subtitle: "Here's what needs your attention today.",
+    subtitle: "Programme and enrolment summary for your institution.",
     metrics: {
-      pending: "Pending verifications",
-      approvedToday: "Approved today",
-      flagged: "Flagged items",
+      totalPrograms: "Active programmes",
+      enrolledStudents: "Enrolled students",
+      pendingApplications: "Pending applications",
       totalStudents: "Total students",
     },
-    activity: {
-      sectionTitle: "Recent activity",
-      emptyLabel: "No recent activity.",
-      eventTitles: {
-        pending: "Document submitted",
-        approved: "Document approved",
-        rejected: "Document rejected",
-        more_info_requested: "More info requested",
-        expired: "Document expired",
-      } as Record<string, string>,
-      documentTypes: {
-        passport: "Passport",
-        bank_statement: "Bank statement",
-        offer_letter: "Offer letter",
-        affidavit: "Affidavit",
-        cac: "CAC document",
-      } as Record<string, string>,
-    },
     empty: {
-      heading: "No verifications yet",
-      body: "Student proof-of-funds submissions will appear here once they submit their documents.",
-      action: "Review pipeline",
-      actionHref: "/dashboard/university/pipeline",
+      heading: "No programmes yet",
+      body: "Add programmes to your institution so students can apply and submit proof of funds.",
+      action: "Manage programmes",
+      actionHref: routes.dashboard.university.programs,
     },
     error: {
       heading: "Failed to load overview",
-      body: "We couldn't load the dashboard data. Please try again.",
+      body: "Unable to load the dashboard data. Please try again.",
       retry: "Retry",
     },
   },
@@ -168,80 +180,6 @@ export const universityCopy = {
     },
   },
 
-  documents: {
-    title: "Document queue",
-    subtitle: "Review and approve student document submissions.",
-    table: {
-      student: "Student",
-      type: "Document type",
-      uploaded: "Uploaded",
-      status: "Status",
-      actions: "Actions",
-    },
-    typeLabels: {
-      passport: "Passport",
-      bank_statement: "Bank statement",
-      offer_letter: "Offer letter",
-      affidavit: "Affidavit",
-      cac: "CAC document",
-    },
-    statusLabels: {
-      pending: "Pending",
-      approved: "Approved",
-      rejected: "Rejected",
-      more_info_requested: "More info needed",
-      expired: "Expired",
-    },
-    actions: { view: "View", approve: "Approve", reject: "Reject", requestInfo: "Request info" },
-    requestInfoReasonLabel: "What information is needed?",
-    requestInfoReasonHint: "Describe what the student needs to provide or correct.",
-    requestInfoConfirm: "Send request",
-    rejectReasonLabel: "Reason for rejection",
-    rejectReasonHint: "Briefly explain why this document was rejected.",
-    rejectConfirm: "Confirm rejection",
-    rejectCancel: "Cancel",
-    bulkBar: {
-      selected: "selected",
-      clearSelection: "Clear selection",
-      approve: "Approve all",
-      reject: "Reject all",
-      requestInfo: "Request info",
-    },
-    bulkSuccess: {
-      approved: "Documents approved.",
-      rejected: "Documents rejected.",
-      more_info_requested: "Information requested from students.",
-    },
-    empty: {
-      title: "No documents in queue",
-      description: "Student document submissions will appear here for review.",
-    },
-  },
-
-  queue: {
-    title: 'Review queue',
-    subtitle: 'Prioritized items awaiting your review.',
-    table: {
-      student: 'Student',
-      documentType: 'Document type',
-      submitted: 'Submitted',
-      status: 'Status',
-      actions: 'Actions',
-    },
-    statusLabels: {
-      pending: 'Pending',
-      approved: 'Approved',
-      rejected: 'Rejected',
-      more_info_requested: 'More info needed',
-      expired: 'Expired',
-    },
-    actions: {
-      approve: 'Approve',
-      reject: 'Reject',
-      viewDetails: 'View details',
-    },
-    empty: { title: 'Queue is empty', description: 'Items requiring review will appear here.' },
-  },
   programs: {
     title: 'Programs',
     subtitle: 'Manage programs and tuition requirements.',
@@ -250,7 +188,12 @@ export const universityCopy = {
       tuition: 'Tuition',
       duration: 'Duration',
       students: 'Students',
+      status: 'Status',
       actions: 'Actions',
+    },
+    statusLabels: {
+      active: 'Active',
+      inactive: 'Inactive',
     },
     addProgram: 'Add program',
     addProgramDescription: 'Create a new program at your institution.',
@@ -281,6 +224,7 @@ export const universityCopy = {
       confirmTitle: 'Deactivate program',
       confirmDescription: 'Students will no longer be able to enrol in this program. This can be reversed.',
       confirmCta: 'Deactivate',
+      cancelCta: 'Cancel',
       success: 'Program deactivated.',
     },
     exportStudents: {
@@ -383,31 +327,42 @@ export const universityCopy = {
 
   journey: {
     stages: {
+      manage_programmes: 'Manage programmes',
       receive_applications: 'Receive applications',
-      review_documents: 'Review documents',
-      monitor_pipeline: 'Monitor pipeline',
+      monitor_enrolment: 'Monitor enrolment',
     },
     nextActions: {
+      manage_programmes: {
+        label: 'Set up your programmes',
+        description: 'Add programmes to your institution so students can apply.',
+        cta: 'Manage programmes',
+        href: routes.dashboard.university.programs,
+      },
       receive_applications: {
         label: 'Awaiting student submissions',
-        description: 'Student proof-of-funds documents will appear here when submitted.',
+        description: 'Student proof-of-funds applications will appear in the pipeline when submitted.',
         cta: 'View pipeline',
-        href: '/dashboard/university/pipeline',
+        href: routes.dashboard.university.pipeline,
       },
-      review_documents: {
-        label: 'Review pending documents',
-        description: 'Students have submitted documents that need your review.',
-        cta: 'Open review queue',
-        href: '/dashboard/university/documents',
-      },
-      monitor_pipeline: {
-        label: 'Monitor application pipeline',
-        description: 'All pending reviews are clear. Monitor the pipeline for new submissions.',
+      monitor_enrolment: {
+        label: 'Monitor enrolment pipeline',
+        description: 'Track application status and enrolment progress across your institution.',
         cta: 'View pipeline',
-        href: '/dashboard/university/pipeline',
+        href: routes.dashboard.university.pipeline,
       },
     },
-    completionMessage: 'All document reviews are up to date.',
+    completionMessage: 'Programme configuration is complete.',
+  },
+
+  welcome: {
+    title: 'Welcome to Doculet',
+    subtitle: 'Here is how to manage your institution on the platform.',
+    steps: [
+      { label: 'Add your programmes', description: 'Create the degree programmes at your institution. Students select from your programme list when applying.' },
+      { label: 'Track the application pipeline', description: 'View all students applying to your institution. Monitor their verification status and enrolment progress.' },
+      { label: 'Monitor enrolment', description: 'Track KYC completion and application progress across your institution from the overview dashboard.' },
+    ],
+    dismiss: 'Got it',
   },
 
   nav: {
