@@ -1,4 +1,4 @@
-import { FileText } from 'lucide-react';
+import { FileText } from '@/components/icons';
 
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/ui/status-badge';
@@ -14,6 +14,7 @@ const statusToBadge: Record<DocumentStatus, BadgeStatus> = {
   approved: 'verified',
   rejected: 'rejected',
   more_info_requested: 'attention',
+  expired: 'expired',
 };
 
 function deriveTier(kycStatus: string | null, bankStatus: string | null): string {
@@ -35,6 +36,7 @@ interface AdminOperationsTableProps {
   onSelect: (id: string, checked: boolean) => void;
   onSelectAll: (checked: boolean) => void;
   onReview: (row: OperationsQueueRow) => void;
+  onViewRecord?: (studentId: string) => void;
   emptyLabel?: string;
 }
 
@@ -44,6 +46,7 @@ export function AdminOperationsTable({
   onSelect,
   onSelectAll,
   onReview,
+  onViewRecord,
   emptyLabel,
 }: AdminOperationsTableProps) {
   const copy = adminCopy.operations;
@@ -53,7 +56,7 @@ export function AdminOperationsTable({
   if (rows.length === 0) {
     return (
       <div className="rounded-xl border border-border bg-card p-10 text-center">
-        <FileText className="mx-auto mb-3 size-10 text-muted-foreground" />
+        <FileText size={40} weight="duotone" aria-hidden="true" className="mx-auto mb-3 text-muted-foreground" />
         <p className="font-medium text-foreground dark:text-foreground">
           {copy.empty.title}
         </p>
@@ -133,6 +136,16 @@ export function AdminOperationsTable({
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <StatusBadge status={statusToBadge[row.status]} size="sm" />
+                      {onViewRecord && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onViewRecord(row.studentId)}
+                          className="min-h-11 text-xs"
+                        >
+                          {adminCopy.studentRecord.viewRecord}
+                        </Button>
+                      )}
                       <Button
                         size="sm"
                         variant="outline"
@@ -188,14 +201,26 @@ export function AdminOperationsTable({
                 <TimestampLabel value={row.createdAt} mode="relative" />
                 <span>{row.reviewerEmail ?? '—'}</span>
               </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onReview(row)}
-                className="mt-3 min-h-11 w-full text-xs"
-              >
-                {copy.actions.review}
-              </Button>
+              <div className="mt-3 flex gap-2">
+                {onViewRecord && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => onViewRecord(row.studentId)}
+                    className="min-h-11 flex-1 text-xs"
+                  >
+                    {adminCopy.studentRecord.viewRecord}
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onReview(row)}
+                  className={`min-h-11 text-xs ${onViewRecord ? 'flex-1' : 'w-full'}`}
+                >
+                  {copy.actions.review}
+                </Button>
+              </div>
             </article>
           );
         })}

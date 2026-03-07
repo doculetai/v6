@@ -1,6 +1,6 @@
 import { captureException } from '@sentry/nextjs';
 import { TRPCError } from '@trpc/server';
-import { and, eq, ilike, inArray, sql } from 'drizzle-orm';
+import { and, eq, ilike, inArray, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import {
@@ -8,6 +8,7 @@ import {
   disbursements,
   documents,
   kycVerifications,
+  pipelineRuns,
   profiles,
   sponsorships,
   users,
@@ -16,7 +17,9 @@ import {
   bulkReviewDocuments,
   getOperationsQueue,
   getOperationsStats,
+  getStudentRecord,
   reviewDocument,
+  validateAndIssueCertificate,
 } from '@/db/queries/admin-operations';
 import {
   createPlatformFeeConfig,
@@ -26,6 +29,8 @@ import {
 } from '@/db/queries/platform-fees';
 import { listTransactions } from '@/db/queries/admin-transactions';
 import { insertAuditLog } from '@/db/queries/audit-log';
+import { sendCertificateIssuedEmail } from '@/lib/email/send-certificate-issued-email';
+import { documentTypeLabel, insertNotification } from '@/db/queries/notifications';
 import { sendDocumentStatusEmail } from '@/lib/email/send-document-status-email';
 import { enqueueWebhooks } from '@/lib/outbound-webhooks';
 import { removeDocumentFile } from '@/lib/storage';
@@ -49,6 +54,7 @@ const operationsQueueRowSchema = z.object({
   rejectionReason: z.string().nullable(),
   reviewedAt: z.date().nullable(),
   createdAt: z.date(),
+  studentId: z.string(),
   studentEmail: z.string(),
   reviewerEmail: z.string().nullable(),
   schoolName: z.string().nullable(),
@@ -87,6 +93,60 @@ export const adminRouter = createTRPCRouter({
       return getOperationsStats(ctx.db);
     }),
 
+  getStudentRecord: roleProcedure('admin')
+    .input(z.object({ studentId: z.string().uuid() }))
+    .output(
+      z
+        .object({
+          userId: z.string(),
+          email: z.string(),
+          fullName: z.string().nullable(),
+          phone: z.string().nullable(),
+          schoolName: z.string().nullable(),
+          programName: z.string().nullable(),
+          kycStatus: z.string(),
+          bankStatus: z.string(),
+          fundingType: z.string(),
+          bankAccountLinked: z.boolean(),
+          bankName: z.string().nullable(),
+          accountNumber: z.string().nullable(),
+          onboardingComplete: z.boolean(),
+          suspendedAt: z.date().nullable(),
+          documents: z.array(
+            z.object({
+              id: z.string(),
+              type: z.string(),
+              status: z.string(),
+              reviewedAt: z.date().nullable(),
+              rejectionReason: z.string().nullable(),
+            }),
+          ),
+          sponsorships: z.array(
+            z.object({
+              id: z.string(),
+              sponsorName: z.string().nullable(),
+              sponsorEmail: z.string().nullable(),
+              amountKobo: z.number(),
+              currency: z.string(),
+              status: z.string(),
+              relationship: z.string().nullable(),
+            }),
+          ),
+          certificate: z
+            .object({
+              certId: z.string(),
+              issuedAt: z.date(),
+              status: z.string(),
+              token: z.string(),
+            })
+            .nullable(),
+        })
+        .nullable(),
+    )
+    .query(async ({ ctx, input }) => {
+      return getStudentRecord(ctx.db, input.studentId);
+    }),
+
   reviewDocument: roleProcedure('admin')
     .input(
       z.object({
@@ -97,7 +157,7 @@ export const adminRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const [doc] = await ctx.db
-        .select({ userId: documents.userId })
+        .select({ userId: documents.userId, type: documents.type })
         .from(documents)
         .where(eq(documents.id, input.documentId))
         .limit(1);
@@ -122,6 +182,45 @@ export const adminRouter = createTRPCRouter({
         ip: ctx.ip ?? undefined,
         userAgent: ctx.userAgent ?? undefined,
       });
+
+      const label = documentTypeLabel(doc.type);
+
+      if (input.status === 'approved') {
+        try {
+          await insertNotification(ctx.db, {
+            userId: doc.userId,
+            type: 'doc_approved',
+            title: `Your ${label} has been approved`,
+            link: '/dashboard/student/documents',
+          });
+        } catch {
+          // Logged; do not fail the mutation
+        }
+      } else if (input.status === 'rejected') {
+        try {
+          await insertNotification(ctx.db, {
+            userId: doc.userId,
+            type: 'doc_rejected',
+            title: `Your ${label} requires resubmission`,
+            body: input.reason,
+            link: '/dashboard/student/documents',
+          });
+        } catch {
+          // Logged; do not fail the mutation
+        }
+      } else if (input.status === 'more_info_requested') {
+        try {
+          await insertNotification(ctx.db, {
+            userId: doc.userId,
+            type: 'doc_more_info',
+            title: `Additional information requested for your ${label}`,
+            body: input.reason,
+            link: '/dashboard/student/documents',
+          });
+        } catch {
+          // Logged; do not fail the mutation
+        }
+      }
 
       if (user?.email) {
         try {
@@ -172,7 +271,7 @@ export const adminRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const docs = await ctx.db
-        .select({ id: documents.id, userId: documents.userId })
+        .select({ id: documents.id, userId: documents.userId, type: documents.type })
         .from(documents)
         .where(inArray(documents.id, input.documentIds));
 
@@ -189,6 +288,45 @@ export const adminRouter = createTRPCRouter({
       });
 
       for (const doc of docs) {
+        const label = documentTypeLabel(doc.type);
+
+        if (input.status === 'approved') {
+          try {
+            await insertNotification(ctx.db, {
+              userId: doc.userId,
+              type: 'doc_approved',
+              title: `Your ${label} has been approved`,
+              link: '/dashboard/student/documents',
+            });
+          } catch {
+            // Logged; do not fail the mutation
+          }
+        } else if (input.status === 'rejected') {
+          try {
+            await insertNotification(ctx.db, {
+              userId: doc.userId,
+              type: 'doc_rejected',
+              title: `Your ${label} requires resubmission`,
+              body: input.reason,
+              link: '/dashboard/student/documents',
+            });
+          } catch {
+            // Logged; do not fail the mutation
+          }
+        } else if (input.status === 'more_info_requested') {
+          try {
+            await insertNotification(ctx.db, {
+              userId: doc.userId,
+              type: 'doc_more_info',
+              title: `Additional information requested for your ${label}`,
+              body: input.reason,
+              link: '/dashboard/student/documents',
+            });
+          } catch {
+            // Logged; do not fail the mutation
+          }
+        }
+
         const email = emailByUserId.get(doc.userId);
         if (email) {
           try {
@@ -423,6 +561,7 @@ export const adminRouter = createTRPCRouter({
             'repeated_kyc_failure',
             'repeated_document_rejection',
             'unverified_with_active_sponsorship',
+            'ocr_high_risk',
           ]),
           userId: z.string(),
           userEmail: z.string().nullable(),
@@ -436,7 +575,8 @@ export const adminRouter = createTRPCRouter({
       type RiskFlagType =
         | 'repeated_kyc_failure'
         | 'repeated_document_rejection'
-        | 'unverified_with_active_sponsorship';
+        | 'unverified_with_active_sponsorship'
+        | 'ocr_high_risk';
       type Severity = 'low' | 'medium' | 'high';
 
       const flags: Array<{
@@ -448,7 +588,7 @@ export const adminRouter = createTRPCRouter({
         detectedAt: Date;
       }> = [];
 
-      const [kycRows, docRows, sponsorshipRows] = await Promise.all([
+      const [kycRows, docRows, sponsorshipRows, ocrRiskRows] = await Promise.all([
         ctx.db.query.kycVerifications.findMany({
           where: (t, { eq: eqFn }) => eqFn(t.status, 'failed'),
           columns: { userId: true, createdAt: true },
@@ -463,6 +603,25 @@ export const adminRouter = createTRPCRouter({
           where: (t, { eq: eqFn }) => eqFn(t.status, 'active'),
           columns: { studentId: true, createdAt: true },
         }),
+        ctx.db
+          .select({
+            userId: pipelineRuns.userId,
+            createdAt: pipelineRuns.createdAt,
+            riskCategory: pipelineRuns.riskCategory,
+            compositeScore: pipelineRuns.compositeScore,
+            autoDecision: pipelineRuns.autoDecision,
+          })
+          .from(pipelineRuns)
+          .where(
+            and(
+              eq(pipelineRuns.status, 'completed'),
+              or(
+                inArray(pipelineRuns.riskCategory, ['high', 'critical']),
+                eq(pipelineRuns.autoDecision, 'reject'),
+              ),
+            ),
+          )
+          .orderBy(sql`${pipelineRuns.createdAt} desc`),
       ]);
 
       // Group KYC failures by userId
@@ -490,12 +649,15 @@ export const adminRouter = createTRPCRouter({
       for (const [userId, dates] of docRejectMap.entries()) {
         if (dates.length >= 3) flaggedUserIds.add(userId);
       }
+      for (const row of ocrRiskRows) {
+        flaggedUserIds.add(row.userId);
+      }
 
       // Check unverified students with active sponsorships
       const activeSponsorStudentIds = new Set(sponsorshipRows.map((s) => s.studentId));
       if (activeSponsorStudentIds.size > 0) {
         const studentProfileRows = await ctx.db.query.studentProfiles.findMany({
-          where: (t, { inArray: inArrayFn, notInArray }) =>
+          where: (t, { inArray: inArrayFn }) =>
             inArrayFn(t.userId, [...activeSponsorStudentIds]),
           columns: { userId: true, kycStatus: true },
         });
@@ -559,6 +721,44 @@ export const adminRouter = createTRPCRouter({
             });
           }
         }
+      }
+
+      // Build OCR high-risk flags (latest per user)
+      const latestOcrRiskByUser = new Map<
+        string,
+        {
+          createdAt: Date;
+          riskCategory: 'low' | 'medium' | 'high' | 'critical' | null;
+          compositeScore: number | null;
+          autoDecision: 'approve' | 'review' | 'reject' | null;
+        }
+      >();
+      for (const row of ocrRiskRows) {
+        if (!latestOcrRiskByUser.has(row.userId)) {
+          latestOcrRiskByUser.set(row.userId, {
+            createdAt: row.createdAt,
+            riskCategory: row.riskCategory,
+            compositeScore: row.compositeScore,
+            autoDecision: row.autoDecision,
+          });
+        }
+      }
+
+      for (const [userId, row] of latestOcrRiskByUser.entries()) {
+        const severity: Severity =
+          row.riskCategory === 'critical' || row.autoDecision === 'reject' ? 'high' : 'medium';
+        const scoreLabel = row.compositeScore != null ? ` (score ${row.compositeScore})` : '';
+        const decisionLabel = row.autoDecision ? `, decision ${row.autoDecision}` : '';
+        const categoryLabel = row.riskCategory ? `Risk category ${row.riskCategory}` : 'High-risk OCR signal';
+
+        flags.push({
+          type: 'ocr_high_risk',
+          userId,
+          userEmail: emailMap.get(userId) ?? null,
+          severity,
+          detail: `${categoryLabel}${scoreLabel}${decisionLabel}`,
+          detectedAt: row.createdAt,
+        });
       }
 
       return flags;
@@ -714,4 +914,127 @@ export const adminRouter = createTRPCRouter({
       ),
     )
     .query(async ({ ctx, input }) => listTransactions(ctx.db, input)),
+
+  issueCertificate: roleProcedure('admin')
+    .input(
+      z.object({
+        studentId: z.string().uuid(),
+        sponsorshipId: z.string().uuid().nullable().optional(),
+        waivePayment: z.boolean().optional().default(false),
+      }),
+    )
+    .output(
+      z.object({
+        certificateId: z.string().uuid(),
+        token: z.string(),
+        issuedAt: z.date(),
+        paymentStatus: z.enum(['paid', 'waived']),
+        sharePath: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const secret = process.env.CERTIFICATE_SHARE_SECRET;
+      if (!secret) {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'CERTIFICATE_SHARE_SECRET is not configured.',
+        });
+      }
+
+      const result = await validateAndIssueCertificate(ctx.db, {
+        studentId: input.studentId,
+        sponsorshipId: input.sponsorshipId ?? null,
+        adminId: ctx.user.id,
+        waivePayment: input.waivePayment ?? false,
+        secret,
+      });
+
+      if ('type' in result) {
+        switch (result.type) {
+          case 'student_not_found':
+            throw new TRPCError({ code: 'NOT_FOUND', message: 'Student not found.' });
+          case 'kyc_not_verified':
+            throw new TRPCError({
+              code: 'PRECONDITION_FAILED',
+              message: 'KYC verification is not complete for this student.',
+            });
+          case 'bank_not_verified':
+            throw new TRPCError({
+              code: 'PRECONDITION_FAILED',
+              message: 'Bank verification is not complete for this student.',
+            });
+          case 'documents_not_approved':
+            throw new TRPCError({
+              code: 'PRECONDITION_FAILED',
+              message: 'No approved documents found for this student.',
+            });
+          case 'sponsorship_not_found':
+            throw new TRPCError({
+              code: 'NOT_FOUND',
+              message: 'Active or completed sponsorship not found for this student.',
+            });
+          case 'certificate_already_active':
+            throw new TRPCError({
+              code: 'CONFLICT',
+              message: 'An active certificate already exists for this student.',
+            });
+          case 'payment_required':
+            throw new TRPCError({
+              code: 'PRECONDITION_FAILED',
+              message: 'No confirmed payment found. Set waivePayment to true to issue without payment.',
+            });
+          default:
+            throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        }
+      }
+
+      // Fetch the student email for the notification
+      const [studentRow] = await ctx.db
+        .select({ email: users.email })
+        .from(users)
+        .where(eq(users.id, input.studentId))
+        .limit(1);
+
+      if (studentRow?.email) {
+        try {
+          await sendCertificateIssuedEmail(studentRow.email);
+        } catch {
+          // Logged; do not fail the mutation
+        }
+      }
+
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user.id,
+        action: 'admin.issueCertificate',
+        entityType: 'certificate',
+        entityId: result.certificateId,
+        meta: {
+          studentId: input.studentId,
+          sponsorshipId: input.sponsorshipId ?? null,
+          waivePayment: input.waivePayment ?? false,
+          paymentStatus: result.paymentStatus,
+        },
+        ip: ctx.ip ?? undefined,
+        userAgent: ctx.userAgent ?? undefined,
+      });
+
+      try {
+        await enqueueWebhooks('certificate.issued', {
+          certificateId: result.certificateId,
+          studentId: input.studentId,
+          issuedAt: result.issuedAt.toISOString(),
+          sharePath: `/certificate/${result.token}`,
+        });
+      } catch {
+        // Logged; do not fail the mutation
+      }
+
+      return {
+        certificateId: result.certificateId,
+        token: result.token,
+        issuedAt: result.issuedAt,
+        paymentStatus: result.paymentStatus,
+        sharePath: `/certificate/${result.token}`,
+      };
+    }),
 });

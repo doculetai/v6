@@ -5,10 +5,12 @@ import { useEffect, useState } from 'react';
 import { AdminOperationsBulkBar } from '@/components/admin/AdminOperationsBulkBar';
 import { AdminOperationsReviewDialog } from '@/components/admin/AdminOperationsReviewDialog';
 import { AdminOperationsTable } from '@/components/admin/AdminOperationsTable';
+import { AdminStudentRecordSheet } from '@/components/admin/AdminStudentRecordSheet';
 import { FilterBar } from '@/components/ui/filter-bar';
 import { MetricCard } from '@/components/ui/metric-card';
+import { Grid } from '@/components/layout/content-primitives';
 import { adminCopy } from '@/config/copy/admin';
-import type { DocumentStatus, OperationsQueueRow, OperationsStats, StatusFilter } from '@/db/queries/admin-operations';
+import type { OperationsQueueRow, OperationsStats, StatusFilter } from '@/db/queries/admin-operations';
 import { trpc } from '@/trpc/client';
 
 interface OperationsPageClientProps {
@@ -35,6 +37,7 @@ export default function OperationsPageClient({
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [reviewTarget, setReviewTarget] = useState<OperationsQueueRow | null>(null);
+  const [recordStudentId, setRecordStudentId] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
@@ -82,11 +85,13 @@ export default function OperationsPageClient({
     setSelectedIds(checked ? new Set(queue.map((r) => r.id)) : new Set());
   }
 
-  function handleBulkAction(status: DocumentStatus) {
+  type ReviewStatus = 'approved' | 'rejected' | 'more_info_requested';
+
+  function handleBulkAction(status: ReviewStatus) {
     bulkMutation.mutate({ documentIds: Array.from(selectedIds), status });
   }
 
-  function handleReviewDecision(status: DocumentStatus, reason?: string) {
+  function handleReviewDecision(status: ReviewStatus, reason?: string) {
     if (!reviewTarget) return;
     reviewMutation.mutate({ documentId: reviewTarget.id, status, reason });
   }
@@ -111,7 +116,7 @@ export default function OperationsPageClient({
   return (
     <div className="space-y-6">
       {/* Stats row */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Grid cols={{ sm: 2, lg: 4 }} gap="md">
         <MetricCard label={copy.stats.pending} value={stats.pending} />
         <MetricCard
           label={copy.stats.approvedToday}
@@ -124,7 +129,7 @@ export default function OperationsPageClient({
           deltaDirection="down"
         />
         <MetricCard label={copy.stats.moreInfo} value={stats.moreInfoRequested} />
-      </div>
+      </Grid>
 
       {/* Filter bar */}
       <FilterBar
@@ -146,6 +151,7 @@ export default function OperationsPageClient({
         onSelect={handleSelect}
         onSelectAll={handleSelectAll}
         onReview={setReviewTarget}
+        onViewRecord={setRecordStudentId}
         emptyLabel={queueLoading ? undefined : copy.empty.description}
       />
 
@@ -168,6 +174,12 @@ export default function OperationsPageClient({
         onClose={() => setReviewTarget(null)}
         onDecision={handleReviewDecision}
         isLoading={isMutating}
+      />
+
+      {/* Student record drawer */}
+      <AdminStudentRecordSheet
+        studentId={recordStudentId}
+        onClose={() => setRecordStudentId(null)}
       />
     </div>
   );

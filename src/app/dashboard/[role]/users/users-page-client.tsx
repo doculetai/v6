@@ -1,5 +1,8 @@
 'use client';
 
+import { useState } from 'react';
+
+import { AdminStudentRecordSheet } from '@/components/admin/AdminStudentRecordSheet';
 import { adminCopy } from '@/config/copy/admin';
 
 type User = {
@@ -32,6 +35,8 @@ function RoleBadge({ role, copy }: { role: string | null; copy: typeof adminCopy
 }
 
 export function UsersPageClient({ data, copy }: Props) {
+  const [recordStudentId, setRecordStudentId] = useState<string | null>(null);
+
   if (data === null) {
     return (
       <div className="rounded-xl border border-border bg-card p-10 text-center">
@@ -39,6 +44,12 @@ export function UsersPageClient({ data, copy }: Props) {
         <p className="mt-1 text-xs text-muted-foreground">{copy.error.description}</p>
       </div>
     );
+  }
+
+  function handleRowClick(user: User) {
+    if (user.role === 'student') {
+      setRecordStudentId(user.id);
+    }
   }
 
   return (
@@ -64,27 +75,39 @@ export function UsersPageClient({ data, copy }: Props) {
         <>
           {/* Desktop table — hidden below md */}
           <div className="hidden md:block rounded-xl border border-border bg-card overflow-hidden">
-            <div role="row" className="grid grid-cols-4 gap-4 border-b border-border px-5 py-3">
-              <p role="columnheader" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.email}</p>
-              <p role="columnheader" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.role}</p>
-              <p role="columnheader" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.status}</p>
-              <p role="columnheader" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.joined}</p>
+            <div role="row" className="flex gap-4 border-b border-border px-5 py-3">
+              <p role="columnheader" className="flex-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.email}</p>
+              <p role="columnheader" className="flex-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.role}</p>
+              <p role="columnheader" className="flex-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.status}</p>
+              <p role="columnheader" className="flex-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.joined}</p>
+              <p role="columnheader" className="w-24 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.action}</p>
             </div>
             <ul role="list">
               {data.users.map((user, idx) => (
                 <li
                   key={user.id}
                   role="row"
-                  className={`grid grid-cols-4 gap-4 px-5 py-4 ${idx < data.users.length - 1 ? 'border-b border-border' : ''}`}
+                  className={`flex gap-4 px-5 py-4 ${idx < data.users.length - 1 ? 'border-b border-border' : ''}`}
                 >
-                  <p className="truncate text-sm text-foreground">{user.email ?? '—'}</p>
-                  <div><RoleBadge role={user.role} copy={copy.roles} /></div>
-                  <p className="text-sm text-foreground">
+                  <p className="flex-1 truncate text-sm text-foreground">{user.email ?? '—'}</p>
+                  <div className="flex-1"><RoleBadge role={user.role} copy={copy.roles} /></div>
+                  <p className="flex-1 text-sm text-foreground">
                     {user.onboardingComplete ? copy.statusLabels.active : copy.statusLabels.pending}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="flex-1 text-sm text-muted-foreground">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </p>
+                  <div className="w-24">
+                    {user.role === 'student' && (
+                      <button
+                        type="button"
+                        onClick={() => handleRowClick(user)}
+                        className="text-xs font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        {adminCopy.studentRecord.viewRecord}
+                      </button>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -104,11 +127,25 @@ export function UsersPageClient({ data, copy }: Props) {
                 <p className="text-xs text-muted-foreground">
                   {copy.table.joined}: {new Date(user.createdAt).toLocaleDateString()}
                 </p>
+                {user.role === 'student' && (
+                  <button
+                    type="button"
+                    onClick={() => handleRowClick(user)}
+                    className="text-xs font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {adminCopy.studentRecord.viewRecord}
+                  </button>
+                )}
               </li>
             ))}
           </ul>
         </>
       )}
+
+      <AdminStudentRecordSheet
+        studentId={recordStudentId}
+        onClose={() => setRecordStudentId(null)}
+      />
     </div>
   );
 }
