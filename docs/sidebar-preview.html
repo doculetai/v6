@@ -155,6 +155,14 @@ nav::-webkit-scrollbar { width: 0; }
   font-size: 9.5px; font-weight: 600; text-transform: uppercase;
   letter-spacing: 0.08em; color: rgba(15,23,42,0.35);
 }
+.role-badge {
+  display: inline-flex; align-items: center;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(194, 65, 12, 0.1); color: #C2410C;
+  padding: 2px 8px; border-radius: 20px;
+  margin-top: 4px;
+}
 
 /* ══ CONTENT ══ */
 .content { flex: 1; background: #FDFCFA; display: flex; flex-direction: column; overflow: hidden; }
@@ -1212,6 +1220,7 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
         <div class="user-meta">
           <div class="user-name" id="userName"></div>
           <div class="user-role" id="userRole"></div>
+          <div class="role-badge" id="userRoleBadge" style="display:none;"></div>
         </div>
       </div>
       <div class="bottom-divider"></div>
@@ -2440,6 +2449,12 @@ var STATE_OVERRIDES = {
         ],
       },
     },
+
+    /* reviewer_view: admin operating in document reviewer sub-role */
+    reviewer_view: {},
+
+    /* support_view: admin operating in support sub-role */
+    support_view: {},
   },
 
   /* ══ AGENT ══ */
@@ -5421,11 +5436,13 @@ var ROLE_STATES = {
   ],
 
   admin: [
-    { group:'Default',        id:'default',       label:'Overview'       },
-    { group:'Ops queue',      id:'ops_rejection', label:'Ops rejection'  },
-    { group:'Ops queue',      id:'cert_ready',    label:'Cert ready'     },
-    { group:'Risk & security',id:'risk_flagged',  label:'Risk flagged'   },
-    { group:'Users',          id:'impersonation', label:'Impersonation'  },
+    { group:'Default',        id:'default',        label:'Overview'       },
+    { group:'Ops queue',      id:'ops_rejection',  label:'Ops rejection'  },
+    { group:'Ops queue',      id:'cert_ready',     label:'Cert ready'     },
+    { group:'Risk & security',id:'risk_flagged',   label:'Risk flagged'   },
+    { group:'Users',          id:'impersonation',  label:'Impersonation'  },
+    { group:'Sub-roles',      id:'reviewer_view',  label:'Reviewer view',  _label:'Reviewer view'  },
+    { group:'Sub-roles',      id:'support_view',   label:'Support view',   _label:'Support view'   },
   ],
 
   agent: [
@@ -5516,6 +5533,22 @@ function setState(roleId, stateId) {
   document.querySelectorAll('.spill[data-role="' + roleId + '"]').forEach(function(b) {
     b.classList.toggle('active', b.dataset.state === stateId);
   });
+
+  /* Update role badge in sidebar identity block */
+  var badge = document.getElementById('userRoleBadge');
+  if (badge) {
+    var states = ROLE_STATES[roleId] || [];
+    var stateEntry = null;
+    for (var i = 0; i < states.length; i++) {
+      if (states[i].id === stateId) { stateEntry = states[i]; break; }
+    }
+    if (roleId === 'admin' && stateEntry && stateEntry._label) {
+      badge.textContent = stateEntry._label;
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
 }
 
 function buildStatePicker(roleId) {
@@ -5554,6 +5587,8 @@ function setRole(roleId) {
   ua.textContent = role.initials; ua.style.background = role.accent;
   document.getElementById('userName').textContent = role.name;
   document.getElementById('userRole').textContent = role.label.toUpperCase();
+  var badge = document.getElementById('userRoleBadge');
+  if (badge) { badge.style.display = 'none'; badge.textContent = ''; }
 
   var ta = document.getElementById('topbarAvatar');
   ta.textContent = role.initials; ta.style.background = role.accent;
