@@ -24,6 +24,7 @@ export const documents = pgTable(
     rejectionReason: text('rejection_reason'),
     reviewedAt: timestamp('reviewed_at'),
     reviewedBy: uuid('reviewed_by').references(() => users.id, { onDelete: 'set null' }),
+    fileHash: text('file_hash'),
     ...timestamps,
   },
   (t) => [

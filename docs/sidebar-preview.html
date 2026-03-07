@@ -3709,7 +3709,11 @@ function renderEmptyState(main, opts) {
     var btn = el('button', 'btn-primary');
     btn.style.fontSize = '14px';
     txt(btn, opts.ctaLabel);
-    if (opts.ctaAction) btn.onclick = opts.ctaAction;
+    if (opts.ctaLabel === 'Invite a student') {
+      btn.onclick = showAgentInviteSheet;
+    } else if (opts.ctaAction) {
+      btn.onclick = opts.ctaAction;
+    }
     wrap.appendChild(btn);
   }
   main.appendChild(wrap);
@@ -4393,6 +4397,47 @@ function closeSessionSheet() {
   if (_sessionSheetInterval) { clearInterval(_sessionSheetInterval); _sessionSheetInterval = null; }
   var overlay = document.getElementById('sessionTimeoutSheet');
   if (overlay) overlay.classList.remove('open');
+}
+
+function showAgentInviteSheet() {
+  var overlay = document.getElementById('agentInviteSheet');
+  if (!overlay) {
+    overlay = el('div', 'bottom-sheet-overlay');
+    overlay.id = 'agentInviteSheet';
+    var sheet = el('div', 'bottom-sheet');
+    var handle = el('div', 'bottom-sheet-handle');
+    var title = el('div', 'bottom-sheet-title'); txt(title, 'Invite a student');
+    var body = el('div', 'bottom-sheet-body'); txt(body, 'Send an invitation to a student. They will receive an email with a registration link.');
+    // Name field
+    var nameGroup = el('div', 'form-group');
+    var nameLabel = el('label', 'form-label'); txt(nameLabel, 'Full name');
+    var nameInput = el('input', 'form-input'); nameInput.type = 'text'; nameInput.placeholder = 'Adeola Adeyemi';
+    nameGroup.appendChild(nameLabel); nameGroup.appendChild(nameInput);
+    // Email field
+    var emailGroup = el('div', 'form-group');
+    var emailLabel = el('label', 'form-label'); txt(emailLabel, 'Email address');
+    var emailInput = el('input', 'form-input'); emailInput.type = 'email'; emailInput.placeholder = 'adeola@example.com';
+    emailGroup.appendChild(emailLabel); emailGroup.appendChild(emailInput);
+    // Phone field
+    var phoneGroup = el('div', 'form-group');
+    var phoneLabel = el('label', 'form-label'); txt(phoneLabel, 'Phone number (optional)');
+    var phoneInput = el('input', 'form-input'); phoneInput.type = 'tel'; phoneInput.placeholder = '+234 801 000 0000';
+    phoneGroup.appendChild(phoneLabel); phoneGroup.appendChild(phoneInput);
+    // Actions
+    var actions = el('div', 'bottom-sheet-actions');
+    var cancelBtn = el('button', 'bs-btn-secondary'); txt(cancelBtn, 'Cancel');
+    cancelBtn.onclick = function() { overlay.classList.remove('open'); };
+    var sendBtn = el('button', 'bs-btn-primary'); txt(sendBtn, 'Send invitation');
+    sendBtn.onclick = function() { overlay.classList.remove('open'); };
+    actions.appendChild(cancelBtn); actions.appendChild(sendBtn);
+    sheet.appendChild(handle); sheet.appendChild(title); sheet.appendChild(body);
+    sheet.appendChild(nameGroup); sheet.appendChild(emailGroup); sheet.appendChild(phoneGroup);
+    sheet.appendChild(actions);
+    overlay.appendChild(sheet);
+    overlay.onclick = function(e) { if (e.target === overlay) overlay.classList.remove('open'); };
+    document.body.appendChild(overlay);
+  }
+  document.getElementById('agentInviteSheet').classList.add('open');
 }
 
 /* ════════════════════════════════════════
