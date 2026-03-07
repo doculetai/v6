@@ -1,4 +1,5 @@
-import { BarChart3, FileText, Home, Key, Palette, Settings, Users } from 'lucide-react';
+import { ArrowsClockwise, ChartBar, FileText, Gear, House, Key, Palette, Users } from '@/components/icons';
+import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
 
@@ -11,43 +12,50 @@ export const partnerNavConfig: NavConfig = {
   items: [
     {
       label: 'Overview',
-      href: '/dashboard/partner',
-      icon: Home,
+      href: routes.dashboard.partner.overview,
+      icon: House,
       description: 'Platform metrics',
       isPrimary: true,
     },
     {
       label: 'Students',
-      href: '/dashboard/partner/students',
+      href: routes.dashboard.partner.students,
       icon: Users,
       description: 'Students on your platform',
       group: 'platform',
     },
     {
       label: 'Analytics',
-      href: '/dashboard/partner/analytics',
-      icon: BarChart3,
+      href: routes.dashboard.partner.analytics,
+      icon: ChartBar,
       description: 'Usage and conversion data',
       group: 'platform',
     },
     {
       label: 'API Keys',
-      href: '/dashboard/partner/api-keys',
+      href: routes.dashboard.partner.apiKeys,
       icon: Key,
       description: 'Manage integration keys',
       group: 'developer',
     },
     {
       label: 'Branding',
-      href: '/dashboard/partner/branding',
+      href: routes.dashboard.partner.branding,
       icon: Palette,
       description: 'White-label customization',
       group: 'developer',
     },
     {
+      label: 'Webhooks',
+      href: routes.dashboard.partner.webhooks,
+      icon: ArrowsClockwise,
+      description: 'Manage webhook endpoints',
+      group: 'developer',
+    },
+    {
       label: 'Settings',
-      href: '/dashboard/partner/settings',
-      icon: Settings,
+      href: routes.dashboard.partner.settings,
+      icon: Gear,
       description: 'Partner settings',
       group: 'account',
       mobileHidden: true,
@@ -56,7 +64,7 @@ export const partnerNavConfig: NavConfig = {
   quickAction: {
     label: 'View students',
     icon: FileText,
-    href: '/dashboard/partner/students',
+    href: routes.dashboard.partner.students,
   },
 };
 

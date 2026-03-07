@@ -88,6 +88,7 @@ export const routes = {
       analytics: dashboardRolePath('partner', 'analytics'),
       apiKeys: dashboardRolePath('partner', 'api-keys'),
       branding: dashboardRolePath('partner', 'branding'),
+      webhooks: dashboardRolePath('partner', 'webhooks'),
       integrations: dashboardRolePath('partner', 'api-keys'),
       settings: dashboardRolePath('partner', 'settings'),
     },
