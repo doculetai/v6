@@ -309,6 +309,7 @@ export const studentCopy = {
       pendingReview: 'Statement under review',
       notVerified: 'Not verified',
       rejected: 'Rejected',
+      moreInfoNeeded: 'Action needed',
     },
     rejection: {
       prefix: 'Bank statement rejected',

@@ -36,6 +36,7 @@ export function BankVerificationSection({
   const copy = studentCopy.bankVerification;
   const [error, setError] = useState<string | null>(null);
   const [monoFailed, setMonoFailed] = useState(false);
+  const [isResubmitting, setIsResubmitting] = useState(false);
 
   const monoPublicKey = process.env.NEXT_PUBLIC_MONO_PUBLIC_KEY ?? '';
 
@@ -81,6 +82,8 @@ export function BankVerificationSection({
             </Badge>
           ) : bankStatementStatus === 'rejected' ? (
             <Badge variant="destructive">{copy.status.rejected}</Badge>
+          ) : bankStatementStatus === 'more_info_requested' ? (
+            <Badge variant="secondary" className="border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400">{copy.status.moreInfoNeeded}</Badge>
           ) : bankStatementStatus === 'pending' ? (
             <Badge variant="secondary">{copy.status.pendingReview}</Badge>
           ) : (
@@ -102,7 +105,20 @@ export function BankVerificationSection({
               {copy.rejection.prefix}
               {bankStatementRejectionNote ? ` · ${bankStatementRejectionNote}` : null}
             </p>
-            <Button size="sm" variant="outline" onClick={onResubmit}>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={isResubmitting}
+              onClick={async () => {
+                if (!onResubmit) return;
+                setIsResubmitting(true);
+                try {
+                  await onResubmit();
+                } finally {
+                  setIsResubmitting(false);
+                }
+              }}
+            >
               {copy.rejection.resubmitCta}
             </Button>
           </div>
