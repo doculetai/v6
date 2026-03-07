@@ -1354,6 +1354,13 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 .commitment-paused-reason {
   font-size: 13px; color: rgba(100,116,139,0.8); margin-bottom: 14px; line-height: 1.5;
 }
+.proof-target-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 12px; border-radius: 8px;
+  background: rgba(43,57,163,0.05); margin-top: 8px;
+}
+.proof-target-label { font-size: 13px; color: rgba(100,116,139,0.8); }
+.proof-target-value { font-family: var(--font-mono); font-size: 15px; font-weight: 600; color: #2B39A3; }
 </style>
 </head>
 <body>
@@ -3772,17 +3779,38 @@ function showAddProgramModal(prog) {
     var i1 = el('input', 'form-input'); i1.placeholder = 'e.g. Computer Science BSc';
     if (prog) i1.value = prog.name; g1.appendChild(i1); body.appendChild(g1);
     var r = el('div', 'form-row');
-    var g2 = el('div', 'form-group');
-    g2.appendChild(txt(el('label', 'form-label'), 'Proof target (\u20a6)'));
-    var i2 = el('input', 'form-input'); i2.type = 'number'; i2.placeholder = '3000000';
-    if (prog) i2.value = prog.targetRaw || ''; g2.appendChild(i2);
     var g3 = el('div', 'form-group');
     g3.appendChild(txt(el('label', 'form-label'), 'Duration'));
     var sel = el('select', 'form-input');
     ['1 year','2 years','3 years','4 years','5 years','6 years'].forEach(function(opt) {
       var o = el('option'); o.textContent = opt; sel.appendChild(o);
     }); g3.appendChild(sel);
-    r.appendChild(g2); r.appendChild(g3); body.appendChild(r);
+    r.appendChild(g3); body.appendChild(r);
+    var tuitionGroup = el('div', 'form-group');
+    var tuitionLabel = el('label', 'form-label'); txt(tuitionLabel, 'Tuition fee (\u20a6)');
+    var tuitionInput = el('input', 'form-input');
+    tuitionInput.type = 'number'; tuitionInput.placeholder = '1500000';
+    tuitionGroup.appendChild(tuitionLabel); tuitionGroup.appendChild(tuitionInput);
+    body.appendChild(tuitionGroup);
+    var livingGroup = el('div', 'form-group');
+    var livingLabel = el('label', 'form-label'); txt(livingLabel, 'Living expenses (\u20a6)');
+    var livingInput = el('input', 'form-input');
+    livingInput.type = 'number'; livingInput.placeholder = '800000';
+    livingGroup.appendChild(livingLabel); livingGroup.appendChild(livingInput);
+    body.appendChild(livingGroup);
+    var proofRow = el('div', 'proof-target-row');
+    var proofLabel = el('span', 'proof-target-label'); txt(proofLabel, 'Proof target');
+    var proofValue = el('span', 'proof-target-value'); txt(proofValue, '\u20a6 0');
+    proofRow.appendChild(proofLabel); proofRow.appendChild(proofValue);
+    body.appendChild(proofRow);
+    function updateProofTarget() {
+      var t = parseInt(tuitionInput.value) || 0;
+      var l = parseInt(livingInput.value) || 0;
+      var total = t + l;
+      txt(proofValue, '\u20a6 ' + total.toLocaleString());
+    }
+    tuitionInput.oninput = updateProofTarget;
+    livingInput.oninput = updateProofTarget;
     var g4 = el('div', 'form-group');
     g4.appendChild(txt(el('label', 'form-label'), 'Status'));
     var sr = el('div'); sr.style.cssText = 'display:flex;gap:20px;margin-top:6px;';
