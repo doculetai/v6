@@ -68,7 +68,7 @@ export function DocumentsPageClient() {
   const utils = trpc.useUtils();
   const [fileInputKey, setFileInputKey] = useState(buildFileInputKey);
   const [uploadStage, setUploadStage] = useState<UploadStage | null>(null);
-  const [dismissOcrCard, setDismissOcrCard] = useState(false);
+  const [showOcrCardState, setShowOcrCardState] = useState<'visible' | 'dismissed'>('visible');
   const [previewDocumentId, setPreviewDocumentId] = useState<string | null>(null);
 
   const handleProgressComplete = useCallback(() => {
@@ -129,17 +129,26 @@ export function DocumentsPageClient() {
 
   const latestOcrRun = latestOcrRunQuery.data;
   const showOcrCard =
-    !dismissOcrCard &&
-    latestOcrRun?.status === 'completed' &&
-    (latestOcrRun.extractedName !== null || latestOcrRun.extractedBalance !== null);
+    showOcrCardState === 'visible' &&
+    latestOcrRun?.status === 'completed';
 
   const allApproved =
     (studentDocumentsQuery.data?.length ?? 0) > 0 &&
     (studentDocumentsQuery.data?.every((d) => d.status === 'approved') ?? false);
 
+  const cancelPendingDocumentMutation = trpc.student.cancelPendingDocument.useMutation({
+    onSuccess: async () => {
+      setShowOcrCardState('dismissed');
+      await Promise.all([
+        utils.student.listDocuments.invalidate(),
+        utils.student.getLatestOcrRun.invalidate(),
+      ]);
+    },
+  });
+
   const uploadDocumentMutation = trpc.student.uploadDocument.useMutation({
     onSuccess: async () => {
-      setDismissOcrCard(false);
+      setShowOcrCardState('visible');
       await Promise.all([
         utils.student.listDocuments.invalidate(),
         utils.student.getLatestOcrRun.invalidate(),
@@ -249,7 +258,11 @@ export function DocumentsPageClient() {
           }
           confidence={latestOcrRun.confidence}
           onPreview={() => setPreviewDocumentId(latestOcrRun.documentId)}
-          onDismiss={() => setDismissOcrCard(true)}
+          onConfirm={() => setShowOcrCardState('dismissed')}
+          onCancel={() => {
+            cancelPendingDocumentMutation.mutate({ documentId: latestOcrRun.documentId });
+          }}
+          isCancelling={cancelPendingDocumentMutation.isPending}
         />
       ) : null}
 

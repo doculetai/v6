@@ -322,7 +322,7 @@ export const studentCopy = {
 
   ocrCard: {
     title: 'Statement submitted',
-    submittedLabel: 'Submitted for review',
+    submittedLabel: 'Review the extracted details and confirm before submitting.',
     fieldLabels: {
       accountHolder: 'Account holder',
       balance: 'Balance',
@@ -331,6 +331,20 @@ export const studentCopy = {
     dismissCta: 'Dismiss',
     previewCta: 'Preview',
     confidenceLabel: (pct: number) => `${Math.round(pct * 100)}% match confidence`,
+    ocrConfirm: 'Confirm and submit',
+    ocrCancel: 'Cancel \u2014 re-upload',
+    ocrManualNote: 'We could not read this document automatically.',
+    ocrCancelling: 'Cancelling\u2026',
+    manualFields: {
+      namePlaceholder: 'Account holder name',
+      nameLabel: 'Account holder name',
+      accountNumberPlaceholder: 'Account number',
+      accountNumberLabel: 'Account number',
+      bankNamePlaceholder: 'Bank name',
+      bankNameLabel: 'Bank name',
+      balancePlaceholder: 'Balance (e.g. 1500000)',
+      balanceLabel: 'Balance (NGN)',
+    },
   },
 
   proof: {

@@ -1,9 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 import { TRPCError } from '@trpc/server';
-import { desc, eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
+import { removeDocumentFile } from '@/lib/storage';
+
 import { documents } from '@/db/schema';
+import { getPipelineRunByDocumentId } from '@/db/queries/pipeline-runs';
+import { processBankStatementPipeline } from '@/lib/ocr/process-bank-statement';
+import { mapLatestOcrRun } from './student-documents.ocr';
 import {
   maxDocumentUploadSizeBytes,
   studentDocumentStatusValues,
@@ -36,6 +41,34 @@ const uploadDocumentInputSchema = z.object({
   fileSizeBytes: z.number().int().positive().max(maxDocumentUploadSizeBytes),
   fileBase64: z.string().min(1).max(12 * 1024 * 1024),
 });
+
+const latestOcrRunOutputSchema = z
+  .object({
+    documentId: z.string().uuid(),
+    status: z.enum([
+      'pending',
+      'intake',
+      'fast_ocr',
+      'fast_validation',
+      'fast_complete',
+      'deep_ocr',
+      'deep_fraud',
+      'consensus',
+      'completed',
+      'failed',
+      'partial',
+    ]),
+    progress: z.number().int().min(0).max(100),
+    extractedName: z.string().nullable(),
+    extractedBalance: z.number().nullable(),
+    confidence: z.number().min(0).max(1).nullable(),
+    riskCategory: z.enum(['low', 'medium', 'high', 'critical']).nullable(),
+    compositeScore: z.number().int().nullable(),
+    autoDecision: z.enum(['approve', 'review', 'reject']).nullable(),
+    errorMessage: z.string().nullable(),
+    currentStep: z.string().nullable(),
+  })
+  .nullable();
 
 function getStorageClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -82,6 +115,27 @@ function decodeFileBase64(fileBase64: string, expectedSize: number) {
 }
 
 export const documentProcedures = {
+  getLatestOcrRun: roleProcedure('student')
+    .output(latestOcrRunOutputSchema)
+    .query(async ({ ctx }) => {
+      const latestBankStatement = await ctx.db.query.documents.findFirst({
+        where: and(eq(documents.userId, ctx.user.id), eq(documents.type, 'bank_statement')),
+        columns: { id: true },
+        orderBy: [desc(documents.createdAt)],
+      });
+
+      if (!latestBankStatement) {
+        return null;
+      }
+
+      const run = await getPipelineRunByDocumentId(ctx.db, latestBankStatement.id);
+      if (!run) {
+        return null;
+      }
+
+      return mapLatestOcrRun(latestBankStatement.id, run);
+    }),
+
   listDocuments: roleProcedure('student')
     .output(z.array(studentDocumentOutputSchema))
     .query(async ({ ctx }) => {
@@ -122,10 +176,47 @@ export const documentProcedures = {
           throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: storageUploadErrorMessage });
         }
 
+        // Run OCR pipeline for bank statement uploads (fire-and-forget)
+        if (input.documentType === 'bank_statement') {
+          processBankStatementPipeline(
+            ctx.db,
+            createdDocument.id,
+            ctx.user.id,
+            fileBuffer,
+            input.mimeType,
+            input.fileName,
+          );
+        }
+
         return createdDocument;
       } catch {
         await storageClient.storage.from(storageBucketName).remove([storagePath]);
         throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: storageUploadErrorMessage });
       }
+    }),
+
+  cancelPendingDocument: roleProcedure('student')
+    .input(z.object({ documentId: z.string().uuid() }))
+    .output(z.void())
+    .mutation(async ({ ctx, input }) => {
+      const doc = await ctx.db.query.documents.findFirst({
+        where: and(eq(documents.id, input.documentId), eq(documents.userId, ctx.user.id)),
+        columns: { id: true, status: true, storageUrl: true },
+      });
+
+      if (!doc) {
+        throw new TRPCError({ code: 'NOT_FOUND' });
+      }
+
+      if (doc.status !== 'pending') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Only pending documents can be cancelled.',
+        });
+      }
+
+      await removeDocumentFile(doc.storageUrl);
+
+      await ctx.db.delete(documents).where(eq(documents.id, doc.id));
     }),
 };
