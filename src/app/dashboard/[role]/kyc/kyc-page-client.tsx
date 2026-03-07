@@ -59,7 +59,7 @@ function OverallStatusBanner({
   const badgeClass = {
     not_started: 'bg-muted text-muted-foreground border-0',
     pending: 'bg-muted text-muted-foreground border-0',
-    verified: 'bg-primary/10 text-primary border-0',
+    verified: 'bg-[#15803D]/10 text-[#15803D] border-0',
     failed: 'bg-destructive/10 text-destructive border-0',
   }[status];
 
@@ -138,7 +138,7 @@ function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityForm
       </div>
 
       <div className="flex gap-2">
-        <Button type="submit" size="sm" disabled={isSubmitting || mutation.isPending} className="min-h-9">
+        <Button type="submit" size="sm" disabled={isSubmitting || mutation.isPending} className="min-h-9 bg-[#15803D] hover:bg-[#15803D]/90 text-white">
           {copy.form.submitCta}
         </Button>
         <Button
@@ -186,7 +186,7 @@ function TierCard({
     return (
       <Card className="border-border bg-card">
         <CardHeader className="flex flex-row items-start gap-3 pb-2">
-          <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
+          <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-[#15803D]" aria-hidden="true" />
           <div className="min-w-0">
             <CardTitle className="text-base font-semibold text-card-foreground">
               {tier.tierHeading} — {tier.label}
@@ -195,7 +195,7 @@ function TierCard({
               {tier.description}
             </CardDescription>
           </div>
-          <Badge className="ml-auto shrink-0 bg-primary/10 text-primary border-0">
+          <Badge className="ml-auto shrink-0 bg-[#15803D]/10 text-[#15803D] border-0">
             {statusLabels.verified}
           </Badge>
         </CardHeader>
@@ -210,7 +210,7 @@ function TierCard({
   const isPending = kycStatus === 'pending';
 
   const statusBadge = isVerified ? (
-    <Badge className="ml-auto shrink-0 bg-primary/10 text-primary border-0">
+    <Badge className="ml-auto shrink-0 bg-[#15803D]/10 text-[#15803D] border-0">
       {statusLabels.verified}
     </Badge>
   ) : isPending ? (
@@ -224,7 +224,7 @@ function TierCard({
   ) : null;
 
   const headingIcon = isVerified ? (
-    <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
+    <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-[#15803D]" aria-hidden="true" />
   ) : isFailed ? (
     <XCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden="true" />
   ) : (
@@ -298,7 +298,7 @@ function FeedbackBanner({ feedback }: { feedback: FeedbackState }) {
         {feedback.kind === 'error' ? (
           <Warning weight="duotone" className="mt-0.5 size-5 text-destructive" aria-hidden="true" />
         ) : (
-          <CheckCircle weight="duotone" className="mt-0.5 size-5 text-primary" aria-hidden="true" />
+          <CheckCircle weight="duotone" className="mt-0.5 size-5 text-[#15803D]" aria-hidden="true" />
         )}
         <p
           className={
