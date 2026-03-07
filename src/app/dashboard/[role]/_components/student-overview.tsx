@@ -29,6 +29,7 @@ import { api } from '@/trpc/server';
 import { StudentSponsorInviteCard } from '@/components/student/StudentSponsorInviteCard';
 import { SponsorCommittedCard } from '@/components/student/SponsorCommittedCard';
 import { SponsorWithdrawnCard } from '@/components/student/SponsorWithdrawnCard';
+import { CertIssuedOverviewCard } from '@/components/student/CertIssuedOverviewCard';
 
 import { StatCard } from './overview-shared';
 import { routes } from '@/config/routes';
@@ -361,11 +362,13 @@ export async function StudentOverview({
     copy.recentActivity,
   );
 
+  const pageTitle = proofReady ? copy.postCert.heading : copy.title;
+
   return (
     <PageShell width="wide">
       <Section>
         <PageHeader
-          title={copy.title}
+          title={pageTitle}
           description={copy.welcomeTitle(firstName)}
         />
 
@@ -373,146 +376,232 @@ export async function StudentOverview({
           {/* School deactivated alert — always at top when present */}
           {schoolDeactivated ? <SchoolAlert /> : null}
 
-          {/* State banners — mutually exclusive */}
+          {/* Post-cert: certificate card elevated to top, no progress tracker */}
           {proofReady ? (
-            <CertifiedBanner
-              firstName={firstName}
-              schoolName={selectedSchool?.name ?? null}
-            />
-          ) : isBrandNew ? (
-            <FirstTimeBanner />
-          ) : null}
+            <>
+              <CertIssuedOverviewCard
+                certificateId={proofCertificate?.certificate.certificateId ?? null}
+                issuedAt={proofCertificate?.certificate.issuedAt ?? null}
+              />
 
-          {/* Tabs: Journey | Activity */}
-          <Tabs defaultValue="journey">
-            {/* Tab list — editorial underline style via inline override */}
-            <TabsList
-              aria-label={copy.tabs.ariaLabel}
-              className="h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0"
-            >
-              <TabsTrigger
-                value="journey"
-                className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
-              >
-                {copy.tabs.journey}
-              </TabsTrigger>
-              <TabsTrigger
-                value="activity"
-                className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
-              >
-                {copy.tabs.activity}
-              </TabsTrigger>
-            </TabsList>
+              {/* Tabs: Activity only (journey tracker removed post-cert) */}
+              <Tabs defaultValue="activity">
+                <TabsList
+                  aria-label={copy.tabs.ariaLabel}
+                  className="h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0"
+                >
+                  <TabsTrigger
+                    value="activity"
+                    className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                  >
+                    {copy.tabs.activity}
+                  </TabsTrigger>
+                </TabsList>
 
-            {/* Journey tab */}
-            <TabsContent value="journey" className="mt-6 outline-none">
-              <Stack gap="md">
-                {/* Journey stages tracker */}
-                <div className="rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
-                  <JourneyProgress
-                    stages={journeyState.stages}
-                    nextAction={journeyState.nextAction}
-                    allComplete={journeyState.allComplete}
-                    completionMessage={journeyState.completionMessage}
-                  />
-                </div>
+                <TabsContent value="activity" className="mt-6 outline-none">
+                  <Stack gap="md">
+                    {/* Stat cards */}
+                    <Grid cols={{ sm: 3 }} gap="md">
+                      <StatCard
+                        label={copy.stats.verification.label}
+                        value={
+                          completionPercent > 0
+                            ? copy.stats.verification.percent(completionPercent)
+                            : copy.stats.verification.notStartedLabel
+                        }
+                        sub={highestTier > 0 ? copy.stats.verification.tierPassed(highestTier) : ''}
+                        accent={completionPercent > 0}
+                        href={routes.dashboard.student.verification}
+                      />
+                      <StatCard
+                        label={copy.stats.documents.label}
+                        value={copy.stats.documents.countLabel(uploadedCount, totalRequired)}
+                        sub={
+                          approvedCount === uploadedCount && uploadedCount > 0
+                            ? copy.stats.documents.allApprovedLabel
+                            : copy.stats.documents.approvedCount(approvedCount)
+                        }
+                        accent={uploadedCount > 0}
+                        href={routes.dashboard.student.documents}
+                      />
+                      <StatCard
+                        label={copy.stats.bankAccount.label}
+                        value={
+                          selectedProgram
+                            ? copy.stats.bankAccount.balanceVsTarget(
+                                formatCurrency(
+                                  balance?.hasVerifiedBalance && balance.verifiedAmountKobo != null
+                                    ? balance.verifiedAmountKobo / 100
+                                    : 0,
+                                ),
+                                formatCurrency(selectedProgram.tuitionAmount / 100),
+                              )
+                            : bankConnected
+                              ? copy.stats.bankAccount.linkedLabel
+                              : copy.stats.bankAccount.notStartedLabel
+                        }
+                        valueClassName="font-mono tabular-nums"
+                        sub={
+                          selectedProgram
+                            ? bankConnected
+                              ? bankName ?? copy.stats.bankAccount.linkedLabel
+                              : copy.stats.bankAccount.requiredSub
+                            : copy.stats.bankAccount.selectProgramSub
+                        }
+                        accent={bankConnected}
+                        href={routes.dashboard.student.documentsBank}
+                      />
+                    </Grid>
 
-                {/* Sponsor invite card — only for sponsor/corporate funding with no accepted sponsor yet */}
-                {showSponsorInviteCard ? <StudentSponsorInviteCard /> : null}
+                    {/* Activity timeline */}
+                    <div className="rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
+                      {activityItems.length > 0 ? (
+                        <ActivityTimeline items={activityItems} />
+                      ) : (
+                        <ActivityEmptyState />
+                      )}
+                    </div>
+                  </Stack>
+                </TabsContent>
+              </Tabs>
+            </>
+          ) : (
+            <>
+              {/* Pre-cert: first-time banner */}
+              {isBrandNew ? <FirstTimeBanner /> : null}
 
-                {/* Committed sponsor cards */}
-                {committedSponsors.map((s) => (
-                  <SponsorCommittedCard
-                    key={s.id}
-                    sponsorName={s.sponsorName}
-                    amountKobo={s.amountKobo}
-                    currency={s.currency}
-                    fundingTypeLabel={s.fundingTypeLabel}
-                  />
-                ))}
+              {/* Tabs: Journey | Activity */}
+              <Tabs defaultValue="journey">
+                {/* Tab list — editorial underline style via inline override */}
+                <TabsList
+                  aria-label={copy.tabs.ariaLabel}
+                  className="h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0"
+                >
+                  <TabsTrigger
+                    value="journey"
+                    className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                  >
+                    {copy.tabs.journey}
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="activity"
+                    className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                  >
+                    {copy.tabs.activity}
+                  </TabsTrigger>
+                </TabsList>
 
-                {/* Withdrawn sponsor cards */}
-                {withdrawnSponsors.map((s) => (
-                  <SponsorWithdrawnCard
-                    key={s.id}
-                    sponsorName={s.sponsorName}
-                    setupHref={routes.dashboard.student.setup}
-                  />
-                ))}
+                {/* Journey tab */}
+                <TabsContent value="journey" className="mt-6 outline-none">
+                  <Stack gap="md">
+                    {/* Journey stages tracker */}
+                    <div className="rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
+                      <JourneyProgress
+                        stages={journeyState.stages}
+                        nextAction={journeyState.nextAction}
+                        allComplete={journeyState.allComplete}
+                        completionMessage={journeyState.completionMessage}
+                      />
+                    </div>
 
-                {/* Stat cards */}
-                <Grid cols={{ sm: 3 }} gap="md">
-                  <StatCard
-                    label={copy.stats.verification.label}
-                    value={
-                      completionPercent > 0
-                        ? copy.stats.verification.percent(completionPercent)
-                        : copy.stats.verification.notStartedLabel
-                    }
-                    sub={highestTier > 0 ? copy.stats.verification.tierPassed(highestTier) : ''}
-                    accent={completionPercent > 0}
-                    href={routes.dashboard.student.verification}
-                  />
-                  <StatCard
-                    label={copy.stats.documents.label}
-                    value={copy.stats.documents.countLabel(uploadedCount, totalRequired)}
-                    sub={
-                      approvedCount === uploadedCount && uploadedCount > 0
-                        ? copy.stats.documents.allApprovedLabel
-                        : copy.stats.documents.approvedCount(approvedCount)
-                    }
-                    accent={uploadedCount > 0}
-                    href={routes.dashboard.student.documents}
-                  />
-                  <StatCard
-                    label={copy.stats.bankAccount.label}
-                    value={
-                      selectedProgram
-                        ? copy.stats.bankAccount.balanceVsTarget(
-                            formatCurrency(
-                              balance?.hasVerifiedBalance && balance.verifiedAmountKobo != null
-                                ? balance.verifiedAmountKobo / 100
-                                : 0,
-                            ),
-                            formatCurrency(selectedProgram.tuitionAmount / 100),
-                          )
-                        : bankConnected
-                          ? copy.stats.bankAccount.linkedLabel
-                          : copy.stats.bankAccount.notStartedLabel
-                    }
-                    valueClassName="font-mono tabular-nums"
-                    sub={
-                      selectedProgram
-                        ? bankConnected
-                          ? bankName ?? copy.stats.bankAccount.linkedLabel
-                          : copy.stats.bankAccount.requiredSub
-                        : copy.stats.bankAccount.selectProgramSub
-                    }
-                    accent={bankConnected}
-                    href={routes.dashboard.student.documentsBank}
-                  />
-                </Grid>
+                    {/* Sponsor invite card — only for sponsor/corporate funding with no accepted sponsor yet */}
+                    {showSponsorInviteCard ? <StudentSponsorInviteCard /> : null}
 
-                {/* School strip */}
-                <SchoolStrip
-                  schoolName={selectedSchool?.name ?? null}
-                  programName={selectedProgram?.name ?? null}
-                  durationMonths={selectedProgram?.durationMonths ?? null}
-                />
-              </Stack>
-            </TabsContent>
+                    {/* Committed sponsor cards */}
+                    {committedSponsors.map((s) => (
+                      <SponsorCommittedCard
+                        key={s.id}
+                        sponsorName={s.sponsorName}
+                        amountKobo={s.amountKobo}
+                        currency={s.currency}
+                        fundingTypeLabel={s.fundingTypeLabel}
+                      />
+                    ))}
 
-            {/* Activity tab */}
-            <TabsContent value="activity" className="mt-6 outline-none">
-              <div className="rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
-                {activityItems.length > 0 ? (
-                  <ActivityTimeline items={activityItems} />
-                ) : (
-                  <ActivityEmptyState />
-                )}
-              </div>
-            </TabsContent>
-          </Tabs>
+                    {/* Withdrawn sponsor cards */}
+                    {withdrawnSponsors.map((s) => (
+                      <SponsorWithdrawnCard
+                        key={s.id}
+                        sponsorName={s.sponsorName}
+                        setupHref={routes.dashboard.student.setup}
+                      />
+                    ))}
+
+                    {/* Stat cards */}
+                    <Grid cols={{ sm: 3 }} gap="md">
+                      <StatCard
+                        label={copy.stats.verification.label}
+                        value={
+                          completionPercent > 0
+                            ? copy.stats.verification.percent(completionPercent)
+                            : copy.stats.verification.notStartedLabel
+                        }
+                        sub={highestTier > 0 ? copy.stats.verification.tierPassed(highestTier) : ''}
+                        accent={completionPercent > 0}
+                        href={routes.dashboard.student.verification}
+                      />
+                      <StatCard
+                        label={copy.stats.documents.label}
+                        value={copy.stats.documents.countLabel(uploadedCount, totalRequired)}
+                        sub={
+                          approvedCount === uploadedCount && uploadedCount > 0
+                            ? copy.stats.documents.allApprovedLabel
+                            : copy.stats.documents.approvedCount(approvedCount)
+                        }
+                        accent={uploadedCount > 0}
+                        href={routes.dashboard.student.documents}
+                      />
+                      <StatCard
+                        label={copy.stats.bankAccount.label}
+                        value={
+                          selectedProgram
+                            ? copy.stats.bankAccount.balanceVsTarget(
+                                formatCurrency(
+                                  balance?.hasVerifiedBalance && balance.verifiedAmountKobo != null
+                                    ? balance.verifiedAmountKobo / 100
+                                    : 0,
+                                ),
+                                formatCurrency(selectedProgram.tuitionAmount / 100),
+                              )
+                            : bankConnected
+                              ? copy.stats.bankAccount.linkedLabel
+                              : copy.stats.bankAccount.notStartedLabel
+                        }
+                        valueClassName="font-mono tabular-nums"
+                        sub={
+                          selectedProgram
+                            ? bankConnected
+                              ? bankName ?? copy.stats.bankAccount.linkedLabel
+                              : copy.stats.bankAccount.requiredSub
+                            : copy.stats.bankAccount.selectProgramSub
+                        }
+                        accent={bankConnected}
+                        href={routes.dashboard.student.documentsBank}
+                      />
+                    </Grid>
+
+                    {/* School strip */}
+                    <SchoolStrip
+                      schoolName={selectedSchool?.name ?? null}
+                      programName={selectedProgram?.name ?? null}
+                      durationMonths={selectedProgram?.durationMonths ?? null}
+                    />
+                  </Stack>
+                </TabsContent>
+
+                {/* Activity tab */}
+                <TabsContent value="activity" className="mt-6 outline-none">
+                  <div className="rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
+                    {activityItems.length > 0 ? (
+                      <ActivityTimeline items={activityItems} />
+                    ) : (
+                      <ActivityEmptyState />
+                    )}
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </>
+          )}
         </Stack>
       </Section>
     </PageShell>

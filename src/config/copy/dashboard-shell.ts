@@ -1,4 +1,5 @@
 import type { DashboardRole } from '@/config/roles';
+import { routes } from '@/config/routes';
 import type { StudentDocumentType } from '@/lib/documents';
 
 type OverviewCopy = {
@@ -104,7 +105,7 @@ export const studentHomeCopy = {
     heading: 'No active application',
     description: 'Complete four steps to receive your proof of funds certificate.',
     cta: 'Begin your application',
-    ctaHref: '/dashboard/student/setup',
+    ctaHref: routes.dashboard.student.setup,
   },
   inProgress: {
     heading: 'Continue your application',
@@ -117,7 +118,17 @@ export const studentHomeCopy = {
       `${name} — ${school}`,
     descriptionNoSchool: (name: string) => `Issued to ${name}`,
     cta: 'View your certificate',
-    ctaHref: '/dashboard/student/proof',
+    ctaHref: routes.dashboard.student.proof,
+  },
+  postCert: {
+    heading: 'Your proof of funds is verified.',
+    certCard: {
+      eyebrow: 'Certificate',
+      idLabel: 'Certificate ID',
+      issuedLabel: 'Issued',
+      viewCta: 'View certificate',
+      viewHref: routes.dashboard.student.proof,
+    },
   },
   schoolAlert: {
     message: 'Your selected school is no longer active. Contact support to continue your application.',
@@ -153,7 +164,7 @@ export const studentHomeCopy = {
     notSelectedTitle: 'No institution selected',
     notSelectedDescription: 'Browse partner institutions to set your funding target.',
     ctaLabel: 'Browse schools',
-    ctaHref: '/dashboard/student/schools',
+    ctaHref: routes.dashboard.student.schools,
     programLabel: 'Programme',
     durationLabel: (months: number) => `${months} months`,
   },
@@ -187,25 +198,25 @@ export const studentHomeCopy = {
         label: 'Profile setup',
         description: 'Choose your school and program to set your funding target.',
         cta: 'Set up your profile',
-        href: '/dashboard/student/setup',
+        href: routes.dashboard.student.setup,
       },
       verification: {
         label: 'Identity verification',
         description: 'Confirm your phone number, identity, and bank details.',
         cta: 'Continue verification',
-        href: '/dashboard/student/verification',
+        href: routes.dashboard.student.verification,
       },
       documents: {
         label: 'Bank statement',
         description: 'Upload a bank statement showing your available balance.',
         cta: 'Upload statement',
-        href: '/dashboard/student/documents',
+        href: routes.dashboard.student.documents,
       },
       proof: {
         label: 'Certificate',
         description: 'Your application is complete. Review your proof of funds certificate.',
         cta: 'View certificate',
-        href: '/dashboard/student/proof',
+        href: routes.dashboard.student.proof,
       },
     },
   },
@@ -216,37 +227,36 @@ export const dashboardOverviewCopy: Record<DashboardRole, OverviewCopy> = {
     title: 'Welcome back, Student',
     description: 'Review your funding progress and keep your verification timeline moving.',
     ctaLabel: 'Continue verification',
-    ctaHref: '/dashboard/student/verification',
+    ctaHref: routes.dashboard.student.verification,
   },
   sponsor: {
     title: 'Welcome back, Sponsor',
     description: 'Track commitments and confirm the next disbursement milestone with confidence.',
     ctaLabel: 'Review disbursements',
-    ctaHref: '/dashboard/sponsor/disbursements',
+    ctaHref: routes.dashboard.sponsor.disbursements,
   },
   university: {
     title: 'Welcome back, University',
     description: 'Validate student funding records and clear pending enrollment decisions.',
     ctaLabel: 'Open pipeline',
-    ctaHref: '/dashboard/university/pipeline',
+    ctaHref: routes.dashboard.university.pipeline,
   },
   admin: {
     title: 'Welcome back, Admin',
     description: 'Keep platform operations healthy by reviewing active risk and support signals.',
     ctaLabel: 'Check operations',
-    ctaHref: '/dashboard/admin/operations',
+    ctaHref: routes.dashboard.admin.operations,
   },
   agent: {
     title: 'Welcome back, Agent',
     description: 'Guide your active students through the next steps in their funding journey.',
     ctaLabel: 'Open student cases',
-    ctaHref: '/dashboard/agent/cases',
+    ctaHref: routes.dashboard.agent.students,
   },
   partner: {
     title: 'Welcome back, Partner',
     description: 'Monitor embedded performance and move your institution integration forward.',
     ctaLabel: 'View integrations',
-    ctaHref: '/dashboard/partner/integrations',
+    ctaHref: routes.dashboard.partner.integrations,
   },
 };
-
