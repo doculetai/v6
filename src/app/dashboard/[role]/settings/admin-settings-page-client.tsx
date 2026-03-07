@@ -7,6 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Container, Stack } from '@/components/layout/content-primitives';
+import { SessionManagementWithData } from '@/components/settings/SessionManagementWithData';
 import { adminCopy } from '@/config/copy/admin';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -19,7 +21,7 @@ type Props = {
 
 export function AdminSettingsPageClient({ copy }: Props) {
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-6">
+    <Container width="md" noPadding><Stack gap="md">
       <div className="space-y-1 border-b border-border pb-4">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           {copy.title}
@@ -38,9 +40,7 @@ export function AdminSettingsPageClient({ copy }: Props) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {copy.sections.security.comingSoon}
-          </p>
+          <SessionManagementWithData />
         </CardContent>
       </Card>
 
@@ -60,6 +60,6 @@ export function AdminSettingsPageClient({ copy }: Props) {
           </p>
         </CardContent>
       </Card>
-    </div>
+    </Stack></Container>
   );
 }

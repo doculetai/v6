@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertTriangle, Loader2 } from 'lucide-react';
+import { Warning, CircleNotch } from '@/components/icons';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,10 +17,13 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PageHeader } from '@/components/ui/page-header';
+import { Container, Stack } from '@/components/layout/content-primitives';
+import { PageHeader } from '@/components/layout/page-header';
+import { SessionManagementWithData } from '@/components/settings/SessionManagementWithData';
 import { browserTrpcClient } from '@/trpc/client';
 
 import { FormErrorBanner, FormSuccessBanner } from './settings-shared';
+import { routes } from '@/config/routes';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -55,6 +58,10 @@ type PartnerSettingsCopy = {
     loadError: string;
     saveError: string;
     tryAgain: string;
+  };
+  security: {
+    sectionTitle: string;
+    sectionDescription: string;
   };
 };
 
@@ -197,7 +204,7 @@ function PartnerProfileForm({
             <Button type="submit" className="min-h-11" disabled={isSubmitting}>
               {isSubmitting ? (
                 <span className="inline-flex items-center gap-2">
-                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  <CircleNotch weight="bold" className="size-4 animate-spin" aria-hidden="true" />
                   {copy.profile.savingLabel}
                 </span>
               ) : (
@@ -216,29 +223,42 @@ function PartnerProfileForm({
 export function PartnerSettingsPageClient({ settings, copy }: Props) {
   if (!settings) {
     return (
-      <div className="mx-auto w-full max-w-2xl">
-        <h1 className="sr-only">{copy.title}</h1>
+      <Container width="md" noPadding>
+        <PageHeader title={copy.title} subtitle={copy.subtitle} />
         <Card className="border-border bg-card dark:border-border dark:bg-card">
           <CardHeader className="space-y-3">
-            <AlertTriangle className="size-5 text-destructive" aria-hidden="true" />
+            <Warning weight="duotone" className="size-5 text-destructive" aria-hidden="true" />
             <CardTitle className="text-lg text-card-foreground">
               {copy.errors.loadError}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline" className="min-h-11">
-              <Link href="/dashboard/partner/settings">{copy.errors.tryAgain}</Link>
+              <Link href={routes.dashboard.partner.settings}>{copy.errors.tryAgain}</Link>
             </Button>
           </CardContent>
         </Card>
-      </div>
+      </Container>
     );
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-6">
+    <Container width="md" noPadding><Stack gap="md">
       <PageHeader title={copy.title} subtitle={copy.subtitle} />
       <PartnerProfileForm settings={settings} copy={copy} />
-    </div>
+      <Card className="border-border bg-card dark:border-border dark:bg-card">
+        <CardHeader>
+          <CardTitle className="text-base font-semibold text-card-foreground">
+            {copy.security.sectionTitle}
+          </CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
+            {copy.security.sectionDescription}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SessionManagementWithData />
+        </CardContent>
+      </Card>
+    </Stack></Container>
   );
 }

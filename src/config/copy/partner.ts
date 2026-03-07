@@ -373,6 +373,10 @@ export const partnerCopy = {
       saveError: 'Failed to save settings. Please try again.',
       tryAgain: 'Try again',
     },
+    security: {
+      sectionTitle: 'Security',
+      sectionDescription: 'Active sessions for your account. Revoke sessions on devices you no longer use.',
+    },
   },
 
   ledger: {
