@@ -1404,6 +1404,18 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 }
 .proof-target-label { font-size: 13px; color: rgba(100,116,139,0.8); }
 .proof-target-value { font-family: var(--font-mono); font-size: 15px; font-weight: 600; color: #2B39A3; }
+
+/* ── Partner webhook disabled banner ── */
+.webhook-disabled-banner {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; border-radius: 10px;
+  background: rgba(194,65,12,0.06); border: 1px solid rgba(194,65,12,0.2);
+  margin-bottom: 16px;
+}
+.webhook-disabled-icon { flex-shrink: 0; color: #C2410C; margin-top: 1px; }
+.webhook-disabled-text { flex: 1; }
+.webhook-disabled-title { font-size: 14px; font-weight: 600; color: #C2410C; margin-bottom: 4px; }
+.webhook-disabled-body { font-size: 13px; color: rgba(194,65,12,0.8); line-height: 1.5; margin-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -3377,19 +3389,33 @@ var STATE_OVERRIDES = {
         section: 'Your API keys',
         cols: ['Name', 'Key', 'Last used', ''],
         rows: [
-          { cells:['Production key',   'sk_live_••••••••••••••••KA92', 'Today',    'Rotate'], badge:0 },
-          { cells:['Secondary (live)', 'sk_live_••••••••••••••••HJ34', 'Yesterday','Rotate'], badge:0 },
-          { cells:['Test key',         'sk_test_••••••••••••••••TQ81', '5 Mar',    'Rotate'], badge:0 },
+          { cells:['Production key',   'sk_live_\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022KA92', 'Today',    'Rotate'], badge:0 },
+          { cells:['Secondary (live)', 'sk_live_\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022HJ34', 'Yesterday','Rotate'], badge:0 },
+          { cells:['Test key',         'sk_test_\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022TQ81', '5 Mar',    'Rotate'], badge:0 },
         ],
         keyDetail: {
           name: 'Production key',
-          key: 'sk_live_••••••••••••••••KA92',
+          key: 'sk_live_\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022KA92',
           created: '1 Jan 2026',
           lastUsed: 'Today at 14:32',
           callsToday: '1,240',
           callsMonth: '38,412',
           scopes: ['verify:read', 'certificate:read', 'student:read', 'webhook:write'],
         },
+      },
+    },
+
+    /* webhook_disabled: webhook deliveries paused after repeated failures */
+    webhook_disabled: {
+      'Settings': {
+        type: 'settings',
+        h1: 'Settings',
+        eyebrow: 'Partner account',
+        tabs: ['Profile', 'API', 'Webhooks'],
+        activeTab: 'API',
+        webhookStatus: 'disabled',
+        webhookUrl: 'https://api.yourplatform.com/webhooks/doculet',
+        webhookDisabledReason: 'Webhook deliveries were paused after 3 consecutive failures. Re-enable to resume event delivery.',
       },
     },
   },
@@ -4247,9 +4273,21 @@ function renderSettings(page, main) {
       var sr = el('div', 'form-save'); var sb = el('button', 'btn-primary'); sb.textContent = 'Save settings'; sr.appendChild(sb); form.appendChild(sr);
 
     } else if (tabName === 'API') {
+      if (page.webhookStatus === 'disabled') {
+        var banner = el('div', 'webhook-disabled-banner');
+        var iconWrap = el('div', 'webhook-disabled-icon');
+        iconWrap.innerHTML = '<svg width="18" height="18" viewBox="0 0 256 256" fill="currentColor"><path d="M236.8,188.09,149.35,36.22a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/></svg>';
+        var textWrap = el('div', 'webhook-disabled-text');
+        textWrap.appendChild(txt(el('div', 'webhook-disabled-title'), 'Webhooks paused'));
+        textWrap.appendChild(txt(el('div', 'webhook-disabled-body'), page.webhookDisabledReason));
+        var reenableBtn = el('button', 'btn-primary'); reenableBtn.textContent = 'Re-enable webhooks';
+        reenableBtn.style.cssText = 'font-size:13px;padding:6px 14px;';
+        textWrap.appendChild(reenableBtn);
+        banner.appendChild(iconWrap); banner.appendChild(textWrap); form.appendChild(banner);
+      }
       form.appendChild(txt(el('div', 'section-label'), 'API configuration'));
       var g1 = el('div', 'form-group'); g1.appendChild(txt(el('label', 'form-label'), 'Webhook URL'));
-      var i1 = el('input', 'form-input'); i1.value = 'https://api.partnerco.io/webhooks/doculet'; g1.appendChild(i1); form.appendChild(g1);
+      var i1 = el('input', 'form-input'); i1.value = page.webhookUrl || 'https://api.partnerco.io/webhooks/doculet'; g1.appendChild(i1); form.appendChild(g1);
       var g2 = el('div', 'form-group'); g2.appendChild(txt(el('label', 'form-label'), 'Signing secret'));
       var i2 = el('input', 'form-input'); i2.value = 'whsec_\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022'; g2.appendChild(i2); form.appendChild(g2);
       form.appendChild(el('div', 'form-divider'));
@@ -6618,11 +6656,12 @@ var ROLE_STATES = {
   ],
 
   partner: [
-    { group:'Default', id:'default',       label:'Overview'      },
-    { group:'API',     id:'api_error',     label:'API error'     },
-    { group:'API',     id:'high_usage',    label:'High usage'    },
-    { group:'Keys',    id:'api_key_view',  label:'API keys'      },
-    { group:'Keys',    id:'api_near_limit',label:'Near limit'    },
+    { group:'Default',   id:'default',         label:'Overview'      },
+    { group:'API',       id:'api_error',        label:'API error'     },
+    { group:'API',       id:'high_usage',       label:'High usage'    },
+    { group:'Keys',      id:'api_key_view',     label:'API keys'      },
+    { group:'Keys',      id:'api_near_limit',   label:'Near limit'    },
+    { group:'Webhooks',  id:'webhook_disabled', label:'Webhooks paused' },
   ],
 
 };
