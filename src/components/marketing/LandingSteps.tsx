@@ -13,7 +13,7 @@ export function LandingSteps() {
             {copy.steps.label}
           </p>
           <h2
-            className="text-[var(--fs-section-h2)] font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
+            className="text-section-h2 font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
           >
             {copy.steps.headline}
           </h2>

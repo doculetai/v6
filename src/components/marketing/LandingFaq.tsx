@@ -15,7 +15,7 @@ export function LandingFaq() {
         <LandingReveal>
           <div className="mb-2 flex items-end justify-between">
             <h2
-              className="text-[var(--fs-section-h2)] font-serif font-semibold tracking-tight text-[#2B39A3]"
+              className="text-section-h2 font-serif font-semibold tracking-tight text-[#2B39A3]"
             >
               {copy.faq.headline}
             </h2>

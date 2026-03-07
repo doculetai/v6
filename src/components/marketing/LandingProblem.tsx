@@ -13,7 +13,7 @@ export function LandingProblem() {
             {copy.problem.label}
           </p>
           <h2
-            className="max-w-2xl text-[var(--fs-section-h2)] font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
+            className="max-w-2xl text-section-h2 font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
           >
             {copy.problem.headline}{' '}
             <span className="text-foreground">{copy.problem.headlineAccent}</span>
@@ -30,7 +30,7 @@ export function LandingProblem() {
               <LandingReveal key={card.title} delay={i * 100}>
                 <div className="relative overflow-hidden rounded-2xl border border-border bg-white p-6 shadow-sm">
                   <p
-                    className="absolute bottom-4 right-5 text-[var(--fs-stat-watermark)] font-mono font-bold leading-none text-muted-foreground/10"
+                    className="absolute bottom-4 right-5 text-stat-watermark font-mono font-bold leading-none text-muted-foreground/10"
                     aria-hidden="true"
                   >
                     {card.stat}

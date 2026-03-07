@@ -19,7 +19,7 @@ export function LandingTrust() {
                 {copy.trust.label}
               </p>
               <h2
-                className="text-[var(--fs-section-h2)] font-serif font-semibold leading-tight tracking-tight text-white"
+                className="text-section-h2 font-serif font-semibold leading-tight tracking-tight text-white"
               >
                 {copy.trust.headline}
               </h2>
