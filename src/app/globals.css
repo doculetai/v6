@@ -111,15 +111,15 @@
   --chart-4: #D97706;
   --chart-5: #64748B;
 
-  /* Sidebar — dark shell with role accent */
-  --sidebar: #161A1D;
-  --sidebar-foreground: #F1F5F9;
+  /* Sidebar — light shell with role accent */
+  --sidebar: #FDFCFA;
+  --sidebar-foreground: #0F172A;
   --sidebar-primary: #2B39A3;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: rgba(255, 255, 255, 0.06);
-  --sidebar-accent-foreground: #F1F5F9;
-  --sidebar-border: rgba(255, 255, 255, 0.07);
-  --sidebar-ring: #93A6FF;
+  --sidebar-accent: rgba(0, 0, 0, 0.04);
+  --sidebar-accent-foreground: #0F172A;
+  --sidebar-border: rgba(0, 0, 0, 0.07);
+  --sidebar-ring: #2B39A3;
 
   /* Glass surfaces */
   --sidebar-glass-bg: rgba(22, 26, 29, 0.95);
