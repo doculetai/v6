@@ -185,7 +185,7 @@ export function NotificationsBell({ role, className }: NotificationsBellProps) {
           className,
         )}
       >
-        <Bell className="size-5" aria-hidden="true" />
+        <Bell weight="duotone" className="size-5" aria-hidden="true" />
         {unreadCount > 0 && (
           <span
             className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary"
