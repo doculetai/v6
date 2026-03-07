@@ -1,4 +1,4 @@
-import { eq, inArray } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
