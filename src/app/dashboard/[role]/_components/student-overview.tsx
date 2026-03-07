@@ -130,7 +130,7 @@ function FirstTimeBanner() {
           className="text-[10px] font-semibold uppercase tracking-widest"
           style={{ color: '#2B39A3' }}
         >
-          Application
+          {copy.eyebrow}
         </p>
         <p className="mt-1 text-sm font-semibold text-foreground">{copy.heading}</p>
         <p className="mt-0.5 text-sm text-muted-foreground">{copy.description}</p>

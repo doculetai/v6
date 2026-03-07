@@ -98,6 +98,7 @@ export const studentHomeCopy = {
     activity: 'Activity',
   },
   firstTime: {
+    eyebrow: 'Application',
     heading: 'Your application is not yet started',
     description: 'Complete four steps to receive your proof of funds certificate.',
     cta: 'Begin your application',
