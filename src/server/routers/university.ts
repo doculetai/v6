@@ -2,23 +2,15 @@ import { eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { getUniversityOverview } from '@/db/queries/university-overview';
-import { documents, universityProfiles } from '@/db/schema';
+import { certificates, profiles, universityProfiles } from '@/db/schema';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
-const recentDocumentSchema = z.object({
-  id: z.string().uuid(),
-  status: z.enum(['pending', 'approved', 'rejected', 'more_info_requested']),
-  type: z.enum(['passport', 'bank_statement', 'offer_letter', 'affidavit', 'cac']),
-  createdAt: z.string(),
-});
-
 const overviewOutputSchema = z.object({
-  pendingCount: z.number().int().min(0),
-  approvedTodayCount: z.number().int().min(0),
-  flaggedCount: z.number().int().min(0),
+  totalPrograms: z.number().int().min(0),
+  enrolledStudents: z.number().int().min(0),
+  pendingApplications: z.number().int().min(0),
   totalStudents: z.number().int().min(0),
-  recentActivity: z.array(recentDocumentSchema),
 });
 
 export type UniversityOverviewOutput = z.infer<typeof overviewOutputSchema>;
@@ -27,7 +19,7 @@ export const universityRouter = createTRPCRouter({
   getOverview: roleProcedure('university')
     .output(overviewOutputSchema)
     .query(async ({ ctx }) => {
-      return getUniversityOverview(ctx.db);
+      return getUniversityOverview(ctx.db, ctx.user.id);
     }),
 
   getUniversityProfile: roleProcedure('university')
@@ -71,15 +63,15 @@ export const universityRouter = createTRPCRouter({
       });
       if (!uniProfile?.schoolId) return [];
 
-      const studentProfiles = await ctx.db.query.studentProfiles.findMany({
+      const studentProfileRows = await ctx.db.query.studentProfiles.findMany({
         where: (t, { eq: eqFn }) => eqFn(t.schoolId, uniProfile.schoolId!),
         with: { program: true },
         orderBy: (t, { desc }) => [desc(t.createdAt)],
       });
 
-      if (studentProfiles.length === 0) return [];
+      if (studentProfileRows.length === 0) return [];
 
-      const studentIds = studentProfiles.map((p) => p.userId);
+      const studentIds = studentProfileRows.map((p) => p.userId);
 
       const [userRows, docRows] = await Promise.all([
         ctx.db.query.users.findMany({
@@ -103,7 +95,7 @@ export const universityRouter = createTRPCRouter({
         }
       }
 
-      return studentProfiles.map((p) => ({
+      return studentProfileRows.map((p) => ({
         studentId: p.userId,
         studentEmail: emailMap.get(p.userId) ?? null,
         programName: p.program?.name ?? null,
@@ -126,6 +118,8 @@ export const universityRouter = createTRPCRouter({
           bankStatus: z.enum(['not_started', 'pending', 'verified', 'failed']),
           documentCount: z.number(),
           createdAt: z.date(),
+          certToken: z.string().nullable(),
+          certIssuedAt: z.date().nullable(),
         }),
       ),
     )
@@ -136,17 +130,17 @@ export const universityRouter = createTRPCRouter({
       });
       if (!uniProfile?.schoolId) return [];
 
-      const studentProfiles = await ctx.db.query.studentProfiles.findMany({
+      const studentProfileRows = await ctx.db.query.studentProfiles.findMany({
         where: (t, { eq: eqFn }) => eqFn(t.schoolId, uniProfile.schoolId!),
         with: { school: true, program: true },
         orderBy: (t, { desc }) => [desc(t.createdAt)],
       });
 
-      if (studentProfiles.length === 0) return [];
+      if (studentProfileRows.length === 0) return [];
 
-      const studentIds = studentProfiles.map((p) => p.userId);
+      const studentIds = studentProfileRows.map((p) => p.userId);
 
-      const [userRows, docRows] = await Promise.all([
+      const [userRows, docRows, certRows] = await Promise.all([
         ctx.db.query.users.findMany({
           where: (t, { inArray: inArrayFn }) => inArrayFn(t.id, studentIds),
           columns: { id: true, email: true },
@@ -155,6 +149,15 @@ export const universityRouter = createTRPCRouter({
           where: (t, { inArray: inArrayFn }) => inArrayFn(t.userId, studentIds),
           columns: { userId: true },
         }),
+        ctx.db
+          .select({
+            studentId: certificates.studentId,
+            token: certificates.token,
+            issuedAt: certificates.issuedAt,
+          })
+          .from(certificates)
+          .where(inArray(certificates.studentId, studentIds))
+          .orderBy(certificates.issuedAt),
       ]);
 
       const emailMap = new Map(userRows.map((u) => [u.id, u.email]));
@@ -162,77 +165,65 @@ export const universityRouter = createTRPCRouter({
       for (const doc of docRows) {
         docCountMap.set(doc.userId, (docCountMap.get(doc.userId) ?? 0) + 1);
       }
+      // Most recent active cert per student
+      const certMap = new Map<string, { token: string; issuedAt: Date }>();
+      for (const cert of certRows) {
+        certMap.set(cert.studentId, { token: cert.token, issuedAt: cert.issuedAt });
+      }
 
-      return studentProfiles.map((p) => ({
-        studentId: p.userId,
-        studentEmail: emailMap.get(p.userId) ?? null,
-        schoolName: p.school?.name ?? null,
-        programName: p.program?.name ?? null,
-        kycStatus: p.kycStatus,
-        bankStatus: p.bankStatus,
-        documentCount: docCountMap.get(p.userId) ?? 0,
-        createdAt: p.createdAt,
-      }));
+      return studentProfileRows.map((p) => {
+        const cert = certMap.get(p.userId) ?? null;
+        return {
+          studentId: p.userId,
+          studentEmail: emailMap.get(p.userId) ?? null,
+          schoolName: p.school?.name ?? null,
+          programName: p.program?.name ?? null,
+          kycStatus: p.kycStatus,
+          bankStatus: p.bankStatus,
+          documentCount: docCountMap.get(p.userId) ?? 0,
+          createdAt: p.createdAt,
+          certToken: cert?.token ?? null,
+          certIssuedAt: cert?.issuedAt ?? null,
+        };
+      });
     }),
 
-  getUniversityDocumentQueue: roleProcedure('university')
-    .output(
-      z.array(
-        z.object({
-          documentId: z.string(),
-          studentId: z.string(),
-          studentEmail: z.string().nullable(),
-          documentType: z.enum([
-            'passport',
-            'bank_statement',
-            'offer_letter',
-            'affidavit',
-            'cac',
-          ]),
-          status: z.enum(['pending', 'approved', 'rejected', 'more_info_requested']),
-          storageUrl: z.string(),
-          createdAt: z.date(),
-        }),
-      ),
+  completeOnboarding: roleProcedure('university')
+    .input(
+      z.object({
+        organizationName: z.string().min(2).max(120),
+      }),
     )
-    .query(async ({ ctx }) => {
-      const uniProfile = await ctx.db.query.universityProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
-        columns: { schoolId: true },
+    .output(z.object({ onboardingComplete: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        const existing = await tx.query.universityProfiles.findFirst({
+          where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+          columns: { id: true },
+        });
+
+        if (existing) {
+          await tx
+            .update(universityProfiles)
+            .set({
+              organizationName: input.organizationName,
+              updatedAt: new Date(),
+            })
+            .where(eq(universityProfiles.userId, ctx.user.id));
+        } else {
+          await tx.insert(universityProfiles).values({
+            userId: ctx.user.id,
+            organizationName: input.organizationName,
+          });
+        }
+
+        await tx
+          .update(profiles)
+          .set({ onboardingComplete: true, updatedAt: new Date() })
+          .where(eq(profiles.userId, ctx.user.id));
       });
-      if (!uniProfile?.schoolId) return [];
 
-      const studentProfiles = await ctx.db.query.studentProfiles.findMany({
-        where: (t, { eq: eqFn }) => eqFn(t.schoolId, uniProfile.schoolId!),
-        columns: { userId: true },
-      });
-
-      if (studentProfiles.length === 0) return [];
-
-      const studentIds = studentProfiles.map((p) => p.userId);
-
-      const [docRows, userRows] = await Promise.all([
-        ctx.db.query.documents.findMany({
-          where: (t, { inArray: inArrayFn }) => inArrayFn(t.userId, studentIds),
-          orderBy: (t, { desc }) => [desc(t.createdAt)],
-        }),
-        ctx.db.query.users.findMany({
-          where: (t, { inArray: inArrayFn }) => inArrayFn(t.id, studentIds),
-          columns: { id: true, email: true },
-        }),
-      ]);
-
-      const emailMap = new Map(userRows.map((u) => [u.id, u.email]));
-
-      return docRows.map((d) => ({
-        documentId: d.id,
-        studentId: d.userId,
-        studentEmail: emailMap.get(d.userId) ?? null,
-        documentType: d.type,
-        status: d.status,
-        storageUrl: d.storageUrl,
-        createdAt: d.createdAt,
-      }));
+      return { onboardingComplete: true };
     }),
 
   updateUniversitySettings: roleProcedure('university')

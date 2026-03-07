@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import {
+  certificates,
   programs,
   profiles,
   schools,
@@ -481,5 +482,74 @@ export const universityManagementRouter = createTRPCRouter({
         .orderBy(studentProfiles.createdAt);
 
       return { rows };
+    }),
+
+  exportRoster: roleProcedure('university')
+    .output(z.string())
+    .query(async ({ ctx }) => {
+      const profile = await getUniversityProfileOrThrow(ctx.db, ctx.user!.id);
+
+      if (!profile.schoolId) return '';
+
+      const studentRows = await ctx.db
+        .select({
+          email: users.email,
+          fullName: profiles.fullName,
+          programName: programs.name,
+          enrolledAt: studentProfiles.createdAt,
+          studentUserId: studentProfiles.userId,
+        })
+        .from(studentProfiles)
+        .innerJoin(users, eq(users.id, studentProfiles.userId))
+        .innerJoin(profiles, eq(profiles.userId, studentProfiles.userId))
+        .leftJoin(programs, eq(programs.id, studentProfiles.programId))
+        .where(eq(studentProfiles.schoolId, profile.schoolId))
+        .orderBy(studentProfiles.createdAt);
+
+      if (studentRows.length === 0) return '';
+
+      const studentIds = studentRows.map((r) => r.studentUserId);
+
+      const certRows = await ctx.db
+        .select({
+          studentId: certificates.studentId,
+          token: certificates.token,
+          issuedAt: certificates.issuedAt,
+        })
+        .from(certificates)
+        .where(inArray(certificates.studentId, studentIds))
+        .orderBy(certificates.issuedAt);
+
+      // Most recent cert per student
+      const certMap = new Map<string, { token: string; issuedAt: Date }>();
+      for (const cert of certRows) {
+        certMap.set(cert.studentId, { token: cert.token, issuedAt: cert.issuedAt });
+      }
+
+      const header = 'Name,Email,Program,Enrolled Date,Certificate ID,Certificate Issued Date';
+
+      const escapeCell = (value: string): string => {
+        if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+          return `"${value.replace(/"/g, '""')}"`;
+        }
+        return value;
+      };
+
+      const formatDate = (date: Date): string =>
+        date.toISOString().split('T')[0] ?? '';
+
+      const lines = studentRows.map((row) => {
+        const cert = certMap.get(row.studentUserId) ?? null;
+        return [
+          escapeCell(row.fullName ?? ''),
+          escapeCell(row.email),
+          escapeCell(row.programName ?? ''),
+          formatDate(row.enrolledAt),
+          cert ? escapeCell(cert.token) : '',
+          cert ? formatDate(cert.issuedAt) : '',
+        ].join(',');
+      });
+
+      return [header, ...lines].join('\n');
     }),
 });

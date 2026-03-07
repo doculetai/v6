@@ -167,12 +167,20 @@ export const universityCopy = {
       kycStatus: "KYC status",
       documents: "Documents",
       enrolled: "Enrolled",
+      certId: "Certificate ID",
+      certIssued: "Cert issued",
     },
     kycLabels: {
       not_started: "Not started",
       pending: "Pending",
       verified: "Verified",
       failed: "Failed",
+    },
+    certNotIssued: "Not issued",
+    exportRoster: {
+      cta: "Export roster",
+      filename: "student-roster.csv",
+      empty: "No student data to export.",
     },
     empty: {
       title: "No students enrolled",
