@@ -150,6 +150,19 @@ export async function listPendingInvitationsForInvitee(db: DatabaseClient, invit
   });
 }
 
+export async function findInviteByIdForStudent(
+  db: DatabaseClient,
+  inviteId: string,
+  studentId: string,
+) {
+  return db.query.sponsorshipInvites.findFirst({
+    where: and(
+      eq(sponsorshipInvites.id, inviteId),
+      eq(sponsorshipInvites.studentId, studentId),
+    ),
+  });
+}
+
 export async function respondToPendingInvitation(db: DatabaseClient, args: RespondInviteArgs) {
   const now = new Date();
   const [invitation] = await db

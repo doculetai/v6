@@ -6,6 +6,7 @@ import {
   cancelPendingInvitation,
   createSponsorInvitation,
   deleteInvitationById,
+  findInviteByIdForStudent,
   findPendingInvitationByStudentAndEmail,
   isPendingInviteConflictError,
   listInvitationsForStudent,
@@ -35,6 +36,14 @@ const invitationOutputSchema = z.object({
 
 const cancelInviteInputSchema = z.object({
   inviteId: z.string().uuid(),
+});
+
+const resendInviteInputSchema = z.object({
+  inviteId: z.string().uuid(),
+});
+
+const resendInviteOutputSchema = z.object({
+  inviteId: z.string(),
 });
 
 function toInvitationOutput(invitation: {
@@ -161,5 +170,36 @@ export const inviteProcedures = {
       }
 
       return toInvitationOutput(invitation);
+    }),
+
+  resendSponsorInvite: roleProcedure('student')
+    .input(resendInviteInputSchema)
+    .output(resendInviteOutputSchema)
+    .mutation(async ({ ctx, input }) => {
+      const invite = await findInviteByIdForStudent(ctx.db, input.inviteId, ctx.user.id);
+
+      if (!invite) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Invitation not found.',
+        });
+      }
+
+      if (invite.status !== 'pending') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Only pending invitations can be resent.',
+        });
+      }
+
+      const studentEmail = normalizeEmail(ctx.user.email ?? '');
+
+      await sendSponsorInvitationEmail({
+        toEmail: invite.inviteeEmail,
+        studentEmail,
+        note: invite.message,
+      });
+
+      return { inviteId: invite.id };
     }),
 };
