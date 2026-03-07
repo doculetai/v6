@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import { AdminCertReadySection } from '@/components/admin/AdminCertReadySection';
 import { AdminOperationsBulkBar } from '@/components/admin/AdminOperationsBulkBar';
 import { AdminOperationsReviewDialog } from '@/components/admin/AdminOperationsReviewDialog';
 import { AdminOperationsTable } from '@/components/admin/AdminOperationsTable';
@@ -55,6 +56,8 @@ export default function OperationsPageClient({
   const { data: stats = initialStats } = trpc.admin.getOperationsStats.useQuery(undefined, {
     initialData: initialStats,
   });
+
+  const { data: certReadyStudents = [] } = trpc.admin.getCertReadyStudents.useQuery();
 
   const reviewMutation = trpc.admin.reviewDocument.useMutation({
     onSuccess: () => {
@@ -113,6 +116,11 @@ export default function OperationsPageClient({
 
   const isMutating = reviewMutation.isPending || bulkMutation.isPending;
 
+  function handleCertIssued() {
+    void utils.admin.getCertReadyStudents.invalidate();
+    void utils.admin.getOperationsStats.invalidate();
+  }
+
   return (
     <div className="space-y-6">
       {/* Stats row */}
@@ -130,6 +138,9 @@ export default function OperationsPageClient({
         />
         <MetricCard label={copy.stats.moreInfo} value={stats.moreInfoRequested} />
       </Grid>
+
+      {/* Cert-ready students */}
+      <AdminCertReadySection students={certReadyStudents} onIssued={handleCertIssued} />
 
       {/* Filter bar */}
       <FilterBar

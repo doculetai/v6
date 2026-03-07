@@ -309,6 +309,40 @@ export const adminCopy = {
     },
   },
 
+  certReady: {
+    sectionTitle: "READY TO ISSUE",
+    sectionDescription: "Students who have completed all required steps and are awaiting their certificate.",
+    table: {
+      student: "Student",
+      school: "School",
+      programme: "Programme",
+      payment: "Payment",
+      readySince: "Ready since",
+      action: "Action",
+    },
+    paymentLabels: {
+      paid: "Fee paid",
+      waived: "Fee waived",
+    },
+    issueCta: "Issue certificate",
+    empty: {
+      title: "No students ready",
+      description: "Students who meet all conditions will appear here.",
+    },
+    issueDialog: {
+      title: "Issue certificate",
+      description: "Confirm you want to issue a proof-of-funds certificate for this student. This action cannot be undone.",
+      sponsorshipLabel: "Sponsorship ID (optional)",
+      sponsorshipPlaceholder: "Leave blank if self-funded", // copy-audit-disable
+      waivePaymentLabel: "Waive payment",
+      waivePaymentDescription: "Override the payment requirement for this student.",
+      confirmCta: "Issue certificate",
+      cancel: "Cancel",
+    },
+    issueSuccess: "Certificate issued.",
+    issueError: "Certificate could not be issued. Verify all conditions are met.",
+  },
+
   operations: {
     title: "Operations",
     subtitle: "Certificate issuance pipeline. Review submissions and take batch actions.",

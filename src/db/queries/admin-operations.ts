@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, ilike, inArray, lt, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, ilike, inArray, lt, notExists, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
 import type { DrizzleDB } from '@/db';
@@ -327,6 +327,112 @@ export async function bulkReviewDocuments(
       updatedAt: new Date(),
     })
     .where(inArray(documents.id, documentIds));
+}
+
+export interface CertReadyStudent {
+  studentId: string;
+  studentEmail: string;
+  fullName: string | null;
+  schoolName: string | null;
+  programName: string | null;
+  paymentStatus: 'paid' | 'waived';
+  readySince: Date;
+}
+
+export async function getCertReadyStudents(db: DrizzleDB): Promise<CertReadyStudent[]> {
+  // Subquery: students who already have an active certificate (exclude them)
+  const hasCert = db
+    .select({ one: sql<number>`1` })
+    .from(certificates)
+    .where(
+      and(eq(certificates.studentId, studentProfiles.userId), eq(certificates.status, 'active')),
+    );
+
+  // Subquery: students who have at least one approved document
+  const hasApprovedDoc = db
+    .select({ one: sql<number>`1` })
+    .from(documents)
+    .where(
+      and(eq(documents.userId, studentProfiles.userId), eq(documents.status, 'approved')),
+    );
+
+  // Subquery: students who have a paid certificate payment
+  const hasPaidPayment = db
+    .select({ one: sql<number>`1` })
+    .from(certificatePayments)
+    .where(
+      and(
+        eq(certificatePayments.studentId, studentProfiles.userId),
+        eq(certificatePayments.status, 'paid'),
+      ),
+    );
+
+  // Subquery: students who have a waived certificate payment
+  const hasWaivedPayment = db
+    .select({ one: sql<number>`1` })
+    .from(certificatePayments)
+    .where(
+      and(
+        eq(certificatePayments.studentId, studentProfiles.userId),
+        eq(certificatePayments.status, 'waived'),
+      ),
+    );
+
+  // We query studentProfiles where:
+  //  kycStatus = 'verified' AND bankStatus = 'verified'
+  //  AND at least one approved document exists
+  //  AND (paid or waived certificate payment exists)
+  //  AND no active certificate yet
+  const rows = await db
+    .select({
+      studentId: studentProfiles.userId,
+      studentEmail: users.email,
+      fullName: profiles.fullName,
+      schoolName: schools.name,
+      programName: programs.name,
+      updatedAt: studentProfiles.updatedAt,
+    })
+    .from(studentProfiles)
+    .innerJoin(users, eq(users.id, studentProfiles.userId))
+    .leftJoin(profiles, eq(profiles.userId, studentProfiles.userId))
+    .leftJoin(schools, eq(schools.id, studentProfiles.schoolId))
+    .leftJoin(programs, eq(programs.id, studentProfiles.programId))
+    .where(
+      and(
+        eq(studentProfiles.kycStatus, 'verified'),
+        eq(studentProfiles.bankStatus, 'verified'),
+        sql`exists ${hasApprovedDoc}`,
+        sql`(exists ${hasPaidPayment} or exists ${hasWaivedPayment})`,
+        notExists(hasCert),
+      ),
+    )
+    .orderBy(desc(studentProfiles.updatedAt))
+    .limit(50);
+
+  // Determine paymentStatus for each student
+  const studentIds = rows.map((r) => r.studentId);
+  if (studentIds.length === 0) return [];
+
+  const waivedIds = await db
+    .select({ studentId: certificatePayments.studentId })
+    .from(certificatePayments)
+    .where(
+      and(
+        inArray(certificatePayments.studentId, studentIds),
+        eq(certificatePayments.status, 'waived'),
+      ),
+    );
+  const waivedSet = new Set(waivedIds.map((r) => r.studentId));
+
+  return rows.map((r) => ({
+    studentId: r.studentId,
+    studentEmail: r.studentEmail,
+    fullName: r.fullName ?? null,
+    schoolName: r.schoolName ?? null,
+    programName: r.programName ?? null,
+    paymentStatus: waivedSet.has(r.studentId) ? 'waived' : 'paid',
+    readySince: r.updatedAt,
+  }));
 }
 
 export interface IssueCertificateInput {

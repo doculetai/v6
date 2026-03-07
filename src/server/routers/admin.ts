@@ -15,6 +15,7 @@ import {
 } from '@/db/schema';
 import {
   bulkReviewDocuments,
+  getCertReadyStudents,
   getOperationsQueue,
   getOperationsStats,
   getStudentRecord,
@@ -91,6 +92,24 @@ export const adminRouter = createTRPCRouter({
     .output(operationsStatsSchema)
     .query(async ({ ctx }) => {
       return getOperationsStats(ctx.db);
+    }),
+
+  getCertReadyStudents: roleProcedure('admin')
+    .output(
+      z.array(
+        z.object({
+          studentId: z.string(),
+          studentEmail: z.string(),
+          fullName: z.string().nullable(),
+          schoolName: z.string().nullable(),
+          programName: z.string().nullable(),
+          paymentStatus: z.enum(['paid', 'waived']),
+          readySince: z.date(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      return getCertReadyStudents(ctx.db);
     }),
 
   getStudentRecord: roleProcedure('admin')
