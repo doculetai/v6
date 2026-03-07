@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { CircleNotch } from '@/components/icons';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { sponsorCopy } from '@/config/copy/sponsor';
 import { formatNGN } from '@/lib/utils';
-import { browserTrpcClient } from '@/trpc/client';
+import { trpc } from '@/trpc/client';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -68,19 +69,33 @@ function StatusBadge({
 function PendingInvitesList({ invites, copy }: { invites: Invite[]; copy: Copy }) {
   const [respondingId, setRespondingId] = useState<string | null>(null);
   const [localInvites, setLocalInvites] = useState<Invite[]>(invites);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+
+  const utils = trpc.useUtils();
+
+  const respondMutation = trpc.sponsor.respondToInvite.useMutation({
+    onSuccess: (_, variables) => {
+      setLocalInvites((prev) =>
+        prev.map((inv) =>
+          inv.id === variables.inviteId ? { ...inv, status: variables.status } : inv,
+        ),
+      );
+      void utils.sponsor.listPendingInvites.invalidate();
+    },
+    onError: () => {
+      setInviteError('Could not respond to invite. Please try again.');
+    },
+  });
 
   const pendingInvites = localInvites.filter((inv) => inv.status === 'pending');
 
-  const handleRespond = async (inviteId: string, status: 'accepted' | 'declined') => {
+  const handleRespond = (inviteId: string, status: 'accepted' | 'declined') => {
+    setInviteError(null);
     setRespondingId(inviteId);
-    try {
-      await browserTrpcClient.sponsor.respondToInvite.mutate({ inviteId, status });
-      setLocalInvites((prev) =>
-        prev.map((inv) => (inv.id === inviteId ? { ...inv, status } : inv)),
-      );
-    } finally {
-      setRespondingId(null);
-    }
+    respondMutation.mutate(
+      { inviteId, status },
+      { onSettled: () => setRespondingId(null) },
+    );
   };
 
   if (pendingInvites.length === 0) {
@@ -94,6 +109,11 @@ function PendingInvitesList({ invites, copy }: { invites: Invite[]; copy: Copy }
 
   return (
     <div className="space-y-3">
+      {inviteError ? (
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
+          <p className="text-sm text-destructive">{inviteError}</p>
+        </div>
+      ) : null}
       {pendingInvites.map((invite) => {
         const isResponding = respondingId === invite.id;
 
@@ -128,10 +148,10 @@ function PendingInvitesList({ invites, copy }: { invites: Invite[]; copy: Copy }
                   variant="outline"
                   className="min-h-9"
                   disabled={isResponding}
-                  onClick={() => void handleRespond(invite.id, 'declined')}
+                  onClick={() => handleRespond(invite.id, 'declined')}
                 >
                   {isResponding ? (
-                    <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+                    <CircleNotch weight="bold" className="size-3.5 animate-spin" aria-hidden="true" />
                   ) : (
                     copy.pending.decline
                   )}
@@ -140,10 +160,10 @@ function PendingInvitesList({ invites, copy }: { invites: Invite[]; copy: Copy }
                   size="sm"
                   className="min-h-9"
                   disabled={isResponding}
-                  onClick={() => void handleRespond(invite.id, 'accepted')}
+                  onClick={() => handleRespond(invite.id, 'accepted')}
                 >
                   {isResponding ? (
-                    <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
+                    <CircleNotch weight="bold" className="size-3.5 animate-spin" aria-hidden="true" />
                   ) : (
                     copy.pending.accept
                   )}
@@ -199,8 +219,13 @@ function ActiveStudentsList({
         <tbody className="divide-y divide-border">
           {active.map((student) => (
             <tr key={student.id} className="bg-card transition-colors hover:bg-muted/30">
-              <td className="px-4 py-3 text-foreground">
-                {student.studentEmail ?? <span className="text-muted-foreground">—</span>}
+              <td className="px-4 py-3">
+                <Link
+                  href={`/dashboard/sponsor/students/${student.id}`}
+                  className="font-medium text-foreground hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                >
+                  {student.studentEmail ?? <span className="text-muted-foreground">—</span>}
+                </Link>
               </td>
               <td className="px-4 py-3 text-right font-mono text-foreground">
                 {formatNGN(student.amountKobo)}
@@ -230,11 +255,28 @@ export function SponsorStudentsPageClient({
   students,
   copy,
 }: SponsorStudentsPageClientProps) {
+  const pendingCount = invites.filter((inv) => inv.status === 'pending').length;
+  const activeCount = students.filter((s) => s.status !== 'pending').length;
+
   return (
     <Tabs defaultValue="pending">
       <TabsList className="mb-4">
-        <TabsTrigger value="pending">{copy.tabs.pending}</TabsTrigger>
-        <TabsTrigger value="active">{copy.tabs.active}</TabsTrigger>
+        <TabsTrigger value="pending">
+          {copy.tabs.pending}
+          {pendingCount > 0 ? (
+            <span className="ml-1.5 rounded-full bg-[#15803D]/10 px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-[#15803D]">
+              {pendingCount}
+            </span>
+          ) : null}
+        </TabsTrigger>
+        <TabsTrigger value="active">
+          {copy.tabs.active}
+          {activeCount > 0 ? (
+            <span className="ml-1.5 rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-muted-foreground">
+              {activeCount}
+            </span>
+          ) : null}
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="pending">
