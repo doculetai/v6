@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { List, X } from '@phosphor-icons/react';
+import { List, X } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { landingCopy as copy } from '@/config/copy/landing';
 import { routes } from '@/config/routes';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CaretDown } from '@phosphor-icons/react';
+import { CaretDown } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { landingCopy as copy } from '@/config/copy/landing';
 import { LandingReveal } from './LandingReveal';

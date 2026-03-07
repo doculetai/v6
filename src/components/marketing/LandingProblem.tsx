@@ -1,4 +1,4 @@
-import { FileDashed, PhoneSlash, Warning } from '@phosphor-icons/react/dist/ssr';
+import { FileDashed, PhoneSlash, Warning } from '@/components/icons';
 import { landingCopy as copy } from '@/config/copy/landing';
 import { LandingReveal } from './LandingReveal';
 

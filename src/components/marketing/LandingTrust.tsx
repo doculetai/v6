@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CheckCircle } from '@phosphor-icons/react/dist/ssr';
+import { CheckCircle } from '@/components/icons';
 import { landingCopy as copy } from '@/config/copy/landing';
 import { routes } from '@/config/routes';
 import { LandingReveal } from './LandingReveal';

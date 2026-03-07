@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight } from '@phosphor-icons/react/dist/ssr';
+import { ArrowRight } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { landingCopy as copy } from '@/config/copy/landing';
 import { routes } from '@/config/routes';

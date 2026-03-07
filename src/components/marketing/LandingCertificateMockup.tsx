@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { CheckCircle } from '@phosphor-icons/react/dist/ssr';
+import { CheckCircle } from '@/components/icons';
 import { landingCopy as copy } from '@/config/copy/landing';
 import { cn } from '@/lib/utils';
 
