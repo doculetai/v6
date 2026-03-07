@@ -48,21 +48,23 @@ export const partnerWebhooksRouter = createTRPCRouter({
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
       }
 
+      // Generate a random signing secret. Stored directly so the server can
+      // sign outgoing webhook payloads with the same key the partner uses to
+      // verify them. Partners treat this value as their HMAC verification key.
       const secret = crypto.randomBytes(32).toString('hex');
-      const secretHash = crypto.createHash('sha256').update(secret).digest('hex');
 
       const [row] = await ctx.db
         .insert(partnerWebhookConfigs)
         .values({
           partnerId: partnerProfile.id,
           url: input.url,
-          secretHash,
+          secretHash: secret,
           events: input.events,
           description: input.description ?? null,
         })
         .returning({ id: partnerWebhookConfigs.id });
 
-      return { id: row.id, secret: secretHash };
+      return { id: row.id, secret };
     }),
 
   updateWebhook: roleProcedure('partner')

@@ -149,6 +149,7 @@ export function WebhooksPageClient({ initialWebhooks }: Props) {
                           size="sm"
                           variant="outline"
                           className="text-destructive hover:text-destructive"
+                          aria-label={copy.deleteDialog.confirmCta}
                           onClick={() => setDeleteTarget(webhook.id)}
                         >
                           <Trash weight="duotone" className="size-4" aria-hidden="true" />
@@ -270,11 +271,11 @@ function RegisterWebhookDialog({
                 {copied ? (
                   <Check weight="duotone" className="size-4" aria-hidden="true" />
                 ) : (
-                  copy.testDelivery.done
+                  copy.registerDialog.copyCta
                 )}
               </Button>
             </div>
-            <Button onClick={handleClose}>{copy.testDelivery.done}</Button>
+            <Button onClick={handleClose}>{copy.registerDialog.doneCta}</Button>
           </Stack>
         ) : (
           <form onSubmit={handleSubmit}>

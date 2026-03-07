@@ -544,6 +544,8 @@ export const partnerCopy = {
       submitting: 'Registering\u2026',
       secretNote: 'Copy this secret now — it will not be shown again.',
       secretLabel: 'Signing secret',
+      copyCta: 'Copy',
+      doneCta: 'Done',
     },
     deleteDialog: {
       title: 'Delete webhook',
