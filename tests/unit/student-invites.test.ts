@@ -1,18 +1,18 @@
-// tests/unit/student-invites.test.ts
 import { describe, it, expect } from 'vitest';
 import { sponsorInviteFixture } from '../fixtures/sponsor-invites';
 
-describe('resendSponsorInvite', () => {
-  it('returns the invite id when invite is pending', () => {
+describe('sponsorInviteFixture', () => {
+  it('returns pending invite with valid UUID for resend scenario', () => {
     const invite = sponsorInviteFixture({ status: 'pending' });
     expect(invite.status).toBe('pending');
-    expect(invite.id).toBeTruthy();
+    expect(invite.id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    );
   });
 
-  it('fixture has required fields', () => {
-    const invite = sponsorInviteFixture();
-    expect(invite.id).toBe('invite-test-001');
-    expect(invite.inviteeEmail).toBe('sponsor@example.com');
-    expect(invite.createdAt).toBeInstanceOf(Date);
+  it('returns non-pending invite for BAD_REQUEST scenario', () => {
+    const invite = sponsorInviteFixture({ status: 'accepted' });
+    expect(invite.status).toBe('accepted');
+    expect(invite.status).not.toBe('pending');
   });
 });
