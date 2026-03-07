@@ -873,6 +873,35 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 }
 .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(43,57,163,0.08); }
 
+/* ══ COST BREAKDOWN ══ */
+.cost-breakdown {
+  border: 1px solid rgba(0,0,0,0.08); border-radius: 10px;
+  padding: 16px; margin-top: 12px; background: rgba(43,57,163,0.03);
+}
+.cost-breakdown-title {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: rgba(100,116,139,0.7);
+  margin-bottom: 12px;
+}
+.cost-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 14px; padding: 6px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.cost-row:last-child { border-bottom: none; }
+.cost-label { color: rgba(100,116,139,0.9); }
+.cost-value { font-family: var(--font-mono); font-weight: 500; }
+.cost-total {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0 0; margin-top: 8px;
+  border-top: 2px solid rgba(0,0,0,0.1);
+  font-weight: 600;
+}
+.cost-total-value { font-family: var(--font-mono); font-size: 16px; color: #2B39A3; }
+.cost-proof-note {
+  font-size: 12px; color: rgba(100,116,139,0.7); margin-top: 8px; line-height: 1.5;
+}
+
 /* ══ REJECTION NOTE ══ */
 .rejection-note {
   background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px;
@@ -1956,6 +1985,25 @@ var STUDENT_STATE_OVERRIDES = {
       blockedReason: 'Complete verification and documents first',
       blockedCta: 'Go to Verification',
       blockedCtaTarget: 'Verification',
+    },
+  },
+
+  /* ── cost_breakdown_onboarding: onboarding with program selected, cost breakdown visible ── */
+  cost_breakdown_onboarding: {
+    'Onboarding': {
+      type: 'onboarding-form',
+      h1: 'Onboarding',
+      eyebrow: 'Application setup',
+      completed: false,
+      school: 'University of Lagos',
+      program: 'MSc Computer Science',
+      showCostBreakdown: true,
+      costItems: [
+        { label: 'Tuition fee',                  value: '\u20a6 1,500,000' },
+        { label: 'Living expenses (12 months)',   value: '\u20a6 1,800,000' },
+        { label: 'Other fees',                   value: '\u20a6 200,000'   },
+        { label: 'Total',                        value: '\u20a6 3,500,000' },
+      ],
     },
   },
 
@@ -3983,6 +4031,32 @@ function buildFundingCards(container) {
   container.appendChild(wrap);
 }
 
+function buildCostBreakdown(items) {
+  var wrap = el('div', 'cost-breakdown');
+  var title = el('div', 'cost-breakdown-title');
+  txt(title, 'Programme cost breakdown');
+  wrap.appendChild(title);
+  items.forEach(function(item, i) {
+    if (i < items.length - 1) {
+      var row = el('div', 'cost-row');
+      var label = el('span', 'cost-label'); txt(label, item.label);
+      var value = el('span', 'cost-value'); txt(value, item.value);
+      row.appendChild(label); row.appendChild(value);
+      wrap.appendChild(row);
+    } else {
+      var total = el('div', 'cost-total');
+      var tlabel = el('span', ''); txt(tlabel, 'Proof of funds required');
+      var tvalue = el('span', 'cost-total-value'); txt(tvalue, item.value);
+      total.appendChild(tlabel); total.appendChild(tvalue);
+      wrap.appendChild(total);
+      var note = el('div', 'cost-proof-note');
+      txt(note, 'This is the minimum amount your proof of funds certificate must cover.');
+      wrap.appendChild(note);
+    }
+  });
+  return wrap;
+}
+
 /* ════════════════════════════════════════
    MODAL CONTENT BUILDERS
    ════════════════════════════════════════ */
@@ -4443,17 +4517,24 @@ function renderOnboardingForm(page, main) {
 
   var g1 = el('div', 'form-group');
   g1.appendChild(txt(el('label', 'form-label'), 'School'));
-  buildSchoolSearch(g1, null);
+  buildSchoolSearch(g1, page.school || null);
   form.appendChild(g1);
 
   var g2 = el('div', 'form-group');
   g2.appendChild(txt(el('label', 'form-label'), 'Program'));
   var progSel = el('select', 'form-select');
-  ['Select program...', 'Computer Science BSc', 'Law LLB', 'Medicine MBBS', 'MBA Full-time', 'Engineering BSc'].forEach(function(p, i) {
+  var progOpts = ['Select program...', 'Computer Science BSc', 'Law LLB', 'Medicine MBBS', 'MBA Full-time', 'Engineering BSc', 'MSc Computer Science'];
+  progOpts.forEach(function(p, i) {
     var opt = el('option'); opt.value = i === 0 ? '' : p; opt.textContent = p;
+    if (page.program && p === page.program) opt.selected = true;
     progSel.appendChild(opt);
   });
   g2.appendChild(progSel);
+
+  if (page.showCostBreakdown && page.costItems) {
+    g2.appendChild(buildCostBreakdown(page.costItems));
+  }
+
   form.appendChild(g2);
 
   var g3 = el('div', 'form-group');
