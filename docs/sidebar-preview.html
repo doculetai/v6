@@ -409,6 +409,21 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 .cert-meta { font-size: 12.5px; color: #64748B; margin-bottom: 20px; line-height: 1.6; }
 .cert-meta span { font-family: var(--font-mono); }
 .cert-actions { display: flex; justify-content: center; gap: 10px; }
+.cert-expiry-banner {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; border-radius: 10px;
+  background: rgba(217,119,6,0.08); border: 1px solid rgba(217,119,6,0.2);
+  margin-bottom: 16px;
+}
+.cert-expiry-banner-text { flex: 1; font-size: 13px; }
+.cert-expiry-banner-title { font-weight: 600; color: #B45309; margin-bottom: 2px; }
+.cert-expiry-banner-sub { color: rgba(180,83,9,0.8); font-size: 12px; }
+.cert-expired-state {
+  text-align: center; padding: 40px 20px;
+}
+.cert-expired-icon { margin: 0 auto 16px; }
+.cert-expired-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.cert-expired-sub { font-size: 14px; color: rgba(100,116,139,0.8); margin-bottom: 24px; }
 .btn-primary {
   font-size: 13px; font-weight: 600; color: #fff;
   background: var(--accent); border: none; border-radius: 9px;
@@ -2226,6 +2241,51 @@ var STUDENT_STATE_OVERRIDES = {
         program:'Computer Science BSc', issued:'7 March 2026', expires:'7 March 2027',
         sponsor:'Tunde Okafor \u00b7 Family sponsor',
       },
+    },
+  },
+
+  /* ── cert_expiry_soon: certificate expiring within 30 days ── */
+  cert_expiry_soon: {
+    'Proof of Funds': {
+      type: 'cert-issued',
+      h1: 'Proof of Funds Certificate',
+      eyebrow: 'Your certificate',
+      certId: 'DOC-2026-00421',
+      issuedDate: '14 Feb 2026',
+      expiryDate: '14 Mar 2026',
+      expiryWarning: {
+        title: 'Expiring in 28 days',
+        sub: 'Your certificate expires on 14 Mar 2026. Renew now to maintain your proof of funds status.'
+      },
+      amount: '\u20a6 3,500,000',
+      cert: {
+        id:'DOC-2026-00421', amount:'\u20a6 3,500,000', school:'University of Lagos',
+        program:'Computer Science BSc', issued:'14 Feb 2026', expires:'14 Mar 2026',
+        sponsor:'Tunde Okafor \u00b7 Family sponsor',
+      },
+    },
+  },
+
+  /* ── cert_expired: certificate has expired ── */
+  cert_expired: {
+    'Proof of Funds': {
+      type: 'certExpired',
+      h1: 'Proof of Funds Certificate',
+      eyebrow: 'Certificate expired',
+      certId: 'DOC-2026-00421',
+      expiredDate: '14 Mar 2026',
+      amount: '\u20a6 3,500,000',
+    },
+  },
+
+  /* ── cert_renewal: renewal request submitted and under review ── */
+  cert_renewal: {
+    'Proof of Funds': {
+      type: 'certRenewal',
+      h1: 'Proof of Funds Certificate',
+      eyebrow: 'Renewal in progress',
+      certId: 'DOC-2026-00421',
+      submittedDate: '15 Mar 2026',
     },
   },
 
@@ -5006,6 +5066,22 @@ function renderCommitments(page, main) {
 }
 
 function renderCertIssued(page, main) {
+  if (page.expiryWarning) {
+    var banner = el('div', 'cert-expiry-banner');
+    var bannerIcon = svgIcon('<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#B45309" stroke-width="1.5" stroke-linejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="#B45309" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="#B45309" stroke-width="2" stroke-linecap="round"/>');
+    bannerIcon.setAttribute('width', '20'); bannerIcon.setAttribute('height', '20');
+    bannerIcon.style.flexShrink = '0';
+    var bannerText = el('div', 'cert-expiry-banner-text');
+    var bannerTitle = el('div', 'cert-expiry-banner-title');
+    txt(bannerTitle, page.expiryWarning.title);
+    var bannerSub = el('div', 'cert-expiry-banner-sub');
+    txt(bannerSub, page.expiryWarning.sub);
+    bannerText.appendChild(bannerTitle);
+    bannerText.appendChild(bannerSub);
+    banner.appendChild(bannerIcon);
+    banner.appendChild(bannerText);
+    main.appendChild(banner);
+  }
   var c = page.cert;
   var certCard = el('div', 'cert-issued');
   var seal = el('div', 'cert-seal');
@@ -5037,6 +5113,45 @@ function renderCertIssued(page, main) {
   histRow.appendChild(txt(el('span', 'badge badge-green'), 'Issued'));
   scard.appendChild(histRow);
   main.appendChild(scard);
+}
+
+function renderCertExpired(main, page) {
+  var wrap = el('div', 'cert-expired-state');
+  var iconWrap = el('div', 'cert-expired-icon');
+  var icon = svgIcon('<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>');
+  icon.setAttribute('width', '48'); icon.setAttribute('height', '48');
+  icon.style.color = '#C2410C';
+  iconWrap.appendChild(icon);
+  wrap.appendChild(iconWrap);
+  var title = el('div', 'cert-expired-title');
+  txt(title, 'Your certificate has expired');
+  var sub = el('div', 'cert-expired-sub');
+  txt(sub, 'Expired on ' + (page.expiredDate || 'N/A') + '. Submit a renewal request to get a new certificate.');
+  var btn = el('button', 'btn-primary');
+  txt(btn, 'Request renewal');
+  btn.onclick = function() { showModal('Request Certificate Renewal', function(body) {
+    var p = el('p', ''); p.style.fontSize = '14px'; p.style.color = 'rgba(100,116,139,0.9)';
+    txt(p, 'Your verification data will be re-reviewed. The renewal process takes the same time as initial issuance.');
+    body.appendChild(p);
+  }, function(footer) {
+    var btn2 = el('button', 'btn-primary'); txt(btn2, 'Submit renewal request');
+    btn2.onclick = closeModal;
+    footer.appendChild(btn2);
+  }); };
+  wrap.appendChild(title); wrap.appendChild(sub); wrap.appendChild(btn);
+  main.appendChild(wrap);
+}
+
+function renderCertRenewal(main, page) {
+  var wrap = el('div', '');
+  var card = el('div', 'final-review-card');
+  var title = el('div', ''); title.style.cssText = 'font-size:16px;font-weight:600;margin-bottom:8px;';
+  txt(title, 'Renewal request submitted');
+  var sub = el('div', ''); sub.style.cssText = 'font-size:14px;color:rgba(100,116,139,0.8);';
+  txt(sub, 'Submitted on ' + (page.submittedDate || 'N/A') + '. Your renewal is under review. We will notify you when the new certificate is ready.');
+  card.appendChild(title); card.appendChild(sub);
+  wrap.appendChild(card);
+  main.appendChild(wrap);
 }
 
 function renderBrandingForm(page, main) {
@@ -5613,6 +5728,8 @@ function renderPage(roleId, label) {
   else if (t === 'blocked-page')       renderBlockedPage(page, main);
   else if (t === 'under-final-review') renderUnderFinalReview(page, main);
   else if (t === 'cert-sharing')       renderCertSharing(page, main);
+  else if (t === 'certExpired')        renderCertExpired(main, page);
+  else if (t === 'certRenewal')        renderCertRenewal(main, page);
   else                                 renderOverview(page, main);
 }
 
@@ -5690,6 +5807,9 @@ var ROLE_STATES = {
     { group:'Decision points', id:'t3_ocr_review',         label:'OCR review'        },
     { group:'Decision points', id:'t3_mono_failed',        label:'Mono failed'       },
     { group:'Decision points', id:'cert_sharing',          label:'Cert sharing'      },
+    { group:'Cert lifecycle',  id:'cert_expiry_soon',      label:'Expiring soon'     },
+    { group:'Cert lifecycle',  id:'cert_expired',          label:'Expired'           },
+    { group:'Cert lifecycle',  id:'cert_renewal',          label:'Renewal pending'   },
     { group:'Blocked states',  id:'blocked_proof',         label:'Proof locked'      },
     { group:'Blocked states',  id:'blocked_documents',     label:'Docs locked'       },
     { group:'Blocked states',  id:'blocked_verification',  label:'Verify locked'     },
@@ -5788,6 +5908,8 @@ function setState(roleId, stateId) {
   else if (t === 'blocked-page')       renderBlockedPage(page, main);
   else if (t === 'under-final-review') renderUnderFinalReview(page, main);
   else if (t === 'cert-sharing')       renderCertSharing(page, main);
+  else if (t === 'certExpired')        renderCertExpired(main, page);
+  else if (t === 'certRenewal')        renderCertRenewal(main, page);
   else                                 renderOverview(page, main);
 
   /* Update active pills */
