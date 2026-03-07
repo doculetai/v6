@@ -27,6 +27,8 @@ import { formatCurrency } from '@/lib/utils';
 import { computeStudentJourney } from '@/lib/journey/student';
 import { api } from '@/trpc/server';
 import { StudentSponsorInviteCard } from '@/components/student/StudentSponsorInviteCard';
+import { SponsorCommittedCard } from '@/components/student/SponsorCommittedCard';
+import { SponsorWithdrawnCard } from '@/components/student/SponsorWithdrawnCard';
 
 import { StatCard } from './overview-shared';
 import { routes } from '@/config/routes';
@@ -269,6 +271,8 @@ export async function StudentOverview({
     balanceResult,
     proofCertificateResult,
     sponsorInvitesResult,
+    committedSponsorsResult,
+    withdrawnSponsorsResult,
   ] = await Promise.allSettled([
     caller.student.getVerificationStatus(),
     caller.student.getStudentSchoolSelection(),
@@ -277,6 +281,8 @@ export async function StudentOverview({
     caller.student.getBalanceStatus(),
     caller.student.getProofCertificate(),
     caller.student.listSponsorInvites(),
+    caller.student.listCommittedSponsors(),
+    caller.student.listWithdrawnSponsors(),
   ]);
 
   const verification =
@@ -290,6 +296,10 @@ export async function StudentOverview({
     proofCertificateResult.status === 'fulfilled' ? proofCertificateResult.value : null;
   const sponsorInvites =
     sponsorInvitesResult.status === 'fulfilled' ? sponsorInvitesResult.value : [];
+  const committedSponsors =
+    committedSponsorsResult.status === 'fulfilled' ? committedSponsorsResult.value : [];
+  const withdrawnSponsors =
+    withdrawnSponsorsResult.status === 'fulfilled' ? withdrawnSponsorsResult.value : [];
 
   const selectedSchool = schools.find((s) => s.id === schoolSelection?.schoolId) ?? null;
   const selectedProgram =
@@ -409,6 +419,26 @@ export async function StudentOverview({
 
                 {/* Sponsor invite card — only for sponsor/corporate funding with no accepted sponsor yet */}
                 {showSponsorInviteCard ? <StudentSponsorInviteCard /> : null}
+
+                {/* Committed sponsor cards */}
+                {committedSponsors.map((s) => (
+                  <SponsorCommittedCard
+                    key={s.id}
+                    sponsorName={s.sponsorName}
+                    amountKobo={s.amountKobo}
+                    currency={s.currency}
+                    fundingTypeLabel={s.fundingTypeLabel}
+                  />
+                ))}
+
+                {/* Withdrawn sponsor cards */}
+                {withdrawnSponsors.map((s) => (
+                  <SponsorWithdrawnCard
+                    key={s.id}
+                    sponsorName={s.sponsorName}
+                    setupHref={routes.dashboard.student.setup}
+                  />
+                ))}
 
                 {/* Stat cards */}
                 <Grid cols={{ sm: 3 }} gap="md">

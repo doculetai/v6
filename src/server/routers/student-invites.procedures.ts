@@ -12,6 +12,10 @@ import {
   listInvitationsForStudent,
   normalizeEmail,
 } from '@/db/queries/sponsor-invitations';
+import {
+  getCommittedSponsors,
+  getWithdrawnSponsors,
+} from '@/db/queries/student-sponsorships';
 import { sendSponsorInvitationEmail } from '@/lib/email/send-sponsor-invitation-email';
 
 import { roleProcedure } from '../trpc';
@@ -208,5 +212,34 @@ export const inviteProcedures = {
       });
 
       return { inviteId: invite.id };
+    }),
+
+  listCommittedSponsors: roleProcedure('student')
+    .output(
+      z.array(
+        z.object({
+          id: z.string().uuid(),
+          sponsorName: z.string(),
+          amountKobo: z.number().int(),
+          currency: z.string(),
+          fundingTypeLabel: z.string(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      return getCommittedSponsors(ctx.db, ctx.user.id);
+    }),
+
+  listWithdrawnSponsors: roleProcedure('student')
+    .output(
+      z.array(
+        z.object({
+          id: z.string().uuid(),
+          sponsorName: z.string(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      return getWithdrawnSponsors(ctx.db, ctx.user.id);
     }),
 };
