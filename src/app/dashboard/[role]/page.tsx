@@ -1,5 +1,5 @@
 import { TRPCError } from '@trpc/server';
-import { Sparkle } from '@phosphor-icons/react/dist/ssr';
+import { Sparkle } from '@/components/icons';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
@@ -45,14 +45,6 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
     }
 
     return <ErrorState role={role} />;
-  }
-
-  if (
-    role === 'student' &&
-    sessionData.profileRole === 'student' &&
-    !sessionData.onboardingComplete
-  ) {
-    redirect('/dashboard/student/onboarding');
   }
 
   if (!sessionData.profileRole) {

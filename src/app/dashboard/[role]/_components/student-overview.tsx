@@ -43,7 +43,6 @@ type DocumentItem = {
 
 type StudentOverviewProps = {
   email: string;
-  phone?: string | null;
   schoolDeactivated?: boolean;
   caller: Awaited<ReturnType<typeof api>>;
 };
@@ -122,13 +121,11 @@ function FirstTimeBanner() {
   const copy = studentHomeCopy.firstTime;
   return (
     <div
-      className="flex flex-col gap-4 rounded-xl border border-border bg-card px-5 py-5 sm:flex-row sm:items-center sm:justify-between"
-      style={{ borderLeftWidth: '4px', borderLeftColor: '#2B39A3' }}
+      className="flex flex-col gap-4 rounded-xl border border-border bg-card px-5 py-5 sm:flex-row sm:items-center sm:justify-between border-l-4 border-l-primary"
     >
       <div className="min-w-0">
         <p
-          className="text-[10px] font-semibold uppercase tracking-widest"
-          style={{ color: '#2B39A3' }}
+          className="text-[10px] font-semibold uppercase tracking-widest text-primary"
         >
           {copy.eyebrow}
         </p>
@@ -164,25 +161,21 @@ function CertifiedBanner({
 
   return (
     <div
-      className="flex flex-col gap-4 rounded-xl border border-border bg-card px-5 py-5 sm:flex-row sm:items-center sm:justify-between"
-      style={{ borderLeftWidth: '4px', borderLeftColor: '#2B39A3' }}
+      className="flex flex-col gap-4 rounded-xl border border-border bg-card px-5 py-5 sm:flex-row sm:items-center sm:justify-between border-l-4 border-l-primary"
     >
       <div className="flex items-start gap-4">
         <div
-          className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
-          style={{ backgroundColor: '#2B39A3' + '14' }}
+          className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/[0.08]"
         >
           <SealCheck
-            className="size-5"
+            className="size-5 text-primary"
             weight="duotone"
-            style={{ color: '#2B39A3' }}
             aria-hidden="true"
           />
         </div>
         <div className="min-w-0">
           <p
-            className="text-[10px] font-semibold uppercase tracking-widest"
-            style={{ color: '#2B39A3' }}
+            className="text-[10px] font-semibold uppercase tracking-widest text-primary"
           >
             {copy.eyebrow}
           </p>
@@ -242,8 +235,7 @@ function SchoolStrip({
       </div>
       {schoolName ? (
         <span
-          className="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium"
-          style={{ color: '#2B39A3' }}
+          className="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium text-primary"
         >
           <CheckCircle className="size-3.5" weight="duotone" aria-hidden="true" />
           {copy.selectedLabel}
@@ -345,7 +337,22 @@ export async function StudentOverview({
   const isBrandNew =
     !onboardingComplete && !verificationComplete && !documentsComplete;
 
-  const activityItems = deriveActivityItems(documents as DocumentItem[], copy.recentActivity);
+  const activityItems = deriveActivityItems(
+    (documents as Array<{
+      id: string;
+      type: StudentDocumentType;
+      status: 'pending' | 'approved' | 'rejected' | 'more_info_requested' | 'expired';
+      createdAt: Date;
+      reviewedAt: Date | null;
+    }>).map((d) => ({
+      id: d.id,
+      type: d.type,
+      status: d.status,
+      createdAt: d.createdAt,
+      reviewedAt: d.reviewedAt,
+    })),
+    copy.recentActivity,
+  );
 
   return (
     <PageShell width="wide">
@@ -377,13 +384,13 @@ export async function StudentOverview({
             >
               <TabsTrigger
                 value="journey"
-                className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-[#2B39A3] data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
               >
                 {copy.tabs.journey}
               </TabsTrigger>
               <TabsTrigger
                 value="activity"
-                className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-[#2B39A3] data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
               >
                 {copy.tabs.activity}
               </TabsTrigger>

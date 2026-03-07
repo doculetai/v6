@@ -1,4 +1,5 @@
 import type { DashboardRole } from '@/config/roles';
+import type { StudentDocumentType } from '@/lib/documents';
 
 type OverviewCopy = {
   title: string;
@@ -169,7 +170,7 @@ export const studentHomeCopy = {
       offer_letter: 'Offer letter',
       affidavit: 'Affidavit',
       cac: 'CAC document',
-    } as Record<string, string>,
+    } as Record<StudentDocumentType, string>,
   },
   journey: {
     stages: {
