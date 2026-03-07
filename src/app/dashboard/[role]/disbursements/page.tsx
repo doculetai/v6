@@ -1,7 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { Suspense } from 'react';
 
 import { sponsorCopy } from '@/config/copy/sponsor';
 import { isDashboardRole } from '@/config/roles';
@@ -46,9 +45,7 @@ export default async function DisbursementsPage({ params }: DisbursementsPagePro
         title={sponsorCopy.disbursements.title}
         subtitle={sponsorCopy.disbursements.subtitle}
       />
-      <Suspense fallback={null}>
-        <DisbursementsPageClient disbursements={disbursements} copy={sponsorCopy.disbursements} />
-      </Suspense>
+      <DisbursementsPageClient disbursements={disbursements} copy={sponsorCopy.disbursements} />
     </div>
   );
 }
