@@ -522,6 +522,28 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 }
 .apikey-copy:hover { background: rgba(0,0,0,0.05); }
 
+/* API usage bar */
+.api-usage-bar-wrap {
+  margin-bottom: 20px; padding: 14px 16px;
+  border: 1px solid rgba(217,119,6,0.25); border-radius: 10px;
+  background: rgba(217,119,6,0.05);
+}
+.api-usage-bar-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.api-usage-bar-label { font-size: 13px; font-weight: 500; color: #92400E; }
+.api-usage-bar-count { font-family: var(--font-mono); font-size: 13px; color: #92400E; }
+.api-usage-bar-track {
+  height: 8px; background: rgba(217,119,6,0.15);
+  border-radius: 4px; overflow: hidden;
+}
+.api-usage-bar-fill {
+  height: 100%; border-radius: 4px;
+  background: #D97706; transition: width 0.3s;
+}
+.api-usage-bar-note { font-size: 12px; color: rgba(146,64,14,0.8); margin-top: 6px; }
+
 /* Banner */
 .banner {
   border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;
@@ -3315,6 +3337,31 @@ var STATE_OVERRIDES = {
       },
     },
 
+    /* api_near_limit: API usage approaching monthly limit — amber progress bar */
+    api_near_limit: {
+      'API Keys': {
+        type: 'apikeys',
+        h1: 'API Keys',
+        eyebrow: 'Authentication credentials',
+        stats: [
+          { label:'Active keys',  value:'2',     sub:'live environment',    mono:true },
+          { label:'Test keys',    value:'1',     sub:'sandbox environment', mono:true },
+          { label:'Last rotated', value:'14d',   sub:'days ago',            mono:false },
+          { label:'API calls',    value:'8,450', sub:'this month',          mono:true },
+        ],
+        keys: [
+          { id: 'pk_live_abc123', label: 'Production', created: '1 Jan 2026', lastUsed: '2 hrs ago',  active: true },
+          { id: 'pk_test_xyz789', label: 'Test',       created: '1 Jan 2026', lastUsed: '1 day ago',  active: true },
+        ],
+        usage: {
+          used: 8450,
+          limit: 10000,
+          period: 'March 2026',
+          warnPercent: 84,
+        },
+      },
+    },
+
     /* api_key_view: partner views API key detail — usage, rotation, scopes */
     api_key_view: {
       'API Keys': {
@@ -4251,6 +4298,25 @@ function renderSettings(page, main) {
 function renderApiKeys(page, main) {
   if (page.stats) main.appendChild(buildStatGrid(page.stats, 4));
 
+  /* Usage progress bar — shown when page.usage is present */
+  if (page.usage) {
+    var u = page.usage;
+    var pct = Math.min(100, Math.round((u.used / u.limit) * 100));
+    var barWrap = el('div', 'api-usage-bar-wrap');
+    var hdr = el('div', 'api-usage-bar-header');
+    var lbl = el('span', 'api-usage-bar-label'); txt(lbl, 'API calls this month (' + u.period + ')');
+    var cnt = el('span', 'api-usage-bar-count'); txt(cnt, u.used.toLocaleString() + ' / ' + u.limit.toLocaleString());
+    hdr.appendChild(lbl); hdr.appendChild(cnt);
+    var track = el('div', 'api-usage-bar-track');
+    var fill = el('div', 'api-usage-bar-fill');
+    fill.style.width = pct + '%';
+    track.appendChild(fill);
+    var note = el('div', 'api-usage-bar-note');
+    txt(note, 'You have used ' + pct + '% of your monthly limit. Contact support to increase your limit.');
+    barWrap.appendChild(hdr); barWrap.appendChild(track); barWrap.appendChild(note);
+    main.appendChild(barWrap);
+  }
+
   var scard = el('div', 'section-card');
   var sh = el('div', 'section-header');
   sh.appendChild(txt(el('span', 'section-title'), 'Your API keys'));
@@ -4260,7 +4326,14 @@ function renderApiKeys(page, main) {
   scard.appendChild(sh);
 
   var list = el('div');
-  (page.rows || []).forEach(function(r) {
+  /* Support both page.rows (table format) and page.keys (object format) */
+  var keyRows = page.rows || [];
+  if (!keyRows.length && page.keys) {
+    page.keys.forEach(function(k) {
+      keyRows.push({ cells: [k.label, k.id, k.lastUsed, 'Rotate'] });
+    });
+  }
+  keyRows.forEach(function(r) {
     var row = el('div', 'apikey-row');
     row.appendChild(txt(el('div', 'apikey-name'), r.cells[0]));
     row.appendChild(txt(el('div', 'apikey-value'), r.cells[1]));
@@ -6549,6 +6622,7 @@ var ROLE_STATES = {
     { group:'API',     id:'api_error',     label:'API error'     },
     { group:'API',     id:'high_usage',    label:'High usage'    },
     { group:'Keys',    id:'api_key_view',  label:'API keys'      },
+    { group:'Keys',    id:'api_near_limit',label:'Near limit'    },
   ],
 
 };
