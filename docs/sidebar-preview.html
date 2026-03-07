@@ -418,6 +418,24 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 .cert-expiry-banner-text { flex: 1; font-size: 13px; }
 .cert-expiry-banner-title { font-weight: 600; color: #B45309; margin-bottom: 2px; }
 .cert-expiry-banner-sub { color: rgba(180,83,9,0.8); font-size: 12px; }
+.bulk-result-summary {
+  display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.bulk-result-card {
+  flex: 1; min-width: 120px; padding: 16px; border-radius: 10px;
+  text-align: center; border: 1px solid rgba(0,0,0,0.08);
+}
+.bulk-result-card.success { background: rgba(21,128,61,0.06); border-color: rgba(21,128,61,0.2); }
+.bulk-result-card.error { background: rgba(194,65,12,0.06); border-color: rgba(194,65,12,0.2); }
+.bulk-result-card.total { background: rgba(0,0,0,0.03); }
+.bulk-result-num { font-family: var(--font-mono); font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+.bulk-result-card.success .bulk-result-num { color: #15803D; }
+.bulk-result-card.error .bulk-result-num { color: #C2410C; }
+.bulk-result-label { font-size: 12px; color: rgba(100,116,139,0.8); }
+.bulk-errors-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.bulk-errors-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(100,116,139,0.6); padding: 6px 10px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.bulk-errors-table td { font-size: 13px; padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+.bulk-errors-table tr:last-child td { border-bottom: none; }
 .cert-expired-state {
   text-align: center; padding: 40px 20px;
 }
@@ -3188,6 +3206,23 @@ var STATE_OVERRIDES = {
         ],
       },
     },
+
+    /* bulk_invite_result: outcome of a CSV bulk student import */
+    bulk_invite_result: {
+      'Students': {
+        type: 'bulkInviteResult',
+        h1: 'Import results',
+        eyebrow: 'CSV import \u2014 15 Mar 2026',
+        total: 47,
+        success: 43,
+        errors: [
+          { row: 5,  email: 'invalid-email',              reason: 'Invalid email format' },
+          { row: 12, email: 'duplicate@unilag.edu.ng',    reason: 'Already registered' },
+          { row: 31, email: 'missing@',                   reason: 'Invalid email format' },
+          { row: 39, email: 'john.doe@gmail.com',         reason: 'Domain not on university allowlist' }
+        ]
+      }
+    },
   },
 
   /* ══ PARTNER ══ */
@@ -5891,6 +5926,55 @@ function renderPaymentsHistory(page, main) {
   body.appendChild(list); scard.appendChild(body); main.appendChild(scard);
 }
 
+/* ── Render bulk invite CSV result (university) ── */
+function renderBulkInviteResult(main, page) {
+  var section = el('div', 'section-card');
+  // Summary cards
+  var summary = el('div', 'bulk-result-summary');
+  var totalCard = el('div', 'bulk-result-card total');
+  var totalNum = el('div', 'bulk-result-num'); txt(totalNum, String(page.total || 0));
+  var totalLbl = el('div', 'bulk-result-label'); txt(totalLbl, 'Total rows');
+  totalCard.appendChild(totalNum); totalCard.appendChild(totalLbl);
+  var successCard = el('div', 'bulk-result-card success');
+  var successNum = el('div', 'bulk-result-num'); txt(successNum, String(page.success || 0));
+  var successLbl = el('div', 'bulk-result-label'); txt(successLbl, 'Invited');
+  successCard.appendChild(successNum); successCard.appendChild(successLbl);
+  var errorCard = el('div', 'bulk-result-card error');
+  var errorNum = el('div', 'bulk-result-num'); txt(errorNum, String(page.errors ? page.errors.length : 0));
+  var errorLbl = el('div', 'bulk-result-label'); txt(errorLbl, 'Failed');
+  errorCard.appendChild(errorNum); errorCard.appendChild(errorLbl);
+  summary.appendChild(totalCard); summary.appendChild(successCard); summary.appendChild(errorCard);
+  section.appendChild(summary);
+  // Errors table
+  if (page.errors && page.errors.length > 0) {
+    var errTitle = el('div', ''); errTitle.style.cssText = 'font-size:13px;font-weight:600;margin-bottom:8px;';
+    txt(errTitle, 'Failed rows');
+    section.appendChild(errTitle);
+    var table = el('table', 'bulk-errors-table');
+    var thead = el('thead', ''); var hRow = el('tr', '');
+    ['Row', 'Email', 'Reason'].forEach(function(h) {
+      var th = el('th', ''); txt(th, h); hRow.appendChild(th);
+    });
+    thead.appendChild(hRow); table.appendChild(thead);
+    var tbody = el('tbody', '');
+    page.errors.forEach(function(err) {
+      var tr = el('tr', '');
+      var tdRow = el('td', ''); txt(tdRow, String(err.row));
+      var tdEmail = el('td', ''); tdEmail.style.fontFamily = 'var(--font-mono)'; txt(tdEmail, err.email);
+      var tdReason = el('td', ''); txt(tdReason, err.reason);
+      tr.appendChild(tdRow); tr.appendChild(tdEmail); tr.appendChild(tdReason);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody); section.appendChild(table);
+    // Download errors CTA
+    var dlBtn = el('button', 'btn-secondary'); dlBtn.style.marginTop = '12px'; dlBtn.style.fontSize = '13px';
+    txt(dlBtn, 'Download error report');
+    dlBtn.onclick = function() {};
+    section.appendChild(dlBtn);
+  }
+  main.appendChild(section);
+}
+
 /* ── Render doc requirements (university Documents) ── */
 function renderDocRequirements(page, main) {
   if (page.stats) main.appendChild(buildStatGrid(page.stats, 4));
@@ -6220,6 +6304,7 @@ function renderPage(roleId, label) {
   else if (t === 'cert-sharing')       renderCertSharing(page, main);
   else if (t === 'certExpired')        renderCertExpired(main, page);
   else if (t === 'certRenewal')        renderCertRenewal(main, page);
+  else if (t === 'bulkInviteResult')   renderBulkInviteResult(main, page);
   else                                 renderOverview(page, main);
 }
 
@@ -6340,6 +6425,7 @@ var ROLE_STATES = {
     { group:'Default',  id:'default',              label:'Overview'         },
     { group:'Students', id:'cert_on_roster',       label:'Cert on roster'   },
     { group:'Students', id:'docs_pending_bulk',    label:'Docs pending'     },
+    { group:'Students', id:'bulk_invite_result',   label:'Bulk invite'      },
     { group:'Programs', id:'programs_near_target', label:'Near target'      },
     { group:'Programs', id:'program_config',       label:'Program config'   },
   ],
@@ -6405,6 +6491,7 @@ function setState(roleId, stateId) {
   else if (t === 'cert-sharing')       renderCertSharing(page, main);
   else if (t === 'certExpired')        renderCertExpired(main, page);
   else if (t === 'certRenewal')        renderCertRenewal(main, page);
+  else if (t === 'bulkInviteResult')   renderBulkInviteResult(main, page);
   else                                 renderOverview(page, main);
 
   /* Update active pills */
