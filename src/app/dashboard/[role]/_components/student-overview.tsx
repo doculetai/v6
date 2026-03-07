@@ -283,12 +283,14 @@ export async function StudentOverview({
     documentsResult,
     schoolsResult,
     balanceResult,
+    proofCertificateResult,
   ] = await Promise.allSettled([
     caller.student.getVerificationStatus(),
     caller.student.getStudentSchoolSelection(),
     caller.student.listDocuments(),
     caller.student.listSchools({}),
     caller.student.getBalanceStatus(),
+    caller.student.getProofCertificate(),
   ]);
 
   const verification =
@@ -298,6 +300,8 @@ export async function StudentOverview({
   const documents = documentsResult.status === 'fulfilled' ? documentsResult.value : [];
   const schools = schoolsResult.status === 'fulfilled' ? schoolsResult.value : [];
   const balance = balanceResult.status === 'fulfilled' ? balanceResult.value : null;
+  const proofCertificate =
+    proofCertificateResult.status === 'fulfilled' ? proofCertificateResult.value : null;
 
   const selectedSchool = schools.find((s) => s.id === schoolSelection?.schoolId) ?? null;
   const selectedProgram =
@@ -318,9 +322,9 @@ export async function StudentOverview({
   const onboardingComplete = Boolean(schoolSelection?.schoolId);
   const documentsComplete = allDocsApproved;
 
-  // For this overview page, proofReady is treated as allComplete
-  // (cert issuance fetched separately; if all 3 upstream stages are done it may be ready)
-  const proofReady = onboardingComplete && verificationComplete && documentsComplete;
+  // proofReady is true only when the DB confirms an active certificate is issued.
+  // Falls back to false if the proof query failed, preventing a false-positive banner.
+  const proofReady = proofCertificate?.certificate.issued === true;
 
   const journeyState = computeStudentJourney(
     {
@@ -332,8 +336,10 @@ export async function StudentOverview({
     copy.journey,
   );
 
+  const hasAnyVerificationActivity =
+    (verification?.tiers[0]?.isComplete === true) || documents.length > 0;
   const isBrandNew =
-    !onboardingComplete && !verificationComplete && !documentsComplete;
+    !onboardingComplete && !verificationComplete && !documentsComplete && !hasAnyVerificationActivity;
 
   const activityItems = deriveActivityItems(
     (documents as Array<{
@@ -477,10 +483,7 @@ export async function StudentOverview({
                   {copy.recentActivity.sectionLabel}
                 </p>
                 {activityItems.length > 0 ? (
-                  <ActivityTimeline
-                    items={activityItems}
-                    emptyLabel={copy.recentActivity.empty}
-                  />
+                  <ActivityTimeline items={activityItems} />
                 ) : (
                   <ActivityEmptyState />
                 )}
