@@ -227,6 +227,12 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 }
 .stat-value.mono { font-family: var(--font-mono); }
 .stat-sub { font-size: 11.5px; color: #94A3B8; line-height: 1.4; }
+.fx-rate {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(100, 116, 139, 0.7);
+  margin-top: 2px;
+}
 
 /* Section card */
 .section-card {
@@ -1367,7 +1373,7 @@ var PAGES = {
       h1: 'Overview',
       stats: [
         { label:'Active students',  value:'2',           sub:'funded this cycle',    mono:true },
-        { label:'Total committed',  value:'\u20a6 4.5M', sub:'across all students',  mono:true },
+        { label:'Total committed',  value:'\u20a6 4.5M', sub:'across all students',  mono:true, fx:'\u2248 $652 @ \u20a61,535/$' },
         { label:'Certs issued',     value:'1',           sub:'proof certificates',   mono:true },
         { label:'Pending',          value:'1',           sub:'awaiting completion',  mono:true },
       ],
@@ -1525,10 +1531,10 @@ var PAGES = {
         { label:'Certs issued',   status:'up',   value:'3 today'  },
       ],
       stats: [
-        { label:'Pending review',  value:'5', sub:'documents awaiting decision',  mono:true },
-        { label:'Approved today',  value:'3', sub:'documents cleared',            mono:true },
-        { label:'Rejected today',  value:'1', sub:'documents returned',           mono:true },
-        { label:'Risk flags',      value:'2', sub:'items requiring attention',    mono:true },
+        { label:'Pending review',  value:'5',            sub:'documents awaiting decision',  mono:true },
+        { label:'Approved today',  value:'3',            sub:'documents cleared',            mono:true },
+        { label:'Platform balance',value:'\u20a6 2.99B', sub:'total verified funds',         mono:true, fx:'\u2248 $1,950 @ \u20a61,535/$' },
+        { label:'Risk flags',      value:'2',            sub:'items requiring attention',    mono:true },
       ],
       timeline: [
         { student:'kemi.adesanya', event:'Document approved', detail:'School offer letter', time:'14:22', type:'approved' },
@@ -1718,10 +1724,10 @@ var PAGES = {
       eyebrow: 'API and integration health',
       h1: 'Overview',
       stats: [
-        { label:'API calls today',   value:'1,240', sub:'requests processed',   mono:true },
-        { label:'Students verified', value:'88',    sub:'via your integration', mono:true },
-        { label:'Error rate',        value:'0.2%',  sub:'last 24 hours',        mono:false },
-        { label:'Webhooks',          value:'4',     sub:'active endpoints',     mono:true },
+        { label:'API calls today',   value:'1,240',       sub:'requests processed',   mono:true },
+        { label:'Students verified', value:'88',          sub:'via your integration', mono:true },
+        { label:'Revenue this month',value:'\u20a6 300K', sub:'platform fees earned', mono:true, fx:'\u2248 $195 @ \u20a61,535/$' },
+        { label:'Webhooks',          value:'4',           sub:'active endpoints',     mono:true },
       ],
       endpoints: [
         { path:'/v1/verify',    method:'POST', latency:'142ms', uptime:'99.9%', health:'up'   },
@@ -2783,10 +2789,17 @@ function buildStatGrid(stats, cols) {
     var card = el('div', 'stat-card');
     card.appendChild(txt(el('div', 'stat-label'), s.label));
     card.appendChild(txt(el('div', s.mono ? 'stat-value mono' : 'stat-value'), s.value || '—'));
+    if (s.fx) card.appendChild(buildFxRate(s.fx));
     if (s.sub) card.appendChild(txt(el('div', 'stat-sub'), s.sub));
     grid.appendChild(card);
   });
   return grid;
+}
+
+function buildFxRate(text) {
+  var d = el('div', 'fx-rate');
+  txt(d, text);
+  return d;
 }
 
 /* ── Build section card with table ── */
