@@ -31,6 +31,7 @@ import { SponsorCommittedCard } from '@/components/student/SponsorCommittedCard'
 import { SponsorWithdrawnCard } from '@/components/student/SponsorWithdrawnCard';
 import { CertIssuedOverviewCard } from '@/components/student/CertIssuedOverviewCard';
 import { BeginApplicationCard } from '@/components/student/BeginApplicationCard';
+import { PhoneVerificationPromptCard } from '@/components/student/PhoneVerificationPromptCard';
 
 import { StatCard } from './overview-shared';
 import { routes } from '@/config/routes';
@@ -291,6 +292,7 @@ export async function StudentOverview({
   const allDocsApproved = approvedCount >= totalRequired && uploadedCount >= totalRequired;
   const verificationComplete = completionPercent >= 100;
   const onboardingComplete = Boolean(schoolSelection?.schoolId);
+  const t1Complete = Boolean(verification?.tiers.find((t) => t.tier === 1)?.isComplete);
   const documentsComplete = allDocsApproved;
 
   // proofReady is true only when the DB confirms an active certificate is issued.
@@ -441,6 +443,9 @@ export async function StudentOverview({
             <>
               {/* Pre-cert: begin application card — shown until onboarding is complete */}
               {!onboardingComplete ? <BeginApplicationCard /> : null}
+
+              {/* Phone verification prompt — shown after onboarding, before T1 is complete */}
+              {onboardingComplete && !t1Complete ? <PhoneVerificationPromptCard /> : null}
 
               {/* Tabs: Journey | Activity */}
               <Tabs defaultValue="journey">

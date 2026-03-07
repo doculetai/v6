@@ -254,6 +254,13 @@ export const studentCopy = {
     },
   },
 
+  phoneVerificationPrompt: {
+    eyebrow: 'NEXT STEP',
+    heading: 'Verify your phone number',
+    description: 'Confirm your phone number to unlock identity verification.',
+    cta: 'Verify now',
+  },
+
   phoneSheet: {
     title: 'Confirm your phone number',
     description: 'We need your phone number to complete your identity profile. You will receive a one-time code.',
