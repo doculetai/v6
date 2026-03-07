@@ -62,7 +62,7 @@ export const partnerWebhooksRouter = createTRPCRouter({
         })
         .returning({ id: partnerWebhookConfigs.id });
 
-      return { id: row.id, secret };
+      return { id: row.id, secret: secretHash };
     }),
 
   updateWebhook: roleProcedure('partner')
