@@ -1,4 +1,5 @@
-import { ArrowRight, Warning, UserFocus } from '@/components/icons';
+import { ArrowDown, ArrowRight, ArrowUp, Warning, UserFocus } from '@/components/icons';
+import { SparklineChart } from '@/components/ui/sparkline';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -12,16 +13,40 @@ import { dashboardOverviewCopy, dashboardShellCopy } from '@/config/copy/dashboa
 import type { DashboardRole } from '@/config/roles';
 import { cn } from '@/lib/utils';
 
+export type StatCardTrend = {
+  direction: 'up' | 'down' | 'neutral';
+  value: string;
+  label?: string;
+};
+
 export type StatCardProps = {
   label: string;
   value: string;
-  sub: string;
+  sub?: string;
   accent?: boolean;
   href?: string;
   valueClassName?: string;
+  trend?: StatCardTrend;
+  sparklineData?: number[];
 };
 
-export function StatCard({ label, value, sub, accent, href, valueClassName }: StatCardProps) {
+export function StatCard({
+  label, value, sub, accent, href, valueClassName, trend, sparklineData,
+}: StatCardProps) {
+  const TrendIcon = trend?.direction === 'up' ? ArrowUp : ArrowDown;
+  const trendColor =
+    trend?.direction === 'up'
+      ? 'text-success'
+      : trend?.direction === 'down'
+        ? 'text-destructive'
+        : 'text-muted-foreground';
+  const sparklineColor =
+    trend?.direction === 'up'
+      ? 'var(--color-success)'
+      : trend?.direction === 'down'
+        ? 'var(--color-destructive)'
+        : 'var(--color-muted-foreground)';
+
   const content = (
     <div
       className={cn(
@@ -33,18 +58,39 @@ export function StatCard({ label, value, sub, accent, href, valueClassName }: St
       <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
         {label}
       </p>
-      <p className={cn('mt-1.5 font-mono text-xl font-semibold text-foreground', valueClassName)}>
-        {value}
-      </p>
-      <div className="mt-2 flex items-center justify-between">
-        <p className="text-xs text-muted-foreground">{sub}</p>
-        {href ? (
-          <span className="text-primary/70 transition-colors group-hover:text-primary">
-            <span className="sr-only">View</span>
-            <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
-          </span>
-        ) : null}
+
+      <div className="mt-2 flex items-end justify-between gap-3">
+        <div className="min-w-0">
+          <p className={cn('font-mono text-xl font-semibold text-foreground', valueClassName)}>
+            {value}
+          </p>
+          {trend != null && (
+            <div className={cn('mt-1 flex items-center gap-1 text-xs font-medium', trendColor)}>
+              <TrendIcon className="size-3.5" weight="duotone" aria-hidden="true" />
+              <span>{trend.value}</span>
+              <span className="font-normal text-muted-foreground">
+                {trend.label ?? 'vs last month'}
+              </span>
+            </div>
+          )}
+          {sub != null && trend == null && (
+            <p className="mt-1.5 text-xs text-muted-foreground">{sub}</p>
+          )}
+        </div>
+
+        {sparklineData != null && sparklineData.length > 1 && (
+          <div className="w-20 shrink-0">
+            <SparklineChart data={sparklineData} color={sparklineColor} height={36} />
+          </div>
+        )}
       </div>
+
+      {href && (
+        <span className="absolute right-4 top-4 text-primary/70">
+          <span className="sr-only">View</span>
+          <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+        </span>
+      )}
     </div>
   );
 
@@ -52,7 +98,7 @@ export function StatCard({ label, value, sub, accent, href, valueClassName }: St
     return (
       <Link
         href={href}
-        className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl"
+        className="group block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         {content}
       </Link>
