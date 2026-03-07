@@ -1338,6 +1338,22 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
   background: rgba(100,116,139,0.08); border: 1px solid rgba(100,116,139,0.2);
   font-size: 13px; color: rgba(100,116,139,0.9); margin-bottom: 16px;
 }
+
+/* ── Commitment paused card ── */
+.commitment-paused-card {
+  border: 1px solid rgba(217,119,6,0.3); border-radius: 12px;
+  padding: 16px; background: rgba(217,119,6,0.04); margin-bottom: 12px;
+}
+.commitment-paused-label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: #B45309; margin-bottom: 8px;
+}
+.commitment-paused-amount {
+  font-family: var(--font-mono); font-size: 22px; font-weight: 600; margin-bottom: 4px;
+}
+.commitment-paused-reason {
+  font-size: 13px; color: rgba(100,116,139,0.8); margin-bottom: 14px; line-height: 1.5;
+}
 </style>
 </head>
 <body>
@@ -3045,6 +3061,25 @@ var STATE_OVERRIDES = {
         commitments: [
           { student:'Kemi Adesanya', school:'UNILAG \u2014 CS BSc', amount:'\u20a6 2,000,000', declared:'1 Mar 2026', status:'active' },
           { student:'Emeka Nwosu',   school:'OAU \u2014 Law LLB',   amount:'\u20a6 2,500,000', declared:'1 Mar 2026', status:'fulfilled' },
+        ],
+      },
+    },
+
+    /* commitment_paused: one commitment is paused pending doc review */
+    commitment_paused: {
+      'Commitments': {
+        type: 'commitments',
+        h1: 'Commitments',
+        eyebrow: 'Your declared commitments',
+        commitments: [
+          {
+            studentName: 'Adeola Adeyemi',
+            amount: '\u20a6 1,800,000',
+            status: 'paused',
+            pauseReason: 'This commitment was paused pending review of updated verification documents.',
+            school: 'University of Lagos',
+            program: 'MSc Computer Science',
+          },
         ],
       },
     },
@@ -5389,30 +5424,69 @@ function renderCommitments(page, main) {
   sh.appendChild(declareBtn);
   scard.appendChild(sh);
 
-  var table = el('table', 'data-table');
-  var thead = el('thead'); var hrow = el('tr');
-  ['Student', 'School', 'Amount', 'Declared', 'Status'].forEach(function(h) { hrow.appendChild(txt(el('th'), h)); });
-  thead.appendChild(hrow); table.appendChild(thead);
-  var tbody = el('tbody');
-  var statusMap = { active:'blue', fulfilled:'green' };
-  page.commitments.forEach(function(c) {
-    var tr = el('tr'); tr.style.cursor = 'pointer';
-    [c.student, c.school, c.amount, c.declared].forEach(function(v, i) {
-      var td = el('td');
-      td.textContent = v;
-      if (i === 2) td.style.fontFamily = 'var(--font-mono)'; // amount
-      if (i === 3) td.style.color = '#94A3B8';
-      tr.appendChild(td);
+  /* Separate paused commitments from table-based ones */
+  var pausedCommitments = page.commitments.filter(function(c) { return c.status === 'paused'; });
+  var tableCommitments  = page.commitments.filter(function(c) { return c.status !== 'paused'; });
+
+  /* Render paused cards above the table */
+  pausedCommitments.forEach(function(c) {
+    var card = el('div', 'commitment-paused-card');
+    card.appendChild(txt(el('div', 'commitment-paused-label'), 'Paused'));
+    card.appendChild(txt(el('div', 'commitment-paused-amount'), c.amount));
+    var schoolLine = el('div');
+    schoolLine.style.cssText = 'font-size:13px;color:#0F172A;margin-bottom:10px;';
+    schoolLine.textContent = (c.studentName || '') + (c.school ? ' \u00b7 ' + c.school : '') + (c.program ? ' \u2014 ' + c.program : '');
+    card.appendChild(schoolLine);
+    if (c.pauseReason) {
+      card.appendChild(txt(el('div', 'commitment-paused-reason'), c.pauseReason));
+    }
+    var unpauseBtn = el('button', 'btn-secondary');
+    unpauseBtn.textContent = 'Un-pause commitment';
+    unpauseBtn.style.cssText = 'font-size:13px;padding:8px 16px;';
+    unpauseBtn.addEventListener('click', function() {
+      showModal('Un-pause commitment', function(body) {
+        var p = el('p', ''); p.style.cssText = 'font-size:14px;color:rgba(100,116,139,0.9);line-height:1.6;';
+        txt(p, 'You are about to un-pause your commitment of ' + c.amount + ' for ' + (c.studentName || 'this student') + '. The commitment will be active again and the student will be notified.');
+        body.appendChild(p);
+      }, function(footer) {
+        var confirmBtn = el('button', 'btn-primary');
+        txt(confirmBtn, 'Confirm un-pause');
+        confirmBtn.onclick = closeModal;
+        footer.appendChild(confirmBtn);
+      });
     });
-    var statusTd = el('td');
-    var badge = el('span', 'badge badge-' + (statusMap[c.status] || 'muted'));
-    badge.textContent = c.status.charAt(0).toUpperCase() + c.status.slice(1);
-    statusTd.appendChild(badge);
-    tr.appendChild(statusTd);
-    tbody.appendChild(tr);
+    card.appendChild(unpauseBtn);
+    scard.appendChild(card);
   });
-  table.appendChild(tbody);
-  scard.appendChild(table);
+
+  /* Render table for non-paused commitments */
+  if (tableCommitments.length > 0) {
+    var table = el('table', 'data-table');
+    var thead = el('thead'); var hrow = el('tr');
+    ['Student', 'School', 'Amount', 'Declared', 'Status'].forEach(function(h) { hrow.appendChild(txt(el('th'), h)); });
+    thead.appendChild(hrow); table.appendChild(thead);
+    var tbody = el('tbody');
+    var statusMap = { active:'blue', fulfilled:'green' };
+    tableCommitments.forEach(function(c) {
+      var tr = el('tr'); tr.style.cursor = 'pointer';
+      [c.student, c.school, c.amount, c.declared].forEach(function(v, i) {
+        var td = el('td');
+        td.textContent = v;
+        if (i === 2) td.style.fontFamily = 'var(--font-mono)'; // amount
+        if (i === 3) td.style.color = '#94A3B8';
+        tr.appendChild(td);
+      });
+      var statusTd = el('td');
+      var badge = el('span', 'badge badge-' + (statusMap[c.status] || 'muted'));
+      badge.textContent = c.status.charAt(0).toUpperCase() + c.status.slice(1);
+      statusTd.appendChild(badge);
+      tr.appendChild(statusTd);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    scard.appendChild(table);
+  }
+
   main.appendChild(scard);
 }
 
@@ -6226,11 +6300,12 @@ var ROLE_STATES = {
   ],
 
   sponsor: [
-    { group:'Default',   id:'default',              label:'Overview'         },
-    { group:'Students',  id:'student_in_progress',  label:'In progress'      },
-    { group:'Students',  id:'cert_just_issued',     label:'Cert issued'      },
-    { group:'Students',  id:'student_rejected',     label:'Doc rejected'     },
-    { group:'Commitments',id:'commitment_view',     label:'Commitments'      },
+    { group:'Default',      id:'default',              label:'Overview'         },
+    { group:'Students',     id:'student_in_progress',  label:'In progress'      },
+    { group:'Students',     id:'cert_just_issued',     label:'Cert issued'      },
+    { group:'Students',     id:'student_rejected',     label:'Doc rejected'     },
+    { group:'Commitments',  id:'commitment_view',      label:'Commitments'      },
+    { group:'Commitments',  id:'commitment_paused',    label:'Paused'           },
   ],
 
   university: [
