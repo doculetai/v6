@@ -23,15 +23,16 @@ import { SidebarFooter } from './sidebar/SidebarFooter';
 import { SidebarQuickAction } from './sidebar/SidebarQuickAction';
 import { SidebarToggle } from './sidebar/SidebarToggle';
 import { SidebarUserCard } from './sidebar/SidebarUserCard';
+import { routes } from '@/config/routes';
 
 // ── Role accent colours — "Safe & in good hands", bank-grade tinting ──────────
 const ROLE_ACCENTS: Record<DashboardRole, { text: string; bg: string }> = {
-  student:    { text: '#2B39A3', bg: 'rgba(43,57,163,0.10)'   },
-  sponsor:    { text: '#15803D', bg: 'rgba(21,128,61,0.10)'   },
-  university: { text: '#0369A1', bg: 'rgba(3,105,161,0.10)'   },
-  admin:      { text: '#C2410C', bg: 'rgba(194,65,12,0.10)'   },
-  agent:      { text: '#6D28D9', bg: 'rgba(109,40,217,0.10)'  },
-  partner:    { text: '#0F766E', bg: 'rgba(15,118,110,0.10)'  },
+  student:    { text: '#2B39A3', bg: 'rgba(43,57,163,0.12)'   },
+  sponsor:    { text: '#15803D', bg: 'rgba(21,128,61,0.12)'   },
+  university: { text: '#0369A1', bg: 'rgba(3,105,161,0.12)'   },
+  admin:      { text: '#C2410C', bg: 'rgba(194,65,12,0.12)'   },
+  agent:      { text: '#6D28D9', bg: 'rgba(109,40,217,0.12)'  },
+  partner:    { text: '#0F766E', bg: 'rgba(15,118,110,0.12)'  },
 };
 
 type SidebarProps = {
@@ -54,6 +55,18 @@ function findBestMatch(items: NavItem[], currentPath: string): string | null {
 
 const SIDEBAR_STORAGE_KEY = 'doculet-sidebar-collapsed';
 
+function useTabletViewport() {
+  const [isTablet, setIsTablet] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px) and (max-width: 1023px)');
+    setIsTablet(mq.matches);
+    const handler = () => setIsTablet(mq.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  return isTablet;
+}
+
 function useSidebarCollapsed(defaultCollapsed: boolean) {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
   const [hydrated, setHydrated] = useState(false);
@@ -62,8 +75,9 @@ function useSidebarCollapsed(defaultCollapsed: boolean) {
     const stored = localStorage.getItem(SIDEBAR_STORAGE_KEY);
     if (stored === 'true') setIsCollapsed(true);
     else if (stored === 'false') setIsCollapsed(false);
+    else setIsCollapsed(defaultCollapsed);
     setHydrated(true);
-  }, []);
+  }, [defaultCollapsed]);
 
   const toggle = useCallback(() => {
     setIsCollapsed((prev) => {
@@ -79,12 +93,17 @@ function useSidebarCollapsed(defaultCollapsed: boolean) {
 export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisible = false, studentTrustStage }: SidebarProps) {
   const router = useRouter();
   const navConfig = getNavConfig(role, { studentTrustStage });
+  const isTablet = useTabletViewport();
 
   // Student nav has no quickAction — it was removed in the journey redesign.
   // Other roles still have quickActions defined in their nav configs.
   const quickAction = role === 'student' ? undefined : navConfig.quickAction;
-  const { isCollapsed, toggle: toggleCollapsed, hydrated } = useSidebarCollapsed(defaultCollapsed);
+  const { isCollapsed, toggle: toggleCollapsed, hydrated } = useSidebarCollapsed(defaultCollapsed || isTablet);
+  const [isHoverExpanded, setIsHoverExpanded] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const isExpanded = !isCollapsed || (isTablet && isHoverExpanded);
+  const visualCollapsed = !isExpanded;
   const accent = ROLE_ACCENTS[role];
 
   const activeHref = useMemo(
@@ -105,7 +124,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
     try {
       await supabase?.auth.signOut();
     } finally {
-      router.push('/login');
+      router.push(routes.auth.login);
       router.refresh();
       setIsSigningOut(false);
     }
@@ -122,6 +141,14 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
     .map((group) => ({ group, items: navConfig.items.filter((i) => i.group === group.id) }))
     .filter((g) => g.items.length > 0);
 
+  const handlePointerEnter = () => {
+    if (isTablet && isCollapsed) setIsHoverExpanded(true);
+  };
+
+  const handlePointerLeave = () => {
+    setIsHoverExpanded(false);
+  };
+
   return (
     <TooltipProvider delayDuration={300}>
       <aside
@@ -129,18 +156,20 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
           '--role-accent': accent.text,
           '--role-accent-bg': accent.bg,
         } as React.CSSProperties}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
         className={cn(
           'flex flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-md print:hidden',
           !forceVisible && 'hidden md:flex',
-          'transition-[width,opacity] duration-200 ease-out',
+          'transition-[width,opacity] duration-150 ease-out',
           !hydrated && 'opacity-0',
-          isCollapsed ? 'w-16' : 'w-60',
+          isExpanded ? 'w-60' : 'w-16',
         )}
       >
         {/* ── Logo ── */}
         <div className={cn(
           'flex shrink-0 items-center gap-2.5 px-4 py-4',
-          isCollapsed && 'justify-center px-3',
+          visualCollapsed && 'justify-center px-3',
         )}>
           <Link
             href={`/dashboard/${role}`}
@@ -152,10 +181,10 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
               alt=""
               width={64}
               height={64}
-              className={cn('shrink-0', isCollapsed ? 'size-8' : 'size-9')}
+              className={cn('shrink-0', visualCollapsed ? 'size-8' : 'size-10')}
               aria-hidden="true"
             />
-            {!isCollapsed && (
+            {!visualCollapsed && (
               <span className="text-[15px] font-bold tracking-[-0.02em] text-sidebar-foreground">
                 {dashboardShellCopy.brandName}
               </span>
@@ -164,7 +193,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         </div>
 
         {/* ── Role indicator ── */}
-        <RoleIndicator role={role} isCollapsed={isCollapsed} />
+        <RoleIndicator role={role} isCollapsed={visualCollapsed} />
 
         {/* ── Quick action (optional — not all roles have one) ── */}
         {quickAction && (
@@ -174,7 +203,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
                 label={quickAction.label}
                 icon={quickAction.icon}
                 href={quickAction.href}
-                isCollapsed={isCollapsed}
+                isCollapsed={visualCollapsed}
               />
             </div>
             <div className="mx-3 border-t border-sidebar-border" />
@@ -209,7 +238,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
             <ul className="flex flex-col gap-px px-2" role="list">
               {ungroupedItems.map((item) => (
                 <li key={item.href}>
-                  <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={isCollapsed} />
+                  <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={visualCollapsed} />
                 </li>
               ))}
             </ul>
@@ -227,7 +256,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         </nav>
 
         {/* ── Recent pages ── */}
-        {!isCollapsed && recentPages.length > 0 && (
+        {!visualCollapsed && recentPages.length > 0 && (
           <div className="border-t border-sidebar-border px-2 py-2">
             <p className="px-2 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-sidebar-foreground/50">
               Recent
@@ -235,10 +264,10 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
             <ul className="flex flex-col gap-px" role="list">
               {recentPages.map((page) => (
                 <li key={page.href}>
-                  <Link
+                    <Link
                     href={page.href}
                     className={cn(
-                      'flex min-h-[36px] items-center rounded-md px-3 text-[12.5px] font-[450] text-sidebar-foreground/60',
+                      'flex min-h-[44px] items-center rounded-md px-3 text-[12.5px] font-[450] text-sidebar-foreground/60',
                       'transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground',
                     )}
                   >
@@ -257,16 +286,16 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         >
           <div className={cn(
             'flex items-center gap-1 px-2 pt-1',
-            isCollapsed && 'justify-center',
+            visualCollapsed && 'justify-center',
           )}>
             <NotificationsBell
               role={role}
               className="text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground"
             />
-            <SidebarToggle isCollapsed={isCollapsed} onToggle={toggleCollapsed} />
+            <SidebarToggle isCollapsed={visualCollapsed} onToggle={toggleCollapsed} />
           </div>
-          <SidebarUserCard role={role} isCollapsed={isCollapsed} onSignOut={handleLogout} />
-          <SidebarFooter isCollapsed={isCollapsed} />
+          <SidebarUserCard role={role} isCollapsed={visualCollapsed} onSignOut={handleLogout} />
+          <SidebarFooter isCollapsed={visualCollapsed} />
         </div>
       </aside>
     </TooltipProvider>
@@ -397,15 +426,14 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       aria-current={isActive ? 'page' : undefined}
       title={isCollapsed ? item.label : undefined}
       style={isActive ? {
-        backgroundColor: 'var(--role-accent-bg)',
-        color: 'var(--role-accent)',
+        backgroundColor: 'rgba(255, 255, 255, 0.09)',
       } : undefined}
       className={cn(
         'group relative flex min-h-[44px] items-center gap-3 rounded-md px-3 text-[13.5px] transition-colors duration-100',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)]',
         isActive
-          ? 'font-semibold'
-          : 'font-[450] text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground',
+          ? 'font-semibold text-sidebar-foreground'
+          : 'font-[450] text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground',
         isCollapsed && 'justify-center px-0',
       )}
     >
@@ -413,7 +441,7 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       <span
         style={isActive ? { backgroundColor: 'var(--role-accent)' } : undefined}
         className={cn(
-          'absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full transition-[transform,opacity] duration-150',
+          'absolute left-0 top-1/2 h-6 w-[4px] -translate-y-1/2 rounded-r-full transition-[transform,opacity] duration-150',
           isActive ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0',
         )}
       />
