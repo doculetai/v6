@@ -52,14 +52,14 @@ function chartVars(tokens: SemanticTokens, neutral: string, success: string, war
 function sidebarVars(tokens: SemanticTokens, mode: 'light' | 'dark'): string[] {
   if (mode === 'light') {
     return [
-      `  --sidebar: ${tokens.primary};`,
-      `  --sidebar-foreground: ${tokens.primaryForeground};`,
+      `  --sidebar: #161A1D;`,
+      `  --sidebar-foreground: #F1F5F9;`,
       `  --sidebar-primary: ${tokens.primary};`,
-      `  --sidebar-primary-foreground: ${tokens.primaryForeground};`,
-      `  --sidebar-accent: rgba(255, 255, 255, 0.12);`,
-      `  --sidebar-accent-foreground: ${tokens.primaryForeground};`,
-      `  --sidebar-border: rgba(255, 255, 255, 0.15);`,
-      `  --sidebar-ring: ${tokens.ring};`,
+      `  --sidebar-primary-foreground: #FFFFFF;`,
+      `  --sidebar-accent: rgba(255, 255, 255, 0.06);`,
+      `  --sidebar-accent-foreground: #F1F5F9;`,
+      `  --sidebar-border: rgba(255, 255, 255, 0.07);`,
+      `  --sidebar-ring: #93A6FF;`,
     ];
   }
 
