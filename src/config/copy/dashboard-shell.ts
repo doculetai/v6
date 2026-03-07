@@ -34,11 +34,11 @@ export const dashboardShellCopy = {
       yesterday: 'Yesterday',
       earlier: 'Earlier',
     },
-    typeGroups: {
+    categoryGroups: {
       documents: 'Documents',
-      payments: 'Payments',
       verification: 'Verification',
-      invites: 'Invites',
+      sponsor: 'Sponsor',
+      certificate: 'Certificate',
       general: 'General',
     },
     relativeTime: {
