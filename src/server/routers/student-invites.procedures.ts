@@ -194,6 +194,13 @@ export const inviteProcedures = {
 
       const studentEmail = normalizeEmail(ctx.user.email ?? '');
 
+      if (!studentEmail) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'Student account email is required before sending invitations.',
+        });
+      }
+
       await sendSponsorInvitationEmail({
         toEmail: invite.inviteeEmail,
         studentEmail,
