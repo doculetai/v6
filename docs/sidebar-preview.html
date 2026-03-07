@@ -1271,6 +1271,27 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 }
 .resend-btn:disabled { color: rgba(100,116,139,0.5); cursor: not-allowed; }
 .resend-countdown { font-family: var(--font-mono); font-size: 12px; }
+
+/* ── Sponsor paused / withdrawn states ── */
+.sponsor-paused-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 2px 8px;
+  border-radius: 20px; background: rgba(217,119,6,0.1); color: #B45309;
+}
+.sponsor-paused-note {
+  font-size: 12px; color: rgba(180,83,9,0.8); margin-top: 6px;
+  padding: 8px 10px; background: rgba(217,119,6,0.06); border-radius: 6px;
+}
+.sponsor-withdrawn-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 2px 8px;
+  border-radius: 20px; background: rgba(0,0,0,0.06); color: rgba(100,116,139,0.9);
+}
+.withdrawal-alert {
+  padding: 12px 14px; border-radius: 10px;
+  background: rgba(100,116,139,0.08); border: 1px solid rgba(100,116,139,0.2);
+  font-size: 13px; color: rgba(100,116,139,0.9); margin-bottom: 16px;
+}
 </style>
 </head>
 <body>
@@ -2510,6 +2531,85 @@ var STUDENT_STATE_OVERRIDES = {
         { cells:['Sponsor withdrew',    'Action needed', '7 Mar'], badge:1, badgeType:'red'   },
         { cells:['Sponsor committed',   'Reversed',      '6 Mar'], badge:1, badgeType:'muted' },
         { cells:['Phone verified',      'Done',          '5 Mar'], badge:1, badgeType:'green' },
+      ],
+    },
+  },
+
+  /* sponsor_paused: sponsor committed but has temporarily paused their commitment */
+  sponsor_paused: {
+    'Overview': {
+      type: 'overview', eyebrow: 'Your proof of funds journey', h1: 'Overview',
+      banner: { type:'amber', title:'Sponsor commitment paused', desc:'Adebayo Okafor has temporarily paused their commitment. You may continue your application.' },
+      sponsors: [
+        {
+          name: 'Adebayo Okafor', amount: '\u20a6 1,800,000', status: 'paused',
+          pausedNote: 'This sponsor has temporarily paused their commitment. They have been notified.',
+          relation: 'Family sponsor',
+        },
+      ],
+      journey: [
+        { label:'Onboarding',  sub:'Complete',  status:'done'   },
+        { label:'Phone',       sub:'Verified',  status:'done'   },
+        { label:'Identity',    sub:'In review', status:'active' },
+        { label:'Banking',     sub:'Locked',    status:'locked' },
+        { label:'Documents',   sub:'Locked',    status:'locked' },
+        { label:'Certificate', sub:'Locked',    status:'locked' },
+      ],
+      stats: [
+        { label:'Sponsor',      value:'Paused',            sub:'Adebayo Okafor \u2014 paused'      },
+        { label:'Verification', value:'T2 in progress',    sub:'Identity review pending'            },
+        { label:'Documents',    value:'0 / 5',             sub:'Not started',       mono:true       },
+        { label:'Certificate',  value:'Not issued',        sub:'Complete all steps'                 },
+      ],
+      section: 'Recent activity',
+      cols: ['Event', 'Status', 'Date'],
+      rows: [
+        { cells:['Sponsor paused commitment', 'Paused',   '8 Mar'], badge:1, badgeType:'amber' },
+        { cells:['Sponsor committed',         'Reversed', '7 Mar'], badge:1, badgeType:'muted' },
+        { cells:['Phone verified',            'Done',     '5 Mar'], badge:1, badgeType:'green' },
+      ],
+    },
+  },
+
+  /* post_cert_sponsor_withdrawal: cert issued, then sponsor withdrew (edge case) */
+  post_cert_sponsor_withdrawal: {
+    'Overview': {
+      type: 'overview', eyebrow: 'Your proof of funds journey', h1: 'Overview',
+      certCard: {
+        certId: 'DOC-2026-00421', issuedDate: '14 Feb 2026',
+        amount: '\u20a6 3,500,000', status: 'active',
+        id: 'DOC-2026-00421',
+      },
+      withdrawalAlert: {
+        message: 'Sponsor withdrawal noted. Your issued certificate is not affected. Contact support if you have questions.',
+      },
+      sponsors: [
+        {
+          name: 'Adebayo Okafor', amount: '\u20a6 1,800,000', status: 'withdrawn',
+          withdrawnNote: 'This sponsor withdrew their commitment on 20 Feb 2026. Your certificate remains valid.',
+          relation: 'Family sponsor',
+        },
+      ],
+      journey: [
+        { label:'Onboarding',  sub:'Complete', status:'done' },
+        { label:'Phone',       sub:'Verified', status:'done' },
+        { label:'Identity',    sub:'Verified', status:'done' },
+        { label:'Banking',     sub:'Verified', status:'done' },
+        { label:'Documents',   sub:'Approved', status:'done' },
+        { label:'Certificate', sub:'Issued',   status:'done' },
+      ],
+      stats: [
+        { label:'Certificate',  value:'DOC-2026-00421', sub:'Issued 14 Feb 2026', mono:true },
+        { label:'Amount',       value:'\u20a6 3,500,000', sub:'Proof of funds',   mono:true },
+        { label:'Sponsor',      value:'Withdrew',         sub:'Post-issuance withdrawal'    },
+        { label:'Cert status',  value:'Active',           sub:'Valid \u2014 not affected'   },
+      ],
+      section: 'Recent activity',
+      cols: ['Event', 'Status', 'Date'],
+      rows: [
+        { cells:['Sponsor withdrew',   'Post-cert',     '20 Feb'], badge:1, badgeType:'muted' },
+        { cells:['Certificate issued', 'Active',        '14 Feb'], badge:1, badgeType:'green' },
+        { cells:['Docs approved',      'Complete',      '12 Feb'], badge:1, badgeType:'green' },
       ],
     },
   },
@@ -5489,6 +5589,11 @@ function renderDocRequirements(page, main) {
 
 /* ── Render generic overview-style page ── */
 function renderOverview(page, main) {
+  if (page.withdrawalAlert) {
+    var waTop = el('div', 'withdrawal-alert');
+    waTop.textContent = page.withdrawalAlert.message;
+    main.appendChild(waTop);
+  }
   if (page.journey) main.appendChild(buildJourneyStepper(page.journey));
   if (page.banner) main.appendChild(buildBanner(page.banner));
   if (page.stats) main.appendChild(buildStatGrid(page.stats, 4));
@@ -5687,6 +5792,38 @@ function renderOverview(page, main) {
     main.appendChild(invCard);
   }
 
+  // Sponsors array (paused / withdrawn lifecycle states)
+  if (page.sponsors && page.sponsors.length) {
+    page.sponsors.forEach(function(sp) {
+      var spCard = el('div', 'sponsor-invite-card');
+      var spAv = el('div', 'sponsor-invite-avatar');
+      spAv.textContent = sp.name.split(' ').map(function(n) { return n[0]; }).join('').slice(0,2);
+      spCard.appendChild(spAv);
+      var spInfo = el('div', 'sponsor-invite-info');
+      spInfo.appendChild(txt(el('div', 'sponsor-invite-name'), sp.name));
+      var spAmtLine = el('div', 'sponsor-invite-sub');
+      spAmtLine.innerHTML = '<strong style="font-family:var(--font-mono);">' + sp.amount + '</strong> \u00b7 ' + sp.relation;
+      spInfo.appendChild(spAmtLine);
+      if (sp.status === 'paused' && sp.pausedNote) {
+        spInfo.appendChild(txt(el('div', 'sponsor-paused-note'), sp.pausedNote));
+      }
+      if (sp.status === 'withdrawn' && sp.withdrawnNote) {
+        spInfo.appendChild(txt(el('div', 'sponsor-paused-note'), sp.withdrawnNote));
+      }
+      spCard.appendChild(spInfo);
+      if (sp.status === 'paused') {
+        spCard.style.borderColor = 'rgba(217,119,6,0.35)';
+        spAv.style.background = '#B45309';
+        spCard.appendChild(txt(el('span', 'sponsor-paused-badge'), 'Paused'));
+      } else if (sp.status === 'withdrawn') {
+        spCard.style.borderColor = 'rgba(100,116,139,0.2)';
+        spAv.style.background = 'rgba(100,116,139,0.5)';
+        spCard.appendChild(txt(el('span', 'sponsor-withdrawn-badge'), 'Withdrawn'));
+      }
+      main.appendChild(spCard);
+    });
+  }
+
   // Generic section table fallback
   if (page.section) main.appendChild(buildSectionTable(page));
 }
@@ -5813,7 +5950,9 @@ var ROLE_STATES = {
     { group:'Blocked states',  id:'blocked_proof',         label:'Proof locked'      },
     { group:'Blocked states',  id:'blocked_documents',     label:'Docs locked'       },
     { group:'Blocked states',  id:'blocked_verification',  label:'Verify locked'     },
-    { group:'Parallel flow',   id:'sponsor_invite',        label:'Sponsor invite'    },
+    { group:'Parallel flow',   id:'sponsor_invite',            label:'Sponsor invite'       },
+    { group:'Sponsor events',  id:'sponsor_paused',            label:'Sponsor paused'       },
+    { group:'Sponsor events',  id:'post_cert_sponsor_withdrawal', label:'Post-cert withdrawal' },
   ],
 
   admin: [
