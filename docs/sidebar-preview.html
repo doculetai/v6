@@ -2088,7 +2088,677 @@ var STUDENT_STATE_OVERRIDES = {
     },
   },
 
+  /* t2_failed: identity check failed — name mismatch on NIN */
+  t2_failed: {
+    'Overview': {
+      type: 'overview', eyebrow: 'Your proof of funds journey', h1: 'Overview',
+      banner: { type:'red', title:'Identity check failed', desc:'Name on NIN does not match your signup name. Resubmit with correct details.' },
+      journey: [
+        { label:'Onboarding',  sub:'Complete',  status:'done'   },
+        { label:'Phone',       sub:'Verified',  status:'done'   },
+        { label:'Identity',    sub:'Failed',    status:'error'  },
+        { label:'Banking',     sub:'Locked',    status:'locked' },
+        { label:'Documents',   sub:'Locked',    status:'locked' },
+        { label:'Certificate', sub:'Locked',    status:'locked' },
+      ],
+      stats: [
+        { label:'Verification', value:'T1 done',     sub:'Identity failed'            },
+        { label:'Documents',    value:'0 / 5',        sub:'Locked',        mono:true  },
+        { label:'Certificate',  value:'Not issued',   sub:'Complete all steps'        },
+      ],
+    },
+    'Verification': {
+      type: 'verification-tiers', h1: 'Verification', eyebrow: 'Proof target progress',
+      target: '\u20a6 3,000,000', verified: '\u20a6 0', pct: 0,
+      tiers: [
+        { id:'t1', title:'Phone verification', desc:'Confirm your phone number with a one-time code.', status:'done' },
+        { id:'t2', title:'Identity verification', desc:'Verify your BVN or NIN and confirm your legal name.',
+          status:'rejected',
+          rejectionNote:'Name on NIN does not match your signup name. Your signup name is \u201cAdebayo Emmanuel Okafor\u201d but the NIN shows \u201cAdebayo E. Okafor\u201d. Update your account details or resubmit with a matching document.',
+          action:'Resubmit identity' },
+        { id:'t3', title:'Banking verification', desc:'Connect your bank or upload a bank statement.', status:'locked' },
+      ],
+    },
+  },
+
+  /* t2_manual_review: identity flagged for human review */
+  t2_manual_review: {
+    'Overview': {
+      type: 'overview', eyebrow: 'Your proof of funds journey', h1: 'Overview',
+      banner: { type:'amber', title:'Identity under manual review', desc:'Your identity check has been flagged for manual review. No action is needed from you.' },
+      journey: [
+        { label:'Onboarding',  sub:'Complete',  status:'done'   },
+        { label:'Phone',       sub:'Verified',  status:'done'   },
+        { label:'Identity',    sub:'Reviewing', status:'active' },
+        { label:'Banking',     sub:'Locked',    status:'locked' },
+        { label:'Documents',   sub:'Locked',    status:'locked' },
+        { label:'Certificate', sub:'Locked',    status:'locked' },
+      ],
+      stats: [
+        { label:'Verification', value:'Under review', sub:'Manual review queue'       },
+        { label:'Documents',    value:'0 / 5',         sub:'Locked',      mono:true   },
+        { label:'Certificate',  value:'Not issued',    sub:'Complete all steps'       },
+      ],
+    },
+    'Verification': {
+      type: 'verification-tiers', h1: 'Verification', eyebrow: 'Proof target progress',
+      target: '\u20a6 3,000,000', verified: '\u20a6 0', pct: 0,
+      tiers: [
+        { id:'t1', title:'Phone verification', desc:'Confirm your phone number with a one-time code.', status:'done' },
+        { id:'t2', title:'Identity verification', desc:'Verify your BVN or NIN and confirm your legal name.', status:'manual_review' },
+        { id:'t3', title:'Banking verification', desc:'Connect your bank or upload a bank statement.', status:'locked' },
+      ],
+    },
+  },
+
+  /* t3_upload_submitted: bank statement uploaded, waiting admin review */
+  t3_upload_submitted: {
+    'Verification': {
+      type: 'verification-tiers', h1: 'Verification', eyebrow: 'Proof target progress',
+      target: '\u20a6 3,000,000', verified: '\u20a6 0', pct: 0,
+      tiers: [
+        { id:'t1', title:'Phone verification', desc:'Confirm your phone number with a one-time code.', status:'done' },
+        { id:'t2', title:'Identity verification', desc:'Verify your BVN or NIN and confirm your legal name.', status:'done' },
+        { id:'t3', title:'Banking verification', desc:'Connect your bank or upload a bank statement.', status:'under_review',
+          uploadedFile:'GTBank Statement Jan\u2013Mar 2026.pdf', uploadedDate:'7 March 2026' },
+      ],
+    },
+  },
+
+  /* docs_resubmitting: student resubmitting after a document rejection */
+  docs_resubmitting: {
+    'Overview': {
+      type: 'overview', eyebrow: 'Your proof of funds journey', h1: 'Overview',
+      banner: { type:'amber', title:'Document resubmission needed', desc:'Your bank statement was rejected. Upload a replacement to continue.' },
+      journey: [
+        { label:'Onboarding',  sub:'Complete',  status:'done'   },
+        { label:'Phone',       sub:'Verified',  status:'done'   },
+        { label:'Identity',    sub:'Verified',  status:'done'   },
+        { label:'Banking',     sub:'Verified',  status:'done'   },
+        { label:'Documents',   sub:'Action req',status:'error'  },
+        { label:'Certificate', sub:'Locked',    status:'locked' },
+      ],
+      stats: [
+        { label:'Verification', value:'Complete',      sub:'All tiers passed'          },
+        { label:'Documents',    value:'3 / 5',          sub:'1 rejected',   mono:true  },
+        { label:'Certificate',  value:'Not issued',     sub:'Documents needed'         },
+      ],
+    },
+    'Documents': {
+      type: 'documents-upload', h1: 'Documents', eyebrow: 'Supporting documents',
+      docs: [
+        { name:'Bank Statement (GTBank)', size:'2.4 MB', status:'rejected',
+          adminNote:'Statement date is outside the 3-month window. Provide a statement dated January 2026 or later.',
+          prevRejection: true },
+        { name:'University Offer Letter', size:'1.1 MB', status:'approved' },
+        { name:'JAMB Result',             size:'0.8 MB', status:'approved' },
+        { name:'National ID',             size:'0.7 MB', status:'under_review' },
+        { name:'Passport Photograph',     size:'0.5 MB', status:'pending' },
+      ],
+    },
+  },
+
+  /* t3_mono_failed: Mono bank connection failed — fallback to upload */
+  t3_mono_failed: {
+    'Verification': {
+      type: 'verification-tiers', h1: 'Verification', eyebrow: 'Proof target progress',
+      target: '\u20a6 3,000,000', verified: '\u20a6 0', pct: 0,
+      tiers: [
+        { id:'t1', title:'Phone verification', desc:'Confirm your phone number with a one-time code.', status:'done' },
+        { id:'t2', title:'Identity verification', desc:'Verify your BVN or NIN and confirm your legal name.', status:'done' },
+        { id:'t3', title:'Banking verification', desc:'Connect your bank or upload a bank statement.', status:'mono_failed',
+          monoFailReason:'Your bank (First Bank) is not currently supported by Mono. Use the upload path instead.' },
+      ],
+    },
+  },
+
+  /* sponsor_committed: sponsor accepted invite and committed an amount */
+  sponsor_committed: {
+    'Overview': {
+      type: 'overview', eyebrow: 'Your proof of funds journey', h1: 'Overview',
+      banner: { type:'green', title:'Sponsor committed', desc:'Tunde Okafor has committed \u20a6 2,500,000 to your application.' },
+      sponsorInvite: null,
+      sponsorCommitted: {
+        name:'Tunde Okafor', initials:'TO', amount:'\u20a6 2,500,000', type:'Family sponsor',
+        sub:'Committed 7 March 2026',
+      },
+      journey: [
+        { label:'Onboarding',  sub:'Complete',  status:'done'   },
+        { label:'Phone',       sub:'Verified',  status:'done'   },
+        { label:'Identity',    sub:'Pending',   status:'active' },
+        { label:'Banking',     sub:'Locked',    status:'locked' },
+        { label:'Documents',   sub:'Locked',    status:'locked' },
+        { label:'Certificate', sub:'Locked',    status:'locked' },
+      ],
+      stats: [
+        { label:'Sponsor',      value:'Tunde Okafor',    sub:'Family sponsor \u2014 committed' },
+        { label:'Committed',    value:'\u20a6 2,500,000', sub:'confirmed',          mono:true  },
+        { label:'Documents',    value:'0 / 5',            sub:'Not started',         mono:true  },
+        { label:'Certificate',  value:'Not issued',       sub:'Complete all steps'              },
+      ],
+      section: 'Recent activity',
+      cols: ['Event', 'Status', 'Date'],
+      rows: [
+        { cells:['Sponsor committed',    'Done',    '7 Mar'], badge:1, badgeType:'green' },
+        { cells:['Sponsor invite sent',  'Accepted','6 Mar'], badge:1, badgeType:'green' },
+        { cells:['Phone verified',       'Done',    '5 Mar'], badge:1, badgeType:'green' },
+      ],
+    },
+  },
+
+  /* sponsor_withdrawn: sponsor withdrew their commitment */
+  sponsor_withdrawn: {
+    'Overview': {
+      type: 'overview', eyebrow: 'Your proof of funds journey', h1: 'Overview',
+      banner: { type:'red', title:'Sponsor withdrew commitment', desc:'Tunde Okafor has withdrawn their commitment. Update your funding type to continue.' },
+      journey: [
+        { label:'Onboarding',  sub:'Complete',  status:'done'   },
+        { label:'Phone',       sub:'Verified',  status:'done'   },
+        { label:'Identity',    sub:'Verified',  status:'done'   },
+        { label:'Banking',     sub:'Locked',    status:'locked' },
+        { label:'Documents',   sub:'Locked',    status:'locked' },
+        { label:'Certificate', sub:'Locked',    status:'locked' },
+      ],
+      stats: [
+        { label:'Sponsor',      value:'Withdrawn',       sub:'Tunde Okafor withdrew'            },
+        { label:'Verification', value:'T2 done',          sub:'Identity verified'                },
+        { label:'Documents',    value:'0 / 5',            sub:'Locked',          mono:true       },
+        { label:'Certificate',  value:'Not issued',       sub:'Update funding first'             },
+      ],
+      sponsorWithdrawn: {
+        name:'Tunde Okafor', initials:'TO',
+        sub:'Withdrew commitment on 7 March 2026',
+      },
+      section: 'Recent activity',
+      cols: ['Event', 'Status', 'Date'],
+      rows: [
+        { cells:['Sponsor withdrew',    'Action needed', '7 Mar'], badge:1, badgeType:'red'   },
+        { cells:['Sponsor committed',   'Reversed',      '6 Mar'], badge:1, badgeType:'muted' },
+        { cells:['Phone verified',      'Done',          '5 Mar'], badge:1, badgeType:'green' },
+      ],
+    },
+  },
+
+  /* blocked_verification: student clicks Banking before T2 complete */
+  blocked_verification: {
+    'Verification': {
+      type: 'blocked-page', h1: 'Verification',
+      blockedTitle: 'Verification is locked',
+      blockedReason: 'Complete your onboarding before starting verification.',
+      blockedCta: 'Go to Onboarding',
+    },
+  },
+
+  /* blocked_documents: student clicks Documents before T2 complete */
+  blocked_documents: {
+    'Documents': {
+      type: 'blocked-page', h1: 'Documents',
+      blockedTitle: 'Documents are locked',
+      blockedReason: 'Complete identity verification (T2) before uploading documents.',
+      blockedCta: 'Go to Verification',
+    },
+  },
+
 };
+
+/* ── Cross-role state overrides ── */
+var STATE_OVERRIDES = {
+
+  /* Student states are in STUDENT_STATE_OVERRIDES (referenced via alias below) */
+  student: null, /* set after init */
+
+  /* ══ ADMIN ══ */
+  admin: {
+
+    default: {},
+
+    /* ops_rejection: admin reviewing a rejected bank statement */
+    ops_rejection: {
+      'Operations': {
+        type: 'ops-queue',
+        h1: 'Operations',
+        eyebrow: 'Review queue',
+        items: [
+          {
+            student:'Adebayo Emmanuel Okafor', initials:'AO', type:'Bank statement', detail:'GTB \u00b7 2.4 MB \u00b7 Submitted 7 Mar',
+            status:'needs_review', school:'UNILAG \u2014 Computer Science BSc', amount:'\u20a6 3,200,000',
+            rejectionDraft: 'Statement date is outside the 3-month window. Provide a statement dated January 2026 or later.',
+          },
+          { student:'Funke Adeola', initials:'FA', type:'Passport copy', detail:'JPG \u00b7 1.2 MB \u00b7 Submitted 7 Mar', status:'needs_review', school:'UI \u2014 Medicine MBBS', amount:'\u20a6 5,000,000' },
+          { student:'Chidi Okonkwo', initials:'CO', type:'NIN slip',    detail:'JPG \u00b7 0.9 MB \u00b7 Submitted 6 Mar', status:'needs_review', school:'OAU \u2014 Law LLB',   amount:'\u20a6 2,800,000' },
+        ],
+      },
+    },
+
+    /* cert_ready: a student has cleared all checks — admin can issue */
+    cert_ready: {
+      'Operations': {
+        type: 'ops-queue',
+        h1: 'Operations',
+        eyebrow: 'Review queue',
+        items: [
+          {
+            student:'Kemi Adesanya', initials:'KA', type:'Cert ready', detail:'All documents approved \u00b7 T3 verified \u00b7 Awaiting issuance',
+            status:'cert_ready', school:'UNILAG \u2014 Computer Science BSc', amount:'\u20a6 3,200,000',
+          },
+          { student:'Funke Adeola', initials:'FA', type:'Bank statement', detail:'GTB \u00b7 2.4 MB \u00b7 Submitted 7 Mar', status:'needs_review', school:'UI \u2014 Medicine MBBS', amount:'\u20a6 5,000,000' },
+        ],
+      },
+    },
+
+    /* risk_flagged: risk dashboard with a flagged student */
+    risk_flagged: {
+      'Risk': {
+        type: 'risk-flags',
+        h1: 'Risk',
+        eyebrow: 'Fraud & risk signals',
+        flags: [
+          { name:'Emeka Nwosu',        initials:'EN', school:'OAU \u2014 Law',          signal:'Document mismatch',   level:'high',   detail:'Name on NIN slip differs from signup (Emeka vs Emmanuel). Flagged for manual review.' },
+          { name:'Adebayo Emmanuel',   initials:'AO', school:'UNILAG \u2014 CS BSc',    signal:'Duplicate file hash', level:'medium', detail:'Bank statement uploaded matches a file submitted by another student.' },
+          { name:'Chinelo Okafor',     initials:'CO', school:'UNIBEN \u2014 Law LLB',   signal:'IP anomaly',          level:'low',    detail:'Application accessed from two countries within 4 hours.' },
+        ],
+      },
+    },
+
+    /* impersonation: admin viewing log of impersonation sessions */
+    impersonation: {
+      'Users': {
+        type: 'users-manage',
+        h1: 'Users',
+        eyebrow: 'User management',
+        stats: [
+          { label:'Total users', value:'312', sub:'active accounts',    mono:true },
+          { label:'Admins',      value:'3',   sub:'platform access',    mono:true },
+          { label:'Impersonated',value:'2',   sub:'sessions this month', mono:true },
+          { label:'Suspended',   value:'1',   sub:'pending review',     mono:true },
+        ],
+        impersonationLog: [
+          { admin:'Admin Dolapo', student:'Kemi Adesanya',   date:'7 Mar 2026 14:22', duration:'4m 12s', reason:'Document query' },
+          { admin:'Admin Dolapo', student:'Emeka Nwosu',     date:'5 Mar 2026 10:05', duration:'2m 44s', reason:'Cert issue debug' },
+        ],
+      },
+    },
+  },
+
+  /* ══ AGENT ══ */
+  agent: {
+
+    default: {},
+
+    /* student_rejected: agent sees student has a rejection — read-only */
+    student_rejected: {
+      'Overview': {
+        type: 'overview',
+        eyebrow: 'Your students',
+        h1: 'Overview',
+        banner: { type:'red', title:'Student action needed', desc:'Adebayo Emmanuel has a rejected document. They have been notified.' },
+        stats: [
+          { label:'Active students',  value:'8',  sub:'this cycle',          mono:true },
+          { label:'Pending review',   value:'3',  sub:'awaiting admin',      mono:true },
+          { label:'With rejections',  value:'1',  sub:'action needed',       mono:true },
+          { label:'Certs issued',     value:'2',  sub:'this month',          mono:true },
+        ],
+        agentStudents: [
+          { initials:'AO', name:'Adebayo Emmanuel', school:'UNILAG', status:'Doc rejected',   badgeType:'red'   },
+          { initials:'KA', name:'Kemi Adesanya',    school:'UNILAG', status:'Under review',   badgeType:'amber' },
+          { initials:'FN', name:'Funke Nwosu',      school:'UI',     status:'T3 complete',    badgeType:'green' },
+          { initials:'CO', name:'Chidi Okonkwo',    school:'OAU',    status:'Verification',   badgeType:'muted' },
+        ],
+        timeline: [
+          { type:'reject', event:'Document rejected', time:'2h ago',  student:'Adebayo Emmanuel', detail:'NIN slip \u2014 name mismatch' },
+          { type:'approve', event:'T3 approved',      time:'4h ago',  student:'Kemi Adesanya',    detail:'GTB bank statement approved' },
+          { type:'new',    event:'New student',       time:'Yesterday', student:'Funke Nwosu',     detail:'Application started \u2014 UNILAG' },
+        ],
+      },
+      'Students': {
+        type: 'student-list',
+        h1: 'Students',
+        eyebrow: 'Your student portfolio',
+        stats: [
+          { label:'Total',           value:'8',   sub:'active this cycle', mono:true },
+          { label:'With rejections', value:'1',   sub:'action needed',     mono:true },
+          { label:'Under review',    value:'3',   sub:'waiting on admin',  mono:true },
+          { label:'Certs issued',    value:'2',   sub:'this month',        mono:true },
+        ],
+        students: [
+          { initials:'AO', name:'Adebayo Emmanuel Okafor', school:'UNILAG', program:'Computer Science BSc', status:'Doc rejected',  badgeType:'red',   t3:'complete', docs:'1 rejected', cert:'—' },
+          { initials:'KA', name:'Kemi Adesanya',           school:'UNILAG', program:'CS BSc',               status:'Under review',  badgeType:'amber', t3:'review',   docs:'3 review',   cert:'—' },
+          { initials:'FN', name:'Funke Nwosu',             school:'UI',     program:'Medicine MBBS',        status:'T3 complete',   badgeType:'green', t3:'complete', docs:'2 approved', cert:'—' },
+          { initials:'CO', name:'Chidi Okonkwo',           school:'OAU',    program:'Law LLB',              status:'Verification',  badgeType:'muted', t3:'pending',  docs:'—',          cert:'—' },
+        ],
+      },
+    },
+
+    /* student_cert_issued: cert issued, commission entry created */
+    student_cert_issued: {
+      'Overview': {
+        type: 'overview',
+        eyebrow: 'Your students',
+        h1: 'Overview',
+        banner: { type:'green', title:'Certificate issued', desc:'Kemi Adesanya\u2019s proof of funds certificate has been issued. Commission entry created.' },
+        stats: [
+          { label:'Active students', value:'8',          sub:'this cycle',       mono:true },
+          { label:'Certs issued',    value:'3',          sub:'this month',       mono:true },
+          { label:'Commission due',  value:'\u20a6 45K', sub:'pending payment',  mono:true },
+          { label:'Paid out',        value:'\u20a6 90K', sub:'total this cycle', mono:true },
+        ],
+        agentStudents: [
+          { initials:'KA', name:'Kemi Adesanya',    school:'UNILAG', status:'Cert issued',   badgeType:'green' },
+          { initials:'EN', name:'Emeka Nwosu',      school:'OAU',    status:'Cert issued',   badgeType:'green' },
+          { initials:'AO', name:'Adebayo Emmanuel', school:'UNILAG', status:'Under review',  badgeType:'amber' },
+          { initials:'CO', name:'Chidi Okonkwo',    school:'OAU',    status:'Verification',  badgeType:'muted' },
+        ],
+        timeline: [
+          { type:'cert',   event:'Certificate issued',  time:'Just now', student:'Kemi Adesanya',    detail:'DOC-2026-00124 \u00b7 \u20a6 3.2M' },
+          { type:'cert',   event:'Certificate issued',  time:'2d ago',   student:'Emeka Nwosu',      detail:'DOC-2026-00120 \u00b7 \u20a6 2.5M' },
+          { type:'approve', event:'T3 approved',        time:'3d ago',   student:'Adebayo Emmanuel', detail:'GTB bank statement approved' },
+        ],
+      },
+      'Commissions': {
+        type: 'commissions-detail',
+        h1: 'Commissions',
+        eyebrow: 'Earnings and payouts',
+        stats: [
+          { label:'Total earned',    value:'\u20a6 135K', sub:'all time',       mono:true },
+          { label:'Pending',         value:'\u20a6 45K',  sub:'awaiting payout', mono:true },
+          { label:'This month',      value:'\u20a6 45K',  sub:'3 certs issued', mono:true },
+          { label:'Last paid',       value:'5 Mar',       sub:'\u20a6 90K' },
+        ],
+        commissions: [
+          { student:'Kemi Adesanya',    cert:'DOC-2026-00124', amount:'\u20a6 15,000', status:'Pending',  date:'7 Mar 2026' },
+          { student:'Emeka Nwosu',      cert:'DOC-2026-00120', amount:'\u20a6 15,000', status:'Pending',  date:'5 Mar 2026' },
+          { student:'Funke Adeola',     cert:'DOC-2026-00118', amount:'\u20a6 15,000', status:'Pending',  date:'3 Mar 2026' },
+          { student:'Chidi Okonkwo',    cert:'DOC-2026-00110', amount:'\u20a6 15,000', status:'Paid',     date:'1 Mar 2026' },
+          { student:'Amaka Nwosu',      cert:'DOC-2026-00105', amount:'\u20a6 15,000', status:'Paid',     date:'18 Feb 2026' },
+        ],
+      },
+    },
+
+    /* activity_feed: rich activity timeline with mixed event types */
+    activity_feed: {
+      'Activity': {
+        type: 'activity-timeline',
+        h1: 'Activity',
+        eyebrow: 'Student events',
+        stats: [
+          { label:'Events today', value:'14',  sub:'across 8 students',  mono:true },
+          { label:'Approvals',    value:'5',   sub:'by admin',           mono:true },
+          { label:'Rejections',   value:'2',   sub:'require follow-up',  mono:true },
+          { label:'Certs issued', value:'1',   sub:'this session',       mono:true },
+        ],
+        events: [
+          { type:'cert',    label:'Cert issued',       student:'Kemi Adesanya',    time:'14:30', detail:'DOC-2026-00124 \u00b7 \u20a6 3,200,000',             badgeType:'green' },
+          { type:'reject',  label:'Document rejected', student:'Adebayo Emmanuel', time:'14:22', detail:'Bank statement \u00b7 Date outside window',          badgeType:'red'   },
+          { type:'approve', label:'T3 approved',       student:'Funke Nwosu',      time:'13:55', detail:'GTB statement approved',                              badgeType:'green' },
+          { type:'approve', label:'T2 verified',       student:'Chidi Okonkwo',    time:'13:10', detail:'Identity verified via BVN',                           badgeType:'green' },
+          { type:'submit',  label:'Document uploaded', student:'Ngozi Eze',        time:'12:44', detail:'Offer letter \u00b7 1.1 MB',                          badgeType:'muted' },
+          { type:'reject',  label:'T3 rejected',       student:'Taiwo Okonkwo',    time:'11:30', detail:'Balance below \u20a6 3M threshold',                   badgeType:'red'   },
+        ],
+      },
+    },
+  },
+
+  /* ══ SPONSOR ══ */
+  sponsor: {
+
+    default: {},
+
+    /* student_in_progress: student actively working through journey */
+    student_in_progress: {
+      'Overview': {
+        type: 'overview',
+        eyebrow: 'Your sponsorships',
+        h1: 'Overview',
+        stats: [
+          { label:'Active students',  value:'2',           sub:'funded this cycle',    mono:true },
+          { label:'Total committed',  value:'\u20a6 4.5M', sub:'across all students',  mono:true },
+          { label:'Certs issued',     value:'0',           sub:'in progress',           mono:true },
+          { label:'Pending',          value:'2',           sub:'both in journey',       mono:true },
+        ],
+        sponsorStudents: [
+          { initials:'KA', name:'Kemi Adesanya', school:'UNILAG \u2014 CS BSc', amount:'\u20a6 2,000,000', status:'T3 under review', badgeType:'amber', t3Status:'review',   docsStatus:'review',   docsDetail:'3 submitted',  certStatus:'pending' },
+          { initials:'EN', name:'Emeka Nwosu',   school:'OAU \u2014 Law LLB',   amount:'\u20a6 2,500,000', status:'Verification',    badgeType:'muted',  t3Status:'pending',  docsStatus:'pending',  docsDetail:'0 submitted',  certStatus:'pending' },
+        ],
+      },
+    },
+
+    /* cert_just_issued: cert issued — sponsor sees the milestone */
+    cert_just_issued: {
+      'Overview': {
+        type: 'overview',
+        eyebrow: 'Your sponsorships',
+        h1: 'Overview',
+        banner: { type:'green', title:'Certificate issued', desc:'Emeka Nwosu\u2019s proof of funds certificate has been issued. DOC-2026-00120.' },
+        stats: [
+          { label:'Active students',  value:'2',           sub:'funded this cycle',    mono:true },
+          { label:'Total committed',  value:'\u20a6 4.5M', sub:'across all students',  mono:true },
+          { label:'Certs issued',     value:'1',           sub:'this cycle',            mono:true },
+          { label:'Pending',          value:'1',           sub:'Kemi in progress',      mono:true },
+        ],
+        sponsorStudents: [
+          { initials:'KA', name:'Kemi Adesanya', school:'UNILAG \u2014 CS BSc', amount:'\u20a6 2,000,000', status:'Under review',  badgeType:'amber', t3Status:'review',   docsStatus:'review',   docsDetail:'3 submitted',  certStatus:'pending' },
+          { initials:'EN', name:'Emeka Nwosu',   school:'OAU \u2014 Law LLB',   amount:'\u20a6 2,500,000', status:'Cert issued',   badgeType:'green', t3Status:'complete', docsStatus:'complete', docsDetail:'All approved', certStatus:'issued', certId:'DOC-2026-00120' },
+        ],
+      },
+    },
+
+    /* student_rejected: sponsor sees a student has a problem */
+    student_rejected: {
+      'Overview': {
+        type: 'overview',
+        eyebrow: 'Your sponsorships',
+        h1: 'Overview',
+        banner: { type:'amber', title:'Document issue', desc:'Kemi Adesanya has a rejected document and needs to resubmit. You may wish to follow up.' },
+        stats: [
+          { label:'Active students', value:'2',           sub:'funded this cycle',  mono:true },
+          { label:'Total committed', value:'\u20a6 4.5M', sub:'across all students', mono:true },
+          { label:'Certs issued',    value:'0',           sub:'none yet',            mono:true },
+          { label:'Action needed',   value:'1',           sub:'document rejected',   mono:true },
+        ],
+        sponsorStudents: [
+          { initials:'KA', name:'Kemi Adesanya', school:'UNILAG \u2014 CS BSc', amount:'\u20a6 2,000,000', status:'Doc rejected',  badgeType:'red',  t3Status:'complete', docsStatus:'rejected', docsDetail:'1 rejected',   certStatus:'pending' },
+          { initials:'EN', name:'Emeka Nwosu',   school:'OAU \u2014 Law LLB',   amount:'\u20a6 2,500,000', status:'Cert issued',   badgeType:'green', t3Status:'complete', docsStatus:'complete', docsDetail:'All approved', certStatus:'issued', certId:'DOC-2026-00120' },
+        ],
+      },
+    },
+
+    /* commitment_view: sponsor's commitment log with declare modal */
+    commitment_view: {
+      'Commitments': {
+        type: 'commitments',
+        h1: 'Commitments',
+        eyebrow: 'Your declared commitments',
+        commitments: [
+          { student:'Kemi Adesanya', school:'UNILAG \u2014 CS BSc', amount:'\u20a6 2,000,000', declared:'1 Mar 2026', status:'active' },
+          { student:'Emeka Nwosu',   school:'OAU \u2014 Law LLB',   amount:'\u20a6 2,500,000', declared:'1 Mar 2026', status:'fulfilled' },
+        ],
+      },
+    },
+  },
+
+  /* ══ UNIVERSITY ══ */
+  university: {
+
+    default: {},
+
+    /* cert_on_roster: cert ID appears on a student record */
+    cert_on_roster: {
+      'Students': {
+        type: 'student-list',
+        h1: 'Students',
+        eyebrow: 'Enrolled students',
+        stats: [
+          { label:'Enrolled',         value:'47',  sub:'this intake',          mono:true },
+          { label:'Certs issued',     value:'12',  sub:'proof of funds',       mono:true },
+          { label:'Under review',     value:'5',   sub:'admin queue',          mono:true },
+          { label:'Pending',          value:'30',  sub:'not yet verified',     mono:true },
+        ],
+        students: [
+          { initials:'AO', name:'Adebayo Emmanuel Okafor', school:'Computer Science BSc', program:'Sept 2026 intake', status:'Cert issued',   badgeType:'green', t3:'complete', docs:'All approved', cert:'DOC-2026-00124' },
+          { initials:'KA', name:'Kemi Adesanya',           school:'Computer Science BSc', program:'Sept 2026 intake', status:'Under review',  badgeType:'amber', t3:'review',   docs:'3 submitted',  cert:'\u2014' },
+          { initials:'EN', name:'Emeka Nwosu',             school:'Law LLB',              program:'Sept 2026 intake', status:'Cert issued',   badgeType:'green', t3:'complete', docs:'All approved', cert:'DOC-2026-00120' },
+          { initials:'FN', name:'Funke Nwosu',             school:'Medicine MBBS',        program:'Sept 2026 intake', status:'Verification',  badgeType:'muted', t3:'pending',  docs:'\u2014',       cert:'\u2014' },
+          { initials:'CO', name:'Chidi Okonkwo',           school:'Law LLB',              program:'Sept 2026 intake', status:'Verification',  badgeType:'muted', t3:'pending',  docs:'\u2014',       cert:'\u2014' },
+        ],
+      },
+    },
+
+    /* docs_pending_bulk: many documents awaiting university review */
+    docs_pending_bulk: {
+      'Documents': {
+        type: 'doc-requirements',
+        h1: 'Documents',
+        eyebrow: 'Document management',
+        stats: [
+          { label:'Total submitted', value:'23', sub:'this week',      mono:true },
+          { label:'Approved',        value:'11', sub:'all time',       mono:true },
+          { label:'Under review',    value:'9',  sub:'in queue',       mono:true },
+          { label:'Rejected',        value:'3',  sub:'resubmit needed', mono:true },
+        ],
+        requirements: [
+          { icon:'doc', name:'Bank statement', desc:'3 months, balance \u2265 \u20a6 3M, name match', required:true,  count:18, pendingCount:7, approvedCount:9, rejectedCount:2 },
+          { icon:'doc', name:'Offer letter',   desc:'Official university offer, current academic year', required:true, count:12, pendingCount:2, approvedCount:10, rejectedCount:0 },
+          { icon:'doc', name:'Passport copy',  desc:'Valid international passport, bio page', required:true, count:8, pendingCount:0, approvedCount:7, rejectedCount:1 },
+        ],
+        pending: [
+          { name:'Adebayo Emmanuel Okafor', docType:'Bank statement', submitted:'7 Mar', size:'2.4 MB' },
+          { name:'Kemi Adesanya',           docType:'Bank statement', submitted:'7 Mar', size:'1.8 MB' },
+          { name:'Funke Nwosu',             docType:'Offer letter',   submitted:'6 Mar', size:'0.6 MB' },
+          { name:'Chidi Okonkwo',           docType:'Bank statement', submitted:'6 Mar', size:'2.1 MB' },
+        ],
+      },
+    },
+
+    /* programs_near_target: a program with students close to cert threshold */
+    programs_near_target: {
+      'Overview': {
+        type: 'overview',
+        eyebrow: 'Institutional overview',
+        h1: 'Overview',
+        stats: [
+          { label:'Total students',  value:'47', sub:'this intake',       mono:true },
+          { label:'Certs issued',    value:'12', sub:'verified',          mono:true },
+          { label:'Near target',     value:'8',  sub:'\u2265 80% verified', mono:true },
+          { label:'Avg proof target', value:'\u20a6 3M', sub:'all programs', mono:true },
+        ],
+        programs: [
+          { name:'Computer Science BSc', students:'14 enrolled',  certsIssued:'5 certs', pct:71 },
+          { name:'Medicine MBBS',         students:'8 enrolled',   certsIssued:'3 certs', pct:88 },
+          { name:'Law LLB',               students:'12 enrolled',  certsIssued:'2 certs', pct:42 },
+          { name:'MBA Full-time',         students:'7 enrolled',   certsIssued:'2 certs', pct:57 },
+          { name:'Engineering BSc',       students:'6 enrolled',   certsIssued:'0 certs', pct:17 },
+        ],
+      },
+    },
+
+    /* program_config: editing a specific program — proof target, intake, status */
+    program_config: {
+      'Programs': {
+        type: 'programs-manage',
+        h1: 'Programs',
+        eyebrow: 'Programme management',
+        stats: [
+          { label:'Active programs', value:'4',  sub:'accepting students',  mono:true },
+          { label:'Total enrolled',  value:'47', sub:'this intake',         mono:true },
+          { label:'Certs issued',    value:'12', sub:'proof of funds',      mono:true },
+          { label:'Avg proof target', value:'\u20a6 3M', sub:'all programs', mono:true },
+        ],
+        programs: [
+          { name:'Computer Science BSc', sub:'Sept 2026 intake \u2014 14 enrolled', students:'14', target:'\u20a6 3,000,000', status:'active' },
+          { name:'Medicine MBBS',         sub:'Sept 2026 intake \u2014 8 enrolled',  students:'8',  target:'\u20a6 5,000,000', status:'active' },
+          { name:'Law LLB',               sub:'Sept 2026 intake \u2014 12 enrolled', students:'12', target:'\u20a6 3,500,000', status:'active' },
+          { name:'MBA Full-time',         sub:'Sept 2026 intake \u2014 7 enrolled',  students:'7',  target:'\u20a6 4,000,000', status:'active' },
+          { name:'Engineering BSc',       sub:'Sept 2026 intake \u2014 6 enrolled',  students:'6',  target:'\u20a6 3,000,000', status:'inactive' },
+        ],
+      },
+    },
+  },
+
+  /* ══ PARTNER ══ */
+  partner: {
+
+    default: {},
+
+    /* api_error: one endpoint returning 5xx */
+    api_error: {
+      'Overview': {
+        type: 'overview',
+        eyebrow: 'Integration overview',
+        h1: 'Overview',
+        banner: { type:'red', title:'Endpoint error', desc:'POST /v1/verify is returning 5xx errors. Investigate your integration.' },
+        stats: [
+          { label:'API calls today',  value:'1,247', sub:'across all endpoints',  mono:true },
+          { label:'Error rate',       value:'4.2%',  sub:'\u2191 from 0.1%',       mono:true },
+          { label:'Avg latency',      value:'312ms', sub:'\u2191 from 142ms',       mono:true },
+          { label:'Webhooks sent',    value:'24',    sub:'1 failed',               mono:true },
+        ],
+        endpoints: [
+          { method:'POST', path:'/v1/verify',           latency:'842ms', uptime:'91.2%', health:'down' },
+          { method:'GET',  path:'/v1/certificate/:id',  latency:'120ms', uptime:'99.9%', health:'up' },
+          { method:'GET',  path:'/v1/status/:studentId', latency:'95ms', uptime:'99.9%', health:'up' },
+          { method:'POST', path:'/v1/invite',           latency:'180ms', uptime:'99.8%', health:'up' },
+        ],
+      },
+    },
+
+    /* high_usage: approaching rate limit */
+    high_usage: {
+      'Overview': {
+        type: 'overview',
+        eyebrow: 'Integration overview',
+        h1: 'Overview',
+        banner: { type:'amber', title:'Approaching rate limit', desc:'You have used 83% of your monthly API quota. Upgrade your plan to avoid interruptions.' },
+        stats: [
+          { label:'API calls today',  value:'3,891', sub:'of 5,000 monthly limit', mono:true },
+          { label:'Quota used',       value:'83%',   sub:'1,082 remaining',         mono:true },
+          { label:'Avg latency',      value:'142ms', sub:'all healthy',             mono:true },
+          { label:'Webhooks sent',    value:'318',   sub:'all delivered',           mono:true },
+        ],
+        endpoints: [
+          { method:'POST', path:'/v1/verify',            latency:'158ms', uptime:'99.9%', health:'up' },
+          { method:'GET',  path:'/v1/certificate/:id',   latency:'110ms', uptime:'99.9%', health:'up' },
+          { method:'GET',  path:'/v1/status/:studentId', latency:'93ms',  uptime:'99.9%', health:'up' },
+          { method:'POST', path:'/v1/invite',            latency:'175ms', uptime:'99.7%', health:'warn' },
+        ],
+      },
+    },
+
+    /* api_key_view: partner views API key detail — usage, rotation, scopes */
+    api_key_view: {
+      'API Keys': {
+        type: 'apikeys',
+        h1: 'API Keys',
+        eyebrow: 'Authentication credentials',
+        stats: [
+          { label:'Active keys',  value:'2',    sub:'live environment',    mono:true },
+          { label:'Test keys',    value:'1',    sub:'sandbox environment', mono:true },
+          { label:'Last rotated', value:'14d',  sub:'days ago',            mono:false },
+          { label:'API calls',    value:'1,240',sub:'today',               mono:true },
+        ],
+        section: 'Your API keys',
+        cols: ['Name', 'Key', 'Last used', ''],
+        rows: [
+          { cells:['Production key',   'sk_live_••••••••••••••••KA92', 'Today',    'Rotate'], badge:0 },
+          { cells:['Secondary (live)', 'sk_live_••••••••••••••••HJ34', 'Yesterday','Rotate'], badge:0 },
+          { cells:['Test key',         'sk_test_••••••••••••••••TQ81', '5 Mar',    'Rotate'], badge:0 },
+        ],
+        keyDetail: {
+          name: 'Production key',
+          key: 'sk_live_••••••••••••••••KA92',
+          created: '1 Jan 2026',
+          lastUsed: 'Today at 14:32',
+          callsToday: '1,240',
+          callsMonth: '38,412',
+          scopes: ['verify:read', 'certificate:read', 'student:read', 'webhook:write'],
+        },
+      },
+    },
+  },
+
+};
+
+/* Link student role to STUDENT_STATE_OVERRIDES */
+STATE_OVERRIDES.student = STUDENT_STATE_OVERRIDES;
 
 /* ── DOM helpers ── */
 function el(tag, cls) {
@@ -2332,6 +3002,30 @@ function renderUsersManage(page, main) {
     tbody.appendChild(tr);
   });
   tbl.appendChild(tbody); scard.appendChild(tbl); main.appendChild(scard);
+
+  /* Impersonation log — only shown in impersonation state */
+  if (page.impersonationLog && page.impersonationLog.length) {
+    var logCard = el('div', 'section-card');
+    logCard.style.marginTop = '16px';
+    var lsh = el('div', 'section-header');
+    lsh.appendChild(txt(el('span', 'section-title'), 'RECENT IMPERSONATION LOG'));
+    logCard.appendChild(lsh);
+    var ltbl = el('table', 'data-table');
+    var lth = el('thead'); var lhtr = el('tr');
+    ['Admin', 'Student account', 'Date', 'Duration', 'Reason'].forEach(function(h) { lhtr.appendChild(txt(el('th'), h)); });
+    lth.appendChild(lhtr); ltbl.appendChild(lth);
+    var ltb = el('tbody');
+    page.impersonationLog.forEach(function(entry) {
+      var tr = el('tr');
+      tr.appendChild(txt(el('td', 'td-name'), entry.admin));
+      tr.appendChild(txt(el('td', 'td-muted'), entry.student));
+      tr.appendChild(txt(el('td', 'td-muted'), entry.date));
+      tr.appendChild(txt(el('td', 'td-muted'), entry.duration));
+      tr.appendChild(txt(el('td', 'td-muted'), entry.reason));
+      ltb.appendChild(tr);
+    });
+    ltbl.appendChild(ltb); logCard.appendChild(ltbl); main.appendChild(logCard);
+  }
 }
 
 /* ── Commissions detail renderer (agent) ── */
@@ -2413,30 +3107,64 @@ function renderProgramsManage(page, main) {
 
 /* ── Student list renderer (clickable rows → detail modal) ── */
 function renderStudentList(page, main) {
-  main.appendChild(buildStatGrid(page.stats, 4));
+  if (page.stats) main.appendChild(buildStatGrid(page.stats, 4));
   var scard = el('div', 'section-card');
   var sh = el('div', 'section-header');
   sh.appendChild(txt(el('span', 'section-title'), page.section || 'Students'));
   scard.appendChild(sh);
   var tbl = el('table', 'data-table');
   var thead = el('thead'); var htr = el('tr');
-  (page.cols || []).forEach(function(h) { htr.appendChild(txt(el('th'), h)); });
-  thead.appendChild(htr); tbl.appendChild(thead);
-  var tbody = el('tbody');
-  (page.students || []).forEach(function(s) {
-    var tr = el('tr', 'tr-clickable');
-    tr.addEventListener('click', function() { showStudentDetailModal(s); });
-    var tdName = el('td');
-    tdName.appendChild(txt(el('div', 'td-name'), s.name));
-    if (s.school) tdName.appendChild(txt(el('div', 'td-muted'), s.school));
-    tr.appendChild(tdName);
-    if (s.stage) tr.appendChild(txt(el('td', 'td-muted'), s.stage));
-    var tdStatus = el('td');
-    var b = el('span', 'status-badge badge-' + (s.badgeType || 'muted')); b.textContent = s.status; tdStatus.appendChild(b); tr.appendChild(tdStatus);
-    tr.appendChild(txt(el('td', 'td-muted'), s.updated));
-    tbody.appendChild(tr);
-  });
-  tbl.appendChild(tbody); scard.appendChild(tbl); main.appendChild(scard);
+
+  /* Detect rich format (state overrides) vs base format */
+  var students = page.students || [];
+  var isRichFormat = students.length > 0 && (students[0].t3 !== undefined || students[0].cert !== undefined || students[0].docs !== undefined);
+
+  if (isRichFormat) {
+    /* Rich format: show T3, Docs, Cert columns */
+    ['Student', 'Status', 'T3', 'Documents', 'Cert ID'].forEach(function(h) { htr.appendChild(txt(el('th'), h)); });
+    thead.appendChild(htr); tbl.appendChild(thead);
+    var tbody = el('tbody');
+    students.forEach(function(s) {
+      var tr = el('tr', 'tr-clickable');
+      tr.addEventListener('click', function() { showStudentDetailModal(s); });
+      var tdName = el('td');
+      var nameRow = el('div', 'td-name'); nameRow.textContent = s.name;
+      var schoolRow = el('div', 'td-muted'); schoolRow.textContent = (s.school || '') + (s.program ? ' \u2014 ' + s.program : '');
+      tdName.appendChild(nameRow); tdName.appendChild(schoolRow);
+      tr.appendChild(tdName);
+      var tdStatus = el('td'); var b = el('span', 'status-badge badge-' + (s.badgeType || 'muted')); b.textContent = s.status; tdStatus.appendChild(b); tr.appendChild(tdStatus);
+      tr.appendChild(txt(el('td', 'td-muted'), s.t3 || '\u2014'));
+      tr.appendChild(txt(el('td', 'td-muted'), s.docs || '\u2014'));
+      var tdCert = el('td');
+      if (s.cert && s.cert !== '\u2014' && s.cert !== '—') {
+        var certSpan = el('span'); certSpan.style.cssText = 'font-family:var(--font-mono);font-size:12px;color:var(--accent);font-weight:600;';
+        certSpan.textContent = s.cert; tdCert.appendChild(certSpan);
+      } else { tdCert.textContent = '\u2014'; }
+      tr.appendChild(tdCert);
+      tbody.appendChild(tr);
+    });
+    tbl.appendChild(tbody);
+  } else {
+    /* Base format: use page.cols + stage + updated */
+    (page.cols || ['Student', 'Stage', 'Status', 'Updated']).forEach(function(h) { htr.appendChild(txt(el('th'), h)); });
+    thead.appendChild(htr); tbl.appendChild(thead);
+    var tbody2 = el('tbody');
+    students.forEach(function(s) {
+      var tr = el('tr', 'tr-clickable');
+      tr.addEventListener('click', function() { showStudentDetailModal(s); });
+      var tdName = el('td');
+      tdName.appendChild(txt(el('div', 'td-name'), s.name));
+      if (s.school) tdName.appendChild(txt(el('div', 'td-muted'), s.school));
+      tr.appendChild(tdName);
+      if (s.stage) tr.appendChild(txt(el('td', 'td-muted'), s.stage));
+      var tdStatus = el('td'); var b = el('span', 'status-badge badge-' + (s.badgeType || 'muted')); b.textContent = s.status; tdStatus.appendChild(b); tr.appendChild(tdStatus);
+      if (s.updated) tr.appendChild(txt(el('td', 'td-muted'), s.updated));
+      tbody2.appendChild(tr);
+    });
+    tbl.appendChild(tbody2);
+  }
+
+  scard.appendChild(tbl); main.appendChild(scard);
 }
 
 /* ── buildSimpleTable helper ── */
@@ -2746,6 +3474,39 @@ function renderApiKeys(page, main) {
   });
   scard.appendChild(list);
   main.appendChild(scard);
+
+  /* Key detail panel — shown in api_key_view state */
+  if (page.keyDetail) {
+    var kd = page.keyDetail;
+    var dcard = el('div', 'section-card');
+    dcard.style.marginTop = '16px';
+    var dsh = el('div', 'section-header');
+    dsh.appendChild(txt(el('span', 'section-title'), 'KEY DETAIL \u2014 ' + kd.name.toUpperCase()));
+    dcard.appendChild(dsh);
+    var grid = el('div', 'stat-grid');
+    [
+      { label:'Key value',     value:kd.key,          mono:true  },
+      { label:'Created',       value:kd.created,      mono:false },
+      { label:'Last used',     value:kd.lastUsed,     mono:false },
+      { label:'Calls today',   value:kd.callsToday,   mono:true  },
+      { label:'Calls (month)', value:kd.callsMonth,   mono:true  },
+    ].forEach(function(item) {
+      var sc = el('div', 'stat-card');
+      sc.appendChild(txt(el('div', 'stat-label'), item.label));
+      sc.appendChild(txt(el('div', item.mono ? 'stat-value mono' : 'stat-value'), item.value));
+      grid.appendChild(sc);
+    });
+    dcard.appendChild(grid);
+    if (kd.scopes && kd.scopes.length) {
+      var scopeWrap = el('div'); scopeWrap.style.cssText = 'padding:12px 16px;display:flex;gap:6px;flex-wrap:wrap;';
+      kd.scopes.forEach(function(s) {
+        var chip = el('span', 'status-badge badge-blue'); chip.style.fontFamily = 'var(--font-mono)'; chip.textContent = s;
+        scopeWrap.appendChild(chip);
+      });
+      dcard.appendChild(scopeWrap);
+    }
+    main.appendChild(dcard);
+  }
 }
 
 /* ════════════════════════════════════════
@@ -3465,10 +4226,13 @@ function renderVerificationTiers(page, main) {
   main.appendChild(pw);
 
   page.tiers.forEach(function(tier) {
-    var isLocked    = tier.status === 'locked' || tier.status === 'upcoming';
-    var isRejected  = tier.status === 'rejected';
-    var isT3Choice  = tier.status === 't3-choice';
-    var isOcrReview = tier.status === 'ocr-review';
+    var isLocked       = tier.status === 'locked' || tier.status === 'upcoming';
+    var isRejected     = tier.status === 'rejected';
+    var isManualReview = tier.status === 'manual_review';
+    var isUnderReview  = tier.status === 'under_review';
+    var isMonoFailed   = tier.status === 'mono_failed';
+    var isT3Choice     = tier.status === 't3-choice';
+    var isOcrReview    = tier.status === 'ocr-review';
 
     var card = el('div', 'tier-card' + (isLocked ? ' locked' : ''));
     var iconWrap;
@@ -3476,9 +4240,17 @@ function renderVerificationTiers(page, main) {
       iconWrap = el('div', 'tier-icon active');
       iconWrap.style.background = '#FEF2F2'; iconWrap.style.color = '#DC2626';
       iconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="0.5" fill="currentColor" stroke="currentColor"/></svg>';
+    } else if (isManualReview || isUnderReview) {
+      iconWrap = el('div', 'tier-icon active');
+      iconWrap.style.background = '#FFFBEB'; iconWrap.style.color = '#D97706';
+      iconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16.5" r="0.75" fill="currentColor"/></svg>';
     } else if (tier.status === 'done') {
       iconWrap = el('div', 'tier-icon done');
       iconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    } else if (isMonoFailed) {
+      iconWrap = el('div', 'tier-icon active');
+      iconWrap.style.background = '#FEF2F2'; iconWrap.style.color = '#DC2626';
+      iconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M8 8l8 8M16 8l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
     } else if (tier.status === 'active' || isT3Choice || isOcrReview) {
       iconWrap = el('div', 'tier-icon active');
       iconWrap.innerHTML = '<svg viewBox="0 0 24 24" fill="none" width="18" height="18"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4l3 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
@@ -3505,6 +4277,33 @@ function renderVerificationTiers(page, main) {
       var t3Badge = el('div'); t3Badge.style.marginTop = '8px';
       t3Badge.appendChild(txt(el('span', 'badge badge-green'), 'Balance verified'));
       body.appendChild(t3Badge);
+    }
+
+    if (isMonoFailed) {
+      var mfBadge = el('div'); mfBadge.style.marginTop = '8px';
+      mfBadge.appendChild(txt(el('span', 'badge badge-red'), 'Bank connection failed'));
+      body.appendChild(mfBadge);
+      if (tier.monoFailReason) {
+        var mfCard = el('div', 'rejection-card');
+        mfCard.appendChild(txt(el('div', 'rejection-card-head'), 'CONNECTION FAILED'));
+        mfCard.appendChild(txt(el('div', 'rejection-card-note'), tier.monoFailReason));
+        var mfBtn = el('button', 'rejection-resubmit'); mfBtn.textContent = 'Upload statement instead';
+        mfCard.appendChild(mfBtn); body.appendChild(mfCard);
+      }
+    }
+    if (isManualReview) {
+      var mrBadge = el('div'); mrBadge.style.marginTop = '8px';
+      mrBadge.appendChild(txt(el('span', 'badge badge-amber'), 'Under manual review \u2014 no action needed'));
+      body.appendChild(mrBadge);
+    }
+    if (isUnderReview) {
+      var urBadge = el('div'); urBadge.style.marginTop = '8px';
+      urBadge.appendChild(txt(el('span', 'badge badge-amber'), 'Under review \u2014 your submission has been received'));
+      body.appendChild(urBadge);
+      if (tier.uploadedFile) {
+        var uf = el('div', 'td-muted'); uf.style.marginTop = '4px'; uf.textContent = tier.uploadedFile + ' \u00b7 Submitted ' + tier.uploadedDate;
+        body.appendChild(uf);
+      }
     }
 
     if (tier.status === 'active' && tier.action) {
@@ -3650,40 +4449,82 @@ function renderDocumentsUpload(page, main) {
 }
 
 function renderOpsQueue(page, main) {
-  main.appendChild(buildStatGrid(page.stats, 4));
+  if (page.stats) main.appendChild(buildStatGrid(page.stats, 4));
 
   var scard = el('div', 'section-card');
   var sh = el('div', 'section-header');
-  sh.appendChild(txt(el('span', 'section-title'), 'Review queue — FIFO'));
-  sh.appendChild(txt(el('span', 'td-muted'), String(page.queue.length) + ' items'));
+  sh.appendChild(txt(el('span', 'section-title'), 'Review queue \u2014 FIFO'));
+
+  /* State overrides use page.items (rich format); base data uses page.queue (simple format) */
+  var items = page.items || page.queue || [];
+  sh.appendChild(txt(el('span', 'td-muted'), String(items.length) + ' items'));
   scard.appendChild(sh);
 
-  page.queue.forEach(function(item) {
+  items.forEach(function(item) {
     var row = el('div');
     row.style.cssText = 'padding:14px 16px;border-bottom:1px solid rgba(0,0,0,0.05);';
 
     var top = el('div'); top.style.cssText = 'display:flex;align-items:center;gap:12px;margin-bottom:10px;';
+
+    /* Rich format: initials avatar + student name + school */
+    if (item.initials) {
+      var av = el('div', 'user-av'); av.textContent = item.initials;
+      av.style.cssText = 'width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;';
+      top.appendChild(av);
+    }
+
     var nameDiv = el('div'); nameDiv.style.flex = '1';
-    nameDiv.appendChild(txt(el('div'), item.name));
-    var docSpan = txt(el('div', 'td-muted'), item.doc);
+    /* Rich format uses item.student + item.type; simple uses item.name + item.doc */
+    nameDiv.appendChild(txt(el('div'), item.student || item.name));
+    var detailLine = item.detail || item.doc;
+    if (item.school) detailLine = (item.type || '') + ' \u00b7 ' + item.school;
+    var docSpan = txt(el('div', 'td-muted'), detailLine);
     docSpan.style.marginTop = '2px';
     nameDiv.appendChild(docSpan);
-    var waitDiv = txt(el('div', 'td-muted'), 'Wait: ' + item.wait);
-    waitDiv.style.flexShrink = '0';
-    var submittedDiv = txt(el('div', 'td-muted'), item.submitted);
-    submittedDiv.style.flexShrink = '0';
-    top.appendChild(nameDiv); top.appendChild(submittedDiv); top.appendChild(waitDiv);
 
-    var btnRow = el('div', 'ops-action-row');
-    var approveBtn = el('button', 'btn-approve'); approveBtn.textContent = 'Approve';
-    var rejectBtn = el('button', 'btn-reject'); rejectBtn.textContent = 'Reject';
-    var infoBtn = el('button', 'btn-moreinfo'); infoBtn.textContent = 'Request info';
-    approveBtn.addEventListener('click', function() { showAdminReviewModal('approve', item); });
-    rejectBtn.addEventListener('click', function()  { showAdminReviewModal('reject', item); });
-    infoBtn.addEventListener('click', function()    { showAdminReviewModal('info', item); });
-    btnRow.appendChild(approveBtn); btnRow.appendChild(rejectBtn); btnRow.appendChild(infoBtn);
+    if (item.amount) {
+      var amtSpan = txt(el('div'), item.amount);
+      amtSpan.style.cssText = 'font-family:var(--font-mono);font-size:13px;color:var(--accent);margin-top:2px;';
+      nameDiv.appendChild(amtSpan);
+    }
 
-    row.appendChild(top); row.appendChild(btnRow);
+    if (item.wait) {
+      var waitDiv = txt(el('div', 'td-muted'), 'Wait: ' + item.wait);
+      waitDiv.style.flexShrink = '0';
+      top.appendChild(nameDiv); top.appendChild(txt(el('div', 'td-muted'), item.submitted)); top.appendChild(waitDiv);
+    } else {
+      top.appendChild(nameDiv);
+    }
+
+    /* cert_ready status — green issue button, no reject */
+    if (item.status === 'cert_ready') {
+      var certRow = el('div', 'ops-action-row');
+      var readyBadge = el('span', 'badge badge-green'); readyBadge.textContent = 'All checks passed';
+      var issueBtn = el('button', 'btn-approve'); issueBtn.textContent = 'Issue certificate';
+      certRow.appendChild(readyBadge); certRow.appendChild(issueBtn);
+      row.appendChild(top); row.appendChild(certRow);
+    } else {
+      var btnRow = el('div', 'ops-action-row');
+      var approveBtn = el('button', 'btn-approve'); approveBtn.textContent = 'Approve';
+      var rejectBtn  = el('button', 'btn-reject');  rejectBtn.textContent  = 'Reject';
+      var infoBtn    = el('button', 'btn-moreinfo'); infoBtn.textContent   = 'Request info';
+      approveBtn.addEventListener('click', function() { showAdminReviewModal('approve', item); });
+      rejectBtn.addEventListener('click',  function() { showAdminReviewModal('reject', item); });
+      infoBtn.addEventListener('click',    function() { showAdminReviewModal('info', item); });
+      btnRow.appendChild(approveBtn); btnRow.appendChild(rejectBtn); btnRow.appendChild(infoBtn);
+
+      /* Show rejection draft inline when present */
+      if (item.rejectionDraft) {
+        var draftNote = el('div', 'rejection-card');
+        draftNote.style.marginTop = '10px';
+        draftNote.appendChild(txt(el('div', 'rejection-card-head'), 'DRAFT REJECTION NOTE'));
+        draftNote.appendChild(txt(el('div', 'rejection-card-note'), item.rejectionDraft));
+        row.appendChild(top); row.appendChild(btnRow); row.appendChild(draftNote);
+      } else {
+        row.appendChild(top); row.appendChild(btnRow);
+      }
+    }
+
     scard.appendChild(row);
   });
   main.appendChild(scard);
@@ -4053,14 +4894,38 @@ function renderDocRequirements(page, main) {
     var ico = el('div', 'req-icon'); ico.appendChild(svgIcon(docPath));
     var ri = el('div', 'req-info');
     var rTop = el('div'); rTop.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:3px;';
-    rTop.appendChild(txt(el('span', 'td-name'), r.label));
-    var rb = el('span', 'status-badge badge-' + (r.countBadge || 'muted')); rb.textContent = r.count;
+    rTop.appendChild(txt(el('span', 'td-name'), r.label || r.name));
+    /* show approved/pending/rejected breakdown if available, else show count */
+    var countText = r.approvedCount !== undefined
+      ? (r.approvedCount + ' approved / ' + (r.pendingCount || 0) + ' pending')
+      : String(r.count || '');
+    var countType = r.pendingCount > 0 ? 'amber' : (r.rejectedCount > 0 ? 'red' : (r.countBadge || 'muted'));
+    var rb = el('span', 'status-badge badge-' + countType); rb.textContent = countText;
     rTop.appendChild(rb);
     ri.appendChild(rTop);
     ri.appendChild(txt(el('div', 'td-muted'), r.desc));
     row.appendChild(ico); row.appendChild(ri); reqList.appendChild(row);
   });
   reqCard.appendChild(reqList); main.appendChild(reqCard);
+  /* Pending submissions list (state override: docs_pending_bulk) */
+  if (page.pending && page.pending.length) {
+    var pendCard = el('div', 'section-card');
+    var pendH = el('div', 'section-header');
+    pendH.appendChild(txt(el('span', 'section-title'), 'Awaiting admin review'));
+    pendH.appendChild(txt(el('span', 'td-muted'), String(page.pending.length) + ' items'));
+    pendCard.appendChild(pendH);
+    var pendList = el('div');
+    page.pending.forEach(function(p) {
+      var pr = el('div', 'sponsor-student-row'); pr.style.cursor = 'default';
+      var pinfo = el('div', 'ss-info');
+      pinfo.appendChild(txt(el('div', 'td-name'), p.name));
+      pinfo.appendChild(txt(el('div', 'td-muted'), p.docType + ' \u00b7 ' + p.size));
+      pr.appendChild(pinfo);
+      pr.appendChild(txt(el('div', 'td-muted'), p.submitted));
+      pendList.appendChild(pr);
+    });
+    pendCard.appendChild(pendList); main.appendChild(pendCard);
+  }
   if (page.section) main.appendChild(buildSectionTable(page));
 }
 
@@ -4217,6 +5082,39 @@ function renderOverview(page, main) {
     main.appendChild(ccWrap);
   }
 
+  // Sponsor committed card (green)
+  if (page.sponsorCommitted) {
+    var scCard = el('div', 'sponsor-invite-card');
+    scCard.style.borderColor = '#16A34A';
+    var scAv = el('div', 'sponsor-invite-avatar'); scAv.textContent = page.sponsorCommitted.initials;
+    scAv.style.background = '#16A34A';
+    scCard.appendChild(scAv);
+    var scInfo = el('div', 'sponsor-invite-info');
+    scInfo.appendChild(txt(el('div', 'sponsor-invite-name'), page.sponsorCommitted.name));
+    var scAmtLine = el('div', 'sponsor-invite-sub');
+    scAmtLine.innerHTML = '<strong style="font-family:var(--font-mono);color:#16A34A;">' + page.sponsorCommitted.amount + '</strong> \u00b7 ' + page.sponsorCommitted.type;
+    scInfo.appendChild(scAmtLine);
+    scInfo.appendChild(txt(el('div', 'sponsor-invite-sub'), page.sponsorCommitted.sub));
+    scCard.appendChild(scInfo);
+    var scBadge = txt(el('span', 'sponsor-invite-badge'), 'Committed');
+    scBadge.style.background = '#DCFCE7'; scBadge.style.color = '#16A34A';
+    scCard.appendChild(scBadge);
+    main.appendChild(scCard);
+  }
+
+  // Sponsor withdrawn warning card
+  if (page.sponsorWithdrawn) {
+    var swCard = el('div', 'rejection-card');
+    swCard.style.marginBottom = '12px';
+    swCard.appendChild(txt(el('div', 'rejection-card-head'), 'SPONSOR WITHDREW'));
+    var swLine = el('div', 'rejection-card-note');
+    swLine.textContent = page.sponsorWithdrawn.name + ' withdrew their commitment. ' + page.sponsorWithdrawn.sub + '.';
+    swCard.appendChild(swLine);
+    var swBtn = el('button', 'rejection-resubmit'); swBtn.textContent = 'Update funding type';
+    swCard.appendChild(swBtn);
+    main.appendChild(swCard);
+  }
+
   // Sponsor invite card
   if (page.sponsorInvite) {
     var invCard = el('div', 'sponsor-invite-card');
@@ -4237,10 +5135,8 @@ function renderOverview(page, main) {
 
 /* ── Master render dispatcher ── */
 function renderPage(roleId, label) {
-  /* Track current nav label for state-switcher re-renders */
-  if (roleId === 'student') currentNavLabel = label;
-
-  var page = (roleId === 'student') ? getStudentPage(label) : PAGES[roleId] && PAGES[roleId][label];
+  currentNavLabel = label;
+  var page = getPage(roleId, label);
   if (!page) return;
 
   document.getElementById('topbarTitle').textContent = label;
@@ -4322,42 +5218,100 @@ function renderNav(roleId) {
   });
 }
 
-/* ── Set role ── */
+/* ── State management — all roles ── */
 var currentRole = 'student';
-var currentStudentState = 'mid_journey';
 var currentNavLabel = 'Overview';
 
-/* ── Student state management ── */
+/* Active state per role — persists when switching roles */
+var currentStates = { student:'mid_journey', admin:'default', agent:'default', sponsor:'default', university:'default', partner:'default' };
 
-var STUDENT_STATES = [
-  { group:'Default',         id:'mid_journey',          label:'Mid-journey' },
-  { group:'Happy path',      id:'first_session',        label:'First session' },
-  { group:'Happy path',      id:'post_cert_overview',   label:'Cert issued' },
-  { group:'Anxiety peaks',   id:'docs_rejected',        label:'Doc rejected' },
-  { group:'Anxiety peaks',   id:'t3_upload_rejected',   label:'T3 rejected' },
-  { group:'Anxiety peaks',   id:'under_final_review',   label:'Final review' },
-  { group:'Decision points', id:'t3_choice',            label:'T3 choice' },
-  { group:'Decision points', id:'t3_ocr_review',        label:'OCR review' },
-  { group:'Decision points', id:'cert_sharing',         label:'Cert sharing' },
-  { group:'Blocked states',  id:'blocked_proof',        label:'Proof locked' },
-  { group:'Parallel flow',   id:'sponsor_invite',       label:'Sponsor invite' },
-];
+/* State definitions per role */
+var ROLE_STATES = {
 
-function getStudentPage(label) {
-  var overrides = STUDENT_STATE_OVERRIDES[currentStudentState];
-  if (overrides && overrides[label]) return overrides[label];
-  return PAGES.student[label];
+  student: [
+    { group:'Default',         id:'mid_journey',           label:'Mid-journey'       },
+    { group:'Happy path',      id:'first_session',         label:'First session'     },
+    { group:'Happy path',      id:'post_cert_overview',    label:'Cert issued'       },
+    { group:'Happy path',      id:'sponsor_committed',     label:'Sponsor committed' },
+    { group:'Anxiety peaks',   id:'docs_rejected',         label:'Doc rejected'      },
+    { group:'Anxiety peaks',   id:'t3_upload_rejected',    label:'T3 rejected'       },
+    { group:'Anxiety peaks',   id:'under_final_review',    label:'Final review'      },
+    { group:'Anxiety peaks',   id:'t2_failed',             label:'T2 failed'         },
+    { group:'Anxiety peaks',   id:'sponsor_withdrawn',     label:'Sponsor withdrew'  },
+    { group:'Limbo states',    id:'t2_manual_review',      label:'T2 review'         },
+    { group:'Limbo states',    id:'t3_upload_submitted',   label:'T3 submitted'      },
+    { group:'Limbo states',    id:'docs_resubmitting',     label:'Doc resubmit'      },
+    { group:'Decision points', id:'t3_choice',             label:'T3 choice'         },
+    { group:'Decision points', id:'t3_ocr_review',         label:'OCR review'        },
+    { group:'Decision points', id:'t3_mono_failed',        label:'Mono failed'       },
+    { group:'Decision points', id:'cert_sharing',          label:'Cert sharing'      },
+    { group:'Blocked states',  id:'blocked_proof',         label:'Proof locked'      },
+    { group:'Blocked states',  id:'blocked_documents',     label:'Docs locked'       },
+    { group:'Blocked states',  id:'blocked_verification',  label:'Verify locked'     },
+    { group:'Parallel flow',   id:'sponsor_invite',        label:'Sponsor invite'    },
+  ],
+
+  admin: [
+    { group:'Default',        id:'default',       label:'Overview'       },
+    { group:'Ops queue',      id:'ops_rejection', label:'Ops rejection'  },
+    { group:'Ops queue',      id:'cert_ready',    label:'Cert ready'     },
+    { group:'Risk & security',id:'risk_flagged',  label:'Risk flagged'   },
+    { group:'Users',          id:'impersonation', label:'Impersonation'  },
+  ],
+
+  agent: [
+    { group:'Default',   id:'default',             label:'Overview'          },
+    { group:'Students',  id:'student_rejected',    label:'Student rejected'  },
+    { group:'Students',  id:'student_cert_issued', label:'Cert issued'       },
+    { group:'Activity',  id:'activity_feed',       label:'Activity feed'     },
+  ],
+
+  sponsor: [
+    { group:'Default',   id:'default',              label:'Overview'         },
+    { group:'Students',  id:'student_in_progress',  label:'In progress'      },
+    { group:'Students',  id:'cert_just_issued',     label:'Cert issued'      },
+    { group:'Students',  id:'student_rejected',     label:'Doc rejected'     },
+    { group:'Commitments',id:'commitment_view',     label:'Commitments'      },
+  ],
+
+  university: [
+    { group:'Default',  id:'default',              label:'Overview'         },
+    { group:'Students', id:'cert_on_roster',       label:'Cert on roster'   },
+    { group:'Students', id:'docs_pending_bulk',    label:'Docs pending'     },
+    { group:'Programs', id:'programs_near_target', label:'Near target'      },
+    { group:'Programs', id:'program_config',       label:'Program config'   },
+  ],
+
+  partner: [
+    { group:'Default', id:'default',       label:'Overview'      },
+    { group:'API',     id:'api_error',     label:'API error'     },
+    { group:'API',     id:'high_usage',    label:'High usage'    },
+    { group:'Keys',    id:'api_key_view',  label:'API keys'      },
+  ],
+
+};
+
+/* Link student states to the main STATE_OVERRIDES */
+STATE_OVERRIDES.student = STUDENT_STATE_OVERRIDES;
+
+function getPage(roleId, label) {
+  var stateId = currentStates[roleId] || 'default';
+  var roleOverrides = STATE_OVERRIDES[roleId];
+  if (roleOverrides) {
+    var stateOverride = roleOverrides[stateId];
+    if (stateOverride && stateOverride[label]) return stateOverride[label];
+  }
+  return PAGES[roleId] && PAGES[roleId][label];
 }
 
-function setStudentState(stateId) {
-  currentStudentState = stateId;
+function setState(roleId, stateId) {
+  currentStates[roleId] = stateId;
 
-  /* Re-render current page with new state data */
-  var page = getStudentPage(currentNavLabel);
-  if (!page) page = getStudentPage('Overview');
+  var page = getPage(roleId, currentNavLabel);
+  if (!page) page = getPage(roleId, NAV[roleId][0].label);
   if (!page) return;
 
-  document.getElementById('topbarTitle').textContent = currentNavLabel;
+  document.getElementById('topbarTitle').textContent = page.h1 || currentNavLabel;
   var main = document.getElementById('mainContent');
   while (main.firstChild) main.removeChild(main.firstChild);
   if (page.eyebrow) main.appendChild(txt(el('div', 'page-eyebrow'), page.eyebrow));
@@ -4365,36 +5319,55 @@ function setStudentState(stateId) {
 
   var t = page.type;
   if      (t === 'settings')           renderSettings(page, main);
+  else if (t === 'apikeys')            renderApiKeys(page, main);
   else if (t === 'onboarding-form')    renderOnboardingForm(page, main);
   else if (t === 'verification-tiers') renderVerificationTiers(page, main);
   else if (t === 'documents-upload')   renderDocumentsUpload(page, main);
+  else if (t === 'ops-queue')          renderOpsQueue(page, main);
+  else if (t === 'commitments')        renderCommitments(page, main);
   else if (t === 'cert-issued')        renderCertIssued(page, main);
+  else if (t === 'branding-form')      renderBrandingForm(page, main);
+  else if (t === 'activity-timeline')  renderActivityTimeline(page, main);
+  else if (t === 'analytics-charts')   renderAnalyticsCharts(page, main);
+  else if (t === 'risk-flags')         renderRiskFlags(page, main);
+  else if (t === 'users-manage')       renderUsersManage(page, main);
+  else if (t === 'commissions-detail') renderCommissionsDetail(page, main);
+  else if (t === 'programs-manage')    renderProgramsManage(page, main);
+  else if (t === 'student-list')       renderStudentList(page, main);
+  else if (t === 'sponsor-students')   renderSponsorStudents(page, main);
+  else if (t === 'payments-history')   renderPaymentsHistory(page, main);
+  else if (t === 'doc-requirements')   renderDocRequirements(page, main);
   else if (t === 'first-session')      renderFirstSession(page, main);
   else if (t === 'blocked-page')       renderBlockedPage(page, main);
   else if (t === 'under-final-review') renderUnderFinalReview(page, main);
   else if (t === 'cert-sharing')       renderCertSharing(page, main);
   else                                 renderOverview(page, main);
 
-  /* Update active pill */
-  document.querySelectorAll('.spill').forEach(function(b) {
+  /* Update active pills */
+  document.querySelectorAll('.spill[data-role="' + roleId + '"]').forEach(function(b) {
     b.classList.toggle('active', b.dataset.state === stateId);
   });
 }
 
-function buildStatePicker() {
+function buildStatePicker(roleId) {
   var sp = document.getElementById('statePicker');
   while (sp.firstChild) sp.removeChild(sp.firstChild);
 
+  var states = ROLE_STATES[roleId];
+  if (!states || !states.length) return;
+
+  var activeStateId = currentStates[roleId] || states[0].id;
   var lastGroup = null;
-  STUDENT_STATES.forEach(function(s) {
+  states.forEach(function(s) {
     if (s.group !== lastGroup) {
       lastGroup = s.group;
       sp.appendChild(txt(el('span', 'spill-group-label'), s.group));
     }
-    var btn = el('button', 'spill' + (s.id === currentStudentState ? ' active' : ''));
+    var btn = el('button', 'spill' + (s.id === activeStateId ? ' active' : ''));
     btn.dataset.state = s.id;
+    btn.dataset.role  = roleId;
     btn.textContent = s.label;
-    btn.addEventListener('click', function() { setStudentState(s.id); });
+    btn.addEventListener('click', function() { setState(roleId, s.id); });
     sp.appendChild(btn);
   });
 }
@@ -4419,14 +5392,10 @@ function setRole(roleId) {
   renderNav(roleId);
   renderPage(roleId, NAV[roleId][0].label);
 
-  /* Show/hide state picker */
+  /* Always show state picker — all roles have states */
   var sp = document.getElementById('statePicker');
-  if (roleId === 'student') {
-    sp.classList.add('visible');
-    buildStatePicker();
-  } else {
-    sp.classList.remove('visible');
-  }
+  sp.classList.add('visible');
+  buildStatePicker(roleId);
 
   document.querySelectorAll('.rpill').forEach(function(b) {
     b.classList.remove('active');
