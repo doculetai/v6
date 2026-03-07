@@ -231,18 +231,18 @@ export function DocumentsPageClient() {
 
       {latestOcrRun?.status === 'failed' ? (
         <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4">
-          <p className="text-sm font-medium text-destructive">Automatic statement scan failed</p>
+          <p className="text-sm font-medium text-destructive">{studentCopy.ocrCard.ocrFailedHeading}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {latestOcrRun.errorMessage ?? 'Your document is still queued for manual review.'}
+            {latestOcrRun.errorMessage ?? studentCopy.ocrCard.ocrFailedFallback}
           </p>
         </div>
       ) : null}
 
       {latestOcrRun && latestOcrRun.status !== 'completed' && latestOcrRun.status !== 'failed' ? (
         <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-sm font-medium text-foreground">Statement analysis in progress</p>
+          <p className="text-sm font-medium text-foreground">{studentCopy.ocrCard.ocrInProgressHeading}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {latestOcrRun.currentStep ?? 'Analyzing your bank statement'} ({latestOcrRun.progress}%)
+            {latestOcrRun.currentStep ?? studentCopy.ocrCard.ocrInProgressFallback} ({latestOcrRun.progress}%)
           </p>
         </div>
       ) : null}
