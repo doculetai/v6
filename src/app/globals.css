@@ -86,20 +86,20 @@
   --foreground: #0F172A;
   --card: #FFFFFF;
   --card-foreground: #0F172A;
-  --popover: #FFFFFF;
+  --popover: #FDFCFA;
   --popover-foreground: #0F172A;
-  --primary: #2563EB;
+  --primary: #2B39A3;
   --primary-foreground: #FFFFFF;
   --secondary: #F1F5F9;
   --secondary-foreground: #0F172A;
-  --muted: #F1F5F9;
-  --muted-foreground: #475569;
-  --accent: #3B82F6;
+  --muted: #F5F4F1;
+  --muted-foreground: #64748B;
+  --accent: #2B39A3;
   --accent-foreground: #0A1628;
   --destructive: #DC2626;
-  --border: #E2E8F0;
-  --input: #E2E8F0;
-  --ring: #3B82F6;
+  --border: #E8E5DF;
+  --input: #E8E5DF;
+  --ring: #2B39A3;
   --success: #16A34A;
   --warning: #D97706;
   --gold: #D4A853;
@@ -111,18 +111,18 @@
   --chart-4: #D97706;
   --chart-5: #64748B;
 
-  /* Sidebar — light/crisp with brand blue accents */
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #0F172A;
+  /* Sidebar — dark shell with role accent */
+  --sidebar: #161A1D;
+  --sidebar-foreground: #F1F5F9;
   --sidebar-primary: #2B39A3;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F1F5F9;
-  --sidebar-accent-foreground: #0F172A;
-  --sidebar-border: #E2E8F0;
-  --sidebar-ring: #2B39A3;
+  --sidebar-accent: rgba(255, 255, 255, 0.06);
+  --sidebar-accent-foreground: #F1F5F9;
+  --sidebar-border: rgba(255, 255, 255, 0.07);
+  --sidebar-ring: #93A6FF;
 
   /* Glass surfaces */
-  --sidebar-glass-bg: rgba(255, 255, 255, 0.97);
+  --sidebar-glass-bg: rgba(22, 26, 29, 0.95);
   --topbar-glass-bg: rgba(253, 252, 250, 0.94);
 
   /* Radius */
