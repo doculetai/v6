@@ -91,7 +91,7 @@ export function getFallbackUserName(role: DashboardRole): string {
 }
 
 export const studentHomeCopy = {
-  welcomeTitle: (name: string) => `Welcome, ${name}`,
+  welcomeTitle: (name: string) => `${name}'s application`,
   title: 'Overview',
   journeySubtitle: 'Your progress toward proof of funds.',
   tabs: {
@@ -101,7 +101,7 @@ export const studentHomeCopy = {
   },
   firstTime: {
     eyebrow: 'Application',
-    heading: 'Your application is not yet started',
+    heading: 'No active application',
     description: 'Complete four steps to receive your proof of funds certificate.',
     cta: 'Begin your application',
     ctaHref: '/dashboard/student/setup',
@@ -152,7 +152,7 @@ export const studentHomeCopy = {
     selectedLabel: 'Enrolled',
     notSelectedTitle: 'No institution selected',
     notSelectedDescription: 'Browse partner institutions to set your funding target.',
-    ctaLabel: 'Browse institutions',
+    ctaLabel: 'Browse schools',
     ctaHref: '/dashboard/student/schools',
     programLabel: 'Programme',
     durationLabel: (months: number) => `${months} months`,
@@ -181,6 +181,32 @@ export const studentHomeCopy = {
       proof: 'Certificate',
     },
     completionMessage: 'Your proof of funds is verified.',
+    nextActions: {
+      onboarding: {
+        label: 'Profile setup',
+        description: 'Choose your school and program to set your funding target.',
+        cta: 'Set up your profile',
+        href: '/dashboard/student/setup',
+      },
+      verification: {
+        label: 'Identity verification',
+        description: 'Confirm your phone number, identity, and bank details.',
+        cta: 'Continue verification',
+        href: '/dashboard/student/verification',
+      },
+      documents: {
+        label: 'Bank statement',
+        description: 'Upload a bank statement showing your available balance.',
+        cta: 'Upload statement',
+        href: '/dashboard/student/documents',
+      },
+      proof: {
+        label: 'Certificate',
+        description: 'Your application is complete. Review your proof of funds certificate.',
+        cta: 'View certificate',
+        href: '/dashboard/student/proof',
+      },
+    },
   },
 } as const;
 

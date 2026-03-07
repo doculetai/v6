@@ -13,28 +13,30 @@ export interface StudentJourneyInput {
 
 const STAGE_ORDER = ['onboarding', 'verification', 'documents', 'proof'] as const;
 
-const NEXT_ACTIONS: Record<string, JourneyNextAction> = {
+// Fallback next-action copy used when the caller does not provide nextActions via JourneyStageCopy.
+// Prefer copy.nextActions (from src/config/copy/dashboard-shell.ts) over this object.
+const FALLBACK_NEXT_ACTIONS: Record<string, JourneyNextAction> = {
   onboarding: {
-    label: 'Set up your profile',
-    description: 'Choose your school and how you plan to fund your program.',
+    label: 'Profile setup',
+    description: 'Choose your school and program to set your funding target.',
     cta: 'Set up your profile',
     href: '/dashboard/student/setup',
   },
   verification: {
-    label: 'Verify your identity',
-    description: 'Confirm your phone, identity, and bank account.',
+    label: 'Identity verification',
+    description: 'Confirm your phone number, identity, and bank details.',
     cta: 'Continue verification',
     href: '/dashboard/student/verification',
   },
   documents: {
-    label: 'Upload your bank statement',
+    label: 'Bank statement',
     description: 'Upload a bank statement showing your available balance.',
-    cta: 'Upload now',
+    cta: 'Upload statement',
     href: '/dashboard/student/documents',
   },
   proof: {
-    label: 'View your certificate',
-    description: 'Your application is complete. Review your proof-of-funds certificate.',
+    label: 'Certificate',
+    description: 'Your application is complete. Review your proof of funds certificate.',
     cta: 'View certificate',
     href: '/dashboard/student/proof',
   },
@@ -81,7 +83,8 @@ export function computeStudentJourney(
 
   const allComplete = completedCount === STAGE_ORDER.length;
   const currentStageId = currentStageIndex >= 0 ? STAGE_ORDER[currentStageIndex] : null;
-  const nextAction = currentStageId ? (NEXT_ACTIONS[currentStageId] ?? null) : null;
+  const nextActionsMap = copy.nextActions ?? FALLBACK_NEXT_ACTIONS;
+  const nextAction = currentStageId ? (nextActionsMap[currentStageId] ?? null) : null;
 
   return {
     stages,

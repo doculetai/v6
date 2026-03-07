@@ -418,7 +418,11 @@ export async function StudentOverview({
                 <Grid cols={{ sm: 3 }} gap="md">
                   <StatCard
                     label={copy.stats.verification.label}
-                    value={copy.stats.verification.percent(completionPercent)}
+                    value={
+                      completionPercent > 0
+                        ? copy.stats.verification.percent(completionPercent)
+                        : copy.stats.verification.notStartedLabel
+                    }
                     sub={
                       highestTier > 0
                         ? copy.stats.verification.tierPassed(highestTier)
