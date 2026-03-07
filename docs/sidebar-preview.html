@@ -838,6 +838,17 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
   font-family: var(--font); transition: background 100ms;
 }
 .btn-moreinfo:hover { background: #FDE68A; }
+.btn-freeze {
+  font-size: 12px; font-weight: 500; padding: 6px 12px;
+  border-radius: 8px; border: 1px solid rgba(194,65,12,0.3);
+  background: rgba(194,65,12,0.06); color: #C2410C; cursor: pointer;
+}
+.btn-freeze:hover { background: rgba(194,65,12,0.12); }
+.frozen-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 2px 8px;
+  border-radius: 20px; background: rgba(194,65,12,0.1); color: #C2410C;
+}
 
 /* ══ SHARE OPTIONS ══ */
 .share-list { display: flex; flex-direction: column; gap: 2px; }
@@ -2785,6 +2796,29 @@ var STATE_OVERRIDES = {
 
     /* support_view: admin operating in support sub-role */
     support_view: {},
+
+    /* frozen_user: admin viewing users page with one frozen account */
+    frozen_user: {
+      'Users': {
+        type: 'users-manage',
+        h1: 'Users',
+        eyebrow: 'Platform user management',
+        stats: [
+          { label:'Total users',  value:'512', sub:'all roles',             mono:true },
+          { label:'Students',     value:'312', sub:'active accounts',       mono:true },
+          { label:'Sponsors',     value:'148', sub:'active sponsors',       mono:true },
+          { label:'Frozen',       value:'1',   sub:'access suspended',      mono:true },
+        ],
+        users: [
+          { name:'Kemi Adesanya',  email:'kemi.a@example.com',   role:'Student',    joined:'7 Mar', status:'frozen' },
+          { name:'Tunde Okafor',   email:'tunde.o@example.com',  role:'Sponsor',    joined:'6 Mar' },
+          { name:'UniLag Admin',   email:'admin@unilag.edu.ng',  role:'University', joined:'5 Mar' },
+          { name:'Samuel Adeyemi', email:'sam.a@agency.com',     role:'Agent',      joined:'4 Mar' },
+          { name:'Bola Afolabi',   email:'bola.a@example.com',   role:'Student',    joined:'3 Mar' },
+          { name:'Ngozi Eze',      email:'ngozi.e@example.com',  role:'Student',    joined:'2 Mar' },
+        ],
+      },
+    },
   },
 
   /* ══ AGENT ══ */
@@ -3452,17 +3486,28 @@ function renderUsersManage(page, main) {
   var tbody = el('tbody');
   (page.users || []).forEach(function(u) {
     var tr = el('tr');
-    var tdName = el('td'); tdName.appendChild(txt(el('div', 'td-name'), u.name)); tr.appendChild(tdName);
+    var tdName = el('td');
+    var nameWrap = el('div', ''); nameWrap.style.cssText = 'display:flex;align-items:center;gap:8px;';
+    nameWrap.appendChild(txt(el('div', 'td-name'), u.name));
+    if (u.status === 'frozen') {
+      var frozenBadge = el('span', 'frozen-badge'); txt(frozenBadge, 'Frozen'); nameWrap.appendChild(frozenBadge);
+    }
+    tdName.appendChild(nameWrap); tr.appendChild(tdName);
     tr.appendChild(txt(el('td', 'td-muted'), u.email));
     var tdRole = el('td');
     var rb = el('span', 'status-badge badge-blue'); rb.textContent = u.role; tdRole.appendChild(rb); tr.appendChild(tdRole);
     tr.appendChild(txt(el('td', 'td-muted'), u.joined));
-    var tdAct = el('td'); tdAct.style.textAlign = 'right';
+    var tdAct = el('td'); tdAct.style.cssText = 'text-align:right;display:flex;justify-content:flex-end;gap:6px;align-items:center;';
     if (u.role === 'Student') {
       var impBtn = el('button', 'btn-ghost-sm'); impBtn.textContent = 'Impersonate';
-      impBtn.addEventListener('click', function() { showImpersonateModal(u); });
+      impBtn.addEventListener('click', (function(usr) { return function() { showImpersonateModal(usr); }; })(u));
       tdAct.appendChild(impBtn);
     }
+    var freezeLabel = u.status === 'frozen' ? 'Unfreeze' : 'Freeze account';
+    var freezeBtn = el('button', 'btn-freeze'); txt(freezeBtn, freezeLabel);
+    freezeBtn.style.fontFamily = 'var(--font)';
+    (function(uname) { freezeBtn.addEventListener('click', function() { showFreezeAccountModal(uname); }); })(u.name);
+    tdAct.appendChild(freezeBtn);
     tr.appendChild(tdAct);
     tbody.appendChild(tr);
   });
@@ -3700,6 +3745,27 @@ function showImpersonateModal(user) {
     var c = el('button', 'modal-cancel'); c.textContent = 'Cancel'; c.addEventListener('click', closeModal); footer.appendChild(c);
     var x = el('button', 'btn-reject'); x.textContent = 'Begin impersonation';
     x.style.cssText = 'border-radius:8px;padding:10px 16px;font-size:14px;'; footer.appendChild(x);
+  });
+}
+
+/* ── Modal: Freeze account (admin) ── */
+function showFreezeAccountModal(userName) {
+  showModal('Freeze account', function(body) {
+    var p = el('p', ''); p.style.cssText = 'font-size:14px;color:rgba(100,116,139,0.9);line-height:1.6;';
+    txt(p, 'Freezing ' + userName + '\'s account will prevent them from logging in or taking any actions. This can be reversed at any time.');
+    body.appendChild(p);
+    var warn = el('div', ''); warn.style.cssText = 'margin-top:12px;padding:10px 12px;border-radius:8px;background:rgba(194,65,12,0.06);border:1px solid rgba(194,65,12,0.2);font-size:13px;color:#C2410C;';
+    txt(warn, 'The user will receive an email notification that their account has been frozen.');
+    body.appendChild(warn);
+  }, function(footer) {
+    var cancelBtn = el('button', 'btn-secondary');
+    txt(cancelBtn, 'Cancel');
+    cancelBtn.onclick = closeModal;
+    var freezeBtn = el('button', 'btn-reject'); // reuse reject button style (red)
+    txt(freezeBtn, 'Freeze account');
+    freezeBtn.onclick = closeModal; // demo: just close
+    footer.appendChild(cancelBtn);
+    footer.appendChild(freezeBtn);
   });
 }
 
@@ -6012,6 +6078,7 @@ var ROLE_STATES = {
     { group:'Ops queue',      id:'cert_ready',     label:'Cert ready'     },
     { group:'Risk & security',id:'risk_flagged',   label:'Risk flagged'   },
     { group:'Users',          id:'impersonation',  label:'Impersonation'  },
+    { group:'Users',          id:'frozen_user',    label:'Frozen user'    },
     { group:'Sub-roles',      id:'reviewer_view',  label:'Reviewer view',  _label:'Reviewer view'  },
     { group:'Sub-roles',      id:'support_view',   label:'Support view',   _label:'Support view'   },
   ],
