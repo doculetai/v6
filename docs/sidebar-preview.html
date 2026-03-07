@@ -1171,6 +1171,21 @@ main { flex: 1; overflow-y: auto; padding: 32px 28px 28px; }
 .rejection-card-note { font-size:13px; color:#7F1D1D; line-height:1.55; }
 .rejection-resubmit { display:inline-flex; align-items:center; gap:6px; margin-top:12px; background:#DC2626; color:#fff; border:none; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font); }
 
+/* ── Mono account review card ── */
+.mono-account-card {
+  border: 1px solid rgba(0,0,0,0.08); border-radius: 10px;
+  padding: 12px 16px; margin: 10px 0;
+  background: rgba(21, 128, 61, 0.04);
+}
+.mono-account-bank { font-size: 12px; color: rgba(100,116,139,0.7); margin-bottom: 4px; }
+.mono-account-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.mono-account-num { font-family: var(--font-mono); font-size: 13px; }
+.mono-review-note {
+  font-size: 13px; color: rgba(100,116,139,0.9);
+  padding: 10px 12px; background: rgba(0,0,0,0.03);
+  border-radius: 8px; margin-top: 8px; line-height: 1.5;
+}
+
 /* ── Sponsor invite card ── */
 .sponsor-invite-card {
   border-radius:12px; border:1.5px solid rgba(0,0,0,0.08); background:#fff;
@@ -2406,6 +2421,33 @@ var STUDENT_STATE_OVERRIDES = {
         },
         { id:'t2', title:'T2 \u2014 Identity verification', desc:'Confirm your identity using BVN, NIN, or government-issued ID.', status:'locked' },
         { id:'t3', title:'T3 \u2014 Banking verification', desc:'Connect your bank or upload a recent statement to prove your balance.', status:'locked' },
+      ],
+    },
+  },
+
+  /* mono_account_review: Mono connected but account name doesn't match — pending ownership review */
+  mono_account_review: {
+    'Verification': {
+      type: 'verification-tiers',
+      h1: 'Verification',
+      eyebrow: 'Proof target progress',
+      target: '\u20a6 3,000,000',
+      verified: '\u20a6 0',
+      pct: 0,
+      tiers: [
+        { id:'t1', title:'T1 \u2014 Phone verification', desc:'Verify your Nigerian phone number to unlock identity verification.', status:'done', action:null },
+        { id:'t2', title:'T2 \u2014 Identity verification', desc:'Identity confirmed via Dojah.', status:'done', action:null },
+        {
+          id: 't3', title: 'T3 \u2014 Banking verification',
+          desc: 'Your connected account is under ownership review.',
+          status: 'under_review',
+          method: 'mono',
+          accountName: 'JOHNSON ADEYEMI',
+          bankName: 'GTBank',
+          accountNumber: '0123456789',
+          balance: '\u20a6 2,100,000',
+          reviewNote: 'We are verifying that this account belongs to you. This usually takes a few hours.',
+        },
       ],
     },
   },
@@ -4529,7 +4571,20 @@ function renderVerificationTiers(page, main) {
       var urBadge = el('div'); urBadge.style.marginTop = '8px';
       urBadge.appendChild(txt(el('span', 'badge badge-amber'), 'Under review \u2014 your submission has been received'));
       body.appendChild(urBadge);
-      if (tier.uploadedFile) {
+      if (tier.method === 'mono' && tier.accountName) {
+        /* Mono account ownership review — show connected account details */
+        var acctCard = el('div', 'mono-account-card');
+        acctCard.appendChild(txt(el('div', 'mono-account-bank'), tier.bankName || 'Bank'));
+        acctCard.appendChild(txt(el('div', 'mono-account-name'), tier.accountName));
+        var acctNum = el('div', 'mono-account-num');
+        var displayNum = tier.accountNumber ? '\u00b7\u00b7\u00b7\u00b7 ' + tier.accountNumber.slice(-4) : '';
+        acctNum.textContent = displayNum + (tier.balance ? '  \u00b7  ' + tier.balance : '');
+        acctCard.appendChild(acctNum);
+        body.appendChild(acctCard);
+        if (tier.reviewNote) {
+          body.appendChild(txt(el('div', 'mono-review-note'), tier.reviewNote));
+        }
+      } else if (tier.uploadedFile) {
         var uf = el('div', 'td-muted'); uf.style.marginTop = '4px'; uf.textContent = tier.uploadedFile + ' \u00b7 Submitted ' + tier.uploadedDate;
         body.appendChild(uf);
       }
@@ -5505,6 +5560,7 @@ var ROLE_STATES = {
     { group:'Anxiety peaks',   id:'sponsor_withdrawn',     label:'Sponsor withdrew'  },
     { group:'Limbo states',    id:'t2_manual_review',      label:'T2 review'         },
     { group:'Limbo states',    id:'t3_upload_submitted',   label:'T3 submitted'      },
+    { group:'Limbo states',    id:'mono_account_review',   label:'Mono review'       },
     { group:'Limbo states',    id:'docs_resubmitting',     label:'Doc resubmit'      },
     { group:'Decision points', id:'t3_choice',             label:'T3 choice'         },
     { group:'Decision points', id:'t3_ocr_review',         label:'OCR review'        },
