@@ -215,7 +215,14 @@ export const documentProcedures = {
         });
       }
 
-      await removeDocumentFile(doc.storageUrl);
+      try {
+        await removeDocumentFile(doc.storageUrl);
+      } catch {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Unable to cancel submission. Please try again.',
+        });
+      }
 
       await ctx.db.delete(documents).where(eq(documents.id, doc.id));
     }),

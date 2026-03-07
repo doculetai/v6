@@ -19,7 +19,6 @@ type ManualData = {
 };
 
 type OcrSummaryCardProps = {
-  documentId: string;
   extractedName: string | null;
   extractedAmount: string | null;
   confidence: number | null;
@@ -71,10 +70,12 @@ function ManualEntryForm({
         <Input
           id="ocr-name"
           placeholder={copy.manualFields.namePlaceholder}
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? 'ocr-name-error' : undefined}
           {...register('name')}
         />
         {errors.name ? (
-          <p className="text-xs text-destructive">{errors.name.message}</p>
+          <p id="ocr-name-error" className="text-xs text-destructive">{errors.name.message}</p>
         ) : null}
       </div>
 
@@ -85,10 +86,12 @@ function ManualEntryForm({
         <Input
           id="ocr-account-number"
           placeholder={copy.manualFields.accountNumberPlaceholder}
+          aria-invalid={!!errors.accountNumber}
+          aria-describedby={errors.accountNumber ? 'ocr-account-number-error' : undefined}
           {...register('accountNumber')}
         />
         {errors.accountNumber ? (
-          <p className="text-xs text-destructive">{errors.accountNumber.message}</p>
+          <p id="ocr-account-number-error" className="text-xs text-destructive">{errors.accountNumber.message}</p>
         ) : null}
       </div>
 
@@ -99,10 +102,12 @@ function ManualEntryForm({
         <Input
           id="ocr-bank-name"
           placeholder={copy.manualFields.bankNamePlaceholder}
+          aria-invalid={!!errors.bankName}
+          aria-describedby={errors.bankName ? 'ocr-bank-name-error' : undefined}
           {...register('bankName')}
         />
         {errors.bankName ? (
-          <p className="text-xs text-destructive">{errors.bankName.message}</p>
+          <p id="ocr-bank-name-error" className="text-xs text-destructive">{errors.bankName.message}</p>
         ) : null}
       </div>
 
@@ -113,10 +118,12 @@ function ManualEntryForm({
         <Input
           id="ocr-balance"
           placeholder={copy.manualFields.balancePlaceholder}
+          aria-invalid={!!errors.balance}
+          aria-describedby={errors.balance ? 'ocr-balance-error' : undefined}
           {...register('balance')}
         />
         {errors.balance ? (
-          <p className="text-xs text-destructive">{errors.balance.message}</p>
+          <p id="ocr-balance-error" className="text-xs text-destructive">{errors.balance.message}</p>
         ) : null}
       </div>
 

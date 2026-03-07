@@ -69,6 +69,7 @@ export function DocumentsPageClient() {
   const [fileInputKey, setFileInputKey] = useState(buildFileInputKey);
   const [uploadStage, setUploadStage] = useState<UploadStage | null>(null);
   const [showOcrCardState, setShowOcrCardState] = useState<'visible' | 'dismissed'>('visible');
+  const [cancelError, setCancelError] = useState<string | null>(null);
   const [previewDocumentId, setPreviewDocumentId] = useState<string | null>(null);
 
   const handleProgressComplete = useCallback(() => {
@@ -138,11 +139,15 @@ export function DocumentsPageClient() {
 
   const cancelPendingDocumentMutation = trpc.student.cancelPendingDocument.useMutation({
     onSuccess: async () => {
+      setCancelError(null);
       setShowOcrCardState('dismissed');
       await Promise.all([
         utils.student.listDocuments.invalidate(),
         utils.student.getLatestOcrRun.invalidate(),
       ]);
+    },
+    onError: (err) => {
+      setCancelError(err.message ?? 'Unable to cancel submission. Please try again.');
     },
   });
 
@@ -248,22 +253,26 @@ export function DocumentsPageClient() {
       ) : null}
 
       {showOcrCard ? (
-        <OcrSummaryCard
-          documentId={latestOcrRun.documentId}
-          extractedName={latestOcrRun.extractedName}
-          extractedAmount={
-            latestOcrRun.extractedBalance !== null
-              ? formatCurrency(latestOcrRun.extractedBalance, 'NGN')
-              : null
-          }
-          confidence={latestOcrRun.confidence}
-          onPreview={() => setPreviewDocumentId(latestOcrRun.documentId)}
-          onConfirm={() => setShowOcrCardState('dismissed')}
-          onCancel={() => {
-            cancelPendingDocumentMutation.mutate({ documentId: latestOcrRun.documentId });
-          }}
-          isCancelling={cancelPendingDocumentMutation.isPending}
-        />
+        <>
+          <OcrSummaryCard
+            extractedName={latestOcrRun.extractedName}
+            extractedAmount={
+              latestOcrRun.extractedBalance !== null
+                ? formatCurrency(latestOcrRun.extractedBalance, 'NGN')
+                : null
+            }
+            confidence={latestOcrRun.confidence}
+            onPreview={() => setPreviewDocumentId(latestOcrRun.documentId)}
+            onConfirm={() => setShowOcrCardState('dismissed')}
+            onCancel={() => {
+              cancelPendingDocumentMutation.mutate({ documentId: latestOcrRun.documentId });
+            }}
+            isCancelling={cancelPendingDocumentMutation.isPending}
+          />
+          {cancelError ? (
+            <p className="text-sm text-destructive">{cancelError}</p>
+          ) : null}
+        </>
       ) : null}
 
       <Section id="document-upload-form" padding="none" className="scroll-mt-4">
