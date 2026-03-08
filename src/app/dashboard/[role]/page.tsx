@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { TRPCError } from '@trpc/server';
 import { Sparkle } from '@/components/icons';
 import Link from 'next/link';
@@ -22,6 +23,15 @@ import { routes } from '@/config/routes';
 type DashboardRolePageProps = {
   params: Promise<{ role: string }>;
 };
+
+export async function generateMetadata({ params }: DashboardRolePageProps): Promise<Metadata> {
+  const { role } = await params;
+  return {
+    title: `Overview — Doculet`,
+    description: `Your ${role} dashboard overview on Doculet.`,
+    robots: { index: false },
+  };
+}
 
 export default async function DashboardRolePage({ params }: DashboardRolePageProps) {
   const { role } = await params;

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { TRPCError } from '@trpc/server';
 import { notFound, redirect } from 'next/navigation';
 
@@ -12,6 +13,15 @@ import { routes } from '@/config/routes';
 type OnboardingPageProps = {
   params: Promise<{ role: string }>;
 };
+
+export async function generateMetadata({ params }: OnboardingPageProps): Promise<Metadata> {
+  const { role } = await params;
+  return {
+    title: `Onboarding — Doculet`,
+    description: `Complete your ${role} profile setup on Doculet.`,
+    robots: { index: false },
+  };
+}
 
 const SUPPORTED_ONBOARDING_ROLES = ['student', 'sponsor', 'university'] as const;
 type OnboardingRole = (typeof SUPPORTED_ONBOARDING_ROLES)[number];
