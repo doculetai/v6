@@ -254,6 +254,14 @@ Goldmayo Daniel / doculet.ai — NO AI attribution anywhere
 | `/extract` | Three or more components share the same pattern — pull a primitive |
 | `/onboard` | Building first-time empty states or student setup flows |
 
+**Dev tools** — scaffold, audit, debug
+| Skill | When to use in Doculet |
+|-------|------------------------|
+| `/scaffold` | Starting a new dashboard route — generates 7-file scaffold (page, client, loading, error, copy, nav, tRPC stub) |
+| `/journey-audit` | Student sidebar, overview tracker, quick action CTA, or email copy are out of sync — checks all 4 surfaces against `src/lib/journey/student.ts` |
+| `/trpc-audit` | Before any PR touching routers — 5-check scan: role guards, output schemas, `any` types, oversized procedures, unconstrained inputs |
+| `/debug` | Any bug, test failure, or unexpected behaviour — 6-category systematic debug for the full Doculet stack |
+
 ### Standard Feature Flow
 
 Every feature follows this skill sequence before merge:
@@ -311,7 +319,7 @@ When `/product-owner` returns findings, use these skills to fix them:
 - **Colors:** Warm white `#FDFCFA` base. Brand blue `#2B39A3` (logo) as signature. Role-tinted active states (see Role Accents below). No pure white/black.
 - **Role Accents (active nav colour per role):** Student `#2B39A3`, Sponsor `#15803D`, University `#0369A1`, Admin `#C2410C`, Agent `#6D28D9`, Partner `#0F766E`.
 - **Typography:** IBM Plex Sans (UI primary — set globally). IBM Plex Mono (amounts, codes). IBM Plex Serif (certificates only). Section headers: 10-11px, ALL CAPS, tracked wide.
-- **Sidebar:** Stripe-clean white with warm tint. Role accent only on active item (border + bg wash + text). Section labels muted gray. Logo at full 36px PNG, not icon substitute.
+- **Sidebar:** Stripe-clean white with warm tint. Role accent only on active item — **flush-left border treatment (permanent, all roles)**: active item = `rounded-r-[7px] mr-2` (no left margin, border flush to sidebar edge) + `borderLeft: 3px solid var(--role-accent)` + `backgroundColor: var(--role-accent-bg)`. Inactive items = `rounded-[7px] mx-2`. Nav `ul` has NO horizontal padding — items start at edge. Section labels muted gray. Logo at full 36px PNG, not icon substitute.
 - **Unforgettable element:** Role-tinted sidebar (each user's dashboard feels uniquely theirs) + Doculet seal on certificates.
 - **NO EMOJIS** — never in UI, copy, code comments, or commit messages. Zero tolerance.
 
@@ -447,6 +455,8 @@ Key rules (always apply):
 - **Shadows:** sm (badges/inline) → default (cards/dropdowns) → md (modals) → lg (sidesheets) → overlay (full-screen)
 - **Icon sizes:** nav=24px, inline=20px, small=16px — Phosphor Duotone only, weight="duotone" always
 - **Role accents:** Student #2B39A3, Sponsor #15803D, University #0369A1, Admin #C2410C, Agent #6D28D9, Partner #0F766E
+- **Semantic status tokens (NEVER raw Tailwind):** `bg-success` / `text-success` (green), `bg-warning` / `text-warning` (amber), `bg-destructive` / `text-destructive` (red). Never use `bg-emerald-*`, `bg-amber-*`, `text-green-*` etc.
+- **Touch targets:** `min-h-[44px]` minimum on ALL interactive elements — non-negotiable, WCAG 2.5.5. Reduce visual density via `py-` not by shrinking min-h.
 
 ### Product Decisions & Feature Specs
 

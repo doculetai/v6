@@ -247,7 +247,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         {/* ── Nav ── */}
         <nav
           aria-label={dashboardShellCopy.sidebar.navAriaLabel}
-          className="flex-1 overflow-y-auto py-2"
+          className="flex-1 overflow-y-auto px-2 py-2"
         >
           {ungroupedItems.length > 0 && (
             <ul className="flex flex-col gap-1" role="list">
@@ -405,8 +405,8 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
         aria-disabled="true"
         title={isCollapsed ? (item.disabledReason ?? item.label) : item.disabledReason}
         className={cn(
-          'group relative flex min-h-[44px] cursor-not-allowed items-center gap-2.5 rounded-[7px] mx-2 px-3 text-sm opacity-40',
-          isCollapsed && 'justify-center px-[11px]',
+          'group relative flex min-h-[44px] cursor-not-allowed items-center gap-2.5 rounded-xl px-3 text-sm opacity-40',
+          isCollapsed && 'justify-center px-0',
         )}
       >
         <Icon className="size-5 shrink-0 text-sidebar-foreground/55" weight="duotone" aria-hidden="true" />
@@ -445,9 +445,9 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
         'group relative flex min-h-[44px] items-center gap-2.5 px-3 text-sm transition-colors duration-150',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)]',
         isActive
-          ? 'rounded-xl mx-2 font-semibold'
-          : 'rounded-xl mx-2 font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
-        isCollapsed && 'justify-center px-[11px]',
+          ? 'rounded-xl font-semibold'
+          : 'rounded-xl font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
+        isCollapsed && 'justify-center px-0',
       )}
     >
       <span className="relative shrink-0">

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { MagnifyingGlass, Bell, Moon, Sun, CaretLeft, CaretRight } from '@/components/icons';
+import { MagnifyingGlass, Bell, Moon, Sun, CaretLeft, SignOut } from '@/components/icons';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
 import { dashboardShellCopy, roleDisplayNames } from '@/config/copy/dashboard-shell';
@@ -30,7 +30,9 @@ const MOCK_USERS: Record<DashboardRole, { name: string; initials: string }> = {
   partner:    { name: 'Partner Account', initials: 'PR' },
 };
 
-// ── Nav item — flush-left border when active ──────────────────────────────────
+// ── Nav item ──────────────────────────────────────────────────────────────────
+// Nav padding lives on <nav> (px-2), so buttons use w-full with no mx-2 to
+// avoid overflow against the aside's overflow-hidden boundary.
 function MockNavItem({
   item,
   isActive,
@@ -50,18 +52,20 @@ function MockNavItem({
       type="button"
       onClick={onClick}
       className={cn(
-        'group flex w-full min-h-[44px] cursor-default items-center gap-2.5 transition-colors duration-150',
-        isActive
-          ? 'rounded-xl mx-2 font-semibold'
-          : 'rounded-xl mx-2 text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
-        collapsed ? 'justify-center px-[11px]' : 'px-3',
+        'group flex w-full min-h-[44px] cursor-default items-center gap-2.5 rounded-xl transition-colors duration-150',
+        collapsed
+          ? 'justify-center px-0'
+          : cn(
+              'px-3',
+              isActive
+                ? 'font-semibold'
+                : 'text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
+            ),
+        !collapsed && isActive && 'font-semibold',
       )}
       style={
         isActive
-          ? {
-              backgroundColor: accent.text,
-              color: '#FFFFFF',
-            }
+          ? { backgroundColor: accent.text, color: '#FFFFFF' }
           : undefined
       }
     >
@@ -106,7 +110,7 @@ function MockSidebar({
     <aside
       style={{ '--role-accent': accent.text } as React.CSSProperties}
       className={cn(
-        'flex flex-col h-full overflow-hidden bg-sidebar transition-colors duration-150',
+        'flex flex-col h-full overflow-hidden bg-sidebar transition-[width] duration-200 ease-out',
         'border-r border-sidebar-border shadow-[2px_0_12px_rgba(0,0,0,0.05)]',
         collapsed ? 'w-[64px]' : 'w-[240px]',
       )}
@@ -163,8 +167,8 @@ function MockSidebar({
         </>
       )}
 
-      {/* ── Nav ── */}
-      <nav className="flex-1 overflow-y-auto py-2" aria-label={dashboardShellCopy.sidebar.navAriaLabel}>
+      {/* ── Nav — padding on <nav> so buttons are w-full without mx overflow ── */}
+      <nav className="flex-1 overflow-y-auto px-2 py-2" aria-label={dashboardShellCopy.sidebar.navAriaLabel}>
         {ungroupedItems.length > 0 && (
           <ul className="flex flex-col gap-1" role="list">
             {ungroupedItems.map((item) => (
@@ -183,11 +187,11 @@ function MockSidebar({
         {groupedItems.map(({ group, items }) => (
           <div key={group.id} className="mt-4">
             {!collapsed && (
-              <p className="px-[18px] pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/35">
+              <p className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/35">
                 {group.label}
               </p>
             )}
-            {collapsed && <div className="mx-4 mb-1.5 border-t border-sidebar-border" />}
+            {collapsed && <div className="mb-1.5 border-t border-sidebar-border" />}
             <ul className="flex flex-col gap-1" role="list">
               {items.map((item) => (
                 <li key={item.href}>
@@ -205,14 +209,15 @@ function MockSidebar({
         ))}
       </nav>
 
-      {/* ── Footer / user card ── */}
-      <div className="shrink-0 border-t border-sidebar-border">
+      {/* ── Footer: user card + divider + sign-out ── */}
+      <div className="shrink-0 border-t border-sidebar-border px-2 pb-2 pt-1.5">
+        {/* User card */}
         <div className={cn(
-          'flex items-center gap-2.5 px-3 py-3 cursor-default hover:bg-sidebar-accent transition-colors',
-          collapsed && 'justify-center',
+          'flex items-center gap-2.5 rounded-xl px-2.5 py-2.5 cursor-default hover:bg-sidebar-accent transition-colors',
+          collapsed && 'justify-center px-0',
         )}>
           <div
-            className="flex size-8 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white"
+            className="flex size-[30px] shrink-0 items-center justify-center rounded-full text-[11px] font-bold tracking-tight text-white"
             style={{ backgroundColor: accent.text }}
           >
             {user.initials}
@@ -229,6 +234,21 @@ function MockSidebar({
             </div>
           )}
         </div>
+
+        {/* Divider */}
+        <div className="my-1 border-t border-sidebar-border" />
+
+        {/* Sign out */}
+        <button
+          type="button"
+          className={cn(
+            'flex w-full min-h-[40px] cursor-default items-center gap-2.5 rounded-xl px-3 text-[13.5px] font-medium text-sidebar-foreground/50 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground',
+            collapsed && 'justify-center px-0',
+          )}
+        >
+          <SignOut className="size-5 shrink-0" weight="duotone" aria-hidden="true" />
+          {!collapsed && <span>{dashboardShellCopy.sidebar.logoutLabel}</span>}
+        </button>
       </div>
     </aside>
   );
@@ -313,25 +333,40 @@ export function SidebarDesignClient() {
         <div className="flex flex-1 flex-col overflow-hidden">
 
           {/* TopBar */}
-          <header className="flex h-14 shrink-0 items-center gap-4 border-b border-border bg-card px-5 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+          <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-card px-5 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+            {/* Breadcrumb */}
             <div className="flex-1 min-w-0">
-              <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground/60">
+              <div className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground/50 font-medium">
                 <span>Dashboard</span>
                 <span className="text-muted-foreground/30">/</span>
-                <span className="font-medium text-muted-foreground">Overview</span>
+                <span className="font-semibold text-foreground">Overview</span>
               </div>
             </div>
+
+            {/* Right controls */}
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-48 items-center gap-2 rounded-lg border border-border bg-muted/60 px-3 text-xs text-muted-foreground">
-                <MagnifyingGlass className="size-3.5 shrink-0 opacity-60" weight="duotone" aria-hidden="true" />
-                Search...
+              {/* Search with ⌘K */}
+              <div className="flex h-[34px] w-52 items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 text-[13px] text-muted-foreground cursor-text">
+                <MagnifyingGlass className="size-3.5 shrink-0 opacity-50" weight="duotone" aria-hidden="true" />
+                <span className="flex-1 text-muted-foreground/60">Search...</span>
+                <kbd className="rounded bg-muted-foreground/10 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground/50">⌘K</kbd>
               </div>
-              <div className="flex size-8 items-center justify-center rounded-full border border-border text-muted-foreground">
-                <Bell className="size-4" weight="duotone" aria-hidden="true" />
-              </div>
+
+              {/* Bell — borderless icon button, matches reference .topbar-icon-btn */}
+              <button
+                type="button"
+                className="flex size-[34px] items-center justify-center rounded-lg text-muted-foreground/60 transition-colors hover:bg-black/[0.05] hover:text-muted-foreground"
+              >
+                <Bell className="size-[18px]" weight="duotone" aria-hidden="true" />
+              </button>
+
+              {/* Avatar with ring */}
               <div
-                className="flex size-8 items-center justify-center rounded-full text-[11px] font-bold text-white"
-                style={{ backgroundColor: accent.text }}
+                className="flex size-[30px] items-center justify-center rounded-full text-[11px] font-bold tracking-tight text-white"
+                style={{
+                  backgroundColor: accent.text,
+                  boxShadow: '0 0 0 2px rgba(255,255,255,0.85), 0 0 0 3px rgba(0,0,0,0.10)',
+                }}
               >
                 {user.initials}
               </div>
