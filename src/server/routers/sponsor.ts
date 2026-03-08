@@ -949,4 +949,31 @@ export const sponsorRouter = createTRPCRouter({
 
       return { success: true };
     }),
+
+  confirmCommitment: roleProcedure('sponsor')
+    .input(z.object({ sponsorshipId: z.string().uuid() }))
+    .output(z.void())
+    .mutation(async ({ ctx, input }) => {
+      const sponsorship = await ctx.db.query.sponsorships.findFirst({
+        where: (t, { and: andFn, eq: eqFn }) =>
+          andFn(eqFn(t.id, input.sponsorshipId), eqFn(t.sponsorId, ctx.user.id)),
+        columns: { id: true, status: true },
+      });
+
+      if (!sponsorship) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Commitment not found.' });
+      }
+
+      if (sponsorship.status !== 'pending') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Only pending commitments can be confirmed.',
+        });
+      }
+
+      await ctx.db
+        .update(sponsorships)
+        .set({ status: 'active', updatedAt: new Date() })
+        .where(and(eq(sponsorships.id, input.sponsorshipId), eq(sponsorships.sponsorId, ctx.user.id)));
+    }),
 });
