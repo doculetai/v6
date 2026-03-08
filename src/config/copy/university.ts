@@ -4,7 +4,18 @@ export const universityCopy = {
   overview: {
     welcomeTitle: "University overview",
     title: "Overview",
+    eyebrow: "Program and student management",
     subtitle: "Here's what needs your attention today.",
+    stats: {
+      programs: { label: "Programs", sub: "Active programs" },
+      students: { label: "Students", sub: "Enrolled" },
+      certsIssued: { label: "Certs issued", sub: "This cycle" },
+      docsPending: { label: "Docs pending", sub: "Awaiting review" },
+    },
+    activePrograms: {
+      heading: "Active programs",
+      empty: "No programs configured yet.",
+    },
     metrics: {
       pending: "Pending verifications",
       approvedToday: "Approved today",
