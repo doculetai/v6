@@ -2,6 +2,7 @@ import { adminRouter } from './routers/admin';
 import { agentRouter } from './routers/agent';
 import { dashboardRouter } from './routers/dashboard';
 import { partnerRouter } from './routers/partner';
+import { partnerWebhooksRouter } from './routers/partner-webhooks.procedures';
 import { sponsorRouter } from './routers/sponsor';
 import { studentRouter } from './routers/student';
 import { universityRouter } from './routers/university';
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   admin: adminRouter,
   agent: agentRouter,
   partner: partnerRouter,
+  partnerWebhooks: partnerWebhooksRouter,
   dashboard: dashboardRouter,
 });
 
