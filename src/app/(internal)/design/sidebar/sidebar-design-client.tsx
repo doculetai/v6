@@ -243,7 +243,7 @@ export function SidebarDesignClient() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-muted font-sans">
+    <div className="flex h-screen flex-col bg-muted font-sans">
 
       {/* ── Controls bar ─────────────────────────────────────────────────── */}
       <div className="flex shrink-0 items-center gap-3 border-b border-border bg-card px-4 py-2.5">
