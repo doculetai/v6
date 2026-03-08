@@ -7,7 +7,7 @@ import { insertAuditLog } from '@/db/queries/audit-log';
 import { getExportDataForUser } from '@/db/queries/export-data';
 import { consents, documents, profiles, userSessions, users } from '@/db/schema';
 import { sendDataExportReadyEmail } from '@/lib/email/send-data-export-ready-email';
-import { removeDocumentFile, removeUserExportFiles } from '@/lib/storage';
+import { createExportSignedUrl, removeDocumentFile, removeUserExportFiles, uploadExportZip } from '@/lib/storage';
 
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 
@@ -71,8 +71,9 @@ export const accountRouter = createTRPCRouter({
 
       const exportData = await getExportDataForUser(db, user!.id);
 
-      // TODO: store export as a blob and send a signed URL instead of inline data
-      const downloadUrl = `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(exportData, null, 2))}`;
+      const jsonBytes = new TextEncoder().encode(JSON.stringify(exportData, null, 2));
+      const storagePath = await uploadExportZip(user!.id, jsonBytes.buffer as ArrayBuffer);
+      const downloadUrl = await createExportSignedUrl(storagePath);
 
       await sendDataExportReadyEmail(userRow.email, downloadUrl);
     }),
