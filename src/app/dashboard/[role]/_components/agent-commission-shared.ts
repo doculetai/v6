@@ -8,6 +8,7 @@ export type AgentCommission = {
   description: string | null;
   paidAt: Date | null;
   createdAt: Date;
+  certIssued: boolean;
 };
 
 export const statusBadgeClass: Record<AgentCommission['status'], string> = {

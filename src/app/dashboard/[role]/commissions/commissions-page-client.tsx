@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Money, WarningCircle } from '@/components/icons';
+import { Certificate, Money, WarningCircle } from '@/components/icons';
 
 import { EmptyState } from '@/components/ui/empty-state';
 import { PageHeader, PageShell } from '@/components/layout/content-primitives';
@@ -84,6 +84,13 @@ function CommissionCard({
           <dd className="text-muted-foreground">{formatDate(commission.createdAt)}</dd>
         </div>
       </dl>
+
+      {commission.certIssued && (
+        <div className="flex items-center gap-1.5 text-xs text-primary">
+          <Certificate size={14} weight="duotone" aria-hidden="true" />
+          <span>{copy.eventLabels.certificateIssued}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -266,7 +273,15 @@ export function CommissionsPageClient({ commissions: initialCommissions, copy }:
                       )}
                     </td>
                     <td className="px-4 py-3 text-foreground">
-                      {commission.description ?? '\u2014'}
+                      <div className="flex flex-col gap-1">
+                        <span>{commission.description ?? '\u2014'}</span>
+                        {commission.certIssued && (
+                          <span className="inline-flex items-center gap-1 text-xs text-primary">
+                            <Certificate size={12} weight="duotone" aria-hidden="true" />
+                            {copy.eventLabels.certificateIssued}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
                       {formatDate(commission.paidAt ?? commission.createdAt)}

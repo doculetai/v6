@@ -363,6 +363,7 @@ export const agentRouter = createTRPCRouter({
           description: z.string().nullable(),
           paidAt: z.date().nullable(),
           createdAt: z.date(),
+          certIssued: z.boolean(),
         }),
       ),
     )
@@ -370,7 +371,33 @@ export const agentRouter = createTRPCRouter({
       const rows = await ctx.db.query.agentCommissions.findMany({
         where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
         orderBy: (t, { desc }) => [desc(t.createdAt)],
+        with: {
+          sponsorship: {
+            columns: { studentId: true },
+          },
+        },
       });
+
+      // Collect all student IDs from sponsorship links to batch-check certs.
+      const studentIds = [
+        ...new Set(
+          rows
+            .map((r) => r.sponsorship?.studentId)
+            .filter((id): id is string => id !== undefined && id !== null),
+        ),
+      ];
+
+      const certIssuedSet = new Set<string>();
+      if (studentIds.length > 0) {
+        const certs = await ctx.db.query.certificates.findMany({
+          where: (t, { inArray: inArrayFn, eq: eqFn, and: andFn }) =>
+            andFn(inArrayFn(t.studentId, studentIds), eqFn(t.status, 'active')),
+          columns: { studentId: true },
+        });
+        for (const cert of certs) {
+          certIssuedSet.add(cert.studentId);
+        }
+      }
 
       return rows.map((r) => ({
         id: r.id,
@@ -380,6 +407,9 @@ export const agentRouter = createTRPCRouter({
         description: r.description ?? null,
         paidAt: r.paidAt ?? null,
         createdAt: r.createdAt,
+        certIssued: r.sponsorship?.studentId
+          ? certIssuedSet.has(r.sponsorship.studentId)
+          : false,
       }));
     }),
 
