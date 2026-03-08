@@ -36,6 +36,7 @@ export function DataExportCard() {
       <CardContent>
         <Button
           variant="outline"
+          className="min-h-11"
           disabled={mutation.isPending || requested}
           onClick={() => mutation.mutate()}
         >

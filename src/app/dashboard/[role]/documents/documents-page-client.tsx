@@ -68,7 +68,7 @@ export function DocumentsPageClient() {
   const utils = trpc.useUtils();
   const [fileInputKey, setFileInputKey] = useState(buildFileInputKey);
   const [uploadStage, setUploadStage] = useState<UploadStage | null>(null);
-  const [showOcrCardState, setShowOcrCardState] = useState<'visible' | 'dismissed'>('visible');
+  const [showOcrCardState, setShowOcrCardState] = useState<'visible' | 'dismissed' | 'cancelled'>('visible');
   const [cancelError, setCancelError] = useState<string | null>(null);
   const [previewDocumentId, setPreviewDocumentId] = useState<string | null>(null);
 
@@ -140,7 +140,7 @@ export function DocumentsPageClient() {
   const cancelPendingDocumentMutation = trpc.student.cancelPendingDocument.useMutation({
     onSuccess: async () => {
       setCancelError(null);
-      setShowOcrCardState('dismissed');
+      setShowOcrCardState('cancelled');
       await Promise.all([
         utils.student.listDocuments.invalidate(),
         utils.student.getLatestOcrRun.invalidate(),
@@ -250,6 +250,10 @@ export function DocumentsPageClient() {
             {latestOcrRun.currentStep ?? studentCopy.ocrCard.ocrInProgressFallback} ({latestOcrRun.progress}%)
           </p>
         </div>
+      ) : null}
+
+      {showOcrCardState === 'cancelled' ? (
+        <p className="text-sm text-muted-foreground">{studentCopy.ocrCard.ocrCancelledPrompt}</p>
       ) : null}
 
       {showOcrCard ? (

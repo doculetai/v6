@@ -83,7 +83,7 @@ export function BankVerificationSection({
           ) : bankStatementStatus === 'rejected' ? (
             <Badge variant="destructive">{copy.status.rejected}</Badge>
           ) : bankStatementStatus === 'more_info_requested' ? (
-            <Badge variant="secondary" className="border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400">{copy.status.moreInfoNeeded}</Badge>
+            <Badge variant="secondary" className="border-warning/30 bg-warning/10 text-warning">{copy.status.moreInfoNeeded}</Badge>
           ) : bankStatementStatus === 'pending' ? (
             <Badge variant="secondary">{copy.status.pendingReview}</Badge>
           ) : (

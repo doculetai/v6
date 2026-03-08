@@ -345,6 +345,7 @@ export const studentCopy = {
     ocrCancel: 'Cancel \u2014 re-upload',
     ocrManualNote: 'We could not read this document automatically.',
     ocrCancelling: 'Cancelling\u2026',
+    ocrCancelledPrompt: 'Submission cancelled. Upload a new document to continue.',
     manualFields: {
       namePlaceholder: 'Account holder name',
       nameLabel: 'Account holder name',
