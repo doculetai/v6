@@ -168,7 +168,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
       >
         {/* ── Logo ── */}
         <div className={cn(
-          'flex shrink-0 items-center gap-2.5 border-b border-sidebar-border px-4 py-4',
+          'flex shrink-0 items-center gap-2.5 border-b border-sidebar-border px-4 py-2',
           visualCollapsed && 'justify-center px-3',
         )}>
           <Link
