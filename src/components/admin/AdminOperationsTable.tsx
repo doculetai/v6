@@ -150,6 +150,9 @@ export function AdminOperationsTable({
                       )}
                       <div className="flex items-center gap-2">
                         <StatusBadge status={statusToBadge[row.status]} size="sm" />
+                        {row.isEscalated && (
+                          <StatusBadge status="under_review" label="Escalated" size="sm" />
+                        )}
                         {onViewRecord && (
                           <Button
                             size="sm"
@@ -211,7 +214,12 @@ export function AdminOperationsTable({
                     </p>
                   </div>
                 </div>
-                <StatusBadge status={statusToBadge[row.status]} size="sm" />
+                <div className="flex flex-col items-end gap-1">
+                  <StatusBadge status={statusToBadge[row.status]} size="sm" />
+                  {row.isEscalated && (
+                    <StatusBadge status="under_review" label="Escalated" size="sm" />
+                  )}
+                </div>
               </div>
               <div className="mt-2 grid grid-cols-2 gap-1 text-xs text-muted-foreground dark:text-muted-foreground">
                 <span>{row.schoolName ?? '—'}</span>

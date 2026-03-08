@@ -107,7 +107,7 @@ export default function OperationsPageClient({
   }
 
   function handleSelectAll(checked: boolean) {
-    setSelectedIds(checked ? new Set(tabFilteredQueue.map((r) => r.id)) : new Set());
+    setSelectedIds(checked ? new Set(sortedQueue.map((r) => r.id)) : new Set());
   }
 
   type ReviewStatus = 'approved' | 'rejected' | 'more_info_requested';
@@ -141,6 +141,12 @@ export default function OperationsPageClient({
   if (activeCategory !== 'all') {
     tabFilteredQueue = tabFilteredQueue.filter((item) => getDocCategory(item.type) === activeCategory);
   }
+
+  // Sort escalated items to the top
+  const sortedQueue = [
+    ...tabFilteredQueue.filter((i) => i.isEscalated),
+    ...tabFilteredQueue.filter((i) => !i.isEscalated),
+  ];
 
   const filterChips = STATUS_FILTER_CHIPS.map((chip) => {
     const countMap: Record<string, number> = {
@@ -243,7 +249,7 @@ export default function OperationsPageClient({
 
           {/* Table */}
           <AdminOperationsTable
-            rows={queueLoading ? [] : tabFilteredQueue}
+            rows={queueLoading ? [] : sortedQueue}
             selectedIds={selectedIds}
             onSelect={handleSelect}
             onSelectAll={handleSelectAll}

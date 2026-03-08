@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, ilike, inArray, lt, notExists, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, ilike, inArray, lt, not, notExists, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
 import type { DrizzleDB } from '@/db';
@@ -185,12 +185,15 @@ export interface OperationsQueueRow {
   schoolName: string | null;
   kycStatus: string | null;
   bankStatus: string | null;
+  allDocsApproved: boolean;
   /** UI-only field: ID of the admin currently reviewing this item. Null when not locked. */
   lockedBy?: string | null;
   /** Display name of the locking admin. */
   lockedByName?: string | null;
   /** How many minutes ago the lock was set. */
   lockedMinutesAgo?: number;
+  /** Whether this item has been manually escalated for priority review. */
+  isEscalated?: boolean;
 }
 
 export interface OperationsStats {
@@ -247,7 +250,23 @@ export async function getOperationsQueue(
     .limit(filters.limit ?? 50)
     .offset(filters.offset ?? 0);
 
-  return rows as OperationsQueueRow[];
+  // Compute allDocsApproved per student: all docs approved = no pending/rejected/more_info for that student
+  const studentIds = [...new Set(rows.map((r) => r.studentId))];
+  const nonApprovedMap = new Map<string, boolean>();
+  if (studentIds.length > 0) {
+    const nonApproved = await db
+      .select({ userId: documents.userId })
+      .from(documents)
+      .where(and(inArray(documents.userId, studentIds), not(eq(documents.status, 'approved'))))
+      .groupBy(documents.userId);
+    for (const r of nonApproved) nonApprovedMap.set(r.userId, true);
+  }
+
+  return rows.map((r) => ({
+    ...r,
+    studentEmail: r.studentEmail ?? '',
+    allDocsApproved: !nonApprovedMap.has(r.studentId),
+  })) as OperationsQueueRow[];
 }
 
 export async function getOperationsStats(db: DrizzleDB): Promise<OperationsStats> {
