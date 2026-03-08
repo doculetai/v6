@@ -7,6 +7,7 @@ import { requestCommissionPayout } from '@/db/queries/agent-commissions';
 import { getAgentActivity } from '@/db/queries/agent-activity';
 import { insertNotification } from '@/db/queries/notifications';
 import { sendAgentInviteEmail } from '@/lib/email/send-agent-invite-email';
+import { env } from '@/lib/env';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
@@ -81,6 +82,14 @@ export const agentRouter = createTRPCRouter({
         notifyStudentMilestone: profile?.notifyStudentMilestone ?? true,
         notifyAccountSecurity: profile?.notifyAccountSecurity ?? true,
       };
+    }),
+
+  getReferralUrl: roleProcedure('agent')
+    .output(z.object({ referralUrl: z.string() }))
+    .query(async ({ ctx }) => {
+      const code = ctx.user.id.slice(0, 8);
+      const base = env.NEXT_PUBLIC_APP_URL ?? '';
+      return { referralUrl: `${base}/join?ref=${code}` };
     }),
 
   // updateProfile uses upsert: creates the row on first save, updates on subsequent saves.

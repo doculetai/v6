@@ -16,6 +16,7 @@ import {
   AgentBankDetailsForm,
   AgentNotificationPreferencesForm,
   AgentProfileSettingsForm,
+  AgentReferralLinkCard,
 } from './agent-settings-forms';
 import { AccountDeletionCard } from './settings-shared';
 import { SponsorNotificationsCard, SponsorProfileSettingsForm } from './sponsor-settings-forms';
@@ -149,6 +150,7 @@ export function SettingsPageClient(props: Props) {
           subtitle={agentCopy.settings.subtitle}
         />
         <AgentProfileSettingsForm settings={props.settings} />
+        <AgentReferralLinkCard />
         <AgentBankDetailsForm />
         <AgentNotificationPreferencesForm settings={props.settings} />
         <SessionSection />

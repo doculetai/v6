@@ -297,6 +297,11 @@ export const agentCopy = {
       savedLabel: "Preferences saved.",
     },
 
+    referral: {
+      sectionTitle: "REFERRAL LINK",
+      description: "Share this link to refer students to Doculet.",
+    },
+
     sessions: {
       sectionTitle: "Active sessions",
     },

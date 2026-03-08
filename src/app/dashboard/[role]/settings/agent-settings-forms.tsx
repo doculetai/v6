@@ -8,10 +8,11 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { CopyButton } from '@/components/ui/copy-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { agentCopy } from '@/config/copy/agent';
-import { browserTrpcClient } from '@/trpc/client';
+import { browserTrpcClient, trpc } from '@/trpc/client';
 
 import { FormErrorBanner, FormSuccessBanner } from './settings-shared';
 import type { AgentSettings } from './settings-page-client';
@@ -45,6 +46,34 @@ const agentNotificationsSchema = z.object({
 
 type AgentProfileFormValues = z.infer<typeof agentProfileSchema>;
 type AgentNotificationsFormValues = z.infer<typeof agentNotificationsSchema>;
+
+// ── AgentReferralLinkCard ─────────────────────────────────────────────────────
+
+export function AgentReferralLinkCard() {
+  const referralCopy = copy.referral;
+  const { data } = trpc.agent.getReferralUrl.useQuery();
+
+  return (
+    <Card className="border-border bg-card dark:border-border dark:bg-card">
+      <CardHeader>
+        <CardTitle className="text-base font-semibold text-card-foreground">
+          {referralCopy.sectionTitle}
+        </CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">
+          {referralCopy.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 py-2">
+          <code className="flex-1 truncate font-mono text-sm text-muted-foreground">
+            {data?.referralUrl ?? '\u2014'}
+          </code>
+          <CopyButton value={data?.referralUrl ?? ''} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 // ── AgentProfileSettingsForm ──────────────────────────────────────────────────
 
