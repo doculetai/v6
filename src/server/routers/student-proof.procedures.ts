@@ -34,6 +34,8 @@ const proofCertificateSchema = z.object({
   issuedAt: z.string().datetime().nullable(),
   sharePath: z.string().nullable(),
   paymentStatus: z.enum(['unpaid', 'paid', 'waived']).nullable(),
+  expiresAt: z.string().datetime().nullable(),
+  renewalStatus: z.enum(['none', 'in_progress']).nullable(),
 });
 
 const proofTrustSchema = z.object({
@@ -90,7 +92,7 @@ async function loadProofRecords(userId: string, db: DrizzleDB) {
     }),
     db.query.certificates.findFirst({
       where: and(eq(certificates.studentId, userId), eq(certificates.status, 'active')),
-      columns: { id: true, issuedAt: true, token: true, paymentStatus: true },
+      columns: { id: true, issuedAt: true, token: true, paymentStatus: true, validUntil: true },
       orderBy: (table, { desc }) => [desc(table.issuedAt)],
     }),
   ]);
@@ -198,6 +200,8 @@ export const proofProcedures = {
             ? getSharePathFromToken(snapshot.activeCertificate.token)
             : null,
           paymentStatus: (snapshot.activeCertificate?.paymentStatus as 'unpaid' | 'paid' | 'waived') ?? null,
+          expiresAt: snapshot.activeCertificate?.validUntil?.toISOString() ?? null,
+          renewalStatus: null,
         },
         trust: {
           sponsorCount: snapshot.uniqueSponsorCount,

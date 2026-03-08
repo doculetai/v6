@@ -173,6 +173,15 @@ export const universityCopy = {
   students: {
     title: "Students",
     subtitle: "All students enrolled at your institution.",
+    filterByProgram: "Filter by programme",
+    allPrograms: "All programmes",
+    exportCsv: "Export CSV",
+    exporting: "Exporting\u2026",
+    card: {
+      documents: "documents",
+      enrolled: "Enrolled",
+      certificate: "Certificate",
+    },
     table: {
       student: "Student",
       program: "Program",
@@ -180,6 +189,7 @@ export const universityCopy = {
       documents: "Documents",
       enrolled: "Enrolled",
       certId: "Certificate ID",
+      certificateId: "Certificate ID",
       certIssued: "Cert issued",
     },
     kycLabels: {
@@ -234,14 +244,19 @@ export const universityCopy = {
     },
     addProgram: 'Add program',
     addProgramDescription: 'Create a new program at your institution.',
+    cancel: 'Cancel',
     form: {
       nameLabel: 'Program name',
       namePlaceholder: 'e.g. BSc Computer Science',
+      nameError: 'Program name must be at least 2 characters.',
       tuitionLabel: 'Tuition amount (NGN)',
       tuitionPlaceholder: 'e.g. 2500000',
+      tuitionError: 'Enter a valid amount greater than zero.',
       currencyLabel: 'Currency',
       durationLabel: 'Duration (months)',
       durationPlaceholder: 'e.g. 48',
+      descriptionLabel: 'Description (optional)',
+      descriptionPlaceholder: 'Brief overview of the programme\u2026',
       submitLabel: 'Create program',
       submittingLabel: 'Creating\u2026',
     },
@@ -259,9 +274,12 @@ export const universityCopy = {
     deactivate: {
       cta: 'Deactivate',
       confirmTitle: 'Deactivate program',
-      confirmDescription: 'Students will no longer be able to enrol in this program. This can be reversed.',
+      confirmDescription: (name: string) =>
+        `Deactivating ${name} will prevent new students from enrolling. This can be reversed.`,
       confirmCta: 'Deactivate',
+      cancel: 'Cancel',
       cancelCta: 'Cancel',
+      error: 'Failed to deactivate programme. Please try again.',
       success: 'Program deactivated.',
     },
     exportStudents: {

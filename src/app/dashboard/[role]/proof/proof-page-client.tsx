@@ -34,6 +34,8 @@ type ProofCertificate = {
   issuedAt: string | null;
   sharePath: string | null;
   paymentStatus: 'unpaid' | 'paid' | 'waived' | null;
+  expiresAt: string | null;
+  renewalStatus: 'none' | 'in_progress' | null;
 };
 
 type ProofTrust = {
@@ -145,6 +147,8 @@ export function ProofPageClient({
               issuedAt: result.issuedAt,
               sharePath: result.sharePath,
               paymentStatus: previousData.certificate.paymentStatus,
+              expiresAt: previousData.certificate.expiresAt,
+              renewalStatus: previousData.certificate.renewalStatus,
             },
             canGenerateShareLink: true,
           }));

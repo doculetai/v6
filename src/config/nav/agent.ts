@@ -24,17 +24,17 @@ export const agentNavConfig: NavConfig = {
       group: 'work',
     },
     {
-      label: 'Commissions',
-      href: routes.dashboard.agent.commissions,
-      icon: CurrencyNgn,
-      description: 'Earnings and payouts',
-      group: 'work',
-    },
-    {
       label: 'Activity',
       href: routes.dashboard.agent.activity,
       icon: Pulse,
       description: 'Recent actions and events',
+      group: 'work',
+    },
+    {
+      label: 'Commissions',
+      href: routes.dashboard.agent.commissions,
+      icon: CurrencyNgn,
+      description: 'Earnings and payouts',
       group: 'work',
     },
     {

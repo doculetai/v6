@@ -25,7 +25,7 @@ type ProofCertificate = {
   certificateId: string | null;
   issuedAt: string | null;
   sharePath: string | null;
-  expiresAt: Date | null;
+  expiresAt: string | null;
   renewalStatus: 'none' | 'in_progress' | null;
 };
 
@@ -34,15 +34,15 @@ type CertStatus = 'active' | 'expiry_soon' | 'expired' | 'renewal';
 function getCertStatus(cert: ProofCertificate): CertStatus {
   if (cert.renewalStatus === 'in_progress') return 'renewal';
   if (!cert.expiresAt) return 'active';
-  const daysLeft = Math.ceil((cert.expiresAt.getTime() - Date.now()) / 86_400_000);
+  const daysLeft = Math.ceil((new Date(cert.expiresAt).getTime() - Date.now()) / 86_400_000);
   if (daysLeft <= 0) return 'expired';
   if (daysLeft <= 30) return 'expiry_soon';
   return 'active';
 }
 
-function getDaysUntilExpiry(expiresAt: Date | null): number {
+function getDaysUntilExpiry(expiresAt: string | null): number {
   if (!expiresAt) return Infinity;
-  return Math.ceil((expiresAt.getTime() - Date.now()) / 86_400_000);
+  return Math.ceil((new Date(expiresAt).getTime() - Date.now()) / 86_400_000);
 }
 
 type ProofTrust = {

@@ -254,7 +254,7 @@ export function VerificationPageClient({ data }: VerificationPageClientProps) {
                     {studentCopy.t3Choice.optionB.cta}
                   </Button>
                 </div>
-              </div>
+              </Grid>
 
               {/* Mono path selected: redirect to documents#bank */}
               {t3Path === 'mono' ? null : null}

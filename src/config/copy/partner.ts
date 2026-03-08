@@ -84,6 +84,18 @@ export const partnerCopy = {
   applications: {
     title: 'Applications',
     subtitle: 'Student applications submitted through your integration.',
+    filterAll: 'All',
+    searchPlaceholder: 'Search by student ID or university\u2026',
+    noFilterResults: 'No applications match this filter.',
+    detail: {
+      title: 'Application detail',
+      closeLabel: 'Close',
+      studentLabel: 'Student ID',
+      programLabel: 'University',
+      statusLabel: 'Status',
+      submittedLabel: 'Submitted',
+      tierLabel: 'Verification tier',
+    },
     table: {
       student: 'Student',
       email: 'Email',
@@ -111,6 +123,17 @@ export const partnerCopy = {
   compliance: {
     title: 'Compliance',
     subtitle: 'Verify your organisation meets platform requirements.',
+    summary: {
+      label: 'Compliance status',
+      allComplete: 'All requirements met.',
+      complete: (done: number, total: number) => `${done} of ${total} requirements met.`,
+    },
+    actions: {
+      kyc: { label: 'Complete verification', href: '/dashboard/partner/settings' },
+      apiKeys: { label: 'Create API key', href: '/dashboard/partner/api-keys' },
+      webhook: { label: 'Configure webhook', href: '/dashboard/partner/settings' },
+      documentation: { label: 'Update details', href: '/dashboard/partner/settings' },
+    },
     cards: {
       kyc: {
         title: 'KYC verification',
@@ -293,6 +316,54 @@ export const partnerCopy = {
     },
   },
 
+  usageDetail: {
+    title: 'API usage',
+    subtitle: 'Breakdown by endpoint this month.',
+    stats: {
+      totalCalls: { label: 'Total calls', sub: 'this month' },
+      dailyLimit: { label: 'Daily limit', sub: 'per 24 hours' },
+      utilisation: { label: 'Utilisation', sub: 'of daily limit' },
+    },
+    table: {
+      endpoint: 'Endpoint',
+      calls: 'Calls',
+      share: 'Share',
+    },
+    empty: {
+      title: 'No API calls recorded',
+      description: 'Endpoint usage will appear here once you start making calls.',
+    },
+  },
+
+  ledger: {
+    title: 'Transactions',
+    subtitle: 'Ledger of all platform transactions for your integration.',
+    table: {
+      type: 'Type',
+      entity: 'Entity',
+      amount: 'Amount',
+      currency: 'Currency',
+      date: 'Date',
+    },
+    filters: {
+      type: 'Transaction type',
+      dateFrom: 'From',
+      dateTo: 'To',
+    },
+    types: {
+      disbursement: 'Disbursement',
+      platform_fee: 'Platform fee',
+      refund: 'Refund',
+      reversal: 'Reversal',
+      credit: 'Credit',
+      debit: 'Debit',
+    } as Record<string, string>,
+    empty: {
+      title: 'No transactions yet',
+      description: 'Platform transactions for your integration will appear here.',
+    },
+  },
+
   analytics: {
     title: 'Analytics',
     subtitle: 'Integration performance and student verification metrics.',
@@ -310,6 +381,10 @@ export const partnerCopy = {
   settings: {
     title: 'Settings',
     subtitle: 'Manage your partner organisation and integration preferences.',
+    security: {
+      sectionTitle: 'Security',
+      sectionDescription: 'Manage active sessions and account access.',
+    },
     profile: {
       sectionTitle: 'Organisation profile',
       sectionDescription: 'Your organisation name and contact details visible on the platform.',

@@ -4,7 +4,7 @@ import { TRPCError } from '@trpc/server';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
-import { partnerWebhookConfigs } from '@/db/schema/partner';
+import { partnerWebhookConfigs } from '@/db/schema/webhook-deliveries';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 

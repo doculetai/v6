@@ -35,7 +35,7 @@ export const sponsorships = pgTable(
     sponsorId: uuid('sponsor_id')
       .references(() => users.id, { onDelete: 'cascade' })
       .notNull(),
-    status: text('status', { enum: ['pending', 'active', 'completed', 'cancelled', 'withdrawn'] })
+    status: text('status', { enum: ['pending', 'active', 'completed', 'cancelled', 'withdrawn', 'paused'] })
       .default('pending')
       .notNull(),
     amountKobo: integer('amount_kobo').notNull(),

@@ -821,7 +821,7 @@ export const sponsorRouter = createTRPCRouter({
         studentEmail: z.string().nullable(),
         amountKobo: z.number(),
         currency: z.string(),
-        status: z.enum(['pending', 'active', 'completed', 'cancelled', 'withdrawn']),
+        status: z.enum(['pending', 'active', 'completed', 'cancelled', 'withdrawn', 'paused']),
         createdAt: z.date(),
         schoolName: z.string().nullable(),
         programName: z.string().nullable(),

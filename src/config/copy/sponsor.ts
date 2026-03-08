@@ -255,6 +255,7 @@ export const sponsorCopy = {
       completed: 'Completed',
       cancelled: 'Cancelled',
       withdrawn: 'Withdrawn',
+      paused: 'Paused',
     },
   },
 

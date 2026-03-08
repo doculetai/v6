@@ -41,7 +41,7 @@ type EditDialogCopy = {
 type DeactivateCopy = {
   cta: string;
   confirmTitle: string;
-  confirmDescription: string;
+  confirmDescription: (name: string) => string;
   confirmCta: string;
   cancelCta: string;
   success: string;
@@ -428,7 +428,7 @@ function DeactivateDialog({ program, copy, onSuccess }: DeactivateDialogProps) {
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>{copy.deactivate.confirmTitle}</DialogTitle>
-          <DialogDescription>{copy.deactivate.confirmDescription}</DialogDescription>
+          <DialogDescription>{copy.deactivate.confirmDescription(program.name)}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>

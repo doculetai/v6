@@ -45,6 +45,7 @@ type OperationsQueueRow = {
   schoolName: string | null;
   kycStatus: string | null;
   bankStatus: string | null;
+  allDocsApproved: boolean;
 };
 
 type OperationsStats = {
