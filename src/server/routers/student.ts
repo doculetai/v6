@@ -6,6 +6,8 @@ import { eq } from 'drizzle-orm';
 import { dashboardRoles, isDashboardRole, type DashboardRole } from '@/config/roles';
 import { pendingRoleAssignments, profiles } from '@/db/schema';
 
+import { sendWelcomeEmail } from '@/lib/email/send-welcome-email';
+
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 import { documentProcedures } from './student-documents.procedures';
 import { inviteProcedures } from './student-invites.procedures';
@@ -71,6 +73,15 @@ export const studentRouter = createTRPCRouter({
       }
 
       await ctx.db.insert(profiles).values({ userId: ctx.user!.id, role });
+
+      // Send welcome email — fire-and-forget; failure must not block profile creation
+      if (userEmail) {
+        const meta = ctx.user!.user_metadata as Record<string, unknown> | undefined;
+        const rawName = meta?.full_name ?? meta?.name ?? '';
+        const firstName = typeof rawName === 'string' ? rawName.split(' ')[0] ?? '' : '';
+        void sendWelcomeEmail({ to: userEmail, firstName, role }).catch(() => undefined);
+      }
+
       return { created: true };
     }),
 

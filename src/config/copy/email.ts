@@ -168,6 +168,14 @@ export const emailCopy = {
     footer:
       'If you believe this was an error, contact the sponsor directly and resend an invitation from your dashboard.',
   },
+
+  welcome: {
+    subject: 'Your Doculet account is ready',
+    heading: 'Welcome to Doculet.',
+    body: 'Your account is active. Access your dashboard to begin your proof of funds application.',
+    ctaLabel: 'Go to dashboard',
+    footer: 'Doculet — Proof of Funds Verification. If you did not create this account, contact support.',
+  },
 } as const;
 
 export type EmailCopy = typeof emailCopy;
