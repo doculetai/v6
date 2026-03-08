@@ -1,4 +1,4 @@
-import { ClipboardText, Gear, House, Receipt, Shield, Users } from '@/components/icons';
+import { CreditCard, Gear, Handshake, House, Receipt, Users } from '@/components/icons';
 import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
@@ -24,18 +24,18 @@ export const sponsorNavConfig: NavConfig = {
       group: 'fund',
     },
     {
-      label: 'Transactions',
-      href: routes.dashboard.sponsor.transactions,
-      icon: Receipt,
-      description: 'Full transaction history',
+      label: 'Commitments',
+      href: routes.dashboard.sponsor.commitments,
+      icon: Handshake,
+      description: 'Your funding commitments',
       group: 'fund',
     },
     {
-      label: 'KYC',
-      href: routes.dashboard.sponsor.kyc,
-      icon: Shield,
-      description: 'Identity verification status',
-      group: 'account',
+      label: 'Payments',
+      href: routes.dashboard.sponsor.transactions,
+      icon: CreditCard,
+      description: 'Payment history',
+      group: 'fund',
     },
     {
       label: 'Settings',
@@ -47,9 +47,9 @@ export const sponsorNavConfig: NavConfig = {
     },
   ],
   quickAction: {
-    label: 'Review requests',
-    icon: ClipboardText,
-    href: routes.dashboard.sponsor.students,
+    label: 'View commitments',
+    icon: Handshake,
+    href: routes.dashboard.sponsor.commitments,
   },
 };
 

@@ -1,19 +1,9 @@
-import {
-  ChartBar,
-  FileText,
-  Gear,
-  House,
-  Key,
-  PaintBrush,
-  Users,
-  WebhooksLogo,
-} from '@phosphor-icons/react/dist/ssr';
+import { ChartBar, Gear, House, Key, PaintBrush } from '@phosphor-icons/react/dist/ssr';
 
 import type { NavConfig } from './types';
 
 export const partnerNavConfig: NavConfig = {
   groups: [
-    { id: 'platform', label: 'Platform' },
     { id: 'developer', label: 'Developer' },
     { id: 'account', label: 'Account' },
   ],
@@ -26,20 +16,6 @@ export const partnerNavConfig: NavConfig = {
       isPrimary: true,
     },
     {
-      label: 'Students',
-      href: '/dashboard/partner/students',
-      icon: Users,
-      description: 'Students on your platform',
-      group: 'platform',
-    },
-    {
-      label: 'Analytics',
-      href: '/dashboard/partner/analytics',
-      icon: ChartBar,
-      description: 'Usage and conversion data',
-      group: 'platform',
-    },
-    {
       label: 'API Keys',
       href: '/dashboard/partner/api-keys',
       icon: Key,
@@ -47,10 +23,10 @@ export const partnerNavConfig: NavConfig = {
       group: 'developer',
     },
     {
-      label: 'Webhooks',
-      href: '/dashboard/partner/webhooks',
-      icon: WebhooksLogo,
-      description: 'Configure event endpoints',
+      label: 'Analytics',
+      href: '/dashboard/partner/analytics',
+      icon: ChartBar,
+      description: 'Usage and conversion data',
       group: 'developer',
     },
     {
@@ -70,9 +46,9 @@ export const partnerNavConfig: NavConfig = {
     },
   ],
   quickAction: {
-    label: 'View students',
-    icon: FileText,
-    href: '/dashboard/partner/students',
+    label: 'View API keys',
+    icon: Key,
+    href: '/dashboard/partner/api-keys',
   },
 };
 

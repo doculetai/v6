@@ -1,4 +1,4 @@
-import { Gear, GraduationCap, House, Kanban, ListChecks, Users } from '@/components/icons';
+import { Files, Gear, GraduationCap, House, ListChecks, Users } from '@/components/icons';
 import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
@@ -17,10 +17,10 @@ export const universityNavConfig: NavConfig = {
       isPrimary: true,
     },
     {
-      label: 'Pipeline',
-      href: routes.dashboard.university.pipeline,
-      icon: Kanban,
-      description: 'Applicant pipeline',
+      label: 'Programs',
+      href: routes.dashboard.university.programs,
+      icon: GraduationCap,
+      description: 'Programme management',
       group: 'admissions',
     },
     {
@@ -31,10 +31,10 @@ export const universityNavConfig: NavConfig = {
       group: 'admissions',
     },
     {
-      label: 'Programs',
-      href: routes.dashboard.university.programs,
-      icon: GraduationCap,
-      description: 'Programme management',
+      label: 'Documents',
+      href: routes.dashboard.university.documents,
+      icon: Files,
+      description: 'Student document submissions',
       group: 'admissions',
     },
     {
@@ -47,9 +47,9 @@ export const universityNavConfig: NavConfig = {
     },
   ],
   quickAction: {
-    label: 'View pipeline',
+    label: 'Review documents',
     icon: ListChecks,
-    href: routes.dashboard.university.pipeline,
+    href: routes.dashboard.university.documents,
   },
 };
 

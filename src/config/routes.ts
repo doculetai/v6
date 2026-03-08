@@ -61,6 +61,7 @@ export const routes = {
     university: {
       overview: dashboardRoleRoot('university'),
       pipeline: dashboardRolePath('university', 'pipeline'),
+      documents: dashboardRolePath('university', 'documents'),
       students: dashboardRolePath('university', 'students'),
       programs: dashboardRolePath('university', 'programs'),
       settings: dashboardRolePath('university', 'settings'),

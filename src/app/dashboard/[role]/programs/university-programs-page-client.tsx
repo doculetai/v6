@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,6 +9,7 @@ import { Plus, Buildings, Warning } from '@phosphor-icons/react';
 import { PageHeader } from '@/components/layout/page-header';
 import { EmptyState } from '@/components/layout/empty-state';
 import { Button } from '@/components/ui/button';
+import { Callout } from '@/components/ui/callout';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -65,6 +66,20 @@ export function UniversityProgramsPageClient({ initialPrograms, copy }: Props) {
   const [programs, setPrograms] = useState<Program[]>(initialPrograms);
   const [showCreate, setShowCreate] = useState(false);
   const [deactivateTarget, setDeactivateTarget] = useState<Program | null>(null);
+  const [successName, setSuccessName] = useState<string | null>(null);
+  const dismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (dismissTimer.current) clearTimeout(dismissTimer.current);
+    };
+  }, []);
+
+  function showSuccess(name: string) {
+    if (dismissTimer.current) clearTimeout(dismissTimer.current);
+    setSuccessName(name);
+    dismissTimer.current = setTimeout(() => setSuccessName(null), 5000);
+  }
 
   const utils = trpc.useUtils();
 
@@ -73,6 +88,7 @@ export function UniversityProgramsPageClient({ initialPrograms, copy }: Props) {
       setPrograms((prev) => [created, ...prev]);
       setShowCreate(false);
       reset();
+      showSuccess(created.name);
     },
   });
 
@@ -124,6 +140,10 @@ export function UniversityProgramsPageClient({ initialPrograms, copy }: Props) {
           </Button>
         }
       />
+
+      {successName !== null && (
+        <Callout variant="success">{copy.success}</Callout>
+      )}
 
       {programs.length === 0 ? (
         <EmptyState
