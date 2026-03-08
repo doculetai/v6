@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import { TRPCError } from '@trpc/server';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { removeDocumentFile } from '@/lib/storage';
 
-import { documents } from '@/db/schema';
+import { documents, pipelineRuns } from '@/db/schema';
 import { getPipelineRunByDocumentId } from '@/db/queries/pipeline-runs';
 import { processBankStatementPipeline } from '@/lib/ocr/process-bank-statement';
 import { mapLatestOcrRun } from './student-documents.ocr';
@@ -42,33 +42,33 @@ const uploadDocumentInputSchema = z.object({
   fileBase64: z.string().min(1).max(12 * 1024 * 1024),
 });
 
-const latestOcrRunOutputSchema = z
-  .object({
-    documentId: z.string().uuid(),
-    status: z.enum([
-      'pending',
-      'intake',
-      'fast_ocr',
-      'fast_validation',
-      'fast_complete',
-      'deep_ocr',
-      'deep_fraud',
-      'consensus',
-      'completed',
-      'failed',
-      'partial',
-    ]),
-    progress: z.number().int().min(0).max(100),
-    extractedName: z.string().nullable(),
-    extractedBalance: z.number().nullable(),
-    confidence: z.number().min(0).max(1).nullable(),
-    riskCategory: z.enum(['low', 'medium', 'high', 'critical']).nullable(),
-    compositeScore: z.number().int().nullable(),
-    autoDecision: z.enum(['approve', 'review', 'reject']).nullable(),
-    errorMessage: z.string().nullable(),
-    currentStep: z.string().nullable(),
-  })
-  .nullable();
+const ocrRunSchema = z.object({
+  documentId: z.string().uuid(),
+  status: z.enum([
+    'pending',
+    'intake',
+    'fast_ocr',
+    'fast_validation',
+    'fast_complete',
+    'deep_ocr',
+    'deep_fraud',
+    'consensus',
+    'completed',
+    'failed',
+    'partial',
+  ]),
+  progress: z.number().int().min(0).max(100),
+  extractedName: z.string().nullable(),
+  extractedBalance: z.number().nullable(),
+  confidence: z.number().min(0).max(1).nullable(),
+  riskCategory: z.enum(['low', 'medium', 'high', 'critical']).nullable(),
+  compositeScore: z.number().int().nullable(),
+  autoDecision: z.enum(['approve', 'review', 'reject']).nullable(),
+  errorMessage: z.string().nullable(),
+  currentStep: z.string().nullable(),
+});
+
+const latestOcrRunOutputSchema = ocrRunSchema.nullable();
 
 function getStorageClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -134,6 +134,40 @@ export const documentProcedures = {
       }
 
       return mapLatestOcrRun(latestBankStatement.id, run);
+    }),
+
+  listBankStatementOcrRuns: roleProcedure('student')
+    .output(z.array(ocrRunSchema))
+    .query(async ({ ctx }) => {
+      const bankStatements = await ctx.db.query.documents.findMany({
+        where: and(eq(documents.userId, ctx.user.id), eq(documents.type, 'bank_statement')),
+        columns: { id: true },
+        orderBy: [desc(documents.createdAt)],
+      });
+
+      if (bankStatements.length === 0) {
+        return [];
+      }
+
+      const documentIds = bankStatements.map((d) => d.id);
+      const runs = await ctx.db.query.pipelineRuns.findMany({
+        where: inArray(pipelineRuns.documentId, documentIds),
+        orderBy: [desc(pipelineRuns.createdAt)],
+      });
+
+      // Deduplicate: keep only the latest run per document
+      const latestByDocument = new Map<string, (typeof runs)[number]>();
+      for (const run of runs) {
+        if (!latestByDocument.has(run.documentId)) {
+          latestByDocument.set(run.documentId, run);
+        }
+      }
+
+      return bankStatements.flatMap((doc) => {
+        const run = latestByDocument.get(doc.id);
+        if (!run) return [];
+        return [mapLatestOcrRun(doc.id, run)];
+      });
     }),
 
   listDocuments: roleProcedure('student')

@@ -20,6 +20,7 @@ import { BankVerificationSection } from '@/components/student/BankVerificationSe
 import { OcrSummaryCard } from '@/components/student/OcrSummaryCard';
 import { DocumentPreviewModal } from '@/components/shared/DocumentPreviewModal';
 import { ActionSuccessBanner } from '@/components/ui/action-success-banner';
+import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/callout';
 import { DocumentUploadProgress, type UploadStage } from '@/components/ui/document-upload-progress';
 import { NavGuardSheet } from '@/components/ui/nav-guard-sheet';
@@ -137,7 +138,16 @@ export function DocumentsPageClient() {
     formEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
 
+  const handleAddAnotherBank = useCallback(() => {
+    form.setValue('documentType', 'bank_statement');
+    const formEl = document.getElementById('document-upload-form');
+    formEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [form]);
+
   const studentDocumentsQuery = trpc.student.listDocuments.useQuery(undefined, {
+    staleTime: 15_000,
+  });
+  const allBankOcrRunsQuery = trpc.student.listBankStatementOcrRuns.useQuery(undefined, {
     staleTime: 15_000,
   });
   const latestOcrRunQuery = trpc.student.getLatestOcrRun.useQuery(undefined, {
@@ -154,9 +164,21 @@ export function DocumentsPageClient() {
     showOcrCardState === 'visible' &&
     latestOcrRun?.status === 'completed';
 
+  const bankStatements = useMemo(
+    () => (studentDocumentsQuery.data ?? []).filter((d) => d.type === 'bank_statement'),
+    [studentDocumentsQuery.data],
+  );
+
   const allApproved =
     (studentDocumentsQuery.data?.length ?? 0) > 0 &&
     (studentDocumentsQuery.data?.every((d) => d.status === 'approved') ?? false);
+
+  const combinedBalance = useMemo(() => {
+    const runs = allBankOcrRunsQuery.data ?? [];
+    if (runs.length < 2) return null;
+    const total = runs.reduce((sum, run) => sum + (run.extractedBalance ?? 0), 0);
+    return total > 0 ? total : null;
+  }, [allBankOcrRunsQuery.data]);
 
   const cancelPendingDocumentMutation = trpc.student.cancelPendingDocument.useMutation({
     onSuccess: async () => {
@@ -343,6 +365,24 @@ export function DocumentsPageClient() {
         ) : (
           <StudentDocumentsEmptyState copy={copy.states} />
         )
+      ) : null}
+
+      {bankStatements.length > 0 && bankStatements.length < 3 ? (
+        <Button variant="outline" size="sm" onClick={handleAddAnotherBank}>
+          {studentCopy.multiBank.addSecond}
+        </Button>
+      ) : null}
+
+      {combinedBalance !== null ? (
+        <div className="rounded-xl border border-border bg-muted/30 px-4 py-3">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+            {studentCopy.multiBank.total(bankStatements.length)}
+          </p>
+          <p className="mt-1 font-mono text-xl font-bold text-foreground">
+            {formatCurrency(combinedBalance, 'NGN')}
+          </p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{studentCopy.multiBank.combinedBalance}</p>
+        </div>
       ) : null}
       </Section>
 
