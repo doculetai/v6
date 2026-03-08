@@ -53,7 +53,7 @@ export async function SponsorOverview({ email: _email, caller }: SponsorOverview
           <StatCard
             icon={<Medal className="size-4.5" weight="duotone" aria-hidden="true" />}
             label={copy.stats.certsIssued.label}
-            value="0"
+            value="—"
             sub={copy.stats.certsIssued.sub}
           />
           <StatCard
@@ -96,7 +96,7 @@ export async function SponsorOverview({ email: _email, caller }: SponsorOverview
                         : 'bg-muted text-muted-foreground',
                     )}
                   >
-                    {s.status}
+                    {copy.yourStudents.statusLabels[s.status] ?? s.status}
                   </span>
                 </div>
               ))}

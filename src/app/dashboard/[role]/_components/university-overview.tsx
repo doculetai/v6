@@ -56,28 +56,28 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
 
           <Grid cols={{ sm: 2, lg: 4 }} gap="md">
             <StatCard
-              icon={<Buildings size={20} weight="duotone" aria-hidden="true" />}
+              icon={<Buildings className="size-4.5" weight="duotone" aria-hidden="true" />}
               label={copy.stats.programs.label}
               value={String(activePrograms.length)}
               sub={copy.stats.programs.sub}
               accent={activePrograms.length > 0}
             />
             <StatCard
-              icon={<GraduationCap size={20} weight="duotone" aria-hidden="true" />}
+              icon={<GraduationCap className="size-4.5" weight="duotone" aria-hidden="true" />}
               label={copy.stats.students.label}
               value={String(totalStudents)}
               sub={copy.stats.students.sub}
               accent={totalStudents > 0}
             />
             <StatCard
-              icon={<Medal size={20} weight="duotone" aria-hidden="true" />}
+              icon={<Medal className="size-4.5" weight="duotone" aria-hidden="true" />}
               label={copy.stats.certsIssued.label}
               value={String(certsIssued)}
               sub={copy.stats.certsIssued.sub}
               accent={certsIssued > 0}
             />
             <StatCard
-              icon={<Files size={20} weight="duotone" aria-hidden="true" />}
+              icon={<Files className="size-4.5" weight="duotone" aria-hidden="true" />}
               label={copy.stats.docsPending.label}
               value={String(docsPending)}
               sub={copy.stats.docsPending.sub}
@@ -105,7 +105,7 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
                           {prog.name}
                         </span>
                         <span className="font-mono text-xs text-muted-foreground">
-                          {prog.studentCount} students &middot; {programCerts} certs
+                          {copy.activePrograms.programMeta(prog.studentCount, programCerts)}
                         </span>
                       </div>
                       <div className="h-1 w-full overflow-hidden rounded-full bg-border">

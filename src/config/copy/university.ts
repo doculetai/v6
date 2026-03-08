@@ -15,6 +15,7 @@ export const universityCopy = {
     activePrograms: {
       heading: "Active programs",
       empty: "No programs configured yet.",
+      programMeta: (students: number, certs: number) => `${students} students · ${certs} certs`,
     },
     metrics: {
       pending: "Pending verifications",

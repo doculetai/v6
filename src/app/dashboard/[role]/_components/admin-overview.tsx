@@ -51,7 +51,7 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
           {/* KPI pills strip */}
           <div className="flex flex-wrap gap-2">
             {[
-              { label: copy.kpi.apiUptime, value: '99.9%', ok: true },
+              { label: copy.kpi.apiUptime, value: copy.kpi.apiUptimeValue, ok: true },
               {
                 label: copy.kpi.reviewQueue,
                 value: String(stats?.pending ?? 0),

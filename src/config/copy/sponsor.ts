@@ -25,6 +25,12 @@ export const sponsorCopy = {
         heading: 'Your students',
         unknownLabel: 'Unknown student',
         empty: 'No students yet.',
+        statusLabels: {
+          active: 'Active',
+          pending: 'Pending',
+          inactive: 'Inactive',
+          cancelled: 'Cancelled',
+        } as Record<string, string>,
       },
       recentStudents: {
         heading: "Recent Students",

@@ -478,6 +478,7 @@ export const adminCopy = {
     subtitle: 'Platform health at a glance. Every action audited.',
     kpi: {
       apiUptime: 'API uptime',
+      apiUptimeValue: '99.9%',
       reviewQueue: 'Review queue',
       riskFlags: 'Risk flags',
       certsIssued: 'Certs issued',
