@@ -188,7 +188,7 @@ export function CommissionsPageClient({ commissions: initialCommissions, copy }:
                     requestPayout.mutate({ commissionIds: [...selectedIds] });
                   }}
                   className={cn(
-                    'rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                    'min-h-[44px] rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
                     hasSelected && !requestPayout.isPending
                       ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                       : 'cursor-not-allowed bg-muted text-muted-foreground',

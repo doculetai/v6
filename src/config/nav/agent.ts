@@ -1,4 +1,4 @@
-import { CurrencyNgn, Gear, House, Pulse, UserPlus, Users } from '@/components/icons';
+import { CurrencyNgn, Gear, House, Pulse, Users } from '@/components/icons';
 import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
@@ -46,11 +46,6 @@ export const agentNavConfig: NavConfig = {
       mobileHidden: true,
     },
   ],
-  quickAction: {
-    label: 'Invite student',
-    icon: UserPlus,
-    href: routes.dashboard.agent.students,
-  },
 };
 
 // Backward compat

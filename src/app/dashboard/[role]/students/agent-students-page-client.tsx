@@ -59,7 +59,7 @@ function StudentCard({
         </p>
         <div className="flex shrink-0 items-center gap-1.5">
           {student.certIssued && (
-            <span className="inline-flex items-center rounded-full bg-[#15803D]/10 px-2 py-0.5 text-xs font-medium text-[#15803D]">
+            <span className="inline-flex items-center rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
               {agentCopyData.certBadge}
             </span>
           )}
@@ -171,7 +171,7 @@ export function AgentStudentsPageClient({ students, copy }: Props) {
                       {copy.kycLabels[student.kycStatus]}
                     </span>
                     {student.certIssued && (
-                      <span className="inline-flex items-center rounded-full bg-[#15803D]/10 px-2 py-0.5 text-xs font-medium text-[#15803D]">
+                      <span className="inline-flex items-center rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
                         {agentCopyData.certBadge}
                       </span>
                     )}
