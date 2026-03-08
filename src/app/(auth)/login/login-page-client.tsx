@@ -226,7 +226,7 @@ function MagicLinkForm() {
         <button
           type="submit"
           disabled={loading}
-          className="h-11 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          className="h-11 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           {loading ? authCopy.common.submittingText : authCopy.magicLink.buttonLabel}
         </button>

@@ -172,6 +172,7 @@ export const emailCopy = {
   welcome: {
     subject: 'Your Doculet account is ready',
     heading: 'Welcome to Doculet.',
+    headingWithName: (name: string) => `Welcome to Doculet, ${name}.`,
     body: 'Your account is active. Access your dashboard to begin your proof of funds application.',
     ctaLabel: 'Go to dashboard',
     footer: 'Doculet — Proof of Funds Verification. If you did not create this account, contact support.',

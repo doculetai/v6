@@ -56,7 +56,7 @@ export function WelcomeEmail({ firstName, dashboardUrl }: WelcomeEmailProps) {
     <div style={wrapperStyle}>
       <div style={cardStyle}>
         <h1 style={headingStyle}>
-          {firstName ? `Welcome to Doculet, ${firstName}.` : copy.heading}
+          {firstName ? copy.headingWithName(firstName) : copy.heading}
         </h1>
         <p style={bodyStyle}>{copy.body}</p>
         <a href={dashboardUrl} style={ctaStyle}>
