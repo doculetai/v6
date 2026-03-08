@@ -71,29 +71,52 @@ export function getFallbackUserName(role: DashboardRole): string {
 }
 
 export const studentHomeCopy = {
+  sectionLabel: 'Your proof of funds journey',
   welcomeTitle: (name: string) => `Welcome, ${name}`,
-  title: 'Your proof journey',
+  title: 'Overview',
   journeySubtitle: 'Your proof-of-funds journey at a glance.',
+  continueBanner: {
+    heading: 'Continue your application',
+    description: 'You have outstanding steps. Resume where you left off.',
+    cta: 'Continue',
+  },
   stats: {
     verification: {
       label: 'Verification',
       percent: (n: number) => `${n}%`,
       completionSuffix: 'complete',
-      tierPassed: (n: number) => `Tier ${n} passed`,
+      tierPassed: (n: number) => `T${n} complete`,
       notStartedLabel: 'Not started',
+      identityPendingLabel: 'Identity pending',
     },
     documents: {
       label: 'Documents',
-      countLabel: (submitted: number, total: number) => `${submitted} of ${total} submitted`,
+      countLabel: (submitted: number, total: number) => `${submitted} of ${total}`,
       allApprovedLabel: 'All approved',
       approvedCount: (n: number) => `${n} approved`,
     },
     bankAccount: {
-      label: 'Bank Account',
+      label: 'Bank account',
       linkedLabel: 'Linked',
       notLinkedLabel: 'Not linked',
-      requiredSub: 'Required for disbursements',
+      requiredSub: 'Required for cert',
     },
+    certificate: {
+      label: 'Certificate',
+      issuedLabel: 'Issued',
+      notIssuedLabel: 'Not issued',
+      notIssuedSub: 'Complete all steps',
+    },
+  },
+  recentActivity: {
+    heading: 'Recent activity',
+    viewAll: 'View all',
+    colDocument: 'Document',
+    colStatus: 'Status',
+    colDate: 'Date',
+    emptyHeading: 'No activity yet',
+    emptyDescription:
+      'Document uploads and verification events will appear here as you progress.',
   },
   empty: {
     cta: 'Start onboarding',
