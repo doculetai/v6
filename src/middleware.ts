@@ -1,7 +1,8 @@
 import { createServerClient } from '@supabase/ssr';
 import { type NextRequest, NextResponse } from 'next/server';
+import { routes } from '@/config/routes';
 
-const PUBLIC_AUTH_ROUTES = ['/login', '/signup', '/reset-password', '/update-password'];
+const PUBLIC_AUTH_ROUTES = [routes.auth.login, routes.auth.signup, '/reset-password', '/update-password'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -35,10 +36,22 @@ export async function middleware(request: NextRequest) {
   const isDashboardRoute = pathname.startsWith('/dashboard');
   const isAuthRoute = PUBLIC_AUTH_ROUTES.some((r) => pathname.startsWith(r));
 
+  // Frozen account: redirect to /suspended (except when already there)
+  const isFrozen = request.cookies.get('x-account-frozen')?.value === 'true';
+  if (user && isDashboardRoute && isFrozen && !pathname.endsWith('/suspended')) {
+    const suspendedUrl = request.nextUrl.clone();
+    // Extract role segment from /dashboard/[role]/...
+    const roleMatch = pathname.match(/^\/dashboard\/([^/]+)/);
+    const role = roleMatch?.[1] ?? 'student';
+    suspendedUrl.pathname = `/dashboard/${role}/suspended`;
+    suspendedUrl.search = '';
+    return NextResponse.redirect(suspendedUrl);
+  }
+
   // Unauthenticated user trying to access dashboard → redirect to login
   if (!user && isDashboardRoute) {
     const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = '/login';
+    loginUrl.pathname = routes.auth.login;
     loginUrl.searchParams.set('next', pathname);
     return NextResponse.redirect(loginUrl);
   }

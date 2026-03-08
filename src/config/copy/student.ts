@@ -5,6 +5,13 @@ import { studentOnboardingCopy } from "./student-onboarding.copy";
 export const studentCopy = {
   ...studentOnboardingCopy,
 
+  suspended: {
+    heading: 'Account suspended',
+    body: 'Your account has been suspended. Contact support if you believe this is an error.',
+    supportEmail: 'support@doculet.ai',
+    supportCta: 'Contact support',
+  },
+
   firstSession: {
     eyebrow: 'GET STARTED',
     heading: 'Begin your application',
