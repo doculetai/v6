@@ -17,6 +17,9 @@ export {
   StackSkeleton,
 } from "./skeletons"
 
+// Standalone UI primitives re-exported for convenience
+export { BlockedStateCard, type BlockedStateCardProps } from '../ui/blocked-state-card';
+
 // Tokens (for custom layout composition)
 export {
   gapClasses,
