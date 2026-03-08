@@ -1,7 +1,7 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import { CaretDown, CaretLeft, CaretRight } from '@/components/icons';
+import { CaretDown } from '@/components/icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -11,28 +11,18 @@ import { ApplicationSwitcher } from '@/components/student/ApplicationSwitcher';
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
-import type { DashboardRole } from '@/config/roles';
+import { type DashboardRole, ROLE_ACCENTS } from '@/config/roles';
 import type { StudentTrustStage } from '@/lib/student-trust-stage';
 import { usePinnedItems } from '@/lib/hooks/usePinnedItems';
 import { useRecentPages } from '@/lib/hooks/useRecentPages';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { NotificationsBell } from './NotificationsBell';
-import { SidebarFooter } from './sidebar/SidebarFooter';
 import { SidebarQuickAction } from './sidebar/SidebarQuickAction';
+import { SidebarCollapseButton } from './sidebar/SidebarCollapseButton';
 import { SidebarUserCard } from './sidebar/SidebarUserCard';
 import { routes } from '@/config/routes';
 
-// ── Role accent colours — "Safe & in good hands", bank-grade tinting ──────────
-const ROLE_ACCENTS: Record<DashboardRole, { text: string; bg: string }> = {
-  student:    { text: '#2B39A3', bg: 'rgba(43,57,163,0.12)'   },
-  sponsor:    { text: '#15803D', bg: 'rgba(21,128,61,0.12)'   },
-  university: { text: '#0369A1', bg: 'rgba(3,105,161,0.12)'   },
-  admin:      { text: '#C2410C', bg: 'rgba(194,65,12,0.12)'   },
-  agent:      { text: '#6D28D9', bg: 'rgba(109,40,217,0.12)'  },
-  partner:    { text: '#0F766E', bg: 'rgba(15,118,110,0.12)'  },
-};
 
 type SidebarProps = {
   role: DashboardRole;
@@ -40,6 +30,7 @@ type SidebarProps = {
   defaultCollapsed?: boolean;
   forceVisible?: boolean;
   studentTrustStage?: StudentTrustStage;
+  user?: { fullName: string | null; email: string | null };
 };
 
 function findBestMatch(items: NavItem[], currentPath: string): string | null {
@@ -89,7 +80,7 @@ function useSidebarCollapsed(defaultCollapsed: boolean) {
   return { isCollapsed, toggle, hydrated };
 }
 
-export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisible = false, studentTrustStage }: SidebarProps) {
+export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisible = false, studentTrustStage, user }: SidebarProps) {
   const router = useRouter();
   const navConfig = getNavConfig(role, { studentTrustStage });
   const isTablet = useTabletViewport();
@@ -167,7 +158,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
       >
         {/* ── Logo ── */}
         <div className={cn(
-          'flex h-14 shrink-0 items-center gap-2.5 border-b border-sidebar-border px-4',
+          'flex h-14 shrink-0 items-center gap-2.5 border-b border-sidebar-border px-[18px]',
           visualCollapsed && 'justify-center px-3',
         )}>
           <Link
@@ -190,14 +181,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
             )}
           </Link>
           {!visualCollapsed && (
-            <button
-              type="button"
-              onClick={toggleCollapsed}
-              aria-label={dashboardShellCopy.sidebar.collapseLabel}
-              className="ml-auto flex size-7 shrink-0 items-center justify-center rounded-md bg-sidebar-foreground/[0.04] text-sidebar-foreground/35 transition-colors hover:bg-sidebar-foreground/[0.07] hover:text-sidebar-foreground/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-            >
-              <CaretLeft className="size-3" weight="bold" aria-hidden="true" />
-            </button>
+            <SidebarCollapseButton onClick={toggleCollapsed} />
           )}
         </div>
 
@@ -247,7 +231,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         {/* ── Nav ── */}
         <nav
           aria-label={dashboardShellCopy.sidebar.navAriaLabel}
-          className="flex-1 overflow-y-auto px-2 py-2"
+          className="flex-1 overflow-y-auto px-2 py-2 [&::-webkit-scrollbar]:w-0"
         >
           {ungroupedItems.length > 0 && (
             <ul className="flex flex-col gap-1" role="list">
@@ -296,20 +280,15 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
 
         {/* ── Bottom ── */}
         <div
-          className="flex shrink-0 flex-col border-t border-sidebar-border"
+          className="shrink-0 border-t border-sidebar-border px-2 pb-2 pt-1.5"
           data-testid="sidebar-bottom"
         >
-          <div className={cn(
-            'flex items-center gap-1 px-2 pt-1',
-            visualCollapsed && 'justify-center',
-          )}>
-            <NotificationsBell
-              role={role}
-              className="text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-            />
-          </div>
-          <SidebarUserCard role={role} isCollapsed={visualCollapsed} onSignOut={handleLogout} />
-          <SidebarFooter isCollapsed={visualCollapsed} />
+          <SidebarUserCard
+            role={role}
+            isCollapsed={visualCollapsed}
+            user={user}
+            onSignOut={handleLogout}
+          />
         </div>
       </aside>
     </TooltipProvider>

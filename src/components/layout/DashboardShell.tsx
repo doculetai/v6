@@ -28,9 +28,10 @@ type DashboardShellProps = {
   className?: string;
   studentTrustStage?: StudentTrustStage;
   impersonating?: { name: string; onExit: () => void } | null;
+  user?: { fullName: string | null; email: string | null };
 };
 
-export function DashboardShell({ role, children, className, studentTrustStage, impersonating }: DashboardShellProps) {
+export function DashboardShell({ role, children, className, studentTrustStage, impersonating, user }: DashboardShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const mainRef = useRef<HTMLElement>(null);
@@ -76,7 +77,7 @@ export function DashboardShell({ role, children, className, studentTrustStage, i
     >
       {/* Sidebar — visible from tablet (768px); collapsed by default at 768–1024px */}
       <aside className="hidden md:flex md:flex-none">
-        <Sidebar role={role} currentPath={pathname} studentTrustStage={studentTrustStage} />
+        <Sidebar role={role} currentPath={pathname} studentTrustStage={studentTrustStage} user={user} />
       </aside>
 
       {/* Main content column */}

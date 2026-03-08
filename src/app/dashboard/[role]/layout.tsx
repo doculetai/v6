@@ -37,9 +37,17 @@ export default async function DashboardRoleLayout({
     }
   }
 
+  let displayUser: { fullName: string | null; email: string | null } = { fullName: null, email: null };
+  try {
+    const caller = await api();
+    displayUser = await caller.dashboard.getDisplayUser();
+  } catch {
+    // fallback to null — SidebarUserCard handles gracefully
+  }
+
   return (
     <TRPCReactProvider>
-      <DashboardShell role={role} studentTrustStage={studentTrustStage}>
+      <DashboardShell role={role} studentTrustStage={studentTrustStage} user={displayUser}>
         <Suspense fallback={<DashboardSkeleton />}>{children}</Suspense>
       </DashboardShell>
     </TRPCReactProvider>
