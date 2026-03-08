@@ -3,6 +3,7 @@ import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { listTransactions } from '@/db/queries/admin-transactions';
+import { insertAuditLog } from '@/db/queries/audit-log';
 import { getPartnerUsageToday } from '@/db/queries/partner-api-usage';
 import { listPartnerStudents } from '@/db/queries/partner';
 import { partnerApiKeys, partnerProfiles, programs, schools } from '@/db/schema';
@@ -371,9 +372,20 @@ export const partnerRouter = createTRPCRouter({
     .input(z.object({ reason: z.string().min(10) }))
     .output(z.object({ success: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      // Log request — placeholder implementation
-      void ctx;
-      void input;
+      const profile = await ctx.db.query.partnerProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
+        columns: { id: true },
+      });
+      if (!profile) throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
+
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user!.id,
+        action: 'partner.request_limit_increase',
+        entityType: 'partner_profile',
+        entityId: profile.id,
+        meta: { reason: input.reason },
+      });
+
       return { success: true };
     }),
 
@@ -386,7 +398,14 @@ export const partnerRouter = createTRPCRouter({
       });
       if (!existing) throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
 
-      // Placeholder — in production this would flip webhookActive to true
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user!.id,
+        action: 'partner.request_webhook_reenable',
+        entityType: 'partner_profile',
+        entityId: existing.id,
+        meta: { webhookUrl: existing.webhookUrl },
+      });
+
       return { success: true };
     }),
 
@@ -394,8 +413,27 @@ export const partnerRouter = createTRPCRouter({
     .input(z.object({ keyId: z.string() }))
     .output(z.object({ success: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      void ctx;
-      void input;
+      const profile = await ctx.db.query.partnerProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
+        columns: { id: true },
+      });
+      if (!profile) throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
+
+      const key = await ctx.db.query.partnerApiKeys.findFirst({
+        where: (t, { and: andFn, eq: eqFn }) =>
+          andFn(eqFn(t.id, input.keyId), eqFn(t.partnerId, profile.id)),
+        columns: { id: true, keyPrefix: true },
+      });
+      if (!key) throw new TRPCError({ code: 'NOT_FOUND', message: 'API key not found.' });
+
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user!.id,
+        action: 'partner.request_key_reinstatement',
+        entityType: 'partner_api_key',
+        entityId: key.id,
+        meta: { keyPrefix: key.keyPrefix },
+      });
+
       return { success: true };
     }),
 

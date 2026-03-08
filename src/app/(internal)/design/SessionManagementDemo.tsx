@@ -36,8 +36,8 @@ export function SessionManagementDemo() {
     <SessionManagement
       showIpAddress
       sessions={DEMO_SESSIONS}
-      onRevoke={(id) => console.info('Revoke session', id)}
-      onRevokeAll={() => console.info('Revoke all sessions')}
+      onRevoke={(_id) => void 0}
+      onRevokeAll={() => void 0}
     />
   );
 }
