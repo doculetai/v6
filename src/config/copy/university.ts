@@ -149,11 +149,17 @@ export const universityCopy = {
   students: {
     title: "Students",
     subtitle: "All students enrolled at your institution.",
+    filterByProgram: "Filter by program",
+    allPrograms: "All programs",
+    exportCsv: "Export CSV",
+    exporting: "Exporting\u2026",
+    exportSuccess: "CSV downloaded.",
     table: {
       student: "Student",
       program: "Program",
       kycStatus: "KYC status",
       documents: "Documents",
+      certificateId: "Certificate ID",
       enrolled: "Enrolled",
     },
     kycLabels: {
@@ -165,6 +171,11 @@ export const universityCopy = {
     empty: {
       title: "No students enrolled",
       description: "Students who apply to your institution will appear here.",
+    },
+    card: {
+      enrolled: "Enrolled",
+      documents: "documents",
+      certificate: "Certificate",
     },
   },
 
@@ -244,31 +255,40 @@ export const universityCopy = {
   },
   programs: {
     title: 'Programs',
-    subtitle: 'Manage programs and tuition requirements.',
+    subtitle: 'Manage programs and proof-of-funds requirements.',
     table: {
       name: 'Program name',
-      tuition: 'Tuition',
+      tuition: 'Proof target',
       duration: 'Duration',
       students: 'Students',
+      status: 'Status',
       actions: 'Actions',
+    },
+    statusLabels: {
+      active: 'Active',
+      inactive: 'Inactive',
     },
     addProgram: 'Add program',
     addProgramDescription: 'Create a new program at your institution.',
+    cancel: 'Cancel',
     form: {
       nameLabel: 'Program name',
       namePlaceholder: 'e.g. BSc Computer Science',
-      tuitionLabel: 'Tuition amount (NGN)',
+      nameError: 'Program name must be at least 2 characters.',
+      tuitionLabel: 'Proof target amount (NGN)',
       tuitionPlaceholder: 'e.g. 2500000',
-      currencyLabel: 'Currency',
+      tuitionError: 'Enter a valid amount greater than zero.',
       durationLabel: 'Duration (months)',
       durationPlaceholder: 'e.g. 48',
+      descriptionLabel: 'Description (optional)',
+      descriptionPlaceholder: 'Brief description of this program.',
       submitLabel: 'Create program',
       submittingLabel: 'Creating\u2026',
     },
     durationUnit: 'months',
-    success: 'Program created successfully.',
-    error: 'Failed to create program. Please try again.',
-    empty: { title: 'No programs yet', description: 'Add programs to accept student applications.' },
+    success: 'Program created.',
+    error: 'Failed to create program. Try again.',
+    empty: { title: 'No programs configured', description: 'Add programs to accept student applications.' },
     editDialog: {
       title: 'Edit program',
       description: 'Update program details.',
@@ -279,9 +299,12 @@ export const universityCopy = {
     deactivate: {
       cta: 'Deactivate',
       confirmTitle: 'Deactivate program',
-      confirmDescription: 'Students will no longer be able to enrol in this program. This can be reversed.',
+      confirmDescription: (name: string) =>
+        `Deactivate ${name}? Students in this program will not be affected.`,
       confirmCta: 'Deactivate',
+      cancel: 'Cancel',
       success: 'Program deactivated.',
+      error: 'Failed to deactivate program. Try again.',
     },
     exportStudents: {
       cta: 'Export students',
