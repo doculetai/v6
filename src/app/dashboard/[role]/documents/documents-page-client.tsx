@@ -368,7 +368,7 @@ export function DocumentsPageClient() {
       ) : null}
 
       {bankStatements.length > 0 && bankStatements.length < 3 ? (
-        <Button variant="outline" size="sm" onClick={handleAddAnotherBank}>
+        <Button variant="outline" size="sm" className="min-h-[44px]" onClick={handleAddAnotherBank}>
           {studentCopy.multiBank.addSecond}
         </Button>
       ) : null}
