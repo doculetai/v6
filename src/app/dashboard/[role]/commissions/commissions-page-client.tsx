@@ -1,10 +1,11 @@
 'use client';
 
-import { AlertCircle } from 'lucide-react';
+import { ArrowCircleUp, WarningCircle } from '@phosphor-icons/react';
 
 import { EmptyState } from '@/components/ui/empty-state';
 import { PageHeader } from '@/components/ui/page-header';
 import type { agentCopy } from '@/config/copy/agent';
+import { trpc } from '@/trpc/client';
 import { cn, formatNGN } from '@/lib/utils';
 
 import {
@@ -20,7 +21,7 @@ type Commission = AgentCommission;
 type Props = {
   commissions: Commission[] | null;
   copy: typeof agentCopy.commissions;
-}
+};
 
 // ── Mobile card ───────────────────────────────────────────────────────────────
 
@@ -66,12 +67,22 @@ function CommissionCard({
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function CommissionsPageClient({ commissions, copy }: Props) {
+  const requestPayoutMutation = trpc.agent.requestPayout.useMutation();
+
+  const hasPending =
+    commissions !== null && commissions.some((c) => c.status === 'pending');
+
   if (commissions === null) {
     return (
       <div className="space-y-6">
         <PageHeader title={copy.title} subtitle={copy.subtitle} />
         <div className="flex flex-col items-center gap-3 rounded-lg border border-border bg-card py-12 text-center">
-          <AlertCircle className="size-8 text-destructive/60" aria-hidden="true" />
+          <WarningCircle
+            weight="duotone"
+            size={32}
+            className="text-destructive/60"
+            aria-hidden="true"
+          />
           <p className="text-sm font-medium text-foreground">{copy.error.title}</p>
           <p className="max-w-xs text-xs text-muted-foreground">{copy.error.description}</p>
         </div>
@@ -81,7 +92,24 @@ export function CommissionsPageClient({ commissions, copy }: Props) {
 
   return (
     <div className="space-y-6">
-      <PageHeader title={copy.title} subtitle={copy.subtitle} />
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <PageHeader title={copy.title} subtitle={copy.subtitle} />
+        {hasPending && (
+          <button
+            type="button"
+            onClick={() => requestPayoutMutation.mutate()}
+            disabled={requestPayoutMutation.isPending}
+            className={cn(
+              'inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground',
+              'transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              'hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50',
+            )}
+          >
+            <ArrowCircleUp weight="duotone" size={20} aria-hidden="true" />
+            {requestPayoutMutation.isPending ? copy.payoutDialog.confirmCta : copy.requestPayout}
+          </button>
+        )}
+      </div>
 
       {commissions.length === 0 ? (
         <EmptyState heading={copy.empty.title} body={copy.empty.description} />

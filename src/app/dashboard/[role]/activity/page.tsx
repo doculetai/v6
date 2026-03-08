@@ -20,19 +20,19 @@ export default async function ActivityPage({ params }: PageProps) {
 
   const caller = await api();
 
-  let commissions: Awaited<ReturnType<typeof caller.agent.listAgentCommissions>> | null;
+  let events: Awaited<ReturnType<typeof caller.agent.getActivity>> | null;
 
   try {
-    commissions = await caller.agent.listAgentCommissions();
+    events = await caller.agent.getActivity();
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
-    commissions = null;
+    events = null;
   }
 
   return (
     <div className="space-y-6">
       <h1 className="sr-only">{agentCopy.activity.title}</h1>
-      <ActivityPageClient commissions={commissions} copy={agentCopy.activity} commissionStatusLabels={agentCopy.commissions.statusLabels} />
+      <ActivityPageClient events={events} copy={agentCopy.activity} />
     </div>
   );
 }
