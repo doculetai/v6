@@ -32,7 +32,7 @@ export function LandingFaq() {
                 type="button"
                 onClick={() => { setSelectedState(i); setOpenIndex(null); }}
                 className={cn(
-                  'rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors',
+                  'min-h-[44px] rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors',
                   selectedState === i
                     ? 'border-[#2B39A3] bg-[#2B39A3] text-white'
                     : 'border-border bg-white text-muted-foreground hover:border-[rgba(43,57,163,0.3)] hover:text-[#2B39A3]',
