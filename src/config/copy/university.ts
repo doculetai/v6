@@ -40,6 +40,17 @@ export const universityCopy = {
       enrolledStudents: "Enrolled students",
       pendingApplications: "Pending applications",
       totalStudents: "Total students",
+      certsIssued: "Certs issued",
+      certsIssuedSub: "proof of funds",
+      avgProofTarget: "Avg proof target",
+      avgProofTargetSub: "all programmes",
+    },
+    programmes: {
+      heading: "Programmes",
+      manageLink: "Manage",
+      enrolled: "enrolled",
+      certs: "certs",
+      certifiedAriaLabel: "of students certified",
     },
     empty: {
       heading: "No programmes yet",
@@ -263,7 +274,7 @@ export const universityCopy = {
     durationUnit: 'months',
     success: 'Program created successfully.',
     error: 'Failed to create program. Please try again.',
-    empty: { title: 'No programs yet', description: 'Add programs to accept student applications.' },
+    empty: { title: 'No programs yet', description: 'Add programs to accept student applications.', viewStudents: 'View students' },
     editDialog: {
       title: 'Edit program',
       description: 'Update program details.',

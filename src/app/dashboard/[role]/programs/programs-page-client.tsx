@@ -78,7 +78,7 @@ type ProgramsCopy = {
   durationUnit: string;
   success: string;
   error: string;
-  empty: { title: string; description: string };
+  empty: { title: string; description: string; viewStudents: string };
   editDialog: EditDialogCopy;
   deactivate: DeactivateCopy;
 };
@@ -175,7 +175,7 @@ function AddProgramDialog({ copy, onSuccess }: AddProgramDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-1.5">
+        <Button size="sm" className="min-h-11 gap-1.5">
           <Plus className="size-4" weight="duotone" aria-hidden="true" />
           {copy.addProgram}
         </Button>
@@ -251,7 +251,7 @@ function AddProgramDialog({ copy, onSuccess }: AddProgramDialogProps) {
           </Grid>
 
           <DialogFooter>
-            <Button type="submit" disabled={createProgram.isPending || total <= 0}>
+            <Button type="submit" className="min-h-11" disabled={createProgram.isPending || total <= 0}>
               {createProgram.isPending ? copy.form.submittingLabel : copy.form.submitLabel}
             </Button>
           </DialogFooter>
@@ -307,7 +307,7 @@ function EditProgramDialog({ program, copy, onSuccess }: EditProgramDialogProps)
         <Button
           size="sm"
           variant="ghost"
-          className="size-8 p-0"
+          className="min-h-[44px] min-w-[44px] p-0"
           aria-label={`${copy.editDialog.title} — ${program.name}`}
         >
           <PencilSimple className="size-4" weight="duotone" aria-hidden="true" />
@@ -381,7 +381,7 @@ function EditProgramDialog({ program, copy, onSuccess }: EditProgramDialogProps)
             </div>
           )}
           <DialogFooter>
-            <Button type="submit" disabled={updateProgram.isPending}>
+            <Button type="submit" className="min-h-11" disabled={updateProgram.isPending}>
               {updateProgram.isPending ? copy.editDialog.saving : copy.editDialog.saveCta}
             </Button>
           </DialogFooter>
@@ -419,7 +419,7 @@ function DeactivateDialog({ program, copy, onSuccess }: DeactivateDialogProps) {
         <Button
           size="sm"
           variant="ghost"
-          className="size-8 p-0 text-destructive hover:text-destructive"
+          className="min-h-[44px] min-w-[44px] p-0 text-destructive hover:text-destructive"
           aria-label={`${copy.deactivate.cta} — ${program.name}`}
         >
           <Prohibit className="size-4" weight="duotone" aria-hidden="true" />
@@ -431,11 +431,12 @@ function DeactivateDialog({ program, copy, onSuccess }: DeactivateDialogProps) {
           <DialogDescription>{copy.deactivate.confirmDescription(program.name)}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button variant="outline" className="min-h-11" onClick={() => setOpen(false)}>
             {copy.deactivate.cancelCta}
           </Button>
           <Button
             variant="destructive"
+            className="min-h-11"
             disabled={deactivate.isPending}
             onClick={() => deactivate.mutate({ programId: program.id })}
           >
@@ -498,7 +499,7 @@ export function ProgramsPageClient({ copy }: Props) {
             <EmptyState
               heading={copy.empty.title}
               body={copy.empty.description}
-              action={{ label: 'View students', href: routes.dashboard.university.students }}
+              action={{ label: copy.empty.viewStudents, href: routes.dashboard.university.students }}
             />
           ) : (
             <div className="overflow-x-auto rounded-lg border border-border">

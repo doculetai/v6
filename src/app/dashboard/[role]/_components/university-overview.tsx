@@ -99,9 +99,9 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
             href={routes.dashboard.university.students}
           />
           <StatCard
-            label="Certs issued"
+            label={copy.metrics.certsIssued}
             value={String(certsIssued)}
-            sub="proof of funds"
+            sub={copy.metrics.certsIssuedSub}
             accent={certsIssued > 0}
             href={routes.dashboard.university.students}
           />
@@ -112,9 +112,9 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
             href={routes.dashboard.university.programs}
           />
           <StatCard
-            label="Avg proof target"
+            label={copy.metrics.avgProofTarget}
             value={avgProofTargetKobo > 0 ? formatNgn(avgProofTargetKobo) : '—'}
-            sub="all programmes"
+            sub={copy.metrics.avgProofTargetSub}
             href={routes.dashboard.university.programs}
           />
         </Grid>
@@ -123,13 +123,13 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
         {!isEmpty && programRows.length > 0 && (
           <div className="mb-6">
             <SectionHeader
-              title="Programmes"
+              title={copy.programmes.heading}
               action={
                 <Link
                   href={routes.dashboard.university.programs}
                   className="inline-flex items-center gap-1 text-[11px] font-medium text-primary/70 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 >
-                  <span>Manage</span>
+                  <span>{copy.programmes.manageLink}</span>
                   <ArrowRight className="size-3" weight="duotone" aria-hidden="true" />
                 </Link>
               }
@@ -144,7 +144,7 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-foreground truncate">{prog.name}</p>
                         <p className="mt-0.5 text-xs text-muted-foreground">
-                          {prog.enrolledCount} enrolled &middot; {prog.certsIssued} certs
+                          {prog.enrolledCount} {copy.programmes.enrolled} &middot; {prog.certsIssued} {copy.programmes.certs}
                         </p>
                       </div>
                       <span className="shrink-0 text-xs font-semibold text-foreground font-mono">
@@ -157,12 +157,12 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
                       aria-valuenow={pct}
                       aria-valuemin={0}
                       aria-valuemax={100}
-                      aria-label={`${prog.name} — ${pct}% of students certified`}
+                      aria-label={`${prog.name} — ${pct}% ${copy.programmes.certifiedAriaLabel}`}
                     >
                       <div
                         className={cn(
                           'h-full rounded-full transition-all',
-                          pct >= 70 ? 'bg-emerald-500' : pct >= 40 ? 'bg-primary' : 'bg-muted-foreground/40',
+                          pct >= 70 ? 'bg-success' : pct >= 40 ? 'bg-primary' : 'bg-muted-foreground/40',
                         )}
                         style={{ width: `${pct}%` }}
                       />
