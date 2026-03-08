@@ -67,6 +67,9 @@ export const dashboardShellCopy = {
     footerVersion: 'v1.0.0',
     footerStatus: 'Status',
     footerActive: 'Active',
+    pinned: 'Pinned',
+    recent: 'Recent',
+    themeToggle: { light: 'Light mode', dark: 'Dark mode' },
   },
   topbar: {
     openMenu: 'Open menu',

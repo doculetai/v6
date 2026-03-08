@@ -23,7 +23,7 @@ export function SidebarUserCard({ role, isCollapsed, onSignOut }: SidebarUserCar
     <DropdownMenuContent align={isCollapsed ? 'start' : 'end'} className="w-48">
       <DropdownMenuItem onClick={toggleMode}>
         {isDark ? <Sun className="mr-2 h-4 w-4" weight="duotone" /> : <Moon className="mr-2 h-4 w-4" weight="duotone" />}
-        {isDark ? 'Light mode' : 'Dark mode'}
+        {isDark ? dashboardShellCopy.sidebar.themeToggle.light : dashboardShellCopy.sidebar.themeToggle.dark}
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onClick={onSignOut} className="text-destructive focus:text-destructive">

@@ -1,3 +1,5 @@
+import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
+
 type SidebarFooterProps = { isCollapsed: boolean };
 
 export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
@@ -5,10 +7,10 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
 
   return (
     <div className="flex items-center gap-3 border-t border-sidebar-border px-4 py-2 text-[11px] text-sidebar-foreground/40">
-      <span>v2.0.0</span>
+      <span>{dashboardShellCopy.sidebar.footerVersion}</span>
       <span className="ml-auto flex items-center gap-1">
         <span aria-hidden="true" className="h-1 w-1 rounded-full bg-primary/70" />
-        Active
+        {dashboardShellCopy.sidebar.footerActive}
       </span>
     </div>
   );

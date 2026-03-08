@@ -161,7 +161,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         className={cn(
           'flex flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-md print:hidden',
           !forceVisible && 'hidden md:flex',
-          'transition-[width,opacity] duration-150 ease-out',
+          'transition-opacity duration-150 ease-out',
           !hydrated && 'opacity-0',
           isExpanded ? 'w-60' : 'w-16',
         )}
@@ -220,8 +220,8 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         {pinnedItems.length > 0 && (
           <div className="px-2 pt-2">
             {!isCollapsed && (
-              <p className="px-2 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-sidebar-foreground/50">
-                Pinned
+              <p className="px-2 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/50">
+                {dashboardShellCopy.sidebar.pinned}
               </p>
             )}
             <ul className="flex flex-col gap-px" role="list">
@@ -264,8 +264,8 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         {/* ── Recent pages ── */}
         {!visualCollapsed && recentPages.length > 0 && (
           <div className="border-t border-sidebar-border px-2 py-2">
-            <p className="px-2 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-sidebar-foreground/50">
-              Recent
+            <p className="px-2 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/50">
+              {dashboardShellCopy.sidebar.recent}
             </p>
             <ul className="flex flex-col gap-px" role="list">
               {recentPages.map((page) => (
@@ -273,7 +273,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
                     <Link
                     href={page.href}
                     className={cn(
-                      'flex min-h-[44px] items-center rounded-md px-3 text-[12.5px] font-[450] text-sidebar-foreground/60',
+                      'flex min-h-[44px] items-center rounded-md px-3 text-xs font-[450] text-sidebar-foreground/60',
                       'transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground',
                     )}
                   >
@@ -397,11 +397,11 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
         aria-disabled="true"
         title={isCollapsed ? (item.disabledReason ?? item.label) : item.disabledReason}
         className={cn(
-          'group relative flex min-h-[40px] cursor-not-allowed items-center gap-2.5 rounded-[7px] mx-2 px-3 text-[13px] opacity-40',
+          'group relative flex min-h-[44px] cursor-not-allowed items-center gap-2.5 rounded-[7px] mx-2 px-3 text-sm opacity-40',
           isCollapsed && 'justify-center px-[11px]',
         )}
       >
-        <Icon className="size-[18px] shrink-0 text-sidebar-foreground/55" weight="duotone" aria-hidden="true" />
+        <Icon className="size-5 shrink-0 text-sidebar-foreground/55" weight="duotone" aria-hidden="true" />
         {!isCollapsed && <span className="truncate">{item.label}</span>}
       </span>
     );
@@ -436,7 +436,7 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
         paddingLeft: isCollapsed ? undefined : '11px',
       } : undefined}
       className={cn(
-        'group relative flex min-h-[40px] items-center gap-2.5 px-3 text-[13px] transition-colors duration-100',
+        'group relative flex min-h-[44px] items-center gap-2.5 px-3 text-sm transition-colors duration-100',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)]',
         isActive
           ? 'rounded-r-[7px] mr-2 font-medium'
@@ -446,7 +446,7 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
     >
       <span className="relative shrink-0">
         <Icon
-          className={cn('size-[18px]', !isActive && 'text-sidebar-foreground/55')}
+          className={cn('size-5', !isActive && 'text-sidebar-foreground/55')}
           weight="duotone"
           aria-hidden="true"
         />
