@@ -1,38 +1,49 @@
-import { primitivesCopy } from "@/config/copy/primitives"
-import { cn } from "@/lib/utils"
+import { primitivesCopy } from '@/config/copy/primitives';
+import { cn } from '@/lib/utils';
 
-type StatusBadgeStatus =
-  | "pending"
-  | "verified"
-  | "approved"
-  | "rejected"
-  | "attention"
-  | "under_review"
-  | "more_info_needed"
-  | "expiry_soon"
-  | "expired"
-  | "paused"
-  | "frozen"
-  | "active"
-  | "complete"
-  | "locked"
+type StatusVariant =
+  | 'pending'
+  | 'under_review'
+  | 'approved'
+  | 'rejected'
+  | 'more_info_needed'
+  | 'expiry_soon'
+  | 'expired'
+  | 'paused'
+  | 'frozen'
+  | 'active'
+  | 'complete'
+  | 'locked'
+  | 'verified'
+  | 'attention';
 
-type StatusBadgeSize = "sm" | "md" | "lg"
+// Backward-compat alias
+type StatusBadgeStatus = StatusVariant;
 
-interface StatusBadgeProps {
-  status: StatusBadgeStatus
-  label?: string
-  size?: StatusBadgeSize
-  className?: string
-}
+type StatusBadgeSize = 'sm' | 'md' | 'lg';
 
-const DEFAULT_LABELS: Record<StatusBadgeStatus, string> = {
+const variantClasses: Record<StatusVariant, string> = {
+  pending:          'bg-muted text-muted-foreground border-border',
+  under_review:     'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
+  approved:         'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
+  complete:         'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
+  verified:         'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
+  active:           'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800',
+  rejected:         'bg-destructive/10 text-destructive border-destructive/30',
+  more_info_needed: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
+  expiry_soon:      'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
+  expired:          'bg-destructive/10 text-destructive border-destructive/30',
+  paused:           'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
+  attention:        'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
+  frozen:           'bg-destructive/10 text-destructive border-destructive/30',
+  locked:           'bg-muted text-muted-foreground border-border',
+};
+
+const DEFAULT_LABELS: Record<StatusVariant, string> = {
   pending:          primitivesCopy.statusBadge.pending,
-  verified:         primitivesCopy.statusBadge.verified,
+  under_review:     primitivesCopy.statusBadge.under_review,
   approved:         primitivesCopy.statusBadge.approved,
   rejected:         primitivesCopy.statusBadge.rejected,
-  attention:        primitivesCopy.statusBadge.attention,
-  under_review:     primitivesCopy.statusBadge.under_review,
   more_info_needed: primitivesCopy.statusBadge.more_info_needed,
   expiry_soon:      primitivesCopy.statusBadge.expiry_soon,
   expired:          primitivesCopy.statusBadge.expired,
@@ -41,106 +52,49 @@ const DEFAULT_LABELS: Record<StatusBadgeStatus, string> = {
   active:           primitivesCopy.statusBadge.active,
   complete:         primitivesCopy.statusBadge.complete,
   locked:           primitivesCopy.statusBadge.locked,
+  verified:         primitivesCopy.statusBadge.verified,
+  attention:        primitivesCopy.statusBadge.attention,
+};
+
+const SIZE_CLASSES: Record<StatusBadgeSize, string> = {
+  sm: 'text-xs',
+  md: 'text-xs',
+  lg: 'text-sm',
+};
+
+const DOT_SIZE_CLASSES: Record<StatusBadgeSize, string> = {
+  sm: 'h-1 w-1',
+  md: 'h-1.5 w-1.5',
+  lg: 'h-2 w-2',
+};
+
+interface StatusBadgeProps {
+  status: StatusVariant;
+  label?: string;
+  size?: StatusBadgeSize;
+  className?: string;
 }
 
-const STATUS_STYLES: Record<StatusBadgeStatus, { badge: string; dot: string }> = {
-  pending: {
-    badge: "bg-muted text-muted-foreground",
-    dot: "bg-muted-foreground",
-  },
-  verified: {
-    badge: "bg-success/10 text-success",
-    dot: "bg-success",
-  },
-  approved: {
-    badge: "bg-success/10 text-success",
-    dot: "bg-success",
-  },
-  complete: {
-    badge: "bg-success/10 text-success",
-    dot: "bg-success",
-  },
-  active: {
-    badge: "bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400",
-    dot: "bg-blue-600",
-  },
-  rejected: {
-    badge: "bg-destructive/10 text-destructive",
-    dot: "bg-destructive",
-  },
-  attention: {
-    badge: "bg-warning/10 text-warning",
-    dot: "bg-warning",
-  },
-  under_review: {
-    badge: "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400",
-    dot: "bg-amber-500",
-  },
-  more_info_needed: {
-    badge: "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400",
-    dot: "bg-amber-500",
-  },
-  expiry_soon: {
-    badge: "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400",
-    dot: "bg-amber-500",
-  },
-  expired: {
-    badge: "bg-muted text-muted-foreground",
-    dot: "bg-muted-foreground",
-  },
-  paused: {
-    badge: "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400",
-    dot: "bg-amber-500",
-  },
-  frozen: {
-    badge: "bg-destructive/10 text-destructive",
-    dot: "bg-destructive",
-  },
-  locked: {
-    badge: "bg-muted text-muted-foreground",
-    dot: "bg-muted-foreground",
-  },
-}
-
-const SIZE_STYLES: Record<StatusBadgeSize, { badge: string; dot: string }> = {
-  sm: {
-    badge: "text-xs",
-    dot: "w-1.5 h-1.5",
-  },
-  md: {
-    badge: "text-sm",
-    dot: "w-2 h-2",
-  },
-  lg: {
-    badge: "text-base",
-    dot: "w-2.5 h-2.5",
-  },
-}
-
-function StatusBadge({ status, label, size = "md", className }: StatusBadgeProps) {
-  const displayLabel = label ?? DEFAULT_LABELS[status]
-  const statusStyle = STATUS_STYLES[status]
-  const sizeStyle = SIZE_STYLES[size]
+export function StatusBadge({ status, label, size = 'md', className }: StatusBadgeProps) {
+  const displayLabel = label ?? DEFAULT_LABELS[status];
 
   return (
     <span
       className={cn(
-        "rounded-full px-2.5 py-0.5 inline-flex items-center gap-1.5 font-medium",
-        statusStyle.badge,
-        sizeStyle.badge,
-        status === "expired" && "line-through",
+        'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-medium',
+        SIZE_CLASSES[size],
+        variantClasses[status],
+        status === 'expired' && 'line-through',
         className,
       )}
     >
       <span
-        data-slot="dot"
-        className={cn("rounded-full shrink-0", statusStyle.dot, sizeStyle.dot)}
         aria-hidden="true"
+        className={cn('rounded-full bg-current shrink-0', DOT_SIZE_CLASSES[size])}
       />
       {displayLabel}
     </span>
-  )
+  );
 }
 
-export { StatusBadge }
-export type { StatusBadgeStatus, StatusBadgeSize, StatusBadgeProps }
+export type { StatusVariant, StatusBadgeStatus, StatusBadgeSize, StatusBadgeProps };
