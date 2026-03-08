@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
 
 const revokedCopy = partnerCopy.revoked;
+const allRevokedCopy = partnerCopy.allKeysRevoked;
 const usageCopy = partnerCopy.apiKeys.usage;
 const keyLimitCopy = partnerCopy.keyLimit;
 
@@ -65,6 +66,7 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
 
   const activeKeys = keys.filter((k) => k.isActive);
   const atLimit = activeKeys.length >= 3;
+  const allRevoked = keys.length > 0 && activeKeys.length === 0;
 
   const [reinstateFeedback, setReinstateFeedback] = useState<string | null>(null);
   const reinstateMutation = trpc.partner.requestKeyReinstatement.useMutation({
@@ -101,6 +103,25 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
           )
         }
       />
+
+      {/* All-keys-revoked suspended banner */}
+      {allRevoked && (
+        <div
+          role="alert"
+          className="mb-4 flex flex-col gap-2 rounded-xl border border-destructive/30 bg-destructive/8 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div>
+            <p className="text-sm font-semibold text-destructive">{allRevokedCopy.banner}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">{allRevokedCopy.body}</p>
+          </div>
+          <a
+            href={allRevokedCopy.ctaHref}
+            className="inline-flex h-9 shrink-0 items-center justify-center rounded-lg border border-destructive/40 bg-background px-4 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {allRevokedCopy.cta}
+          </a>
+        </div>
+      )}
 
       {/* Key limit notice */}
       {atLimit && (

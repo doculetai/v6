@@ -542,6 +542,13 @@ export const partnerCopy = {
     reinstateSuccess: 'Reinstatement request submitted.',
   },
 
+  allKeysRevoked: {
+    banner: 'Your API access has been suspended. All keys have been revoked.',
+    body: 'All API keys have been revoked. Your integration is not sending or receiving data. Contact support to restore access.',
+    cta: 'Contact support',
+    ctaHref: 'mailto:support@doculet.ai',
+  },
+
   webhooks: {
     title: 'Webhooks',
     subtitle: 'Register endpoint URLs to receive real-time verification events from Doculet.',
