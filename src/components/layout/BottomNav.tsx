@@ -4,8 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
-import { getNavItems, isActivePath } from '@/config/nav';
+import { getNavItems, getMobileNavKey, isActivePath, mobileNavKeys } from '@/config/nav';
 import type { DashboardRole } from '@/config/roles';
+import { ROLE_ACCENTS } from '@/config/roles';
 import { cn } from '@/lib/utils';
 
 type BottomNavProps = {
@@ -22,8 +23,16 @@ const gridColumnsByCount: Record<number, string> = {
 
 export function BottomNav({ role }: BottomNavProps) {
   const pathname = usePathname();
-  const items = getNavItems(role).slice(0, 5);
-  const gridClass = gridColumnsByCount[items.length] ?? gridColumnsByCount[5];
+  const allItems = getNavItems(role);
+  const keys = mobileNavKeys[role];
+  const accent = ROLE_ACCENTS[role];
+
+  // Filter nav items to the 4 curated mobile keys, preserving key order.
+  const items = keys
+    .map((key) => allItems.find((item) => getMobileNavKey(item.href, role) === key))
+    .filter((item): item is NonNullable<typeof item> => item !== undefined);
+
+  const gridClass = gridColumnsByCount[items.length] ?? gridColumnsByCount[4];
 
   if (items.length === 0) {
     return null;
@@ -44,16 +53,28 @@ export function BottomNav({ role }: BottomNavProps) {
               <Link
                 href={item.href}
                 className={cn(
-                  'relative flex min-h-11 w-full flex-col items-center justify-center gap-1 rounded-md px-2 py-1 text-xs leading-none transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'relative flex min-h-[44px] w-full flex-col items-center justify-center gap-1 rounded-md px-2 py-1 text-xs leading-none transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   isActive
-                    ? 'bg-primary/10 text-primary font-medium dark:bg-primary/10 dark:text-primary'
-                    : 'text-muted-foreground dark:text-muted-foreground hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent dark:hover:text-accent-foreground',
+                    ? 'font-medium'
+                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground dark:text-muted-foreground dark:hover:bg-accent dark:hover:text-accent-foreground',
                 )}
+                style={
+                  isActive
+                    ? {
+                        color: accent.text,
+                        backgroundColor: accent.bg,
+                      }
+                    : undefined
+                }
+                aria-current={isActive ? 'page' : undefined}
               >
-                <Icon className="size-6" aria-hidden="true" />
+                <Icon className="size-6" weight="duotone" aria-hidden="true" />
                 <span className="truncate">{item.label}</span>
-                {item.badge && item.badge > 0 ? (
-                  <span className="absolute right-1 top-1 rounded-full bg-primary px-1.5 py-0.5 text-xs font-medium text-primary-foreground dark:bg-primary dark:text-primary-foreground">
+                {item.badge !== undefined && item.badge > 0 ? (
+                  <span
+                    className="absolute right-1 top-1 rounded-full px-1.5 py-0.5 text-xs font-medium"
+                    style={{ backgroundColor: accent.text, color: '#fff' }}
+                  >
                     {item.badge}
                   </span>
                 ) : null}

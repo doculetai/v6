@@ -59,3 +59,24 @@ export function isActivePath(href: string, pathname: string): boolean {
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(href + '/');
 }
+
+// Mobile tab bar — 4 items per role, matched by href slug (last path segment,
+// or 'overview' for the role root). Order determines tab order left-to-right.
+export const mobileNavKeys: Record<DashboardRole, string[]> = {
+  student:    ['overview', 'documents', 'proof', 'settings'],
+  sponsor:    ['overview', 'students', 'commitments', 'settings'],
+  university: ['overview', 'students', 'programs', 'settings'],
+  admin:      ['overview', 'operations', 'users', 'settings'],
+  agent:      ['overview', 'students', 'activity', 'settings'],
+  partner:    ['overview', 'api-keys', 'analytics', 'settings'],
+};
+
+// Derive the mobile tab key from a nav item's href.
+// The role root href (e.g. /dashboard/student) maps to 'overview'.
+// All other hrefs yield their last path segment.
+export function getMobileNavKey(href: string, role: DashboardRole): string {
+  const roleRoot = `/dashboard/${role}`;
+  if (href === roleRoot) return 'overview';
+  const segments = href.split('/').filter(Boolean);
+  return segments[segments.length - 1] ?? 'overview';
+}
