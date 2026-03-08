@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { index, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { boolean, index, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 import { timestamps } from './_helpers';
 import { users } from './users';
@@ -49,6 +49,24 @@ export const partnerStudents = pgTable('partner_students', {
   ...timestamps,
 });
 
+export const partnerWebhookConfigs = pgTable(
+  'partner_webhook_configs',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    partnerId: uuid('partner_id')
+      .references(() => partnerProfiles.id, { onDelete: 'cascade' })
+      .notNull(),
+    url: text('url').notNull(),
+    secretHash: text('secret_hash').notNull(),
+    events: text('events').array().notNull(),
+    description: text('description'),
+    enabled: boolean('enabled').default(true).notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
+  },
+  (t) => [index('partner_webhook_configs_partner_id_idx').on(t.partnerId)],
+);
+
 export const partnerProfilesRelations = relations(partnerProfiles, ({ one, many }) => ({
   user: one(users, {
     fields: [partnerProfiles.userId],
@@ -56,6 +74,7 @@ export const partnerProfilesRelations = relations(partnerProfiles, ({ one, many 
   }),
   apiKeys: many(partnerApiKeys),
   students: many(partnerStudents),
+  webhookConfigs: many(partnerWebhookConfigs),
 }));
 
 export const partnerApiKeysRelations = relations(partnerApiKeys, ({ one }) => ({
@@ -73,5 +92,12 @@ export const partnerStudentsRelations = relations(partnerStudents, ({ one }) => 
   student: one(users, {
     fields: [partnerStudents.studentId],
     references: [users.id],
+  }),
+}));
+
+export const partnerWebhookConfigsRelations = relations(partnerWebhookConfigs, ({ one }) => ({
+  partner: one(partnerProfiles, {
+    fields: [partnerWebhookConfigs.partnerId],
+    references: [partnerProfiles.id],
   }),
 }));

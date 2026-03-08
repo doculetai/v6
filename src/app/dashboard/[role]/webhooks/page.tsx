@@ -1,26 +1,35 @@
-import { Suspense } from 'react';
+import type { Metadata } from 'next';
 
-import { PageShell, PageHeader, Section } from '@/components/layout/content-primitives';
 import { partnerCopy } from '@/config/copy/partner';
 import { api } from '@/trpc/server';
 
 import { WebhooksPageClient } from './webhooks-page-client';
 
-const copy = partnerCopy.webhooks;
+export const metadata: Metadata = { title: partnerCopy.webhooks.title };
 
-export const metadata = { title: 'Webhooks — Doculet' };
+type PageProps = { params: Promise<{ role: string }> };
 
-export default async function WebhooksPage() {
-  const caller = await api();
-  const webhooks = await caller.partnerWebhooks.listWebhooks();
+export default async function WebhooksPage({ params }: PageProps) {
+  const { role } = await params;
+
+  if (role !== 'partner') {
+    return <p className="text-muted-foreground">{partnerCopy.errors.unauthorized}</p>;
+  }
+
+  let webhooks: Awaited<
+    ReturnType<Awaited<ReturnType<typeof api>>['partnerWebhooks']['listWebhooks']>
+  > = [];
+  try {
+    const caller = await api();
+    webhooks = await caller.partnerWebhooks.listWebhooks();
+  } catch {
+    webhooks = [];
+  }
+
   return (
-    <PageShell>
-      <PageHeader title={copy.pageTitle} description={copy.pageDescription} />
-      <Section>
-        <Suspense fallback={null}>
-          <WebhooksPageClient initialWebhooks={webhooks} />
-        </Suspense>
-      </Section>
-    </PageShell>
+    <div className="space-y-6">
+      <h1 className="sr-only">{partnerCopy.webhooks.title}</h1>
+      <WebhooksPageClient initialData={webhooks} />
+    </div>
   );
 }

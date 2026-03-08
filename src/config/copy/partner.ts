@@ -1,4 +1,3 @@
-import { routes } from '@/config/routes';
 import { commonErrors } from "./shared";
 
 export const partnerCopy = {
@@ -98,19 +97,7 @@ export const partnerCopy = {
       completed: 'Completed',
       cancelled: 'Cancelled',
     } as Record<string, string>,
-    searchPlaceholder: 'Search by ID or university...',
-    filterAll: 'All',
-    detail: {
-      title: 'Application detail',
-      studentLabel: 'Student',
-      programLabel: 'Program',
-      statusLabel: 'Status',
-      submittedLabel: 'Submitted',
-      tierLabel: 'Verification tier',
-      closeLabel: 'Close',
-    },
     empty: { title: 'No applications yet', description: 'Student applications submitted through your API integration will appear here.' },
-    noFilterResults: 'No applications match the selected filter.',
     error: {
       title: 'Failed to load applications',
       description: 'Please refresh the page to try again.',
@@ -147,17 +134,6 @@ export const partnerCopy = {
       configured: 'Configured',
       pending: 'Pending',
       actionNeeded: 'Action needed',
-    },
-    summary: {
-      label: 'Compliance score',
-      complete: (n: number, total: number) => `${n} of ${total} requirements met`,
-      allComplete: 'All requirements met. Your organisation is fully compliant.',
-    },
-    actions: {
-      kyc: { label: 'Review verification', href: routes.dashboard.partner.settings },
-      apiKeys: { label: 'Manage API keys', href: routes.dashboard.partner.apiKeys },
-      webhook: { label: 'Configure webhook', href: routes.dashboard.partner.settings },
-      documentation: { label: 'Update profile', href: routes.dashboard.partner.settings },
     },
     empty: { title: 'Compliance status unavailable', description: 'Could not load your compliance information.' },
     error: {
@@ -311,29 +287,6 @@ export const partnerCopy = {
     },
   },
 
-  usageDetail: {
-    title: 'API usage breakdown',
-    subtitle: 'Per-endpoint usage for today. Resets at midnight UTC.',
-    stats: {
-      totalCalls: { label: 'Total calls today', sub: 'across all endpoints' },
-      dailyLimit: { label: 'Daily limit', sub: 'requests per day' },
-      utilisation: { label: 'Utilisation', sub: 'of daily quota' },
-    },
-    table: {
-      endpoint: 'Endpoint',
-      calls: 'Requests',
-      share: 'Share',
-    },
-    empty: {
-      title: 'No API calls today',
-      description: 'Endpoint usage will appear here once your integration makes API calls.',
-    },
-    error: {
-      title: 'Failed to load usage data',
-      description: 'Please refresh the page to try again.',
-    },
-  },
-
   analytics: {
     title: 'Analytics',
     subtitle: 'Integration performance and student verification metrics.',
@@ -372,39 +325,6 @@ export const partnerCopy = {
       loadError: 'Could not load settings. Please refresh the page.',
       saveError: 'Failed to save settings. Please try again.',
       tryAgain: 'Try again',
-    },
-    security: {
-      sectionTitle: 'Security',
-      sectionDescription: 'Active sessions for your account. Revoke sessions on devices you no longer use.',
-    },
-  },
-
-  ledger: {
-    title: 'Transactions',
-    subtitle: 'Transaction history for your integration — disbursements, fees, and refunds.',
-    table: {
-      type: 'Type',
-      entity: 'Entity',
-      amount: 'Amount',
-      currency: 'Currency',
-      date: 'Date',
-    },
-    filters: {
-      type: 'Type',
-      dateFrom: 'From date',
-      dateTo: 'To date',
-    },
-    types: {
-      disbursement: 'Disbursement',
-      platform_fee: 'Platform fee',
-      refund: 'Refund',
-      reversal: 'Reversal',
-      credit: 'Credit',
-      debit: 'Debit',
-    },
-    empty: {
-      title: 'No transactions',
-      description: 'Transaction entries will appear here as your integration processes payments.',
     },
   },
 
@@ -484,38 +404,34 @@ export const partnerCopy = {
         label: 'Create your first API key',
         description: 'Generate an API key to start integrating with the Doculet platform.',
         cta: 'Manage API keys',
-        href: routes.dashboard.partner.apiKeys,
+        href: '/dashboard/partner/api-keys',
       },
       configure_integration: {
         label: 'Configure your integration',
         description: 'Make your first API call to verify the integration is working.',
         cta: 'View API docs',
-        href: routes.dashboard.partner.apiKeys,
+        href: '/dashboard/partner/api-keys',
       },
       enroll_students: {
         label: 'Enrol students via API',
         description: 'Use the API to submit student verification requests.',
         cta: 'View students',
-        href: routes.dashboard.partner.students,
+        href: '/dashboard/partner/students',
       },
       monitor_throughput: {
         label: 'Monitor verification throughput',
         description: 'Track student verification rates and API performance.',
         cta: 'View analytics',
-        href: routes.dashboard.partner.analytics,
+        href: '/dashboard/partner/analytics',
       },
     },
     completionMessage: 'Integration active. Students enrolling and verifying through your platform.',
   },
 
   webhooks: {
-    pageTitle: 'Webhooks',
-    pageDescription: 'Register endpoints to receive real-time events from Doculet.',
+    title: 'Webhooks',
+    subtitle: 'Register endpoint URLs to receive real-time verification events from Doculet.',
     registerCta: 'Register webhook',
-    empty: {
-      title: 'No webhooks registered',
-      description: 'Register an endpoint to start receiving events.',
-    },
     table: {
       url: 'Endpoint URL',
       events: 'Events',
@@ -523,54 +439,61 @@ export const partnerCopy = {
       created: 'Created',
       actions: 'Actions',
     },
-    status: {
+    statusLabels: {
       enabled: 'Enabled',
       disabled: 'Disabled',
     },
-    events: {
-      cert_issued: 'Certificate issued',
-      doc_approved: 'Document approved',
-      doc_rejected: 'Document rejected',
-      kyc_complete: 'KYC complete',
+    actions: {
+      sendTest: 'Send test',
+      sendingTest: 'Sending…',
+      delete: 'Delete',
+      deleting: 'Deleting…',
+      enable: 'Enable',
+      disable: 'Disable',
     },
     registerDialog: {
       title: 'Register webhook',
       urlLabel: 'Endpoint URL',
-      urlPlaceholder: 'https://your-server.com/webhooks/doculet', // copy-audit-disable
-      eventsLabel: 'Events to subscribe to',
-      descriptionLabel: 'Description (optional)',
-      descriptionPlaceholder: 'Production webhook for KYC events', // copy-audit-disable
-      submitCta: 'Register',
-      submitting: 'Registering\u2026',
-      secretNote: 'Copy this secret now — it will not be shown again.',
+      urlPlaceholder: 'https://api.yourcompany.com/webhooks/doculet',
+      eventsLabel: 'Events',
+      descriptionLabel: 'Description',
+      descriptionPlaceholder: 'e.g. Production verification events',
+      submitCta: 'Register webhook',
+      submittingCta: 'Registering…',
+      cancelCta: 'Cancel',
+    },
+    eventLabels: {
+      cert_issued: 'Certificate issued',
+      doc_approved: 'Document approved',
+      doc_rejected: 'Document rejected',
+      kyc_complete: 'KYC complete',
+    } as Record<string, string>,
+    secretReveal: {
+      title: 'Webhook registered',
+      description: 'Copy your signing secret now. It will not be shown again.',
       secretLabel: 'Signing secret',
-      copyCta: 'Copy',
+      copyCta: 'Copy secret',
+      copied: 'Copied',
       doneCta: 'Done',
     },
     deleteDialog: {
-      title: 'Delete webhook',
-      description: 'This endpoint will stop receiving events immediately. This action cannot be undone.',
-      confirmCta: 'Delete',
-      deleting: 'Deleting\u2026',
-      cancel: 'Cancel',
+      title: 'Delete this webhook?',
+      description: 'No further events will be delivered to this endpoint. This action cannot be undone.',
+      confirmCta: 'Delete webhook',
+      cancelCta: 'Cancel',
     },
-    testDelivery: {
-      cta: 'Send test',
-      success: (status: number) => `Test delivered — HTTP ${status}`,
-      failure: 'Test delivery failed',
-      sending: 'Sending\u2026',
-      done: 'Done',
+    testResult: {
+      success: (statusCode: number) => `Test delivered — HTTP ${statusCode}.`,
+      failure: 'Test delivery failed. Check the endpoint URL and try again.',
     },
-    deliveries: {
-      title: 'Delivery log',
-      empty: 'No deliveries yet.',
-      table: {
-        event: 'Event',
-        status: 'Status',
-        httpStatus: 'HTTP status',
-        attempts: 'Attempts',
-        date: 'Date',
-      },
+    empty: {
+      title: 'No webhooks configured',
+      description: 'Register a webhook to receive real-time events when students complete verification.',
+      cta: 'Register your first webhook',
+    },
+    error: {
+      title: 'Failed to load webhooks',
+      description: 'Please refresh the page to try again.',
     },
   },
 

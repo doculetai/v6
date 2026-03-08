@@ -1,5 +1,13 @@
-import { ArrowsClockwise, ChartBar, FileText, Gear, House, Key, Palette, Users } from '@/components/icons';
-import { routes } from '@/config/routes';
+import {
+  ChartBar,
+  FileText,
+  Gear,
+  House,
+  Key,
+  PaintBrush,
+  Users,
+  WebhooksLogo,
+} from '@phosphor-icons/react/dist/ssr';
 
 import type { NavConfig } from './types';
 
@@ -12,49 +20,49 @@ export const partnerNavConfig: NavConfig = {
   items: [
     {
       label: 'Overview',
-      href: routes.dashboard.partner.overview,
+      href: '/dashboard/partner',
       icon: House,
       description: 'Platform metrics',
       isPrimary: true,
     },
     {
       label: 'Students',
-      href: routes.dashboard.partner.students,
+      href: '/dashboard/partner/students',
       icon: Users,
       description: 'Students on your platform',
       group: 'platform',
     },
     {
       label: 'Analytics',
-      href: routes.dashboard.partner.analytics,
+      href: '/dashboard/partner/analytics',
       icon: ChartBar,
       description: 'Usage and conversion data',
       group: 'platform',
     },
     {
       label: 'API Keys',
-      href: routes.dashboard.partner.apiKeys,
+      href: '/dashboard/partner/api-keys',
       icon: Key,
       description: 'Manage integration keys',
       group: 'developer',
     },
     {
+      label: 'Webhooks',
+      href: '/dashboard/partner/webhooks',
+      icon: WebhooksLogo,
+      description: 'Configure event endpoints',
+      group: 'developer',
+    },
+    {
       label: 'Branding',
-      href: routes.dashboard.partner.branding,
-      icon: Palette,
+      href: '/dashboard/partner/branding',
+      icon: PaintBrush,
       description: 'White-label customization',
       group: 'developer',
     },
     {
-      label: 'Webhooks',
-      href: routes.dashboard.partner.webhooks,
-      icon: ArrowsClockwise,
-      description: 'Manage webhook endpoints',
-      group: 'developer',
-    },
-    {
       label: 'Settings',
-      href: routes.dashboard.partner.settings,
+      href: '/dashboard/partner/settings',
       icon: Gear,
       description: 'Partner settings',
       group: 'account',
@@ -64,7 +72,7 @@ export const partnerNavConfig: NavConfig = {
   quickAction: {
     label: 'View students',
     icon: FileText,
-    href: routes.dashboard.partner.students,
+    href: '/dashboard/partner/students',
   },
 };
 

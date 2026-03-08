@@ -1,32 +1,22 @@
-import crypto from 'node:crypto';
+import crypto from 'crypto';
 
-import { and, eq } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
+import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
-import { partnerProfiles, partnerWebhookConfigs, webhookDeliveries } from '@/db/schema';
+import { partnerWebhookConfigs } from '@/db/schema/partner';
+
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
 const WEBHOOK_EVENTS = ['cert_issued', 'doc_approved', 'doc_rejected', 'kyc_complete'] as const;
-type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
 
-const WebhookConfigOutputSchema = z.object({
+const WebhookOutputSchema = z.object({
   id: z.string(),
   url: z.string(),
-  events: z.array(z.enum(WEBHOOK_EVENTS)),
+  events: z.array(z.string()),
   description: z.string().nullable(),
   enabled: z.boolean(),
-  createdAt: z.date(),
-});
-
-const WebhookDeliveryOutputSchema = z.object({
-  id: z.string(),
-  eventType: z.string(),
-  url: z.string(),
-  status: z.enum(['pending', 'delivered', 'failed']),
-  attempts: z.number(),
-  responseStatus: z.number().nullable(),
-  createdAt: z.date(),
+  createdAt: z.date().nullable(),
 });
 
 export const partnerWebhooksRouter = createTRPCRouter({
@@ -40,31 +30,66 @@ export const partnerWebhooksRouter = createTRPCRouter({
     )
     .output(z.object({ id: z.string(), secret: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+      const partner = await ctx.db.query.partnerProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
         columns: { id: true },
       });
-      if (!partnerProfile) {
+      if (!partner) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
       }
 
-      // Generate a random signing secret. Stored directly so the server can
-      // sign outgoing webhook payloads with the same key the partner uses to
-      // verify them. Partners treat this value as their HMAC verification key.
       const secret = crypto.randomBytes(32).toString('hex');
+      const secretHash = crypto.createHash('sha256').update(secret).digest('hex');
 
-      const [row] = await ctx.db
+      const [webhook] = await ctx.db
         .insert(partnerWebhookConfigs)
         .values({
-          partnerId: partnerProfile.id,
+          partnerId: partner.id,
           url: input.url,
-          secretHash: secret,
+          secretHash,
           events: input.events,
           description: input.description ?? null,
+          enabled: true,
         })
         .returning({ id: partnerWebhookConfigs.id });
 
-      return { id: row.id, secret };
+      if (!webhook) {
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to create webhook.' });
+      }
+
+      return { id: webhook.id, secret };
+    }),
+
+  listWebhooks: roleProcedure('partner')
+    .output(z.array(WebhookOutputSchema))
+    .query(async ({ ctx }) => {
+      const partner = await ctx.db.query.partnerProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
+        columns: { id: true },
+      });
+      if (!partner) return [];
+
+      const rows = await ctx.db.query.partnerWebhookConfigs.findMany({
+        where: (t, { eq: eqFn }) => eqFn(t.partnerId, partner.id),
+        columns: {
+          id: true,
+          url: true,
+          events: true,
+          description: true,
+          enabled: true,
+          createdAt: true,
+        },
+        orderBy: (t, { desc }) => [desc(t.createdAt)],
+      });
+
+      return rows.map((r) => ({
+        id: r.id,
+        url: r.url,
+        events: r.events,
+        description: r.description ?? null,
+        enabled: r.enabled,
+        createdAt: r.createdAt,
+      }));
     }),
 
   updateWebhook: roleProcedure('partner')
@@ -73,36 +98,23 @@ export const partnerWebhooksRouter = createTRPCRouter({
         webhookId: z.string().uuid(),
         url: z.string().url().optional(),
         enabled: z.boolean().optional(),
-        events: z.array(z.enum(WEBHOOK_EVENTS)).min(1).optional(),
-        description: z.string().max(200).optional(),
       }),
     )
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
-      const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+      const partner = await ctx.db.query.partnerProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
         columns: { id: true },
       });
-      if (!partnerProfile) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
+      if (!partner) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner not found.' });
       }
 
-      const config = await ctx.db.query.partnerWebhookConfigs.findFirst({
-        where: (t, { eq: eqFn, and: andFn }) =>
-          andFn(eqFn(t.id, input.webhookId), eqFn(t.partnerId, partnerProfile.id)),
-        columns: { id: true },
-      });
-      if (!config) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Webhook not found.' });
-      }
-
-      const updates: Partial<typeof partnerWebhookConfigs.$inferInsert> = {
+      const updates: Partial<{ url: string; enabled: boolean; updatedAt: Date }> = {
         updatedAt: new Date(),
       };
       if (input.url !== undefined) updates.url = input.url;
       if (input.enabled !== undefined) updates.enabled = input.enabled;
-      if (input.events !== undefined) updates.events = input.events;
-      if (input.description !== undefined) updates.description = input.description;
 
       await ctx.db
         .update(partnerWebhookConfigs)
@@ -110,45 +122,21 @@ export const partnerWebhooksRouter = createTRPCRouter({
         .where(
           and(
             eq(partnerWebhookConfigs.id, input.webhookId),
-            eq(partnerWebhookConfigs.partnerId, partnerProfile.id),
+            eq(partnerWebhookConfigs.partnerId, partner.id),
           ),
         );
-    }),
-
-  listWebhooks: roleProcedure('partner')
-    .output(z.array(WebhookConfigOutputSchema))
-    .query(async ({ ctx }) => {
-      const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
-        columns: { id: true },
-      });
-      if (!partnerProfile) return [];
-
-      const rows = await ctx.db.query.partnerWebhookConfigs.findMany({
-        where: (t, { eq: eqFn }) => eqFn(t.partnerId, partnerProfile.id),
-        orderBy: (t, { desc }) => [desc(t.createdAt)],
-      });
-
-      return rows.map((r) => ({
-        id: r.id,
-        url: r.url,
-        events: r.events as WebhookEvent[],
-        description: r.description ?? null,
-        enabled: r.enabled,
-        createdAt: r.createdAt,
-      }));
     }),
 
   deleteWebhook: roleProcedure('partner')
     .input(z.object({ webhookId: z.string().uuid() }))
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
-      const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+      const partner = await ctx.db.query.partnerProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
         columns: { id: true },
       });
-      if (!partnerProfile) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
+      if (!partner) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner not found.' });
       }
 
       await ctx.db
@@ -156,7 +144,7 @@ export const partnerWebhooksRouter = createTRPCRouter({
         .where(
           and(
             eq(partnerWebhookConfigs.id, input.webhookId),
-            eq(partnerWebhookConfigs.partnerId, partnerProfile.id),
+            eq(partnerWebhookConfigs.partnerId, partner.id),
           ),
         );
     }),
@@ -165,98 +153,42 @@ export const partnerWebhooksRouter = createTRPCRouter({
     .input(z.object({ webhookId: z.string().uuid() }))
     .output(z.object({ statusCode: z.number().nullable(), success: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+      const partner = await ctx.db.query.partnerProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
         columns: { id: true },
       });
-      if (!partnerProfile) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
+      if (!partner) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner not found.' });
       }
 
-      const config = await ctx.db.query.partnerWebhookConfigs.findFirst({
-        where: (t, { eq: eqFn, and: andFn }) =>
-          andFn(eqFn(t.id, input.webhookId), eqFn(t.partnerId, partnerProfile.id)),
+      const webhook = await ctx.db.query.partnerWebhookConfigs.findFirst({
+        where: (t, { and: andFn, eq: eqFn }) =>
+          andFn(eqFn(t.id, input.webhookId), eqFn(t.partnerId, partner.id)),
       });
-      if (!config) {
+      if (!webhook) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Webhook not found.' });
       }
 
-      const payload = JSON.stringify({
-        event: 'test',
-        webhookId: config.id,
-        timestamp: new Date().toISOString(),
-      });
-      const signature = crypto
-        .createHmac('sha256', config.secretHash)
-        .update(payload)
-        .digest('hex');
-
-      let statusCode: number | null = null;
-      let success = false;
-
       try {
-        const response = await fetch(config.url, {
+        const payload = JSON.stringify({ event: 'test', timestamp: new Date().toISOString() });
+        const signature = crypto
+          .createHmac('sha256', webhook.secretHash)
+          .update(payload)
+          .digest('hex');
+
+        const res = await fetch(webhook.url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Doculet-Signature': `sha256=${signature}`,
+            'X-Doculet-Signature': signature,
           },
           body: payload,
           signal: AbortSignal.timeout(10_000),
         });
-        statusCode = response.status;
-        success = response.ok;
+
+        return { statusCode: res.status, success: res.ok };
       } catch {
-        // Network error — statusCode stays null, success stays false
+        return { statusCode: null, success: false };
       }
-
-      await ctx.db.insert(webhookDeliveries).values({
-        partnerId: partnerProfile.id,
-        eventType: 'test',
-        payloadHash: crypto.createHash('sha256').update(payload).digest('hex'),
-        payloadJson: { event: 'test', webhookId: config.id },
-        url: config.url,
-        status: success ? 'delivered' : 'failed',
-        attempts: 1,
-        lastAttemptAt: new Date(),
-        responseStatus: statusCode,
-      });
-
-      return { statusCode, success };
-    }),
-
-  listDeliveries: roleProcedure('partner')
-    .input(z.object({ webhookId: z.string().uuid() }))
-    .output(z.array(WebhookDeliveryOutputSchema))
-    .query(async ({ ctx, input }) => {
-      const partnerProfile = await ctx.db.query.partnerProfiles.findFirst({
-        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
-        columns: { id: true },
-      });
-      if (!partnerProfile) return [];
-
-      const config = await ctx.db.query.partnerWebhookConfigs.findFirst({
-        where: (t, { eq: eqFn, and: andFn }) =>
-          andFn(eqFn(t.id, input.webhookId), eqFn(t.partnerId, partnerProfile.id)),
-        columns: { id: true, url: true },
-      });
-      if (!config) return [];
-
-      const rows = await ctx.db.query.webhookDeliveries.findMany({
-        where: (t, { eq: eqFn, and: andFn }) =>
-          andFn(eqFn(t.partnerId, partnerProfile.id), eqFn(t.url, config.url)),
-        orderBy: (t, { desc }) => [desc(t.createdAt)],
-        limit: 50,
-      });
-
-      return rows.map((r) => ({
-        id: r.id,
-        eventType: r.eventType,
-        url: r.url,
-        status: r.status,
-        attempts: r.attempts,
-        responseStatus: r.responseStatus ?? null,
-        createdAt: r.createdAt,
-      }));
     }),
 });
