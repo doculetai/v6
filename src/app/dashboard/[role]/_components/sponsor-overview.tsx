@@ -1,29 +1,44 @@
-import { ArrowRight, CheckCircle, Money, GraduationCap, ShieldCheck, UserFocus } from '@phosphor-icons/react/dist/ssr';
+import { ArrowRight, CheckCircle, Users } from '@/components/icons';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import {
   Grid,
-  PageHeader,
   PageShell,
   Section,
-  Stack,
 } from '@/components/layout/content-primitives';
-import { JourneyProgress } from '@/components/ui/journey-progress';
 import { sponsorCopy } from '@/config/copy/sponsor';
 import { getFirstName } from '@/lib/get-first-name';
 import { computeSponsorJourney } from '@/lib/journey/sponsor';
 import { cn, formatNGN } from '@/lib/utils';
 import { api } from '@/trpc/server';
 
-import { StatCard } from './overview-shared';
+import { NextStepCard, StatCard } from './overview-shared';
+import { routes } from '@/config/routes';
 
 type SponsorOverviewProps = {
   email: string;
   caller: Awaited<ReturnType<typeof api>>;
 };
 
+// ── Status badge ───────────────────────────────────────────────────────────────
+function StatusBadge({ status }: { status: string }) {
+  const isActive = status === 'active';
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold',
+        isActive
+          ? 'bg-primary/10 text-primary'
+          : 'bg-muted text-muted-foreground',
+      )}
+    >
+      {isActive ? sponsorCopy.students.statusLabels.active : status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>
+  );
+}
+
+// ── Main ───────────────────────────────────────────────────────────────────────
 export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
   const firstName = getFirstName(email);
   const [overviewResult, studentsResult] = await Promise.allSettled([
@@ -33,7 +48,7 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
 
   const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
   const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
-  const recentStudents = students.slice(0, 3);
+  const recentStudents = students.slice(0, 5);
   const copy = sponsorCopy.dashboard.overview;
   const journeyState = computeSponsorJourney(
     {
@@ -45,74 +60,75 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
     sponsorCopy.journey,
   );
 
+  const totalCommitted = overview?.totalCommittedKobo ?? 0;
+  const activeStudents = overview?.activeStudents ?? 0;
+  const pendingInvites = overview?.pendingInvites ?? 0;
+  const nextAction = journeyState.nextAction;
+
   return (
     <PageShell width="wide">
       <Section>
-        <PageHeader
-          title={copy.welcomeTitle(firstName)}
-          description={copy.subtitle}
-        />
 
-        <JourneyProgress
-          stages={journeyState.stages}
-          nextAction={journeyState.nextAction}
-          allComplete={journeyState.allComplete}
-          completionMessage={journeyState.completionMessage}
-        />
+        {/* ── Page header ─────────────────────────────────────────────────── */}
+        <div className="mb-6">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/80">
+            {copy.subtitle}
+          </p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
+            {copy.welcomeTitle(firstName)}
+          </h1>
+        </div>
 
-        {(overview?.pendingInvites ?? 0) > 0 && (
-          <Card className="border-primary/20 bg-primary/5 mt-6">
-            <CardContent className="flex flex-col gap-3 pt-5 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3 min-w-0">
-                <CheckCircle
-                  className="size-5 shrink-0 text-primary mt-0.5"
-                  weight="duotone"
-                  aria-hidden="true"
-                />
-                <p className="text-sm font-medium text-foreground">
-                  {copy.pendingInvitesBanner.message}
-                </p>
-              </div>
-              <Button asChild size="sm" variant="default" className="shrink-0">
-                <Link href={copy.pendingInvitesBanner.href} className="inline-flex items-center gap-1.5">
-                  {copy.pendingInvitesBanner.cta}
-                  <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+        {/* ── Pending invites alert ────────────────────────────────────────── */}
+        {pendingInvites > 0 && (
+          <div className="mb-6 flex flex-col gap-3 rounded-xl border border-primary/20 bg-primary/[0.04] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-2.5 min-w-0">
+              <CheckCircle
+                className="mt-0.5 size-4 shrink-0 text-primary"
+                weight="duotone"
+                aria-hidden="true"
+              />
+              <p className="text-sm font-medium text-foreground">
+                {copy.pendingInvitesBanner.message}
+              </p>
+            </div>
+            <Button asChild size="sm" variant="default" className="shrink-0">
+              <Link href={copy.pendingInvitesBanner.href} className="inline-flex items-center gap-1.5">
+                {copy.pendingInvitesBanner.cta}
+                <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
         )}
 
-        <Grid cols={{ sm: 2, lg: 4 }} gap="md" className="mt-6">
+        {/* ── Stat cards ──────────────────────────────────────────────────── */}
+        <Grid cols={{ sm: 2, lg: 4 }} gap="md" className="mb-6">
           <StatCard
-            icon={<Money className="size-4.5" weight="duotone" aria-hidden="true" />}
             label={copy.stats.totalCommitted.label}
-            value={overview ? formatNGN(overview.totalCommittedKobo) : '—'}
+            value={totalCommitted > 0 ? formatNGN(totalCommitted) : '—'}
             sub={copy.stats.totalCommitted.sub}
-            accent={Boolean(overview?.totalCommittedKobo)}
+            accent={totalCommitted > 0}
+            href={routes.dashboard.sponsor.commitments}
           />
           <StatCard
-            icon={<GraduationCap className="size-4.5" weight="duotone" aria-hidden="true" />}
             label={copy.stats.activeStudents.label}
-            value={overview ? String(overview.activeStudents) : '—'}
+            value={String(activeStudents)}
             sub={copy.stats.activeStudents.sub}
-            accent={Boolean(overview?.activeStudents)}
+            accent={activeStudents > 0}
+            href={routes.dashboard.sponsor.students}
           />
           <StatCard
-            icon={<UserFocus className="size-4.5" weight="duotone" aria-hidden="true" />}
             label={copy.stats.pendingInvites.label}
-            value={overview ? String(overview.pendingInvites) : '—'}
+            value={String(pendingInvites)}
             sub={copy.stats.pendingInvites.sub}
-            accent={Boolean(overview?.pendingInvites)}
+            accent={pendingInvites > 0}
+            href={routes.dashboard.sponsor.students}
           />
           <StatCard
-            icon={<ShieldCheck className="size-4.5" weight="duotone" aria-hidden="true" />}
             label={copy.stats.nextDisbursement.label}
             value={
               overview?.nextDisbursementAt
-                ? new Intl.DateTimeFormat('en-NG', { day: 'numeric', month: 'short' }).format(
-                    overview.nextDisbursementAt,
-                  )
+                ? new Intl.DateTimeFormat('en-NG', { day: 'numeric', month: 'short' }).format(overview.nextDisbursementAt)
                 : copy.stats.nextDisbursement.noneValue
             }
             sub={
@@ -120,53 +136,64 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
                 ? copy.stats.nextDisbursement.scheduledSub
                 : copy.stats.nextDisbursement.noneSub
             }
+            href={routes.dashboard.sponsor.disbursements}
           />
         </Grid>
 
-        {recentStudents.length > 0 ? (
-          <Stack gap="md" className="mt-6">
-            <h2 className="text-sm font-semibold text-foreground">{copy.recentStudents.heading}</h2>
-            <Stack gap="sm">
-              {recentStudents.map((s) => (
-                <Card key={s.id} className="border-border bg-card">
-                  <CardContent className="flex items-center justify-between pt-4">
-                    <div>
-                      <Link
-                        href={`/dashboard/sponsor/students/${s.id}`}
-                        className="text-sm font-medium text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-                      >
-                        {s.studentEmail ?? copy.recentStudents.unknownStudentLabel}
-                      </Link>
-                      <p className="text-xs text-muted-foreground">
-                        {formatNGN(s.amountKobo)} · {s.status}
-                      </p>
-                    </div>
-                    <span
-                      className={cn(
-                        'rounded-full px-2 py-0.5 text-xs font-medium',
-                        s.status === 'active'
-                          ? 'bg-primary/10 text-primary'
-                          : 'bg-muted text-muted-foreground',
-                      )}
-                    >
-                      {s.status}
-                    </span>
-                  </CardContent>
-                </Card>
-              ))}
-            </Stack>
-          </Stack>
-        ) : (
-          <Card className="border-border bg-card mt-6">
-            <CardContent className="pt-5">
-              <p className="text-sm text-muted-foreground">{copy.recentStudents.empty}</p>
-            </CardContent>
-          </Card>
+        {/* ── Next action ──────────────────────────────────────────────────── */}
+        {nextAction && !journeyState.allComplete && (
+          <div className="mb-6">
+            <NextStepCard step={nextAction} index={journeyState.currentStageIndex} />
+          </div>
         )}
 
-        <Button asChild className="min-h-11 w-full sm:w-auto mt-6">
-          <Link href="/dashboard/sponsor/students">{copy.cta}</Link>
-        </Button>
+        {/* ── Recent students ──────────────────────────────────────────────── */}
+        <div className="rounded-xl border border-border bg-card shadow-xs">
+          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              {copy.recentStudents.heading}
+            </p>
+            <Link
+              href={routes.dashboard.sponsor.students}
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-primary/70 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+            >
+              <span>{sponsorCopy.nav.students}</span>
+              <ArrowRight className="size-3" weight="duotone" aria-hidden="true" />
+            </Link>
+          </div>
+
+          {recentStudents.length > 0 ? (
+            <ul role="list" className="divide-y divide-border">
+              {recentStudents.map((s) => (
+                <li
+                  key={s.id}
+                  className="flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-muted/30"
+                >
+                  <div className="min-w-0">
+                    <Link
+                      href={`/dashboard/sponsor/students/${s.id}`}
+                      className="text-sm font-medium text-foreground hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                    >
+                      {s.studentEmail ?? copy.recentStudents.unknownStudentLabel}
+                    </Link>
+                    <p className="mt-0.5 font-mono text-xs tabular-nums text-muted-foreground">
+                      {formatNGN(s.amountKobo)}
+                    </p>
+                  </div>
+                  <StatusBadge status={s.status} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="flex flex-col items-center px-5 py-10 text-center">
+              <Users className="size-8 text-muted-foreground/50 mb-3" weight="duotone" aria-hidden="true" />
+              <p className="text-sm font-medium text-foreground">{copy.recentStudents.empty}</p>
+              <p className="mt-1 max-w-xs text-sm text-muted-foreground">{copy.recentStudents.emptyBody}</p>
+              {/* No self-directed CTA — sponsors are invited by students */}
+            </div>
+          )}
+        </div>
+
       </Section>
     </PageShell>
   );

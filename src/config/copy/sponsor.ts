@@ -53,7 +53,8 @@ export const sponsorCopy = {
       },
       recentStudents: {
         heading: "Recent Students",
-        empty: "No active sponsorships yet. Review pending student requests to begin.",
+        empty: "No students sponsored yet",
+        emptyBody: "Students will invite you by sharing their sponsor link. Check your email for any pending invitations.",
         unknownStudentLabel: "Unknown",
       },
       cta: "Review pending requests",
