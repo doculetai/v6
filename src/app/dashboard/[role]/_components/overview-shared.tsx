@@ -61,7 +61,7 @@ export function StatCard({
 
       <div className="mt-2 flex items-end justify-between gap-3">
         <div className="min-w-0">
-          <p className={cn('font-mono text-xl font-semibold text-foreground', valueClassName)}>
+          <p className={cn('font-mono text-2xl font-bold tracking-tight text-foreground', valueClassName)}>
             {value}
           </p>
           {trend != null && (
