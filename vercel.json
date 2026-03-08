@@ -1,0 +1,28 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-orphaned-documents",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/kyc-reverification",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/document-expiry",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/fetch-exchange-rates",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/reconcile-disbursements",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/retry-webhooks",
+      "schedule": "*/15 * * * *"
+    }
+  ]
+}
