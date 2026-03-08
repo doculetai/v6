@@ -224,7 +224,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
                 {dashboardShellCopy.sidebar.pinned}
               </p>
             )}
-            <ul className="flex flex-col gap-px" role="list">
+            <ul className="flex flex-col gap-1" role="list">
               {pinnedItems.map((item) => (
                 <li key={item.href}>
                   <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={isCollapsed} />
@@ -241,7 +241,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
           className="flex-1 overflow-y-auto py-2"
         >
           {ungroupedItems.length > 0 && (
-            <ul className="flex flex-col gap-px" role="list">
+            <ul className="flex flex-col gap-1" role="list">
               {ungroupedItems.map((item) => (
                 <li key={item.href}>
                   <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={visualCollapsed} />
@@ -267,7 +267,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
             <p className="px-2 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/50">
               {dashboardShellCopy.sidebar.recent}
             </p>
-            <ul className="flex flex-col gap-px" role="list">
+            <ul className="flex flex-col gap-1" role="list">
               {recentPages.map((page) => (
                 <li key={page.href}>
                     <Link
@@ -330,7 +330,7 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
     return (
       <div className="mt-2">
         <div role="separator" className="mx-4 mb-1.5 border-t border-sidebar-border" />
-        <ul className="flex flex-col gap-px" role="list">
+        <ul className="flex flex-col gap-1" role="list">
           {items.map((item) => (
             <li key={item.href}>
               <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={true} />
@@ -367,7 +367,7 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
       >
         <ul
           id={listId}
-          className="flex flex-col gap-px overflow-hidden"
+          className="flex flex-col gap-1 overflow-hidden"
           role="list"
         >
           {items.map((item) => (
@@ -430,17 +430,15 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       aria-current={isActive ? 'page' : undefined}
       title={isCollapsed ? item.label : undefined}
       style={isActive ? {
-        backgroundColor: 'var(--role-accent-bg)',
-        color: 'var(--role-accent)',
-        borderLeft: '3px solid var(--role-accent)',
-        paddingLeft: isCollapsed ? undefined : '11px',
+        backgroundColor: 'var(--role-accent)',
+        color: 'var(--sidebar-primary-foreground)',
       } : undefined}
       className={cn(
-        'group relative flex min-h-[44px] items-center gap-2.5 px-3 text-sm transition-colors duration-100',
+        'group relative flex min-h-[44px] items-center gap-2.5 px-3 text-sm transition-colors duration-150',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)]',
         isActive
-          ? 'rounded-r-[7px] mr-2 font-medium'
-          : 'rounded-[7px] mx-2 font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
+          ? 'rounded-xl mx-2 font-semibold'
+          : 'rounded-xl mx-2 font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
         isCollapsed && 'justify-center px-[11px]',
       )}
     >

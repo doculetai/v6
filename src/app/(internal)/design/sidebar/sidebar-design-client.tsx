@@ -51,20 +51,16 @@ function MockNavItem({
       onClick={onClick}
       className={cn(
         'group flex w-full min-h-[44px] cursor-default items-center gap-2.5 transition-colors duration-150',
-        // Active: flush to left edge, rounded only on right
-        // Inactive: full rounded with horizontal margin
         isActive
-          ? 'rounded-r-[7px] mr-2 font-medium'
-          : 'rounded-[7px] mx-2 text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
+          ? 'rounded-xl mx-2 font-semibold'
+          : 'rounded-xl mx-2 text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
         collapsed ? 'justify-center px-[11px]' : 'px-3',
       )}
       style={
         isActive
           ? {
-              backgroundColor: accent.bg,
-              color: accent.text,
-              borderLeft: `3px solid ${accent.text}`,
-              paddingLeft: collapsed ? undefined : '11px',
+              backgroundColor: accent.text,
+              color: '#FFFFFF',
             }
           : undefined
       }
@@ -158,7 +154,7 @@ function MockSidebar({
       {/* ── Nav ── */}
       <nav className="flex-1 overflow-y-auto py-2" aria-label={dashboardShellCopy.sidebar.navAriaLabel}>
         {ungroupedItems.length > 0 && (
-          <ul className="flex flex-col gap-px" role="list">
+          <ul className="flex flex-col gap-1" role="list">
             {ungroupedItems.map((item) => (
               <li key={item.href}>
                 <MockNavItem
@@ -180,7 +176,7 @@ function MockSidebar({
               </p>
             )}
             {collapsed && <div className="mx-4 mb-1.5 border-t border-sidebar-border" />}
-            <ul className="flex flex-col gap-px" role="list">
+            <ul className="flex flex-col gap-1" role="list">
               {items.map((item) => (
                 <li key={item.href}>
                   <MockNavItem
