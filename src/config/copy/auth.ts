@@ -77,6 +77,13 @@ export const authCopy = {
     submitLabel: 'Update password',
     genericError: 'We could not update your password. Please try again.',
   },
+  magicLink: {
+    buttonLabel: 'Send sign-in link',
+    inputPlaceholder: 'Enter your email address',
+    successMessage: 'Check your email — a sign-in link is on its way.',
+    errorMessage: 'Could not send sign-in link. Check the email address and try again.',
+  },
+  orContinueWith: 'or',
   roleOptions: roles,
 } as const;
 

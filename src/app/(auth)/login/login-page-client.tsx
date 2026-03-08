@@ -137,6 +137,20 @@ export function LoginPageClient() {
               )}
             </Button>
 
+            {/* Divider */}
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-background px-2 text-[11px] uppercase tracking-widest text-muted-foreground">
+                  {authCopy.orContinueWith}
+                </span>
+              </div>
+            </div>
+
+            <MagicLinkForm />
+
             <div className="space-y-2 text-center text-sm text-muted-foreground">
               <p>
                 {authCopy.login.links.noAccount}{' '}
@@ -165,5 +179,61 @@ export function LoginPageClient() {
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+function MagicLinkForm() {
+  const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    const { error: otpError } = await supabaseBrowserClient.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: false },
+    });
+    setLoading(false);
+    if (otpError) {
+      setError(authCopy.magicLink.errorMessage);
+      return;
+    }
+    setSent(true);
+  }
+
+  if (sent) {
+    return (
+      <p className="text-center text-sm text-muted-foreground">
+        {authCopy.magicLink.successMessage}
+      </p>
+    );
+  }
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={authCopy.magicLink.inputPlaceholder}
+          className="h-11 flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="h-11 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+        >
+          {loading ? authCopy.common.submittingText : authCopy.magicLink.buttonLabel}
+        </button>
+      </form>
+      {error ? (
+        <p className="mt-2 text-sm text-destructive">{error}</p>
+      ) : null}
+    </div>
   );
 }
