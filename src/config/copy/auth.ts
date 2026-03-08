@@ -83,6 +83,19 @@ export const authCopy = {
     successMessage: 'Check your email — a sign-in link is on its way.',
     errorMessage: 'Could not send sign-in link. Check the email address and try again.',
   },
+  complete: {
+    heading: 'Completing sign-in',
+    loadingText: 'Finishing sign-in...',
+    returnToSignIn: 'Return to sign in',
+  },
+  error: {
+    backToLogin: 'Back to login',
+  },
+  layoutTrust: [
+    'Trusted student funding verification.',
+    'Cryptographic certificate seal.',
+    'University-ready proof in one shareable link.',
+  ],
   orContinueWith: 'or',
   roleOptions: roles,
 } as const;

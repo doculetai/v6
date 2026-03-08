@@ -35,9 +35,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             </p>
           </div>
           <div className="grid gap-3 text-xs text-primary-foreground/70">
-            <p>Trusted student funding verification.</p>
-            <p>Cryptographic certificate seal.</p>
-            <p>University-ready proof in one shareable link.</p>
+            {authCopy.layoutTrust.map((line) => (
+              <p key={line}>{line}</p>
+            ))}
           </div>
         </aside>
         <div className="mx-auto w-full max-w-md">

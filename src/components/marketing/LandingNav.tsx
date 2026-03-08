@@ -70,7 +70,7 @@ export function LandingNav() {
             <Link href={routes.auth.signup}>{copy.nav.cta}</Link>
           </Button>
           <button
-            className="rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground md:hidden"
+            className="min-h-[44px] min-w-[44px] rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground md:hidden"
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
           >
@@ -99,7 +99,7 @@ export function LandingNav() {
             </Link>
             <button
               onClick={() => setMenuOpen(false)}
-              className="rounded-md p-1.5 text-muted-foreground"
+              className="min-h-[44px] min-w-[44px] rounded-md p-1.5 text-muted-foreground"
               aria-label="Close menu"
             >
               <X weight="duotone" size={22} />

@@ -100,6 +100,10 @@ export const marketingCopy = {
     declineCta: 'Decline',
     signInPrompt: 'Sign in to respond',
     signInCta: 'Sign in',
+    createAccountCta: 'Create account',
+    defaultDescription: 'A student has invited you to sponsor their proof-of-funds verification. Sign in to view details and respond.',
+    studentDescription: (email: string, school: string | null) =>
+      `A student (${email}) has invited you to sponsor their proof-of-funds verification.${school ? ` They are applying to ${school}.` : ''}`,
   },
   join: {
     title: 'Join Doculet',

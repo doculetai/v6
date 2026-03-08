@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2 } from 'lucide-react';
+import { CircleNotch } from '@/components/icons';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -37,7 +37,7 @@ export default function AuthCompletePage() {
 
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
-      <h1 className="sr-only">Completing sign-in</h1>
+      <h1 className="sr-only">{authCopy.complete.heading}</h1>
       {error ? (
         <>
           <p className="text-destructive">{error}</p>
@@ -45,13 +45,13 @@ export default function AuthCompletePage() {
             href={authCopy.routes.login}
             className="text-primary hover:underline"
           >
-            Return to sign in
+            {authCopy.complete.returnToSignIn}
           </a>
         </>
       ) : (
         <>
-          <Loader2 className="size-8 animate-spin text-primary" aria-hidden />
-          <p className="text-muted-foreground">Finishing sign-in...</p>
+          <CircleNotch weight="bold" className="size-8 animate-spin text-primary" aria-hidden />
+          <p className="text-muted-foreground">{authCopy.complete.loadingText}</p>
         </>
       )}
     </div>

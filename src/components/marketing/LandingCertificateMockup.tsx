@@ -68,8 +68,8 @@ export function CertificateCard({ className }: { className?: string }) {
 
         {/* Footer row */}
         <div className="flex items-center justify-between">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-green-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-600" />
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-success">
+            <span className="h-1.5 w-1.5 rounded-full bg-success" />
             {cert.status}
           </span>
           <span className="font-mono text-[9px] text-muted-foreground">{cert.serial}</span>
@@ -153,7 +153,7 @@ export function CertificateFull({ className }: { className?: string }) {
         </div>
 
         <div className="mt-4">
-          <span className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1.5 text-[11px] font-semibold text-green-700">
+          <span className="inline-flex items-center gap-2 rounded-full border border-success/20 bg-success/10 px-3 py-1.5 text-[11px] font-semibold text-success">
             <CheckCircle weight="duotone" size={14} />
             {cert.fullStatus} · {cert.fullIssued}
           </span>
