@@ -110,6 +110,7 @@ export {
   Sun,
   Trash,
   Tray,
+  TrendDown,
   TrendUp,
   Trophy,
   UploadSimple,
