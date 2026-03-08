@@ -134,6 +134,13 @@
       "when": 1772937128417,
       "tag": "0018_wooden_night_nurse",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1772983133430,
+      "tag": "0019_nifty_runaways",
+      "breakpoints": true
     }
   ]
 }

@@ -1,8 +1,10 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { dashboardRoles, isDashboardRole } from '@/config/roles';
-import { profiles } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+
+import { dashboardRoles, isDashboardRole, type DashboardRole } from '@/config/roles';
+import { pendingRoleAssignments, profiles } from '@/db/schema';
 
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 import { documentProcedures } from './student-documents.procedures';
@@ -51,7 +53,22 @@ export const studentRouter = createTRPCRouter({
       if (existing) return { created: false };
 
       const metaRole = ctx.user!.user_metadata?.role;
-      const role = typeof metaRole === 'string' && isDashboardRole(metaRole) ? metaRole : 'student';
+      let role: DashboardRole =
+        typeof metaRole === 'string' && isDashboardRole(metaRole) ? metaRole : 'student';
+
+      // Check for a pending role assignment from an admin invite link
+      const userEmail = ctx.user!.email;
+      if (userEmail) {
+        const pending = await ctx.db.query.pendingRoleAssignments.findFirst({
+          where: (t) => eq(t.email, userEmail),
+        });
+        if (pending && new Date() < pending.expiresAt && isDashboardRole(pending.role)) {
+          role = pending.role;
+          await ctx.db
+            .delete(pendingRoleAssignments)
+            .where(eq(pendingRoleAssignments.email, userEmail));
+        }
+      }
 
       await ctx.db.insert(profiles).values({ userId: ctx.user!.id, role });
       return { created: true };

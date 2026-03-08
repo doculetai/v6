@@ -26,3 +26,4 @@ export * from './support-requests';
 export * from './transactions';
 export * from './verification-requests';
 export * from './webhook-deliveries';
+export * from './pending-role-assignments';
