@@ -1,6 +1,7 @@
 import { accountRouter } from './routers/account';
 import { adminRouter } from './routers/admin';
 import { adminAuditRouter } from './routers/admin-audit.procedures';
+import { adminDisbursementsRouter } from './routers/admin-disbursements.procedures';
 import { adminImpersonationRouter } from './routers/admin-impersonation.procedures';
 import { agentRouter } from './routers/agent';
 import { certificateRouter } from './routers/certificate';
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   university: universityRouter,
   admin: adminRouter,
   adminAudit: adminAuditRouter,
+  adminDisbursements: adminDisbursementsRouter,
   adminImpersonation: adminImpersonationRouter,
   agent: agentRouter,
   partner: partnerRouter,
