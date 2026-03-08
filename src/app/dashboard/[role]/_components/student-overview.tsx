@@ -487,7 +487,7 @@ export async function StudentOverview({
 
                     {/* B6.1: Multi-sponsor combined card vs single-sponsor card */}
                     {committedSponsors.length > 1 ? (
-                      <div className="rounded-xl border border-green-200 bg-green-50/50 px-5 py-4 dark:border-green-800 dark:bg-green-950/30">
+                      <div className="rounded-xl border border-success/30 bg-success/5 px-5 py-4 dark:border-success/40 dark:bg-success/10">
                         <p className="font-mono text-sm font-semibold text-foreground">
                           {studentCopy.multiSponsor.heading(
                             formatCurrency(

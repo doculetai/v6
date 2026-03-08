@@ -1,4 +1,4 @@
-import { CheckCircle2, Info, X, XCircle } from 'lucide-react';
+import { CheckCircle, Info, X, XCircle } from '@/components/icons';
 
 import { Button } from '@/components/ui/button';
 import { adminCopy } from '@/config/copy/admin';
@@ -30,15 +30,15 @@ export function AdminOperationsBulkBar({
             {count}
           </span>
           <span className="text-sm font-medium text-foreground dark:text-foreground">
-            selected
+            {copy.selected}
           </span>
           <button
             type="button"
             onClick={onClear}
             aria-label={copy.clearSelection}
-            className="ml-1 rounded-md p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="ml-1 min-h-[44px] rounded-md p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <X className="size-4" />
+            <X size={16} weight="duotone" />
           </button>
         </div>
         <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export function AdminOperationsBulkBar({
             disabled={isLoading}
             className="min-h-11 flex-1 sm:flex-none"
           >
-            <Info className="mr-1.5 size-4" />
+            <Info size={16} weight="duotone" className="mr-1.5" />
             {copy.requestInfo}
           </Button>
           <Button
@@ -59,7 +59,7 @@ export function AdminOperationsBulkBar({
             disabled={isLoading}
             className="min-h-11 flex-1 sm:flex-none"
           >
-            <XCircle className="mr-1.5 size-4" />
+            <XCircle size={16} weight="duotone" className="mr-1.5" />
             {copy.reject}
           </Button>
           <Button
@@ -68,7 +68,7 @@ export function AdminOperationsBulkBar({
             disabled={isLoading}
             className="min-h-11 flex-1 sm:flex-none"
           >
-            <CheckCircle2 className="mr-1.5 size-4" />
+            <CheckCircle size={16} weight="duotone" className="mr-1.5" />
             {copy.approve}
           </Button>
         </div>

@@ -178,7 +178,7 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
           <button
             type="button"
             onClick={() => setShowCreateDialog(true)}
-            className="mt-2 inline-flex h-9 items-center rounded-lg border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="mt-2 inline-flex min-h-[44px] items-center rounded-lg border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {copy.empty.cta}
           </button>
@@ -230,7 +230,7 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
                             type="button"
                             disabled={reinstateMutation.isPending}
                             onClick={() => reinstateMutation.mutate({ keyId: key.id })}
-                            className="text-xs font-medium text-primary underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                            className="min-h-[44px] px-1 text-xs font-medium text-primary underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             {revokedCopy.reinstateAction}
                           </button>
@@ -248,7 +248,7 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
                         <button
                           type="button"
                           onClick={() => setRevokeConfirmId(key.id)}
-                          className="text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          className="min-h-[44px] px-2 text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           {copy.actions.revoke}
                         </button>
@@ -287,7 +287,7 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
                   <button
                     type="button"
                     onClick={() => setRevokeConfirmId(key.id)}
-                    className="mt-3 text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="mt-3 min-h-[44px] text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {copy.actions.revoke}
                   </button>
@@ -296,7 +296,7 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
                     type="button"
                     disabled={reinstateMutation.isPending}
                     onClick={() => reinstateMutation.mutate({ keyId: key.id })}
-                    className="mt-3 text-xs font-medium text-primary underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    className="mt-3 min-h-[44px] text-xs font-medium text-primary underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {revokedCopy.reinstateAction}
                   </button>

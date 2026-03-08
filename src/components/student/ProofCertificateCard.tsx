@@ -128,12 +128,12 @@ export function ProofCertificateCard({
 
         {/* Certificate expiry / renewal status */}
         {certStatus === 'expiry_soon' && (
-          <div className="flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-800 dark:bg-amber-950/30">
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-warning/30 bg-warning/10 px-4 py-3 dark:border-warning/40 dark:bg-warning/15">
             <div className="space-y-0.5">
-              <p className="text-xs font-semibold text-amber-700 dark:text-amber-400">
+              <p className="text-xs font-semibold text-warning">
                 {certStatesCopy.expirySoon.badge}
               </p>
-              <p className="text-sm text-amber-700 dark:text-amber-400">
+              <p className="text-sm text-warning/80">
                 {certStatesCopy.expirySoon.note(daysLeft)}
               </p>
             </div>

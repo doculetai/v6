@@ -715,6 +715,13 @@ export const studentCopy = {
   // B2.1
   tierComplete: 'Complete',
 
+  // B2.1 — tier status labels used in blocked proof state
+  tierStatusLabels: {
+    tierLabel: (n: number) => `Tier ${n}`,
+    done: 'Complete',
+    pending: 'Pending',
+  },
+
   // B2.2
   monoReviewCard: {
     heading: 'Review connected account',

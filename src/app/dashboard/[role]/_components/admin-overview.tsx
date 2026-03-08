@@ -36,9 +36,9 @@ type KpiPillProps = {
 function KpiPill({ label, value, status }: KpiPillProps) {
   const dotClass =
     status === 'up'
-      ? 'bg-emerald-500'
+      ? 'bg-success'
       : status === 'warn'
-        ? 'bg-amber-500'
+        ? 'bg-warning'
         : 'bg-destructive';
   return (
     <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5">
@@ -123,23 +123,23 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
         {/* ── KPI pills ─────────────────────────────────────────────────── */}
         <div className="mb-6 flex flex-wrap gap-2">
           <KpiPill
-            label="Review queue"
+            label={copy.kpiPills.reviewQueue}
             value={stats ? `${stats.pending} pending` : '—'}
             status={stats?.pending ? 'warn' : 'up'}
           />
           <KpiPill
-            label="Risk flags"
+            label={copy.kpiPills.riskFlags}
             value={`${riskFlags.length} open`}
             status={riskFlags.length > 0 ? 'warn' : 'up'}
           />
           <KpiPill
-            label="Certs issued"
+            label={copy.kpiPills.certsIssued}
             value={`${certsToday} today`}
             status="up"
           />
           {fxRate?.rateX100 ? (
             <KpiPill
-              label="FX rate"
+              label={copy.kpiPills.fxRate}
               value={`₦ ${(fxRate.rateX100 / 100).toLocaleString('en-NG')}/$`}
               status="up"
             />
@@ -162,9 +162,9 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
             href={routes.dashboard.admin.operations}
           />
           <StatCard
-            label="Platform balance"
+            label={copy.stats.platformBalance.label}
             value={platformBalanceLabel}
-            sub={fxLabel ?? 'total verified funds'}
+            sub={fxLabel ?? copy.stats.platformBalance.sub}
             href={routes.dashboard.admin.operations}
           />
           <StatCard
@@ -207,7 +207,7 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
                   >
                     <span className="shrink-0" aria-hidden="true">
                       {isApproved ? (
-                        <CheckCircle className="size-4 text-emerald-600" weight="duotone" />
+                        <CheckCircle className="size-4 text-success" weight="duotone" />
                       ) : isRejected ? (
                         <XCircle className="size-4 text-destructive" weight="duotone" />
                       ) : (

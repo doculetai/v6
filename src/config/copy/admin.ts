@@ -433,6 +433,7 @@ export const adminCopy = {
       reject: "Reject batch",
       requestInfo: "Request info",
       clearSelection: "Clear selection",
+      selected: "selected",
     },
     empty: {
       title: "Queue empty",
@@ -623,6 +624,13 @@ export const adminCopy = {
       approvedToday: { label: 'Approved today', sub: 'documents cleared' },
       rejectedToday: { label: 'Rejected today', sub: 'documents returned' },
       riskFlags: { label: 'Risk flags', sub: 'items requiring attention' },
+      platformBalance: { label: 'Platform balance', sub: 'total verified funds' },
+    },
+    kpiPills: {
+      reviewQueue: 'Review queue',
+      riskFlags: 'Risk flags',
+      certsIssued: 'Certs issued',
+      fxRate: 'FX rate',
     },
     recentOperations: {
       heading: 'Recent operations',

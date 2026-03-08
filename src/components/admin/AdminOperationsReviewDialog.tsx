@@ -164,7 +164,7 @@ export function AdminOperationsReviewDialog({
               <span
                 className={cn(
                   'text-xs',
-                  notes.length >= 280 ? 'text-amber-600' : 'text-muted-foreground',
+                  notes.length >= 280 ? 'text-warning' : 'text-muted-foreground',
                 )}
               >
                 {notes.length}/{maxChars}

@@ -108,12 +108,12 @@ function WebhookDisabledBanner() {
   });
 
   return (
-    <div className="rounded-lg border border-amber-300/40 bg-amber-50/60 px-4 py-3 dark:border-amber-500/30 dark:bg-amber-950/20">
+    <div className="rounded-lg border border-warning/30 bg-warning/5 px-4 py-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <div className="flex items-center gap-2">
             <p className="text-sm font-medium text-foreground">{webhookDisabledCopy.heading}</p>
-            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+            <span className="inline-flex items-center rounded-full bg-warning/15 px-2 py-0.5 text-xs font-medium text-warning-foreground">
               {webhookDisabledCopy.badge}
             </span>
           </div>
@@ -131,7 +131,7 @@ function WebhookDisabledBanner() {
         </Button>
       </div>
       {feedback && (
-        <p className="mt-2 text-xs font-medium text-[#0F766E]" role="status">{feedback}</p>
+        <p className="mt-2 text-xs font-medium text-success" role="status">{feedback}</p>
       )}
     </div>
   );

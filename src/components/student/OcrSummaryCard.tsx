@@ -128,14 +128,14 @@ function ManualEntryForm({
       </div>
 
       <div className="flex gap-2 pt-1">
-        <Button type="submit" size="sm" className="h-8 text-xs">
+        <Button type="submit" size="sm" className="min-h-[44px] text-xs">
           {copy.ocrConfirm}
         </Button>
         <Button
           type="button"
           variant="ghost"
           size="sm"
-          className="h-8 text-xs"
+          className="min-h-[44px] text-xs"
           onClick={onCancel}
           disabled={isCancelling}
         >
@@ -192,7 +192,7 @@ export function OcrSummaryCard({
               type="button"
               variant="ghost"
               size="sm"
-              className="h-7 px-2 text-xs"
+              className="min-h-[44px] px-2 text-xs"
               onClick={onPreview}
             >
               <FileText className="mr-1 size-3" weight="duotone" aria-hidden="true" />
@@ -203,7 +203,7 @@ export function OcrSummaryCard({
               <Button
                 type="button"
                 size="sm"
-                className="h-8 text-xs"
+                className="min-h-[44px] text-xs"
                 onClick={() => onConfirm()}
               >
                 {copy.ocrConfirm}
@@ -212,7 +212,7 @@ export function OcrSummaryCard({
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-8 text-xs"
+                className="min-h-[44px] text-xs"
                 onClick={onCancel}
                 disabled={isCancelling}
               >

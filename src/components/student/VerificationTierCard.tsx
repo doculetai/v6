@@ -81,25 +81,25 @@ export function VerificationTierCard({
     return (
       <div
         className={cn(
-          'flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3',
-          'dark:border-green-800 dark:bg-green-950/30',
+          'flex items-center gap-3 rounded-xl border border-success/30 bg-success/5 px-4 py-3',
+          'dark:border-success/40 dark:bg-success/10',
           'transition-all duration-150 ease-out',
         )}
       >
         <CheckCircle
           weight="duotone"
-          className="size-5 shrink-0 text-green-600 dark:text-green-400"
+          className="size-5 shrink-0 text-success"
           aria-hidden="true"
         />
-        <p className="flex-1 text-sm font-medium text-green-800 dark:text-green-300">
+        <p className="flex-1 text-sm font-medium text-success">
           {title}
           {summaryLine ? (
-            <span className="ml-2 font-normal text-green-700 dark:text-green-400">
+            <span className="ml-2 font-normal text-success/80">
               &middot; {summaryLine}
             </span>
           ) : null}
         </p>
-        <span className="text-xs font-semibold uppercase tracking-wide text-green-700 dark:text-green-400">
+        <span className="text-xs font-semibold uppercase tracking-wide text-success">
           {studentCopy.tierComplete}
         </span>
       </div>
@@ -112,25 +112,25 @@ export function VerificationTierCard({
     return (
       <div
         className={cn(
-          'rounded-xl border border-amber-200 bg-amber-50 p-5',
-          'dark:border-amber-800 dark:bg-amber-950/30',
+          'rounded-xl border border-warning/30 bg-warning/10 p-5',
+          'dark:border-warning/40 dark:bg-warning/15',
           'transition-all duration-150 ease-out',
         )}
       >
         <div className="flex items-start gap-3">
           <Clock
             weight="duotone"
-            className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400"
+            className="mt-0.5 size-5 shrink-0 text-warning"
             aria-hidden="true"
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">{title}</p>
-              <span className="shrink-0 text-xs font-semibold text-amber-700 dark:text-amber-400">
+              <p className="text-sm font-semibold text-warning">{title}</p>
+              <span className="shrink-0 text-xs font-semibold text-warning">
                 {studentCopy.t2.manualReview.badge}
               </span>
             </div>
-            <p className="mt-1.5 text-sm text-amber-700 dark:text-amber-400">
+            <p className="mt-1.5 text-sm text-warning/80">
               {manualReviewNote ?? studentCopy.t2.manualReview.note}
             </p>
           </div>
@@ -138,12 +138,12 @@ export function VerificationTierCard({
 
         {/* Mono account details when under review */}
         {monoAccount ? (
-          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/30">
+          <div className="mt-4 rounded-xl border border-warning/30 bg-warning/10 p-4 dark:border-warning/40 dark:bg-warning/15">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
+              <span className="text-xs font-medium text-warning">
                 {monoReviewCopy.badge}
               </span>
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500" />
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-warning" />
             </div>
             <div className="mt-3 space-y-1">
               <p className="text-xs text-muted-foreground">{monoReviewCopy.bankLabel}</p>
@@ -261,10 +261,10 @@ export function VerificationTierCard({
             </div>
           )}
 
-          {/* Legacy manual review inline card (fallback if isManualReview branch above doesn't apply) */}
+          {/* Legacy manual review inline card — dead code path, kept for type safety */}
           {!isManualReview && t2ManualCopy.manualReviewNote && false ? (
-            <div className="mt-3 rounded-md border border-amber-200 bg-amber-50/50 dark:border-amber-800 dark:bg-amber-950/30 p-4 space-y-1">
-              <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+            <div className="mt-3 rounded-md border border-warning/30 bg-warning/10 dark:border-warning/40 dark:bg-warning/15 p-4 space-y-1">
+              <p className="text-sm font-medium text-warning">
                 {t2ManualCopy.manualReviewNote}
               </p>
             </div>

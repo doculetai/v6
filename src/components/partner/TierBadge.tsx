@@ -1,4 +1,4 @@
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from '@phosphor-icons/react';
 
 import { cn } from '@/lib/utils';
 
@@ -25,7 +25,7 @@ function TierBadge({ tier, label, className }: TierBadgeProps) {
         className,
       )}
     >
-      {tier === 3 ? <ShieldCheck className="size-3 shrink-0" aria-hidden="true" /> : null}
+      {tier === 3 ? <ShieldCheck weight="duotone" className="size-3 shrink-0" aria-hidden="true" /> : null}
       {label}
     </span>
   );

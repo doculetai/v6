@@ -1,6 +1,6 @@
 'use client';
 
-import { Grid, Stack } from '@/components/layout/content-primitives';
+import { Grid, PageHeader, PageShell, Stack } from '@/components/layout/content-primitives';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { partnerCopy } from '@/config/copy/partner';
@@ -54,16 +54,16 @@ export function PartnerAnalyticsPageClient({ data, initialUsage, copy }: Props) 
   const utilisation = dailyLimit > 0 ? Math.round((totalCalls / dailyLimit) * 100) : 0;
 
   return (
-    <Stack gap="lg">
-      {/* Overview stats */}
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">{copy.title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {data?.organizationName
+    <PageShell>
+      <PageHeader
+        title={copy.title}
+        description={
+          data?.organizationName
             ? `${data.organizationName} — ${copy.subtitle}`
-            : copy.subtitle}
-        </p>
-      </div>
+            : copy.subtitle
+        }
+      />
+      <Stack gap="lg">
 
       {data === null ? (
         <div className="rounded-xl border border-border bg-card p-10 text-center">
@@ -195,6 +195,7 @@ export function PartnerAnalyticsPageClient({ data, initialUsage, copy }: Props) 
           )}
         </CardContent>
       </Card>
-    </Stack>
+      </Stack>
+    </PageShell>
   );
 }

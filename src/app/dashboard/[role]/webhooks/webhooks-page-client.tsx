@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { partnerCopy } from '@/config/copy/partner';
 import { trpc } from '@/trpc/client';
 
@@ -134,21 +135,20 @@ export function WebhooksPageClient({ initialData }: Props) {
   }
 
   return (
-    <section className="space-y-6">
-      {/* Page header */}
-      <header className="flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{copy.title}</h1>
-          <p className="text-sm text-muted-foreground">{copy.subtitle}</p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setRegisterOpen(true)}
-          className="inline-flex h-11 min-w-[44px] items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {copy.registerCta}
-        </button>
-      </header>
+    <PageShell>
+      <PageHeader
+        title={copy.title}
+        description={copy.subtitle}
+        actions={
+          <button
+            type="button"
+            onClick={() => setRegisterOpen(true)}
+            className="inline-flex h-11 min-w-[44px] items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {copy.registerCta}
+          </button>
+        }
+      />
 
       {/* Webhook list */}
       {webhooks.length === 0 ? (
@@ -549,6 +549,6 @@ export function WebhooksPageClient({ initialData }: Props) {
           </div>
         </div>
       )}
-    </section>
+    </PageShell>
   );
 }

@@ -106,11 +106,11 @@ export function ProofPageClient({
               {(['t1', 't2', 't3'] as const).map((tier, idx) => (
                 <div key={tier} className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
-                    {`Tier ${idx + 1}`}
+                    {studentCopy.tierStatusLabels.tierLabel(idx + 1)}
                   </span>
                   <StatusBadge
                     status={tierStatus[tier] ? 'complete' : 'pending'}
-                    label={tierStatus[tier] ? 'Done' : 'Pending'}
+                    label={tierStatus[tier] ? studentCopy.tierStatusLabels.done : studentCopy.tierStatusLabels.pending}
                     size="sm"
                   />
                 </div>
@@ -308,7 +308,7 @@ export function ProofPageClient({
 function PaymentBanner({ status }: { status: 'paid' | 'waived' }) {
   const copy = studentCopy.proof.paymentBanner;
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800 dark:border-green-800 dark:bg-green-950/30 dark:text-green-300">
+    <div className="flex items-center gap-2 rounded-xl border border-success/30 bg-success/5 px-4 py-3 text-sm text-success dark:border-success/40 dark:bg-success/10">
       <CheckCircle size={16} weight="duotone" className="shrink-0" aria-hidden="true" />
       <span>{status === 'paid' ? copy.paid : copy.waived}</span>
     </div>

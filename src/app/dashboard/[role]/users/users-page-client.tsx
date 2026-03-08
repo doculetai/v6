@@ -177,7 +177,7 @@ export function UsersPageClient({ data, copy }: Props) {
                       <button
                         type="button"
                         onClick={() => handleRowClick(user)}
-                        className="text-xs font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="min-h-[44px] text-xs font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         {adminCopy.studentRecord.viewRecord}
                       </button>
@@ -250,7 +250,7 @@ export function UsersPageClient({ data, copy }: Props) {
                   <button
                     type="button"
                     onClick={() => handleRowClick(user)}
-                    className="text-xs font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="min-h-[44px] text-xs font-medium text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {adminCopy.studentRecord.viewRecord}
                   </button>

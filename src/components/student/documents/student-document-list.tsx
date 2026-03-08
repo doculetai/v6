@@ -156,11 +156,11 @@ export function StudentDocumentList({ copy, documents, onReuploadClick }: Studen
 
                 {showMoreInfoNote ? (
                   <div className="mt-3 space-y-2">
-                    <div className="rounded-md border border-amber-200 bg-amber-50/50 px-3 py-2 dark:border-amber-800 dark:bg-amber-950/30">
-                      <p className="text-xs font-medium text-amber-800 dark:text-amber-300 md:text-sm">
+                    <div className="rounded-md border border-warning/30 bg-warning/10 px-3 py-2 dark:border-warning/40 dark:bg-warning/15">
+                      <p className="text-xs font-medium text-warning md:text-sm">
                         {copy.list.moreInfoNoteLabel}
                       </p>
-                      <p className="mt-1 break-words text-sm text-amber-800 dark:text-amber-300">
+                      <p className="mt-1 break-words text-sm text-warning/80">
                         {document.rejectionReason ?? copy.list.rejectionReasonFallback}
                       </p>
                     </div>

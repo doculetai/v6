@@ -23,11 +23,11 @@ export function SponsorCommittedCard({
   const sponsorCardCopy = studentCopy.sponsorCard;
 
   return (
-    <Card className="border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-950/30">
+    <Card className="border-success/30 bg-success/5 dark:border-success/40 dark:bg-success/10">
       <CardHeader className="flex flex-row items-center gap-3 pb-2">
         <CheckCircle
           weight="duotone"
-          className="size-5 text-green-600 dark:text-green-400"
+          className="size-5 text-success"
           aria-hidden="true"
         />
         <CardTitle className="text-base">{sponsorName}</CardTitle>
@@ -44,9 +44,9 @@ export function SponsorCommittedCard({
         </div>
 
         {status === 'paused' && (
-          <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs dark:border-amber-800 dark:bg-amber-950/30">
-            <PauseCircle size={14} weight="duotone" className="shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-            <span className="text-amber-700 dark:text-amber-300">{sponsorCardCopy.paused.note}</span>
+          <div className="flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-xs dark:border-warning/40 dark:bg-warning/15">
+            <PauseCircle size={14} weight="duotone" className="shrink-0 text-warning" aria-hidden="true" />
+            <span className="text-warning">{sponsorCardCopy.paused.note}</span>
           </div>
         )}
         {status === 'withdrawn' && (
