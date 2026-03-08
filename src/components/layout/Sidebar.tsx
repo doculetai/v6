@@ -241,7 +241,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
           className="flex-1 overflow-y-auto py-2"
         >
           {ungroupedItems.length > 0 && (
-            <ul className="flex flex-col gap-px px-2" role="list">
+            <ul className="flex flex-col gap-px" role="list">
               {ungroupedItems.map((item) => (
                 <li key={item.href}>
                   <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={visualCollapsed} />
@@ -328,9 +328,9 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
 
   if (isCollapsed) {
     return (
-      <div className="mt-1">
-        <div role="separator" className="mx-2 border-t border-sidebar-border" />
-        <ul className="mt-1 flex flex-col gap-px px-2" role="list">
+      <div className="mt-2">
+        <div role="separator" className="mx-4 mb-1.5 border-t border-sidebar-border" />
+        <ul className="flex flex-col gap-px" role="list">
           {items.map((item) => (
             <li key={item.href}>
               <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={true} />
@@ -342,7 +342,7 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
   }
 
   return (
-    <div className="mt-3">
+    <div className="mt-4">
       <button
         type="button"
         onClick={() => setIsOpen((p) => {
@@ -350,7 +350,7 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
           localStorage.setItem(storageKey, String(next));
           return next;
         })}
-        className="flex w-full items-center justify-between px-4 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-sidebar-foreground/50 hover:text-sidebar-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)] focus-visible:rounded-sm transition-colors"
+        className="flex w-full items-center justify-between px-[18px] pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/40 hover:text-sidebar-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)] focus-visible:rounded-sm transition-colors"
         aria-expanded={isOpen}
         aria-controls={listId}
       >
@@ -367,7 +367,7 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
       >
         <ul
           id={listId}
-          className="flex flex-col gap-px overflow-hidden px-2"
+          className="flex flex-col gap-px overflow-hidden"
           role="list"
         >
           {items.map((item) => (
@@ -397,13 +397,11 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
         aria-disabled="true"
         title={isCollapsed ? (item.disabledReason ?? item.label) : item.disabledReason}
         className={cn(
-          'group relative flex min-h-[44px] cursor-not-allowed items-center gap-3 rounded-md px-3 text-[13.5px] opacity-40',
-          isCollapsed && 'justify-center px-0',
+          'group relative flex min-h-[40px] cursor-not-allowed items-center gap-2.5 rounded-[7px] mx-2 px-3 text-[13px] opacity-40',
+          isCollapsed && 'justify-center px-[11px]',
         )}
       >
-        <span className="relative flex h-8 w-8 shrink-0 items-center justify-center text-sidebar-foreground/55">
-          <Icon className="size-[18px]" weight="duotone" aria-hidden="true" />
-        </span>
+        <Icon className="size-[18px] shrink-0 text-sidebar-foreground/55" weight="duotone" aria-hidden="true" />
         {!isCollapsed && <span className="truncate">{item.label}</span>}
       </span>
     );
@@ -434,25 +432,26 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       style={isActive ? {
         backgroundColor: 'var(--role-accent-bg)',
         color: 'var(--role-accent)',
-        borderLeft: '2.5px solid var(--role-accent)',
-        paddingLeft: isCollapsed ? undefined : '10px',
+        borderLeft: '3px solid var(--role-accent)',
+        paddingLeft: isCollapsed ? undefined : '11px',
       } : undefined}
       className={cn(
-        'group relative flex min-h-[44px] items-center gap-3 rounded-md px-3 text-[13.5px] transition-colors duration-100',
+        'group relative flex min-h-[40px] items-center gap-2.5 px-3 text-[13px] transition-colors duration-100',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)]',
         isActive
-          ? 'font-semibold'
-          : 'font-[450] text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground',
-        isCollapsed && 'justify-center px-0',
+          ? 'rounded-r-[7px] mr-2 font-medium'
+          : 'rounded-[7px] mx-2 font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
+        isCollapsed && 'justify-center px-[11px]',
       )}
     >
-      <span className={cn(
-        'relative flex h-8 w-8 shrink-0 items-center justify-center',
-        !isActive && 'text-sidebar-foreground/55',
-      )}>
-        <Icon className="size-[18px]" weight="duotone" aria-hidden="true" />
+      <span className="relative shrink-0">
+        <Icon
+          className={cn('size-[18px]', !isActive && 'text-sidebar-foreground/55')}
+          weight="duotone"
+          aria-hidden="true"
+        />
         {item.badge !== undefined && item.badge > 0 && isCollapsed && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold leading-none text-destructive-foreground">
+          <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold leading-none text-destructive-foreground">
             {item.badge > 9 ? '9+' : item.badge}
           </span>
         )}
