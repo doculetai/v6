@@ -61,6 +61,7 @@ const operationsQueueRowSchema = z.object({
   schoolName: z.string().nullable(),
   kycStatus: z.string().nullable(),
   bankStatus: z.string().nullable(),
+  allDocsApproved: z.boolean(),
 });
 
 const operationsStatsSchema = z.object({
@@ -903,6 +904,152 @@ export const adminRouter = createTRPCRouter({
         });
       }
       return row;
+    }),
+
+  getStudentRecord: roleProcedure('admin')
+    .input(z.object({ studentId: z.string() }))
+    .output(
+      z.object({
+        student: z.object({
+          id: z.string(),
+          name: z.string().nullable(),
+          email: z.string().nullable(),
+          phoneLastFour: z.string().nullable(),
+          kycStatus: z.enum(['none', 'pending', 'verified', 'failed', 'manual_review']),
+        }),
+        documents: z.array(
+          z.object({
+            id: z.string(),
+            documentType: z.string(),
+            status: z.string(),
+            rejectionReason: z.string().nullable(),
+          }),
+        ),
+        sponsors: z.array(
+          z.object({
+            sponsorName: z.string(),
+            amountKobo: z.number(),
+            currency: z.string(),
+            status: z.string(),
+          }),
+        ),
+        certificate: z
+          .object({
+            certificateId: z.string().nullable(),
+            issuedAt: z.date().nullable(),
+            paymentStatus: z.string().nullable(),
+          })
+          .nullable(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const [userRow] = await ctx.db
+        .select({ id: users.id, email: users.email })
+        .from(users)
+        .where(eq(users.id, input.studentId))
+        .limit(1);
+
+      if (!userRow) throw new TRPCError({ code: 'NOT_FOUND', message: 'Student not found' });
+
+      const [profileRow, docRows, sponsorRows, certRow] = await Promise.all([
+        ctx.db.query.studentProfiles.findFirst({
+          where: (t, { eq: eqFn }) => eqFn(t.userId, input.studentId),
+          columns: { kycStatus: true },
+        }),
+        ctx.db
+          .select({
+            id: documents.id,
+            type: documents.type,
+            status: documents.status,
+            rejectionReason: documents.rejectionReason,
+          })
+          .from(documents)
+          .where(eq(documents.userId, input.studentId))
+          .orderBy(sql`${documents.createdAt} desc`),
+        ctx.db
+          .select({
+            sponsorId: sponsorships.sponsorId,
+            amountKobo: sponsorships.amountKobo,
+            currency: sponsorships.currency,
+            status: sponsorships.status,
+          })
+          .from(sponsorships)
+          .where(eq(sponsorships.studentId, input.studentId)),
+        ctx.db.query.certificates.findFirst({
+          where: (t, { eq: eqFn }) => eqFn(t.studentId, input.studentId),
+          columns: { id: true, issuedAt: true },
+          orderBy: (t, { desc: descFn }) => [descFn(t.issuedAt)],
+        }),
+      ]);
+
+      // Resolve sponsor display names
+      const sponsorIds = sponsorRows.map((s) => s.sponsorId);
+      const sponsorEmails = sponsorIds.length > 0
+        ? await ctx.db
+            .select({ id: users.id, email: users.email })
+            .from(users)
+            .where(inArray(users.id, sponsorIds))
+        : [];
+      const sponsorEmailMap = new Map(sponsorEmails.map((u) => [u.id, u.email ?? u.id]));
+
+      const rawKyc = profileRow?.kycStatus ?? 'not_started';
+      const kycStatus =
+        rawKyc === 'not_started'
+          ? ('none' as const)
+          : rawKyc === 'verified'
+            ? ('verified' as const)
+            : rawKyc === 'failed'
+              ? ('failed' as const)
+              : rawKyc === 'pending'
+                ? ('pending' as const)
+                : ('manual_review' as const);
+
+      return {
+        student: {
+          id: userRow.id,
+          name: null,
+          email: userRow.email,
+          phoneLastFour: null,
+          kycStatus,
+        },
+        documents: docRows.map((d) => ({
+          id: d.id,
+          documentType: d.type,
+          status: d.status,
+          rejectionReason: d.rejectionReason,
+        })),
+        sponsors: sponsorRows.map((s) => ({
+          sponsorName: sponsorEmailMap.get(s.sponsorId) ?? s.sponsorId,
+          amountKobo: s.amountKobo,
+          currency: s.currency,
+          status: s.status,
+        })),
+        certificate: certRow
+          ? {
+              certificateId: certRow.id,
+              issuedAt: certRow.issuedAt,
+              paymentStatus: null,
+            }
+          : null,
+      };
+    }),
+
+  issueCertificate: roleProcedure('admin')
+    .input(z.object({ studentId: z.string() }))
+    .output(z.void())
+    .mutation(async ({ ctx, input }) => {
+      const [userRow] = await ctx.db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.id, input.studentId))
+        .limit(1);
+
+      if (!userRow) throw new TRPCError({ code: 'NOT_FOUND', message: 'Student not found' });
+
+      throw new TRPCError({
+        code: 'METHOD_NOT_SUPPORTED',
+        message: 'Certificate issuance is not yet implemented',
+      });
     }),
 
   listTransactions: roleProcedure('admin')

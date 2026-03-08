@@ -14,6 +14,7 @@ export const adminOperationsFixtures = {
     schoolName: 'University of Michigan',
     kycStatus: 'verified',
     bankStatus: 'not_started',
+    allDocsApproved: false,
   } satisfies OperationsQueueRow,
 
   approvedRow: {
@@ -29,6 +30,7 @@ export const adminOperationsFixtures = {
     schoolName: 'Boston University',
     kycStatus: 'verified',
     bankStatus: 'verified',
+    allDocsApproved: true,
   } satisfies OperationsQueueRow,
 
   rejectedRow: {
@@ -44,6 +46,7 @@ export const adminOperationsFixtures = {
     schoolName: null,
     kycStatus: 'pending',
     bankStatus: 'not_started',
+    allDocsApproved: false,
   } satisfies OperationsQueueRow,
 
   moreInfoRow: {
@@ -59,6 +62,7 @@ export const adminOperationsFixtures = {
     schoolName: 'Northeastern University',
     kycStatus: 'verified',
     bankStatus: 'not_started',
+    allDocsApproved: false,
   } satisfies OperationsQueueRow,
 
   stats: {
@@ -66,7 +70,7 @@ export const adminOperationsFixtures = {
     approved: 47,
     rejected: 8,
     moreInfoRequested: 3,
-    expired: 2,
+    expired: 0,
     approvedToday: 5,
     rejectedToday: 2,
   } satisfies OperationsStats,

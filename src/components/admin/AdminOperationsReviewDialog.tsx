@@ -14,15 +14,15 @@ import { Label } from '@/components/ui/label';
 import { TimestampLabel } from '@/components/ui/timestamp-label';
 import { adminCopy } from '@/config/copy/admin';
 import type { OperationsQueueRow } from '@/db/queries/admin-operations';
-import { formatDocumentType } from '@/lib/utils';
 
-type ReviewStatus = 'approved' | 'rejected' | 'more_info_requested';
+type ReviewAction = 'approved' | 'rejected' | 'more_info_requested';
+import { formatDocumentType } from '@/lib/utils';
 
 interface AdminOperationsReviewDialogProps {
   row: OperationsQueueRow | null;
   isOpen: boolean;
   onClose: () => void;
-  onDecision: (status: ReviewStatus, reason?: string) => void;
+  onDecision: (status: ReviewAction, reason?: string) => void;
   isLoading?: boolean;
 }
 
@@ -36,7 +36,7 @@ export function AdminOperationsReviewDialog({
   const [notes, setNotes] = useState('');
   const copy = adminCopy.operations.reviewDialog;
 
-  function handleDecision(status: ReviewStatus) {
+  function handleDecision(status: ReviewAction) {
     onDecision(status, notes.trim() || undefined);
     setNotes('');
   }

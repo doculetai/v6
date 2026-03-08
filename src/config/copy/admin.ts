@@ -309,6 +309,44 @@ export const adminCopy = {
     },
   },
 
+  studentRecord: {
+    drawerTitle: "Student record",
+    sections: {
+      identity: "IDENTITY",
+      kyc: "KYC STATUS",
+      documents: "DOCUMENTS",
+      sponsors: "SPONSORS",
+      certificate: "CERTIFICATE",
+    },
+    labels: {
+      email: "Email",
+      phone: "Phone",
+      kycStatus: "KYC status",
+      documentType: "Document",
+      documentStatus: "Status",
+      rejectionReason: "Rejection note",
+      sponsorName: "Sponsor",
+      amountCommitted: "Amount committed",
+      certId: "Certificate ID",
+      issuedAt: "Issued",
+      paymentStatus: "Payment",
+    },
+    kycLabels: {
+      none: "Not started",
+      pending: "Pending",
+      verified: "Verified",
+      failed: "Failed",
+      manual_review: "Manual review",
+    },
+    empty: {
+      documents: "No documents submitted.",
+      sponsors: "No sponsors linked.",
+      certificate: "No certificate issued.",
+    },
+    loading: "Loading student record",
+    error: "Failed to load student record.",
+  },
+
   certReady: {
     sectionTitle: "READY TO ISSUE",
     sectionDescription: "Students who have completed all required steps and are awaiting their certificate.",
@@ -324,6 +362,7 @@ export const adminCopy = {
       paid: "Fee paid",
       waived: "Fee waived",
     },
+    badge: "Ready for cert",
     issueCta: "Issue certificate",
     empty: {
       title: "No students ready",
@@ -340,6 +379,11 @@ export const adminCopy = {
       issuing: "Issuing…",
       cancel: "Cancel",
     },
+    confirmTitle: "Issue certificate?",
+    confirmDescription: (name: string) =>
+      `Issue certificate for ${name}? This cannot be undone.`,
+    confirmCta: "Issue certificate",
+    cancel: "Cancel",
     issueSuccess: "Certificate issued.",
     issueError: "Certificate could not be issued. Verify all conditions are met.",
   },
