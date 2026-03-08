@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { sharedCopy } from '@/config/copy/shared';
 
 function formatTimeAgo(date: Date): string {
   const h = Math.floor((Date.now() - date.getTime()) / 3_600_000);
@@ -13,13 +14,8 @@ interface FxRateInlineProps {
   className?: string;
 }
 
-const copy = {
-  prefix: 'Rate: $1 = ₦ ',
-  updated: 'Updated',
-  stalePrefix: 'Rate may be outdated · Last updated',
-} as const;
-
 export function FxRateInline({ rateNgnPerUsd, updatedAt, className }: FxRateInlineProps) {
+  const copy = sharedCopy.fxRateInline;
   const stale = Date.now() - updatedAt.getTime() > 86_400_000; // >24h
   const formattedRate = new Intl.NumberFormat('en-NG').format(rateNgnPerUsd);
   const timeAgo = formatTimeAgo(updatedAt);
@@ -27,12 +23,13 @@ export function FxRateInline({ rateNgnPerUsd, updatedAt, className }: FxRateInli
   return (
     <p
       className={cn(
-        'font-mono text-[11px]',
-        stale ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground/70',
+        'font-mono text-xs',
+        stale ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground',
         className,
       )}
     >
-      {stale ? copy.stalePrefix : `${copy.prefix}${formattedRate}`}
+      {stale ? copy.stalePrefix : copy.prefix}
+      {!stale && `₦ ${formattedRate}`}
       {' · '}
       {copy.updated} {timeAgo}
     </p>

@@ -8,3 +8,11 @@ export const commonErrors = {
 export const commonUi = {
   close: "Close",
 } as const;
+
+export const sharedCopy = {
+  fxRateInline: {
+    prefix: 'Rate: $1 = ',
+    updated: 'Updated',
+    stalePrefix: 'Rate may be outdated · Last updated',
+  },
+} as const;
