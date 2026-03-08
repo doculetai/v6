@@ -432,20 +432,23 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       aria-current={isActive ? 'page' : undefined}
       title={isCollapsed ? item.label : undefined}
       style={isActive ? {
-        backgroundColor: 'var(--role-accent)',
+        backgroundColor: 'var(--role-accent-bg)',
+        color: 'var(--role-accent)',
+        borderLeft: '2.5px solid var(--role-accent)',
+        paddingLeft: isCollapsed ? undefined : '10px',
       } : undefined}
       className={cn(
         'group relative flex min-h-[44px] items-center gap-3 rounded-md px-3 text-[13.5px] transition-colors duration-100',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)]',
         isActive
-          ? 'font-semibold text-white'
+          ? 'font-semibold'
           : 'font-[450] text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground',
         isCollapsed && 'justify-center px-0',
       )}
     >
       <span className={cn(
         'relative flex h-8 w-8 shrink-0 items-center justify-center',
-        isActive ? 'text-white' : 'text-sidebar-foreground/55',
+        !isActive && 'text-sidebar-foreground/55',
       )}>
         <Icon className="size-[18px]" weight="duotone" aria-hidden="true" />
         {item.badge !== undefined && item.badge > 0 && isCollapsed && (
