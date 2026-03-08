@@ -18,6 +18,24 @@ const dashboardSessionOutputSchema = z.object({
 });
 
 export const dashboardRouter = createTRPCRouter({
+  getDisplayUser: protectedProcedure
+    .output(
+      z.object({
+        fullName: z.string().nullable(),
+        email: z.string().nullable(),
+      })
+    )
+    .query(async ({ ctx }) => {
+      const profile = await ctx.db.query.profiles.findFirst({
+        where: (t, { eq }) => eq(t.userId, ctx.user!.id),
+        columns: { fullName: true },
+      });
+      return {
+        fullName: profile?.fullName ?? null,
+        email: ctx.user!.email ?? null,
+      };
+    }),
+
   getSession: protectedProcedure
     .input(dashboardSessionInputSchema)
     .output(dashboardSessionOutputSchema)
