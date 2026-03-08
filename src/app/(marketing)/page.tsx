@@ -13,6 +13,18 @@ import { LandingFooter } from '@/components/marketing/LandingFooter';
 export const metadata: Metadata = {
   title: landingCopy.meta.title,
   description: landingCopy.meta.description,
+  openGraph: {
+    title: landingCopy.meta.title,
+    description: landingCopy.meta.description,
+    url: 'https://doculet.ai',
+    siteName: 'Doculet',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: landingCopy.meta.title,
+    description: landingCopy.meta.description,
+  },
 };
 
 export default function LandingPage() {

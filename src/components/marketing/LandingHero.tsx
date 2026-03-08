@@ -54,7 +54,18 @@ export function LandingHero() {
             </LandingReveal>
 
             <LandingReveal delay={240}>
-              <div className="flex items-center gap-3 border-t border-border pt-6">
+              <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-6">
+                {copy.hero.stats.map((stat) => (
+                  <div key={stat.label}>
+                    <p className="font-mono text-lg font-bold text-[#2B39A3]">{stat.value}</p>
+                    <p className="text-[11px] text-muted-foreground">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
+            </LandingReveal>
+
+            <LandingReveal delay={320}>
+              <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[rgba(43,57,163,0.08)] text-xs font-semibold text-[#2B39A3]">
                   {copy.hero.quoteInitials}
                 </div>

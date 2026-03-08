@@ -24,6 +24,11 @@ export const landingCopy = {
     ctaPrimary: 'Get your certificate',
     ctaSecondary: 'How it works',
     ctaSecondaryHref: '#how-it-works',
+    stats: [
+      { value: '₦ 4.2B', label: 'verified' },
+      { value: '12,000+', label: 'students' },
+      { value: '340+', label: 'universities' },
+    ],
     quote:
       'Certificate issued quickly. My I-20 was processed the same week.',
     quoteAttribution: 'Amara O. — MSc CS, University of Minnesota',
@@ -116,52 +121,69 @@ export const landingCopy = {
 
   trust: {
     label: 'The certificate',
-    headline: 'The financial proof US admissions accept',
-    body: 'Your certificate shows verified account balance, ownership, and funds availability — exactly what a US university financial office needs to process your I-20.',
+    headline: 'The proof US admissions accept',
+    body: 'The exact financial documentation your US university needs to issue your I-20.',
     features: [
-      'Accepted as proof of funds by US universities',
-      'Bank statement verification via licensed API',
-      'Covers tuition, living costs, and all fees',
-      'Cryptographically signed — tamper-evident',
-      'Secure document storage, NDPR compliant',
+      'Accepted by US university admissions offices',
+      'Verified via licensed Nigerian bank APIs',
+      'Covers tuition and all living costs',
+      'Cryptographically signed — tamper-proof',
+      'NDPR-compliant document storage',
     ],
     cta: 'Get your certificate',
   },
 
   faq: {
     headline: 'Questions answered.',
-    items: [
+    categories: [
       {
-        question: 'What exactly is the Doculet Seal?',
-        answer:
-          'The Doculet Seal is a cryptographic signature applied to your certificate after we verify your identity, bank balance, and (for Tier 3) your sponsors. It cannot be transferred to another document. Any admissions office can verify the seal is intact using the link we provide — no account required.',
+        state: 'Default',
+        questions: [
+          { q: 'What is the Doculet Seal?', a: 'A cryptographic signature proving your bank balance is real. Any admissions office confirms it in one click — no account needed.' },
+          { q: 'Which banks do you support?', a: 'GTBank, Zenith, Access, First Bank, UBA, Stanbic IBTC, Fidelity, FCMB, Sterling — via Mono.' },
+        ],
       },
       {
-        question: 'Which Nigerian banks do you support?',
-        answer:
-          'All major banks at launch: GTBank, Access Bank, Zenith Bank, First Bank, UBA, Stanbic IBTC, Fidelity, FCMB, and Sterling. Connected via Mono — licensed open banking APIs, not screen-scraping.',
+        state: 'Happy path',
+        questions: [
+          { q: 'How fast is verification?', a: 'Identity check: instant. Bank (live connection): minutes. Full package with sponsor: depends on admin review.' },
+          { q: 'Does my university need a Doculet account?', a: 'No. They click the link you send. The verification page is public.' },
+        ],
       },
       {
-        question: 'How long does verification take?',
-        answer:
-          'Tier 1 (identity only) is usually instant. Tier 2 (identity + bank) varies by path — live bank connection is faster, PDF upload goes to our team for review. Tier 3 (+ sponsor and admin review) takes additional time. Timelines depend on the path you choose and how quickly you submit your documents.',
+        state: 'Anxiety peaks',
+        questions: [
+          { q: 'Will my full bank account be exposed?', a: 'Only your verified balance appears on the certificate. No account number, no transaction history.' },
+          { q: 'What if my funds are not enough on their own?', a: 'Add sponsors. Multiple family members or a company can commit funds to reach your target.' },
+        ],
       },
       {
-        question: 'Can I upload a PDF or do I need to connect my bank?',
-        answer:
-          'Both paths are available. PDF upload works for all banks. Live API connection via Mono gives you a faster, stronger verification signal and is available for all major Nigerian banks. You choose the path that works for you.',
+        state: 'Decision points',
+        questions: [
+          { q: 'PDF upload or live bank connection?', a: 'PDF works for any bank. Live Mono connection is faster and produces a stronger verification signal.' },
+          { q: 'Do I need a sponsor?', a: 'Not for Tier 1 or Tier 2. Tier 3 (higher amounts, stricter schools) may require sponsor verification.' },
+        ],
       },
       {
-        question: 'Does the admissions office need a Doculet account?',
-        answer:
-          'No. University admissions staff verify certificates by opening the link you send them. The verification page is public, no login required. They see the seal status, the verified balance, the issuing bank, and the expiry date.',
+        state: 'Blocked',
+        questions: [
+          { q: 'My identity check failed — what next?', a: 'A review option appears on your dashboard. Submit your international passport for manual review.' },
+          { q: 'My bank statement was rejected?', a: 'The reviewer notes the reason on your dashboard. Correct and resubmit — no need to restart.' },
+        ],
+      },
+      {
+        state: 'Parallel flow',
+        questions: [
+          { q: 'Can I apply to multiple universities?', a: 'Yes. Each application is isolated. One shared identity check, separate documents and sponsors per school.' },
+          { q: 'Can multiple people sponsor me?', a: 'Yes. Add as many sponsors as you need. Their balances combine toward your proof of funds target.' },
+        ],
       },
     ],
   },
 
   cta: {
-    headline: 'Your US university needs this document',
-    body: 'Start today. Get your Doculet certificate before your I-20 deadline.',
+    headline: 'Get verified before your I-20 deadline',
+    body: 'Create your account and submit your proof of funds today.',
     ctaPrimary: 'Create your account',
     ctaSecondary: 'Sign in',
   },
