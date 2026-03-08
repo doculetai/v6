@@ -16,6 +16,7 @@ import { insertAuditLog } from '@/db/queries/audit-log';
 import { processPaystackWebhook } from '@/db/queries/paystack-webhook';
 import { insertTransaction } from '@/db/queries/transactions';
 import { sendDisbursementFailedEmail } from '@/lib/email/send-disbursement-failed-email';
+import { sendDisbursementSentEmail } from '@/lib/email/send-disbursement-sent-email';
 import { enqueueWebhooks } from '@/lib/outbound-webhooks';
 
 const DOCULET_PREFIX = 'DOCULET-';
@@ -152,6 +153,7 @@ export async function POST(req: NextRequest) {
       const [sponsorship] = await db
         .select({
           studentId: sponsorships.studentId,
+          sponsorId: sponsorships.sponsorId,
           currency: sponsorships.currency,
         })
         .from(sponsorships)
@@ -198,6 +200,24 @@ export async function POST(req: NextRequest) {
             currency: sponsorship.currency,
             disbursedAt: disbursement.disbursedAt?.toISOString(),
           });
+        } catch {
+          // Logged; do not fail webhook response
+        }
+
+        try {
+          const [sponsorUser] = await db
+            .select({ email: users.email })
+            .from(users)
+            .where(eq(users.id, sponsorship.sponsorId))
+            .limit(1);
+
+          if (sponsorUser?.email) {
+            await sendDisbursementSentEmail({
+              toEmail: sponsorUser.email,
+              amountKobo: disbursement.amountKobo,
+              currency: sponsorship.currency,
+            });
+          }
         } catch {
           // Logged; do not fail webhook response
         }
