@@ -1,7 +1,7 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import { ArrowRight, CaretDown, Trophy } from '@phosphor-icons/react';
+import { ArrowRight, Trophy } from '@phosphor-icons/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -13,14 +13,10 @@ import type { NavItem } from '@/config/nav/types';
 import type { DashboardRole } from '@/config/roles';
 import { getStudentQuickAction } from '@/lib/student-trust-stage';
 import type { StudentTrustStage } from '@/lib/student-trust-stage';
-import { usePinnedItems } from '@/lib/hooks/usePinnedItems';
-import { useRecentPages } from '@/lib/hooks/useRecentPages';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { NotificationsBell } from './NotificationsBell';
 import { RoleIndicator } from './sidebar/RoleIndicator';
-import { SidebarFooter } from './sidebar/SidebarFooter';
 import { SidebarQuickAction } from './sidebar/SidebarQuickAction';
 import { SidebarToggle } from './sidebar/SidebarToggle';
 import { SidebarUserCard } from './sidebar/SidebarUserCard';
@@ -117,12 +113,6 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
     }
   };
 
-  const { pinnedHrefs } = usePinnedItems(role);
-  const pinnedItems = pinnedHrefs
-    .map((href) => navConfig.items.find((i) => i.href === href))
-    .filter((i): i is NavItem => i !== undefined);
-  const recentPages = useRecentPages(role);
-
   const ungroupedItems = navConfig.items.filter((i) => !i.group);
   const groupedItems = navConfig.groups
     .map((group) => ({ group, items: navConfig.items.filter((i) => i.group === group.id) }))
@@ -185,25 +175,6 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         {/* ── Separator ── */}
         <div className="mx-3 border-t border-sidebar-border" />
 
-        {/* ── Pinned items ── */}
-        {pinnedItems.length > 0 && (
-          <div className="px-2 pt-2">
-            {!isCollapsed && (
-              <p className="px-2 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-sidebar-foreground/50">
-                Pinned
-              </p>
-            )}
-            <ul className="flex flex-col gap-px" role="list">
-              {pinnedItems.map((item) => (
-                <li key={item.href}>
-                  <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={isCollapsed} />
-                </li>
-              ))}
-            </ul>
-            <div className="mx-1 mt-2 border-t border-sidebar-border" />
-          </div>
-        )}
-
         {/* ── Nav ── */}
         <nav
           aria-label={dashboardShellCopy.sidebar.navAriaLabel}
@@ -230,47 +201,15 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
           ))}
         </nav>
 
-        {/* ── Recent pages ── */}
-        {!isCollapsed && recentPages.length > 0 && (
-          <div className="border-t border-sidebar-border px-2 py-2">
-            <p className="px-2 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-sidebar-foreground/50">
-              Recent
-            </p>
-            <ul className="flex flex-col gap-px" role="list">
-              {recentPages.map((page) => (
-                <li key={page.href}>
-                  <Link
-                    href={page.href}
-                    className={cn(
-                      'flex min-h-[36px] items-center rounded-md px-3 text-[12.5px] font-[450] text-sidebar-foreground/60',
-                      'transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground',
-                    )}
-                  >
-                    <span className="truncate">{page.label}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
         {/* ── Bottom ── */}
         <div
           className="flex shrink-0 flex-col border-t border-sidebar-border"
           data-testid="sidebar-bottom"
         >
-          <div className={cn(
-            'flex items-center gap-1 px-2 pt-1',
-            isCollapsed && 'justify-center',
-          )}>
-            <NotificationsBell
-              role={role}
-              className="text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-            />
+          <div className={cn('flex items-center gap-1 px-2 pt-1', isCollapsed && 'justify-center')}>
             <SidebarToggle isCollapsed={isCollapsed} onToggle={toggleCollapsed} />
           </div>
           <SidebarUserCard role={role} isCollapsed={isCollapsed} onSignOut={handleLogout} />
-          <SidebarFooter isCollapsed={isCollapsed} />
         </div>
       </aside>
     </TooltipProvider>
@@ -285,16 +224,7 @@ type NavGroupProps = {
   isCollapsed: boolean;
 };
 
-const NAV_GROUP_STORAGE_PREFIX = 'doculet-nav-group-';
-
 function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
-  const storageKey = `${NAV_GROUP_STORAGE_PREFIX}${label.toLowerCase().replace(/\s+/g, '-')}`;
-  const [isOpen, setIsOpen] = useState(() => {
-    if (typeof window === 'undefined') return true;
-    return localStorage.getItem(storageKey) !== 'false';
-  });
-  const listId = `nav-group-${label.toLowerCase().replace(/\s+/g, '-')}`;
-
   if (isCollapsed) {
     return (
       <div className="mt-1">
@@ -312,40 +242,16 @@ function NavGroup({ label, items, activeHref, isCollapsed }: NavGroupProps) {
 
   return (
     <div className="mt-3">
-      <button
-        type="button"
-        onClick={() => setIsOpen((p) => {
-          const next = !p;
-          localStorage.setItem(storageKey, String(next));
-          return next;
-        })}
-        className="flex w-full items-center justify-between px-4 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-sidebar-foreground/50 hover:text-sidebar-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)] focus-visible:rounded-sm transition-colors"
-        aria-expanded={isOpen}
-        aria-controls={listId}
-      >
+      <p className="px-4 pb-1 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-sidebar-foreground/50">
         {label}
-        <CaretDown weight="duotone"
-          className={cn('h-3 w-3 transition-transform duration-150', !isOpen && '-rotate-90')}
-        />
-      </button>
-      <div
-        className={cn(
-          'grid transition-[grid-template-rows,opacity] duration-200 ease-out',
-          isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
-        )}
-      >
-        <ul
-          id={listId}
-          className="flex flex-col gap-px overflow-hidden px-2"
-          role="list"
-        >
-          {items.map((item) => (
-            <li key={item.href}>
-              <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={false} />
-            </li>
-          ))}
-        </ul>
-      </div>
+      </p>
+      <ul className="flex flex-col gap-px px-2" role="list">
+        {items.map((item) => (
+          <li key={item.href}>
+            <NavItemLink item={item} isActive={activeHref === item.href} isCollapsed={false} />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
