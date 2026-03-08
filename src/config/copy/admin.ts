@@ -82,11 +82,27 @@ export const adminCopy = {
     },
     empty: { title: 'No reviews', description: 'Statement reviews will appear here.' },
     error: { title: 'Failed to load statement reviews', description: 'Please refresh the page to try again.' },
+    documentTypeLabel: 'Bank statement',
+    reviewActions: {
+      approveCta: 'Approve',
+      rejectCta: 'Reject',
+      requestInfoCta: 'Request info',
+      notesLabel: 'Review notes',
+      notesPlaceholder: 'Add notes for the student\u2026', // copy-audit-disable
+      cancel: 'Cancel',
+    },
   },
   fraud: {
     title: 'Fraud detection',
     subtitle: 'Flagged items and fraud signals.',
     empty: { title: 'No fraud flags', description: 'Flagged items will appear here.' },
+    table: {
+      flag: 'Flag',
+      user: 'User',
+      severity: 'Severity',
+      detail: 'Detail',
+      detected: 'Detected',
+    },
   },
   payments: {
     title: 'Payments',
@@ -105,6 +121,7 @@ export const adminCopy = {
     },
     filters: {
       type: 'Type',
+      typeAll: 'All',
       entityType: 'Entity type',
       dateFrom: 'From date',
       dateTo: 'To date',
@@ -179,6 +196,15 @@ export const adminCopy = {
     title: 'System health',
     subtitle: 'Services and infrastructure status.',
     empty: { title: 'Loading', description: 'System status will appear here.' },
+    servicesCount: (n: number) => `${n} services`,
+    allServicesOk: (statusLabel: string) => `All services are ${statusLabel.toLowerCase()}`,
+    thirdPartyIntegrations: 'Third-party integrations',
+    serviceNames: {
+      database: 'Database',
+      auth: 'Auth (Supabase)',
+      storage: 'Storage (Supabase)',
+      email: 'Email (Resend)',
+    },
   },
 
   documentReview: {
@@ -716,10 +742,15 @@ export const adminCopy = {
     noDocuments: 'No documents submitted.',
     noSponsorships: 'No sponsorships on record.',
     noCertificate: 'No certificate issued.',
-    loading: 'Loading record…',
+    loading: 'Loading record\u2026',
     error: 'Failed to load student record.',
     viewRecord: 'View record',
     close: 'Close',
+    onboardingLabels: {
+      complete: 'Complete',
+      incomplete: 'Incomplete',
+    },
+    suspendedLabel: 'Suspended',
   },
 
   nav: {

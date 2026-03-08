@@ -61,7 +61,7 @@ function OverallStatusBanner({
   const badgeClass = {
     not_started: 'bg-muted text-muted-foreground border-0',
     pending: 'bg-muted text-muted-foreground border-0',
-    verified: 'bg-[#15803D]/10 text-[#15803D] border-0',
+    verified: 'bg-success/10 text-success border-0',
     failed: 'bg-destructive/10 text-destructive border-0',
   }[status];
 
@@ -117,7 +117,7 @@ function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityForm
         <select
           id={`identity-type-${tier}`}
           {...register('identityType')}
-          className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm text-foreground dark:bg-input/30"
+          className="min-h-[44px] w-full rounded-md border border-input bg-transparent px-3 text-sm text-foreground dark:bg-input/30"
         >
           <option value="bvn">{copy.identityTypes.bvn}</option>
           <option value="nin">{copy.identityTypes.nin}</option>
@@ -140,7 +140,7 @@ function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityForm
       </div>
 
       <div className="flex gap-2">
-        <Button type="submit" size="sm" disabled={isSubmitting || mutation.isPending} className="min-h-9 bg-[#15803D] hover:bg-[#15803D]/90 text-white">
+        <Button type="submit" size="sm" disabled={isSubmitting || mutation.isPending} className="min-h-[44px]">
           {copy.form.submitCta}
         </Button>
         <Button
@@ -148,7 +148,7 @@ function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityForm
           size="sm"
           variant="outline"
           disabled={isSubmitting || mutation.isPending}
-          className="min-h-9"
+          className="min-h-[44px]"
           onClick={onCancel}
         >
           {copy.form.cancelCta}
@@ -188,7 +188,7 @@ function TierCard({
     return (
       <Card className="border-border bg-card">
         <CardHeader className="flex flex-row items-start gap-3 pb-2">
-          <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-[#15803D]" aria-hidden="true" />
+          <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-success" aria-hidden="true" />
           <div className="min-w-0">
             <CardTitle className="text-base font-semibold text-card-foreground">
               {tier.tierHeading} — {tier.label}
@@ -197,7 +197,7 @@ function TierCard({
               {tier.description}
             </CardDescription>
           </div>
-          <Badge className="ml-auto shrink-0 bg-[#15803D]/10 text-[#15803D] border-0">
+          <Badge className="ml-auto shrink-0 bg-success/10 text-success border-0">
             {statusLabels.verified}
           </Badge>
         </CardHeader>
@@ -212,7 +212,7 @@ function TierCard({
   const isPending = kycStatus === 'pending';
 
   const statusBadge = isVerified ? (
-    <Badge className="ml-auto shrink-0 bg-[#15803D]/10 text-[#15803D] border-0">
+    <Badge className="ml-auto shrink-0 bg-success/10 text-success border-0">
       {statusLabels.verified}
     </Badge>
   ) : isPending ? (
@@ -226,7 +226,7 @@ function TierCard({
   ) : null;
 
   const headingIcon = isVerified ? (
-    <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-[#15803D]" aria-hidden="true" />
+    <CheckCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-success" aria-hidden="true" />
   ) : isFailed ? (
     <XCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden="true" />
   ) : (
@@ -268,7 +268,7 @@ function TierCard({
           ) : (
             <Button
               size="sm"
-              className={cn('min-h-9', isFailed && 'mt-1')}
+              className={cn('min-h-[44px]', isFailed && 'mt-1')}
               onClick={() => {
                 onFeedback(null);
                 setShowForm(true);
@@ -300,7 +300,7 @@ function FeedbackBanner({ feedback }: { feedback: FeedbackState }) {
         {feedback.kind === 'error' ? (
           <Warning weight="duotone" className="mt-0.5 size-5 text-destructive" aria-hidden="true" />
         ) : (
-          <CheckCircle weight="duotone" className="mt-0.5 size-5 text-[#15803D]" aria-hidden="true" />
+          <CheckCircle weight="duotone" className="mt-0.5 size-5 text-success" aria-hidden="true" />
         )}
         <p
           className={
@@ -354,7 +354,7 @@ export function KycPageClient({ kycStatus, copy }: KycPageClientProps) {
             </div>
             <Button
               size="sm"
-              className="min-h-9"
+              className="min-h-[44px]"
               onClick={() => {
                 setFeedback(null);
               }}

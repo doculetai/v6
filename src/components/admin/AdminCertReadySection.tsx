@@ -76,11 +76,11 @@ export function AdminCertReadySection({ students, onIssued, isSuperAdmin = false
     <section aria-label={copy.sectionTitle}>
       {/* Section header */}
       <div className="mb-3 flex items-center gap-2">
-        <SealCheck size={16} weight="duotone" aria-hidden="true" className="text-[#C2410C]" />
+        <SealCheck size={16} weight="duotone" aria-hidden="true" className="text-destructive" />
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
           {copy.sectionTitle}
         </p>
-        <span className="ml-auto rounded-full bg-[#C2410C]/10 px-2 py-0.5 text-[10px] font-semibold text-[#C2410C]">
+        <span className="ml-auto rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
           {students.length}
         </span>
       </div>

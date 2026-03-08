@@ -355,6 +355,8 @@ export const universityCopy = {
     title: 'Bulk import',
     subtitle: 'Import students in bulk via email addresses.',
     instructions: 'Paste email addresses (one per line) or upload a CSV file with an "email" column.',
+    emailAddressesLabel: 'Email addresses',
+    parseEmailsCta: 'Parse emails',
     textareaPlaceholder: 'student1@example.com\nstudent2@example.com',
     uploadLabel: 'Or upload CSV',
     previewTitle: 'Preview',

@@ -347,6 +347,7 @@ export const partnerCopy = {
     },
     filters: {
       type: 'Transaction type',
+      typeAll: 'All',
       dateFrom: 'From',
       dateTo: 'To',
     },

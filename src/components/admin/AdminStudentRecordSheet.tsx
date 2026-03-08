@@ -124,14 +124,14 @@ function RecordContent({ studentId }: { studentId: string }) {
             value={
               <StatusBadge
                 status={data.onboardingComplete ? 'verified' : 'pending'}
-                label={data.onboardingComplete ? 'Complete' : 'Incomplete'}
+                label={data.onboardingComplete ? copy.onboardingLabels.complete : copy.onboardingLabels.incomplete}
                 size="sm"
               />
             }
           />
           {data.suspendedAt && (
             <FieldRow
-              label="Suspended"
+              label={copy.suspendedLabel}
               value={<TimestampLabel value={data.suspendedAt} mode="absolute" />}
             />
           )}

@@ -83,7 +83,7 @@ export function DisbursementsPageClient({ disbursements, copy }: DisbursementsPa
             type="button"
             onClick={() => setActiveFilter(filter.value)}
             className={cn(
-              'rounded-full border px-3 py-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              'min-h-[44px] rounded-full border px-3 py-1 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
               activeFilter === filter.value
                 ? 'border-primary bg-primary/10 text-primary'
                 : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground',
