@@ -26,8 +26,8 @@ export function StatCard({
   children,
 }: StatCardProps) {
   return (
-    <div className={cn('rounded-xl border border-border bg-card px-4 py-[18px] shadow-sm', className)}>
-      <p className="text-[10px] font-bold uppercase tracking-[0.09em] text-slate-400">
+    <div className={cn('rounded-2xl border border-border bg-card p-5', className)}>
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
         {label}
       </p>
       <p className={cn('mt-2 text-2xl font-bold tracking-tight text-foreground', mono && 'font-mono')}>
