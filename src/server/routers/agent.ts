@@ -1,7 +1,8 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { agentProfiles } from '@/db/schema';
+import { agentCommissions, agentProfiles } from '@/db/schema';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
@@ -45,7 +46,7 @@ export const agentRouter = createTRPCRouter({
     .output(AgentSettingsOutputSchema)
     .query(async ({ ctx }) => {
       const profile = await ctx.db.query.agentProfiles.findFirst({
-        where: (table, { eq: eqFn }) => eqFn(table.userId, ctx.user.id),
+        where: (table, { eq: eqFn }) => eqFn(table.userId, ctx.user!.id),
       });
 
       return {
@@ -68,7 +69,7 @@ export const agentRouter = createTRPCRouter({
       await ctx.db
         .insert(agentProfiles)
         .values({
-          userId: ctx.user.id,
+          userId: ctx.user!.id,
           fullName: input.fullName,
           phoneNumber: input.phoneNumber || null,
           region: input.region || null,
@@ -101,7 +102,7 @@ export const agentRouter = createTRPCRouter({
           notifyAccountSecurity: input.notifyAccountSecurity,
           updatedAt: new Date(),
         })
-        .where(eq(agentProfiles.userId, ctx.user.id));
+        .where(eq(agentProfiles.userId, ctx.user!.id));
     }),
 
   getAgentOverview: roleProcedure('agent')
@@ -116,11 +117,11 @@ export const agentRouter = createTRPCRouter({
     .query(async ({ ctx }) => {
       const [assignments, commissions] = await Promise.all([
         ctx.db.query.agentStudentAssignments.findMany({
-          where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
+          where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user!.id),
           columns: { id: true },
         }),
         ctx.db.query.agentCommissions.findMany({
-          where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
+          where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user!.id),
           columns: { status: true, amountKobo: true },
         }),
       ]);
@@ -154,7 +155,7 @@ export const agentRouter = createTRPCRouter({
     )
     .query(async ({ ctx }) => {
       const assignments = await ctx.db.query.agentStudentAssignments.findMany({
-        where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user!.id),
         orderBy: (t, { desc }) => [desc(t.assignedAt)],
       });
 
@@ -215,7 +216,7 @@ export const agentRouter = createTRPCRouter({
     )
     .query(async ({ ctx }) => {
       const rows = await ctx.db.query.agentCommissions.findMany({
-        where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user.id),
+        where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user!.id),
         orderBy: (t, { desc }) => [desc(t.createdAt)],
       });
 
@@ -228,5 +229,128 @@ export const agentRouter = createTRPCRouter({
         paidAt: r.paidAt ?? null,
         createdAt: r.createdAt,
       }));
+    }),
+
+  requestPayout: roleProcedure('agent')
+    .output(z.object({ requestedAmountKobo: z.number() }))
+    .mutation(async ({ ctx }) => {
+      const pendingCommissions = await ctx.db.query.agentCommissions.findMany({
+        where: (t, { and: andFn, eq: eqFn }) =>
+          andFn(eqFn(t.agentId, ctx.user!.id), eqFn(t.status, 'pending')),
+      });
+      const totalKobo = pendingCommissions.reduce((sum, c) => sum + c.amountKobo, 0);
+      if (totalKobo === 0) {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'No pending commissions to pay out.' });
+      }
+      await ctx.db
+        .update(agentCommissions)
+        .set({ status: 'processing', updatedAt: new Date() })
+        .where(
+          and(
+            eq(agentCommissions.agentId, ctx.user!.id),
+            eq(agentCommissions.status, 'pending'),
+          ),
+        );
+      return { requestedAmountKobo: totalKobo };
+    }),
+
+  getActivity: roleProcedure('agent')
+    .output(
+      z.array(
+        z.object({
+          eventType: z.enum([
+            'cert_issued',
+            'doc_approved',
+            'doc_rejected',
+            'kyc_complete',
+            'student_joined',
+          ]),
+          studentId: z.string(),
+          studentEmail: z.string().nullable(),
+          description: z.string(),
+          occurredAt: z.date(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      const assignments = await ctx.db.query.agentStudentAssignments.findMany({
+        where: (t, { eq: eqFn }) => eqFn(t.agentId, ctx.user!.id),
+        columns: { studentId: true },
+      });
+      if (assignments.length === 0) return [];
+
+      const studentIds = assignments.map((a) => a.studentId);
+
+      const [certs, docs, userRows] = await Promise.all([
+        ctx.db.query.certificates.findMany({
+          where: (t, { inArray: inArrayFn }) => inArrayFn(t.studentId, studentIds),
+          columns: { studentId: true, issuedAt: true, token: true },
+          orderBy: (t, { desc }) => [desc(t.issuedAt)],
+          limit: 50,
+        }),
+        ctx.db.query.documents.findMany({
+          where: (t, { and: andFn, inArray: inArrayFn, notInArray }) =>
+            andFn(
+              inArrayFn(t.userId, studentIds),
+              notInArray(t.status, ['pending', 'more_info_requested', 'expired']),
+            ),
+          columns: { userId: true, status: true, type: true, updatedAt: true },
+          orderBy: (t, { desc }) => [desc(t.updatedAt)],
+          limit: 50,
+        }),
+        ctx.db.query.users.findMany({
+          where: (t, { inArray: inArrayFn }) => inArrayFn(t.id, studentIds),
+          columns: { id: true, email: true },
+        }),
+      ]);
+
+      const emailMap = new Map(userRows.map((u) => [u.id, u.email]));
+
+      const events: Array<{
+        eventType:
+          | 'cert_issued'
+          | 'doc_approved'
+          | 'doc_rejected'
+          | 'kyc_complete'
+          | 'student_joined';
+        studentId: string;
+        studentEmail: string | null;
+        description: string;
+        occurredAt: Date;
+      }> = [];
+
+      for (const cert of certs) {
+        events.push({
+          eventType: 'cert_issued',
+          studentId: cert.studentId,
+          studentEmail: emailMap.get(cert.studentId) ?? null,
+          description: `Certificate issued: ${cert.token}`,
+          occurredAt: cert.issuedAt,
+        });
+      }
+
+      for (const doc of docs) {
+        if (doc.status === 'approved') {
+          events.push({
+            eventType: 'doc_approved',
+            studentId: doc.userId,
+            studentEmail: emailMap.get(doc.userId) ?? null,
+            description: `${doc.type} approved`,
+            occurredAt: doc.updatedAt,
+          });
+        } else if (doc.status === 'rejected') {
+          events.push({
+            eventType: 'doc_rejected',
+            studentId: doc.userId,
+            studentEmail: emailMap.get(doc.userId) ?? null,
+            description: `${doc.type} rejected`,
+            occurredAt: doc.updatedAt,
+          });
+        }
+      }
+
+      return events
+        .sort((a, b) => b.occurredAt.getTime() - a.occurredAt.getTime())
+        .slice(0, 50);
     }),
 });
