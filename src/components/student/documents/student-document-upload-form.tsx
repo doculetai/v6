@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Controller, type UseFormReturn } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
+import { Callout } from '@/components/ui/callout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import {
@@ -28,6 +29,7 @@ type StudentDocumentUploadFormProps = {
   fileInputKey: string;
   isUploading: boolean;
   onSubmit: (values: DocumentUploadFormValues) => void;
+  rejectionNote?: string;
 };
 
 export function StudentDocumentUploadForm({
@@ -36,6 +38,7 @@ export function StudentDocumentUploadForm({
   fileInputKey,
   isUploading,
   onSubmit,
+  rejectionNote,
 }: StudentDocumentUploadFormProps) {
   const [isDragging, setIsDragging] = useState(false);
   const selectedFile = form.watch('file');
@@ -56,6 +59,11 @@ export function StudentDocumentUploadForm({
 
       <CardContent>
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
+          {rejectionNote ? (
+            <Callout variant="error">
+              <span className="font-medium">Rejected:</span> {rejectionNote}
+            </Callout>
+          ) : null}
           <div className="space-y-2">
             <Label htmlFor="document-type">{copy.upload.documentTypeLabel}</Label>
             <Controller

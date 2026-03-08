@@ -110,8 +110,11 @@ export function DocumentsPageClient() {
     },
   });
 
-  const handleReuploadClick = (documentType: StudentDocumentType) => {
+  const [resubmitRejectionNote, setResubmitRejectionNote] = useState<string | null>(null);
+
+  const handleReuploadClick = (documentType: StudentDocumentType, rejectionNote?: string | null) => {
     form.setValue('documentType', documentType);
+    setResubmitRejectionNote(rejectionNote ?? null);
     const formEl = document.getElementById('document-upload-form');
     formEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -172,6 +175,7 @@ export function DocumentsPageClient() {
   const uploadDocumentMutation = trpc.student.uploadDocument.useMutation({
     onSuccess: async () => {
       setShowOcrCardState('visible');
+      setResubmitRejectionNote(null);
       await Promise.all([
         utils.student.listDocuments.invalidate(),
         utils.student.getLatestOcrRun.invalidate(),
@@ -311,6 +315,7 @@ export function DocumentsPageClient() {
         fileInputKey={fileInputKey}
         isUploading={uploadDocumentMutation.isPending}
         onSubmit={handleUpload}
+        rejectionNote={resubmitRejectionNote ?? undefined}
       />
 
       <DocumentUploadProgress

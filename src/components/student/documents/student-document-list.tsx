@@ -32,7 +32,7 @@ type StudentDocumentListItem = {
 type StudentDocumentListProps = {
   copy: StudentCopy['documents'];
   documents: StudentDocumentListItem[];
-  onReuploadClick?: (documentType: StudentDocumentType) => void;
+  onReuploadClick?: (documentType: StudentDocumentType, rejectionNote?: string | null) => void;
 };
 
 function formatDocumentDate(value: Date) {
@@ -145,7 +145,7 @@ export function StudentDocumentList({ copy, documents, onReuploadClick }: Studen
                         variant="outline"
                         size="sm"
                         className="h-11 min-w-[44px] gap-2"
-                        onClick={() => onReuploadClick(document.type)}
+                        onClick={() => onReuploadClick(document.type, document.rejectionReason)}
                       >
                         <UploadSimple className="size-4" weight="duotone" aria-hidden="true" />
                         {copy.list.reuploadReplacementCta}
@@ -170,7 +170,7 @@ export function StudentDocumentList({ copy, documents, onReuploadClick }: Studen
                         variant="outline"
                         size="sm"
                         className="h-11 min-w-[44px] gap-2"
-                        onClick={() => onReuploadClick(document.type)}
+                        onClick={() => onReuploadClick(document.type, document.rejectionReason)}
                       >
                         <UploadSimple className="size-4" weight="duotone" aria-hidden="true" />
                         {copy.list.moreInfoResubmitCta}
