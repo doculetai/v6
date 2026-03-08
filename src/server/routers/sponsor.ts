@@ -236,7 +236,7 @@ export const sponsorRouter = createTRPCRouter({
           studentEmail: z.string().nullable(),
           amountKobo: z.number(),
           currency: z.string(),
-          status: z.enum(['pending', 'active', 'completed', 'cancelled', 'withdrawn']),
+          status: z.enum(['pending', 'active', 'completed', 'cancelled', 'withdrawn', 'paused']),
           createdAt: z.date(),
         }),
       ),
@@ -621,7 +621,7 @@ export const sponsorRouter = createTRPCRouter({
           studentEmail: z.string().nullable(),
           amountKobo: z.number(),
           currency: z.string(),
-          status: z.enum(['pending', 'active', 'completed', 'cancelled', 'withdrawn']),
+          status: z.enum(['pending', 'active', 'completed', 'cancelled', 'withdrawn', 'paused']),
           createdAt: z.date(),
         }),
       ),
@@ -893,5 +893,60 @@ export const sponsorRouter = createTRPCRouter({
         })),
         nextScheduledDisbursementId: nextDisbursement?.id ?? null,
       };
+    }),
+
+  cancelSponsorship: roleProcedure('sponsor')
+    .input(z.object({ sponsorshipId: z.string().uuid() }))
+    .output(z.void())
+    .mutation(async ({ ctx, input }) => {
+      const sponsorship = await ctx.db.query.sponsorships.findFirst({
+        where: (t, { and: andFn, eq: eqFn }) =>
+          andFn(eqFn(t.id, input.sponsorshipId), eqFn(t.sponsorId, ctx.user.id)),
+        columns: { id: true, status: true },
+      });
+
+      if (!sponsorship) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Sponsorship not found.' });
+      }
+
+      if (sponsorship.status !== 'active') {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Only active sponsorships can be cancelled.',
+        });
+      }
+
+      await ctx.db
+        .update(sponsorships)
+        .set({ status: 'cancelled', updatedAt: new Date() })
+        .where(
+          and(eq(sponsorships.id, input.sponsorshipId), eq(sponsorships.sponsorId, ctx.user.id)),
+        );
+    }),
+
+  resumeCommitment: roleProcedure('sponsor')
+    .input(z.object({ commitmentId: z.string().uuid() }))
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const sponsorship = await ctx.db.query.sponsorships.findFirst({
+        where: (t, { and: andFn, eq: eqFn }) =>
+          andFn(eqFn(t.id, input.commitmentId), eqFn(t.sponsorId, ctx.user.id)),
+        columns: { id: true, status: true },
+      });
+
+      if (!sponsorship) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Commitment not found.' });
+      }
+
+      if (sponsorship.status !== 'paused') {
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Only paused commitments can be resumed.' });
+      }
+
+      await ctx.db
+        .update(sponsorships)
+        .set({ status: 'active', updatedAt: new Date() })
+        .where(and(eq(sponsorships.id, input.commitmentId), eq(sponsorships.sponsorId, ctx.user.id)));
+
+      return { success: true };
     }),
 });

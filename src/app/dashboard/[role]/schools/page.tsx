@@ -3,13 +3,13 @@ import type { inferRouterOutputs } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
-import { PageHeader } from '@/components/ui/page-header';
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { studentCopy } from '@/config/copy/student';
 import type { AppRouter } from '@/server/root';
 import { api } from '@/trpc/server';
-import { TRPCReactProvider } from '@/trpc/provider';
 
 import { SchoolsPageClient } from './schools-page-client';
+import { routes } from '@/config/routes';
 
 export const metadata: Metadata = {
   title: 'Schools — Doculet',
@@ -48,7 +48,7 @@ export default async function SchoolsRolePage({ params }: SchoolsRolePageProps) 
     ]);
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
-      redirect('/login');
+      redirect(routes.auth.login);
     }
 
     if (error instanceof TRPCError && error.code === 'FORBIDDEN') {
@@ -59,7 +59,7 @@ export default async function SchoolsRolePage({ params }: SchoolsRolePageProps) 
   }
 
   return (
-    <>
+    <PageShell>
       <PageHeader
         title={studentCopy.schools.title}
         breadcrumbs={[
@@ -67,9 +67,7 @@ export default async function SchoolsRolePage({ params }: SchoolsRolePageProps) 
           { label: studentCopy.schools.title },
         ]}
       />
-      <TRPCReactProvider>
-        <SchoolsPageClient initialSchools={initialSchools} initialSelection={initialSelection} />
-      </TRPCReactProvider>
-    </>
+      <SchoolsPageClient initialSchools={initialSchools} initialSelection={initialSelection} />
+    </PageShell>
   );
 }

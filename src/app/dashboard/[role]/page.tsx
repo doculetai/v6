@@ -17,6 +17,7 @@ import { PartnerOverview } from './_components/partner-overview';
 import { SponsorOverview } from './_components/sponsor-overview';
 import { StudentOverview } from './_components/student-overview';
 import { UniversityOverview } from './_components/university-overview';
+import { routes } from '@/config/routes';
 
 type DashboardRolePageProps = {
   params: Promise<{ role: string }>;
@@ -37,10 +38,10 @@ export default async function DashboardRolePage({ params }: DashboardRolePagePro
   } catch (error) {
     if (error instanceof TRPCError) {
       if (error.code === 'UNAUTHORIZED') {
-        redirect('/login');
+        redirect(routes.auth.login);
       }
       if (error.code === 'FORBIDDEN') {
-        redirect('/login');
+        redirect(routes.auth.login);
       }
     }
 

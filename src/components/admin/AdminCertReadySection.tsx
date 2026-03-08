@@ -13,6 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { TimestampLabel } from '@/components/ui/timestamp-label';
 import { adminCopy } from '@/config/copy/admin';
 import type { CertReadyStudent } from '@/db/queries/admin-operations';
@@ -21,9 +23,15 @@ import { trpc } from '@/trpc/client';
 interface AdminCertReadySectionProps {
   students: CertReadyStudent[];
   onIssued: () => void;
+  /** When true, the issuing admin is a super admin who can edit the expiry date */
+  isSuperAdmin?: boolean;
 }
 
 const copy = adminCopy.certReady;
+
+function defaultExpiryDate(): string {
+  return new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
 
 interface IssueTarget {
   studentId: string;
@@ -32,8 +40,9 @@ interface IssueTarget {
   paymentStatus: 'paid' | 'waived';
 }
 
-export function AdminCertReadySection({ students, onIssued }: AdminCertReadySectionProps) {
+export function AdminCertReadySection({ students, onIssued, isSuperAdmin = false }: AdminCertReadySectionProps) {
   const [issueTarget, setIssueTarget] = useState<IssueTarget | null>(null);
+  const [expiryDate, setExpiryDate] = useState<string>(defaultExpiryDate());
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const issueMutation = trpc.admin.issueCertificate.useMutation({
@@ -53,6 +62,12 @@ export function AdminCertReadySection({ students, onIssued }: AdminCertReadySect
       studentId: issueTarget.studentId,
       waivePayment: issueTarget.paymentStatus === 'waived',
     });
+  }
+
+  function handleOpenIssueDialog(student: IssueTarget) {
+    setIssueTarget(student);
+    setExpiryDate(defaultExpiryDate());
+    setErrorMsg(null);
   }
 
   if (students.length === 0) return null;
@@ -115,7 +130,7 @@ export function AdminCertReadySection({ students, onIssued }: AdminCertReadySect
                       variant="outline"
                       className="min-h-11 text-xs"
                       onClick={() =>
-                        setIssueTarget({
+                        handleOpenIssueDialog({
                           studentId: student.studentId,
                           studentEmail: student.studentEmail,
                           fullName: student.fullName,
@@ -164,7 +179,7 @@ export function AdminCertReadySection({ students, onIssued }: AdminCertReadySect
                   variant="outline"
                   className="min-h-11 w-full text-xs"
                   onClick={() =>
-                    setIssueTarget({
+                    handleOpenIssueDialog({
                       studentId: student.studentId,
                       studentEmail: student.studentEmail,
                       fullName: student.fullName,
@@ -192,7 +207,7 @@ export function AdminCertReadySection({ students, onIssued }: AdminCertReadySect
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{copy.issueDialog.title}</DialogTitle>
+            <DialogTitle>{adminCopy.certIssuance.title}</DialogTitle>
             <DialogDescription>
               {copy.issueDialog.description}
             </DialogDescription>
@@ -209,7 +224,7 @@ export function AdminCertReadySection({ students, onIssued }: AdminCertReadySect
                   <span className="text-muted-foreground">
                     {adminCopy.studentRecord.labels.fullName}
                   </span>
-                  <span className="font-medium text-foreground">{issueTarget.fullName}</span>
+                  <span className="font-mono font-medium text-foreground">{issueTarget.fullName}</span>
                 </div>
               )}
               <div className="flex justify-between">
@@ -220,6 +235,27 @@ export function AdminCertReadySection({ students, onIssued }: AdminCertReadySect
               </div>
             </div>
           )}
+
+          {/* Expiry date */}
+          <div className="space-y-1.5">
+            <Label htmlFor="cert-expiry" className="text-sm font-medium text-foreground">
+              {adminCopy.certIssuance.expiryLabel}
+            </Label>
+            {isSuperAdmin ? (
+              <Input
+                id="cert-expiry"
+                type="date"
+                value={expiryDate}
+                onChange={(e) => setExpiryDate(e.target.value)}
+                className="font-mono"
+              />
+            ) : (
+              <p id="cert-expiry" className="font-mono text-sm text-foreground">
+                {expiryDate}
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground">{adminCopy.certIssuance.expiryDefault}</p>
+          </div>
 
           {errorMsg && (
             <p className="text-sm text-destructive">{errorMsg}</p>
@@ -234,13 +270,13 @@ export function AdminCertReadySection({ students, onIssued }: AdminCertReadySect
               }}
               disabled={issueMutation.isPending}
             >
-              {copy.issueDialog.cancel}
+              {adminCopy.certIssuance.cancel}
             </Button>
             <Button
               onClick={handleConfirmIssue}
               disabled={issueMutation.isPending}
             >
-              {issueMutation.isPending ? copy.issueDialog.issuing : copy.issueDialog.confirmCta}
+              {issueMutation.isPending ? copy.issueDialog.issuing : adminCopy.certIssuance.confirm}
             </Button>
           </DialogFooter>
         </DialogContent>

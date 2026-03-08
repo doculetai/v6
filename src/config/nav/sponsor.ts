@@ -1,4 +1,5 @@
-import { ClipboardCheck, HandCoins, Home, ReceiptText, Settings, Shield, Users } from 'lucide-react';
+import { ClipboardText, Gear, House, Receipt, Shield, Users } from '@/components/icons';
+import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
 
@@ -10,43 +11,36 @@ export const sponsorNavConfig: NavConfig = {
   items: [
     {
       label: 'Overview',
-      href: '/dashboard/sponsor',
-      icon: Home,
+      href: routes.dashboard.sponsor.overview,
+      icon: House,
       description: 'Funding summary and activity',
       isPrimary: true,
     },
     {
       label: 'Students',
-      href: '/dashboard/sponsor/students',
+      href: routes.dashboard.sponsor.students,
       icon: Users,
       description: 'Students you sponsor',
       group: 'fund',
     },
     {
-      label: 'Disbursements',
-      href: '/dashboard/sponsor/disbursements',
-      icon: HandCoins,
-      description: 'Fund transfers and schedules',
-      group: 'fund',
-    },
-    {
       label: 'Transactions',
-      href: '/dashboard/sponsor/transactions',
-      icon: ReceiptText,
+      href: routes.dashboard.sponsor.transactions,
+      icon: Receipt,
       description: 'Full transaction history',
       group: 'fund',
     },
     {
       label: 'KYC',
-      href: '/dashboard/sponsor/kyc',
+      href: routes.dashboard.sponsor.kyc,
       icon: Shield,
       description: 'Identity verification status',
       group: 'account',
     },
     {
       label: 'Settings',
-      href: '/dashboard/sponsor/settings',
-      icon: Settings,
+      href: routes.dashboard.sponsor.settings,
+      icon: Gear,
       description: 'Profile and preferences',
       group: 'account',
       mobileHidden: true,
@@ -54,8 +48,8 @@ export const sponsorNavConfig: NavConfig = {
   ],
   quickAction: {
     label: 'Review requests',
-    icon: ClipboardCheck,
-    href: '/dashboard/sponsor/students',
+    icon: ClipboardText,
+    href: routes.dashboard.sponsor.students,
   },
 };
 

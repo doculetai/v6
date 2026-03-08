@@ -1,4 +1,5 @@
-import { Activity, Coins, Home, Settings, UserPlus, Users, Zap } from 'lucide-react';
+import { CurrencyNgn, Gear, House, Pulse, UserPlus, Users } from '@/components/icons';
+import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
 
@@ -10,43 +11,36 @@ export const agentNavConfig: NavConfig = {
   items: [
     {
       label: 'Overview',
-      href: '/dashboard/agent',
-      icon: Home,
+      href: routes.dashboard.agent.overview,
+      icon: House,
       description: 'Pipeline and performance',
       isPrimary: true,
     },
     {
       label: 'Students',
-      href: '/dashboard/agent/students',
+      href: routes.dashboard.agent.students,
       icon: Users,
       description: 'Students you manage',
       group: 'work',
     },
     {
-      label: 'Activity',
-      href: '/dashboard/agent/activity',
-      icon: Activity,
-      description: 'Recent actions and events',
-      group: 'work',
-    },
-    {
       label: 'Commissions',
-      href: '/dashboard/agent/commissions',
-      icon: Coins,
+      href: routes.dashboard.agent.commissions,
+      icon: CurrencyNgn,
       description: 'Earnings and payouts',
       group: 'work',
     },
     {
-      label: 'Quick Actions',
-      href: '/dashboard/agent/actions',
-      icon: Zap,
-      description: 'Shortcuts and bulk operations',
+      label: 'Activity',
+      href: routes.dashboard.agent.activity,
+      icon: Pulse,
+      description: 'Recent actions and events',
       group: 'work',
     },
     {
       label: 'Settings',
-      href: '/dashboard/agent/settings',
-      icon: Settings,
+      href: routes.dashboard.agent.settings,
+      icon: Gear,
       description: 'Profile settings',
       group: 'account',
       mobileHidden: true,
@@ -55,7 +49,7 @@ export const agentNavConfig: NavConfig = {
   quickAction: {
     label: 'Invite student',
     icon: UserPlus,
-    href: '/dashboard/agent/students',
+    href: routes.dashboard.agent.students,
   },
 };
 

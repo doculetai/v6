@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckCircle2, Loader2, UserRoundPlus } from 'lucide-react';
+import { CheckCircle, CircleNotch, UserPlus } from '@/components/icons';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -88,10 +88,10 @@ export function SignupPageClient() {
 
   if (confirmationEmail) {
     return (
-      <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border">
+      <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl dark:border-border">
         <CardHeader className="space-y-3 text-center">
           <div className="mx-auto inline-flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary dark:bg-primary/25">
-            <CheckCircle2 className="size-4" aria-hidden="true" />
+            <CheckCircle className="size-4" weight="duotone" aria-hidden="true" />
           </div>
           <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
             {authCopy.signup.successTitle}
@@ -99,7 +99,7 @@ export function SignupPageClient() {
           <CardDescription className="text-sm text-muted-foreground">
             {authCopy.signup.successDescription}
           </CardDescription>
-          <CardDescription className="font-medium text-foreground">
+          <CardDescription className="font-medium text-foreground" aria-live="polite">
             {confirmationEmail}
           </CardDescription>
         </CardHeader>
@@ -119,10 +119,10 @@ export function SignupPageClient() {
   }
 
   return (
-    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl dark:border-border">
+    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl dark:border-border">
       <CardHeader className="space-y-3">
         <div className="inline-flex items-center gap-2 text-muted-foreground">
-          <UserRoundPlus className="size-4" aria-hidden="true" />
+          <UserPlus className="size-4" weight="duotone" aria-hidden="true" />
           <span className="text-sm">{authCopy.signup.trustLabel}</span>
         </div>
         <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
@@ -133,13 +133,14 @@ export function SignupPageClient() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="space-y-5" onSubmit={onSubmit} noValidate>
+        <form className="space-y-5" onSubmit={onSubmit} noValidate aria-busy={isSubmitting}>
           <div className="space-y-2">
             <Label htmlFor="signup-email">{authCopy.common.emailLabel}</Label>
             <Input
               id="signup-email"
               type="email"
               autoComplete="email"
+              autoFocus
               placeholder={authCopy.common.emailHint}
               className="h-11 bg-background"
               aria-invalid={Boolean(errors.email)}
@@ -214,15 +215,15 @@ export function SignupPageClient() {
           </div>
 
           {submitError ? (
-            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/40 dark:bg-destructive/15">
+            <p role="alert" aria-live="polite" className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/40 dark:bg-destructive/15">
               {submitError}
             </p>
           ) : null}
 
-          <Button type="submit" className="h-11 w-full" disabled={isSubmitting}>
+          <Button type="submit" className="h-11 w-full transition-transform active:scale-[0.99] disabled:opacity-70" disabled={isSubmitting}>
             {isSubmitting ? (
               <span className="inline-flex items-center gap-2">
-                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                <CircleNotch className="size-4 animate-spin" weight="bold" aria-hidden="true" />
                 {authCopy.common.submittingText}
               </span>
             ) : (

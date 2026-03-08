@@ -4,10 +4,10 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
   if (isCollapsed) return null;
 
   return (
-    <div className="flex items-center gap-3 border-t border-sidebar-border px-4 py-2 text-xs text-sidebar-foreground/50">
+    <div className="flex items-center gap-3 border-t border-sidebar-border px-4 py-2 text-[11px] text-sidebar-foreground/40">
       <span>v2.0.0</span>
       <span className="ml-auto flex items-center gap-1">
-        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary" />
+        <span aria-hidden="true" className="h-1 w-1 rounded-full bg-primary/70" />
         Active
       </span>
     </div>

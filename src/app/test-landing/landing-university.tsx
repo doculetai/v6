@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ShieldCheck, Database, Timer, Layers } from "lucide-react";
 import { landingCopy as copy } from "@/config/copy/test-landing";
 import { Reveal } from "./_shared";
+import { routes } from '@/config/routes';
 
 const featureIcons = [ShieldCheck, Database, Timer, Layers];
 
@@ -57,7 +58,7 @@ export function University() {
         <Reveal delay={200}>
           <div className="mt-12 flex flex-col items-center gap-3 text-center md:mt-14">
             <Link
-              href="/contact"
+              href={routes.marketing.contact}
               className="inline-flex min-h-13 items-center gap-2 rounded-xl border border-primary bg-primary px-8 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               {copy.universities.cta}

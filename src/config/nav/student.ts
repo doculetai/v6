@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   Trophy,
 } from '@/components/icons';
+import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
 
@@ -16,20 +17,20 @@ export const studentNavConfig: NavConfig = {
   items: [
     {
       label: 'Overview',
-      href: '/dashboard/student',
+      href: routes.dashboard.student.overview,
       icon: House,
       description: 'Dashboard summary and next steps',
       isPrimary: true,
     },
     {
       label: 'Onboarding',
-      href: '/dashboard/student/setup',
+      href: routes.dashboard.student.setup,
       icon: ClipboardText,
       description: 'Set up your school and funding type',
     },
     {
       label: 'Verification',
-      href: '/dashboard/student/verification',
+      href: routes.dashboard.student.verification,
       icon: ShieldCheck,
       description: 'Verify your identity and bank account',
       disabledBeforeStage: 1,
@@ -37,7 +38,7 @@ export const studentNavConfig: NavConfig = {
     },
     {
       label: 'Documents',
-      href: '/dashboard/student/documents',
+      href: routes.dashboard.student.documents,
       icon: FileText,
       description: 'Upload your bank statement',
       disabledBeforeStage: 1,
@@ -45,7 +46,7 @@ export const studentNavConfig: NavConfig = {
     },
     {
       label: 'Proof of Funds',
-      href: '/dashboard/student/proof',
+      href: routes.dashboard.student.proof,
       icon: Trophy,
       description: 'View and share your certificate',
       isPrimary: true,
@@ -54,7 +55,7 @@ export const studentNavConfig: NavConfig = {
     },
     {
       label: 'Settings',
-      href: '/dashboard/student/settings',
+      href: routes.dashboard.student.settings,
       icon: Gear,
       description: 'Account and session settings',
     },

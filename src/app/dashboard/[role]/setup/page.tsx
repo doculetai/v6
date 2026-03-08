@@ -1,10 +1,10 @@
 import { TRPCError } from '@trpc/server';
 import { notFound, redirect } from 'next/navigation';
 
-import { studentOnboardingCopy } from '@/config/copy/student-onboarding.copy';
 import { api } from '@/trpc/server';
 
 import { OnboardingPageClient } from '../onboarding/onboarding-page-client';
+import { routes } from '@/config/routes';
 
 export const metadata = { title: 'Profile Setup — Doculet' };
 
@@ -23,15 +23,10 @@ export default async function SetupPage({ params }: Props) {
     }
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
-      redirect('/login');
+      redirect(routes.auth.login);
     }
     throw error;
   }
 
-  return (
-    <>
-      <h1 className="sr-only">{studentOnboardingCopy.onboardingWizard.title}</h1>
-      <OnboardingPageClient />
-    </>
-  );
+  return <OnboardingPageClient />;
 }

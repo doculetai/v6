@@ -13,6 +13,7 @@ export const studentDocumentStatusValues = [
   'approved',
   'rejected',
   'more_info_requested',
+  'expired',
 ] as const;
 
 export type StudentDocumentStatus = (typeof studentDocumentStatusValues)[number];

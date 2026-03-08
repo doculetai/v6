@@ -1,97 +1,53 @@
-import { and, count, desc, eq, gte, isNotNull, or } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 
 import type { DrizzleDB } from '@/db';
-import { documents } from '@/db/schema/documents';
-import { profiles } from '@/db/schema/users';
-
-/** Returns the start of today in WAT (UTC+1) as a UTC Date. */
-function startOfDayWAT(): Date {
-  const watOffsetMs = 60 * 60 * 1000; // WAT = UTC+1
-  const watNow = new Date(Date.now() + watOffsetMs);
-  watNow.setUTCHours(0, 0, 0, 0);
-  return new Date(watNow.getTime() - watOffsetMs);
-}
-
-export type RecentDocumentItem = {
-  id: string;
-  status: 'pending' | 'approved' | 'rejected' | 'more_info_requested';
-  type: 'passport' | 'bank_statement' | 'offer_letter' | 'affidavit' | 'cac';
-  createdAt: string;
-};
+import { programs, studentProfiles } from '@/db/schema/students';
+import { universityProfiles } from '@/db/schema/university';
 
 export type UniversityOverviewData = {
-  pendingCount: number;
-  approvedTodayCount: number;
-  flaggedCount: number;
+  totalPrograms: number;
+  enrolledStudents: number;
+  pendingApplications: number;
   totalStudents: number;
-  recentActivity: RecentDocumentItem[];
 };
 
-export async function getUniversityOverview(db: DrizzleDB): Promise<UniversityOverviewData> {
-  const todayStart = startOfDayWAT();
+export async function getUniversityOverview(
+  db: DrizzleDB,
+  userId: string,
+): Promise<UniversityOverviewData> {
+  const uniProfile = await db.query.universityProfiles.findFirst({
+    where: (t, { eq: eqFn }) => eqFn(t.userId, userId),
+    columns: { schoolId: true },
+  });
 
-  const [
-    [{ pendingCount }],
-    [{ approvedTodayCount }],
-    [{ flaggedCount }],
-    [{ totalStudents }],
-    recentDocs,
-  ] = await Promise.all([
-    db
-      .select({ pendingCount: count() })
-      .from(documents)
-      .where(eq(documents.status, 'pending')),
+  if (!uniProfile?.schoolId) {
+    return { totalPrograms: 0, enrolledStudents: 0, pendingApplications: 0, totalStudents: 0 };
+  }
 
-    db
-      .select({ approvedTodayCount: count() })
-      .from(documents)
-      .where(
-        and(
-          eq(documents.status, 'approved'),
-          isNotNull(documents.reviewedAt),
-          gte(documents.reviewedAt, todayStart),
-        ),
-      ),
+  const schoolId = uniProfile.schoolId;
 
-    db
-      .select({ flaggedCount: count() })
-      .from(documents)
-      .where(
-        or(
-          eq(documents.status, 'rejected'),
-          eq(documents.status, 'more_info_requested'),
-        ),
-      ),
+  const [[{ totalPrograms }], [{ enrolledStudents }], [{ pendingApplications }]] =
+    await Promise.all([
+      db
+        .select({ totalPrograms: count() })
+        .from(programs)
+        .where(eq(programs.schoolId, schoolId)),
 
-    db
-      .select({ totalStudents: count() })
-      .from(profiles)
-      .where(eq(profiles.role, 'student')),
+      db
+        .select({ enrolledStudents: count() })
+        .from(studentProfiles)
+        .where(eq(studentProfiles.schoolId, schoolId)),
 
-    db
-      .select({
-        id: documents.id,
-        status: documents.status,
-        type: documents.type,
-        createdAt: documents.createdAt,
-      })
-      .from(documents)
-      .orderBy(desc(documents.createdAt))
-      .limit(10),
-  ]);
-
-  const recentActivity: RecentDocumentItem[] = recentDocs.map((doc) => ({
-    id: doc.id,
-    status: doc.status,
-    type: doc.type,
-    createdAt: doc.createdAt.toISOString(),
-  }));
+      db
+        .select({ pendingApplications: count() })
+        .from(studentProfiles)
+        .where(eq(studentProfiles.schoolId, schoolId)),
+    ]);
 
   return {
-    pendingCount,
-    approvedTodayCount,
-    flaggedCount,
-    totalStudents,
-    recentActivity,
+    totalPrograms,
+    enrolledStudents,
+    pendingApplications,
+    totalStudents: enrolledStudents,
   };
 }

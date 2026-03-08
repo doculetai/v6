@@ -1,3 +1,4 @@
+import React from 'react';
 import { ArrowDown, ArrowRight, ArrowUp, Warning, UserFocus } from '@/components/icons';
 import { SparklineChart } from '@/components/ui/sparkline';
 import Link from 'next/link';
@@ -28,10 +29,11 @@ export type StatCardProps = {
   valueClassName?: string;
   trend?: StatCardTrend;
   sparklineData?: number[];
+  children?: React.ReactNode;
 };
 
 export function StatCard({
-  label, value, sub, accent, href, valueClassName, trend, sparklineData,
+  label, value, sub, accent, href, valueClassName, trend, sparklineData, children,
 }: StatCardProps) {
   const TrendIcon = trend?.direction === 'up' ? ArrowUp : ArrowDown;
   const trendColor =
@@ -84,6 +86,10 @@ export function StatCard({
           </div>
         )}
       </div>
+
+      {children != null && (
+        <div className="mt-3">{children}</div>
+      )}
 
       {href && (
         <span className="absolute right-4 top-4 text-primary/70">

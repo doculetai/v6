@@ -9,7 +9,7 @@ import {
   Warning,
   Wallet,
   CheckCircle,
-} from '@phosphor-icons/react';
+} from '@/components/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
@@ -18,15 +18,19 @@ import { z } from 'zod';
 import { FundingTypeOption } from '@/components/student/FundingTypeOption';
 import { OnboardingHero, OnboardingLoadingState } from '@/components/student/OnboardingShell';
 import { OnboardingStateCard } from '@/components/student/OnboardingStateCard';
-import { Container, PageShell, Stack } from '@/components/layout/content-primitives';
+import { PageShell, Section, Stack } from '@/components/layout/content-primitives';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { studentCopy } from '@/config/copy/student';
+import { useDashboardBreadcrumbs } from '@/lib/hooks/useDashboardBreadcrumbs';
 import type { RouterOutputs } from '@/trpc/client';
 import { trpc } from '@/trpc/client';
+import { routes } from '@/config/routes';
 type OnboardingData = RouterOutputs['student']['getOnboardingWizard'];
 type FundingTypeValue = NonNullable<OnboardingData['fundingType']>;
 type SchoolProgramFormValues = { schoolId: string; programId: string };
@@ -54,6 +58,50 @@ const fundingTypeSchema = z.object({
 function formatTuition(amount: number, currency: string): string {
   return `${currency} ${new Intl.NumberFormat('en-NG').format(amount)}`;
 }
+const universityRequestSchema = z.object({
+  universityName: z.string().min(2),
+  country: z.string().min(2),
+  contactEmail: z.string().email().optional().or(z.literal('')),
+});
+type UniversityRequestValues = z.infer<typeof universityRequestSchema>;
+
+const PROCESSING_FEE_NGN = 15_000;
+
+function CostBreakdownCard({
+  tuitionAmount,
+  tuitionCurrency,
+  processingFee,
+}: {
+  tuitionAmount: number;
+  tuitionCurrency: string;
+  processingFee: number;
+}) {
+  const copy = onboardingCopy.costBreakdown;
+  const total = tuitionAmount + processingFee;
+
+  return (
+    <Card className="border-border bg-card">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm font-semibold">{copy.title}</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        <div className="flex justify-between text-sm">
+          <span className="text-muted-foreground">{copy.tuition}</span>
+          <span className="font-mono font-medium">{formatTuition(tuitionAmount, tuitionCurrency)}</span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-muted-foreground">{copy.processingFee}</span>
+          <span className="font-mono font-medium">{formatTuition(processingFee, copy.currency)}</span>
+        </div>
+        <div className="flex justify-between border-t border-border pt-2 text-sm font-semibold">
+          <span>{copy.total}</span>
+          <span className="font-mono">{formatTuition(total, copy.currency)}</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function OnboardingPageClient() {
   const router = useRouter();
   const utils = trpc.useUtils();
@@ -61,6 +109,25 @@ export function OnboardingPageClient() {
   const [schoolError, setSchoolError] = useState<string | null>(null);
   const [fundingError, setFundingError] = useState<string | null>(null);
   const [completeError, setCompleteError] = useState<string | null>(null);
+  const [uniSheetOpen, setUniSheetOpen] = useState(false);
+  const [uniSubmitted, setUniSubmitted] = useState(false);
+  const [uniSubmitting, setUniSubmitting] = useState(false);
+  const universityRequestForm = useForm<UniversityRequestValues>({
+    resolver: zodResolver(universityRequestSchema),
+    defaultValues: { universityName: '', country: '', contactEmail: '' },
+  });
+  const uniNotFoundCopy = onboardingCopy.universityNotFound;
+
+  function handleUniversityRequest(values: UniversityRequestValues) {
+    setUniSubmitting(true);
+    // Stub: no tRPC procedure yet — simulate submission latency
+    setTimeout(() => {
+      setUniSubmitting(false);
+      setUniSubmitted(true);
+      universityRequestForm.reset();
+    }, 800);
+    void values;
+  }
   const onboardingQuery = trpc.student.getOnboardingWizard.useQuery();
   const onboardingData = onboardingQuery.data;
   const schoolProgramForm = useForm<SchoolProgramFormValues>({
@@ -155,23 +222,20 @@ export function OnboardingPageClient() {
           title={onboardingCopy.empty.title}
           description={onboardingCopy.empty.description}
           actionLabel={onboardingCopy.empty.cta}
-          onAction={() => router.push('/dashboard/student')}
+          onAction={() => router.push(routes.dashboard.student.overview)}
         />
       </PageShell>
     );
   }
   return (
     <PageShell width="wide">
-      <Stack gap="md">
-      <PageHeader
-        title={onboardingCopy.title}
-        description={onboardingCopy.subtitle}
-        breadcrumbs={[
-          { label: studentCopy.nav.overview, href: '/dashboard/student' },
-          { label: studentCopy.nav.breadcrumbs.applicationSetup },
-        ]}
-      />
-      <OnboardingHero currentStep={currentStep} stepLabels={stepLabels} />
+      <Section>
+        <Stack gap="md">
+          <PageHeader
+            title={onboardingCopy.title}
+            description={onboardingCopy.subtitle}
+          />
+          <OnboardingHero currentStep={currentStep} stepLabels={stepLabels} />
       {currentStep === 1 ? (
         <Card className="border-border bg-card">
           <CardHeader className="space-y-3">
@@ -278,6 +342,25 @@ export function OnboardingPageClient() {
                   </p>
                 </div>
               ) : null}
+              {/* Cost breakdown after programme selection */}
+              {(() => {
+                const selectedProgramId = schoolProgramForm.watch('programId');
+                const selectedProg = selectedSchool?.programs.find((p) => p.id === selectedProgramId);
+                return selectedProg ? (
+                  <CostBreakdownCard
+                    tuitionAmount={selectedProg.tuitionAmount}
+                    tuitionCurrency={selectedProg.currency}
+                    processingFee={PROCESSING_FEE_NGN}
+                  />
+                ) : null;
+              })()}
+              <button
+                type="button"
+                className="text-xs text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => { setUniSheetOpen(true); setUniSubmitted(false); }}
+              >
+                {uniNotFoundCopy.cta}
+              </button>
               {schoolError ? <p className="text-sm text-destructive">{schoolError}</p> : null}
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button type="button" variant="outline" className="min-h-11 w-full sm:w-auto" onClick={() => setManualStep(1)}>
@@ -295,6 +378,64 @@ export function OnboardingPageClient() {
                 </Button>
               </div>
             </form>
+          <Sheet open={uniSheetOpen} onOpenChange={setUniSheetOpen}>
+            <SheetContent side="bottom" className="rounded-t-2xl px-5 pb-8 pt-6 sm:max-w-lg sm:rounded-2xl">
+              <SheetHeader className="mb-5">
+                <SheetTitle className="text-base font-semibold">{uniNotFoundCopy.sheetTitle}</SheetTitle>
+              </SheetHeader>
+              {uniSubmitted ? (
+                <p className="text-sm text-muted-foreground">{uniNotFoundCopy.successNote}</p>
+              ) : (
+                <form
+                  className="space-y-4"
+                  onSubmit={universityRequestForm.handleSubmit(handleUniversityRequest)}
+                >
+                  <div className="space-y-1.5">
+                    <Label htmlFor="universityName">{uniNotFoundCopy.nameLabel}</Label>
+                    <Input
+                      id="universityName"
+                      {...universityRequestForm.register('universityName')}
+                      className="h-11"
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="country">{uniNotFoundCopy.countryLabel}</Label>
+                    <Input
+                      id="country"
+                      {...universityRequestForm.register('country')}
+                      className="h-11"
+                      autoComplete="country-name"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="contactEmail">{uniNotFoundCopy.emailLabel}</Label>
+                    <Input
+                      id="contactEmail"
+                      type="email"
+                      {...universityRequestForm.register('contactEmail')}
+                      className="h-11"
+                      autoComplete="email"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="min-h-11 w-full"
+                    disabled={uniSubmitting}
+                  >
+                    {uniSubmitting ? (
+                      <span className="inline-flex items-center gap-2">
+                        <CircleNotch className="size-4 animate-spin" weight="duotone" aria-hidden="true" />
+                        {uniNotFoundCopy.submitting}
+                      </span>
+                    ) : (
+                      uniNotFoundCopy.submit
+                    )}
+                  </Button>
+                </form>
+              )}
+            </SheetContent>
+          </Sheet>
           </CardContent>
         </Card>
       ) : null}
@@ -392,12 +533,12 @@ export function OnboardingPageClient() {
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Button asChild className="min-h-11 w-full sm:w-auto">
-                    <Link href="/dashboard/student/verify">
+                    <Link href={routes.dashboard.student.verification}>
                       {onboardingCopy.steps.action.nextStepCta}
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="min-h-11 w-full sm:w-auto">
-                    <Link href="/dashboard/student">
+                    <Link href={routes.dashboard.student.overview}>
                       {onboardingCopy.steps.action.overviewCta}
                     </Link>
                   </Button>
@@ -423,7 +564,8 @@ export function OnboardingPageClient() {
           </CardContent>
         </Card>
       ) : null}
-      </Stack>
+        </Stack>
+      </Section>
     </PageShell>
   );
 }

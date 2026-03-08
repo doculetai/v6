@@ -31,19 +31,26 @@ function getNotificationLink(
   if (type === 'kyc_reminder' && meta?.reason === 'bank_expiry') {
     return `/dashboard/${role}/documents#bank`;
   }
-  if (type === 'kyc_reminder') {
+  if (type === 'kyc_reminder' || type === 'kyc_approved' || type === 'kyc_failed') {
     return `/dashboard/${role}/verification`;
   }
   if (type === 'doc_approved' || type === 'doc_rejected' || type === 'doc_more_info') {
     return `/dashboard/${role}/documents`;
   }
-  if (type === 'cert_issued') {
+  if (type === 'cert_issued' || type === 'cert_expiry_soon' || type === 'cert_expired') {
     return `/dashboard/${role}/proof`;
   }
   if (type === 'disbursement_success' || type === 'disbursement_failed') {
     return `/dashboard/${role}/disbursements`;
   }
-  if (type === 'invite' || type === 'invite_accepted' || type === 'invite_rejected') {
+  if (
+    type === 'invite' ||
+    type === 'invite_accepted' ||
+    type === 'invite_rejected' ||
+    type === 'sponsor_committed' ||
+    type === 'sponsor_paused' ||
+    type === 'sponsor_withdrawn'
+  ) {
     return `/dashboard/${role}/students`;
   }
   return `/dashboard/${role}`;
@@ -56,8 +63,26 @@ function getNotificationIcon(type: string) {
   if (type === 'doc_rejected' || type === 'doc_more_info') {
     return <Warning className="size-4 shrink-0 text-warning" weight="duotone" aria-hidden="true" />;
   }
+  if (type === 'kyc_approved') {
+    return <CheckCircle className="size-4 shrink-0 text-primary" weight="duotone" aria-hidden="true" />;
+  }
+  if (type === 'kyc_failed') {
+    return <ShieldWarning className="size-4 shrink-0 text-destructive" weight="duotone" aria-hidden="true" />;
+  }
   if (type === 'cert_issued') {
     return <Certificate className="size-4 shrink-0 text-primary" weight="duotone" aria-hidden="true" />;
+  }
+  if (type === 'cert_expiry_soon') {
+    return <Certificate className="size-4 shrink-0 text-warning" weight="duotone" aria-hidden="true" />;
+  }
+  if (type === 'cert_expired') {
+    return <Certificate className="size-4 shrink-0 text-destructive" weight="duotone" aria-hidden="true" />;
+  }
+  if (type === 'sponsor_committed') {
+    return <UsersThree className="size-4 shrink-0 text-primary" weight="duotone" aria-hidden="true" />;
+  }
+  if (type === 'sponsor_paused' || type === 'sponsor_withdrawn') {
+    return <UsersThree className="size-4 shrink-0 text-warning" weight="duotone" aria-hidden="true" />;
   }
   if (type === 'disbursement_success') {
     return <Money className="size-4 shrink-0 text-primary" weight="duotone" aria-hidden="true" />;
@@ -116,13 +141,20 @@ function resolveCategory(n: NotificationItem): NotificationCategory {
   if (n.type === 'doc_approved' || n.type === 'doc_rejected' || n.type === 'doc_more_info') {
     return 'documents';
   }
-  if (n.type === 'kyc_reminder') {
+  if (n.type === 'kyc_reminder' || n.type === 'kyc_approved' || n.type === 'kyc_failed') {
     return 'verification';
   }
-  if (n.type === 'cert_issued') {
+  if (n.type === 'cert_issued' || n.type === 'cert_expiry_soon' || n.type === 'cert_expired') {
     return 'certificate';
   }
-  if (n.type === 'invite' || n.type === 'invite_accepted' || n.type === 'invite_rejected') {
+  if (
+    n.type === 'invite' ||
+    n.type === 'invite_accepted' ||
+    n.type === 'invite_rejected' ||
+    n.type === 'sponsor_committed' ||
+    n.type === 'sponsor_paused' ||
+    n.type === 'sponsor_withdrawn'
+  ) {
     return 'sponsor';
   }
   return 'general';

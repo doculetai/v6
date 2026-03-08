@@ -448,6 +448,10 @@ export const studentCopy = {
       paidAtLabel: "Paid on",
       waived: "Fee waived",
     },
+    paymentBanner: {
+      paid: 'Payment received — your application is now in the admin queue.',
+      waived: 'Processing fee waived by admin.',
+    },
     locked: {
       title: "Certificate not yet available",
       description:
@@ -706,6 +710,183 @@ export const studentCopy = {
       ctaLabel: 'Go to documents',
       ctaHref: routes.dashboard.student.documents,
     },
+  },
+
+  // B2.1
+  tierComplete: 'Complete',
+
+  // B2.2
+  monoReviewCard: {
+    heading: 'Review connected account',
+    accountHolder: 'Account holder',
+    bank: 'Bank',
+    accountNumber: 'Account number',
+    balance: 'Balance',
+    statementPeriod: 'Statement period',
+    confirmCheckbox: 'I confirm this is my account.',
+    submit: 'Submit for review',
+    submitting: 'Submitting\u2026',
+    balanceWarning: 'Balance below target. You can still submit \u2014 admin makes the final decision.',
+  },
+
+  // B2.3
+  postCertOverview: {
+    heading: 'Your proof of funds is verified.',
+    certCardLabel: 'Proof of Funds Certificate',
+    downloadPdf: 'Download PDF',
+    share: 'Share',
+  },
+
+  // B2.4 share sheet copy (supplements existing certSharing)
+  shareSheet: {
+    title: 'Share your certificate',
+    whatsapp: 'Share via WhatsApp',
+    copyLink: 'Copy link',
+    copyLinkSuccess: 'Link copied',
+    email: 'Send by email',
+    download: 'Download PDF',
+  },
+
+  // B3.1
+  t1: {
+    otpErrors: {
+      incorrect: 'Incorrect code. Try again.',
+      phoneRegistered: 'This phone number is already registered to another account.',
+      expired: 'This code has expired. Request a new one.',
+    },
+    resend: 'Resend code',
+    otpError: {
+      heading: 'Verification failed',
+      attemptsLeft: (n: number) => `${n} attempt${n === 1 ? '' : 's'} remaining`,
+      retry: 'Try again',
+    },
+  },
+
+  // B3.1b — Mono review
+  monoReview: {
+    badge: 'Under review',
+    note: 'Your connected account is being verified. No further action required.',
+    bankLabel: 'Connected bank',
+    accountLabel: 'Account number',
+  },
+
+  // B3.2
+  t2: {
+    manualReview: {
+      badge: 'Under review',
+      note: 'Your identity is being verified manually. We will be in touch.',
+    },
+    rejected: {
+      badge: 'Rejected',
+      resubmit: 'Resubmit KYC',
+    },
+    serviceDown: 'Identity verification is temporarily unavailable. Please try again later.',
+  },
+
+  // B3.3
+  rejectedPrefix: 'Rejected: ',
+
+  // B3.4
+  certPayment: {
+    failure: (reason: string) => `Payment failed \u00b7 ${reason} \u00b7 Try again`,
+  },
+
+  // B4.1
+  t3Choice: {
+    optionA: {
+      label: 'Connect bank',
+      description: 'Real-time balance pull. Instant result.',
+      cta: 'Connect with Mono',
+      badge: 'Recommended',
+    },
+    optionB: {
+      label: 'Upload bank statement',
+      description: 'Upload PDF or image. Goes to admin review.',
+      cta: 'Upload statement',
+    },
+  },
+
+  // B4.6
+  applicationSwitcher: {
+    label: 'Application',
+    addNew: 'New application',
+    statuses: {
+      certified: 'Certified',
+      in_progress: 'In progress',
+    },
+  },
+
+  // B5.1 / B5.2
+  blockedStates: {
+    verification: {
+      heading: 'Complete onboarding first',
+      body: 'Select your university and programme before starting verification.',
+      cta: 'Go to Onboarding',
+    },
+    proof: {
+      heading: 'Complete verification to unlock proof of funds',
+      body: 'All three verification tiers must be completed before a certificate can be issued.',
+      cta: 'Go to Verification',
+    },
+  },
+
+  // B5.3 — sponsor lifecycle states
+  sponsorCard: {
+    paused: {
+      badge: 'Paused',
+      note: 'Your sponsor has temporarily paused their commitment.',
+      action: 'View details',
+    },
+    withdrawn: {
+      badge: 'Withdrawn',
+      note: 'Your sponsor has withdrawn their commitment.',
+      action: 'Find a new sponsor',
+    },
+  },
+
+  // B6.1
+  multiSponsor: {
+    heading: (amount: string) => `Multi-sponsor arrangement \u00b7 ${amount} committed`,
+    certNote: (amount: string) => `Multi-sponsor arrangement \u00b7 ${amount} verified`,
+  },
+
+  // B6.2
+  certStates: {
+    expirySoon: {
+      badge: 'Expiring soon',
+      note: (days: number) => `Your certificate expires in ${days} day${days === 1 ? '' : 's'}.`,
+      action: 'Renew certificate',
+    },
+    expired: {
+      badge: 'Expired',
+      note: 'This certificate is no longer valid.',
+      action: 'Apply for renewal',
+    },
+    renewal: {
+      badge: 'Renewal in progress',
+      note: 'A new certificate is being prepared.',
+    },
+  },
+
+  // B6.3
+  multiBank: {
+    addSecond: 'Add another bank account',
+    total: (count: number) => `${count} accounts submitted`,
+    combinedBalance: 'Combined balance',
+  },
+
+  // C7
+  navGuard: {
+    title: 'Upload in progress',
+    body: 'Leaving now will cancel your upload.',
+    stay: 'Stay on page',
+    leave: 'Leave anyway',
+  },
+
+  // D2
+  overviewTabs: {
+    journey: 'Journey',
+    activity: 'Activity',
   },
 
   errors: commonErrors,

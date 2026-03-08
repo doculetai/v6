@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Copy, Zap } from 'lucide-react';
+import { Check, CopySimple, Lightning } from '@/components/icons';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PageHeader } from '@/components/ui/page-header';
+import { Grid, PageHeader, PageShell } from '@/components/layout/content-primitives';
 import type { agentCopy } from '@/config/copy/agent';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -63,9 +63,9 @@ function InviteCard({
               aria-label={copied ? copy.copied : copy.copyLinkCta}
             >
               {copied ? (
-                <Check className="size-4 text-primary" aria-hidden="true" />
+                <Check weight="duotone" className="size-4 text-primary" aria-hidden="true" />
               ) : (
-                <Copy className="size-4" aria-hidden="true" />
+                <CopySimple weight="duotone" className="size-4" aria-hidden="true" />
               )}
               <span>{copied ? copy.copied : copy.copyLinkCta}</span>
             </Button>
@@ -83,7 +83,7 @@ function ComingSoonCard({ copy }: { copy: Props['copy']['comingSoon'] }) {
     <Card className="border-border bg-card">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <Zap className="size-5 text-muted-foreground/60" aria-hidden="true" />
+          <Lightning weight="duotone" className="size-5 text-muted-foreground/60" aria-hidden="true" />
           <CardTitle className="text-base font-semibold text-foreground">
             {copy.heading}
           </CardTitle>
@@ -100,13 +100,13 @@ function ComingSoonCard({ copy }: { copy: Props['copy']['comingSoon'] }) {
 
 export function ActionsPageClient({ copy, referralUrl }: Props) {
   return (
-    <div className="space-y-6">
+    <PageShell>
       <PageHeader title={copy.title} subtitle={copy.subtitle} />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <Grid cols={{ md: 2 }} gap="md">
         <InviteCard copy={copy.invite} referralUrl={referralUrl} />
         <ComingSoonCard copy={copy.comingSoon} />
-      </div>
-    </div>
+      </Grid>
+    </PageShell>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { Pulse, WarningCircle } from '@/components/icons';
+import { ChartLine, Pulse, WarningCircle } from '@/components/icons';
 
 import { EmptyState } from '@/components/ui/empty-state';
 import { PageHeader, PageShell } from '@/components/layout/content-primitives';
@@ -85,7 +85,13 @@ export function ActivityPageClient({ items, copy }: Props) {
       <PageHeader title={copy.title} subtitle={copy.subtitle} />
 
       {items.length === 0 ? (
-        <EmptyState heading={copy.empty.title} body={copy.empty.description} />
+        <EmptyState
+          heading={copy.empty.title}
+          body={copy.empty.description}
+          illustration={
+            <ChartLine size={32} weight="duotone" className="text-muted-foreground/50" />
+          }
+        />
       ) : (
         <div className="space-y-3">
           {items.map((item) => (

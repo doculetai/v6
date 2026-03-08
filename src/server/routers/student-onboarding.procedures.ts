@@ -2,7 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { and, eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 
-import { programs, studentProfiles, profiles, sponsorships, documents, certificates } from '@/db/schema';
+import { studentProfiles, profiles, sponsorships, documents, certificates } from '@/db/schema';
 
 import { roleProcedure } from '../trpc';
 
@@ -30,11 +30,6 @@ const onboardingWizardOutputSchema = z.object({
       ),
     }),
   ),
-});
-
-const saveSchoolProgramInputSchema = z.object({
-  schoolId: z.string().uuid(),
-  programId: z.string().uuid(),
 });
 
 const saveFundingTypeInputSchema = z.object({
@@ -91,50 +86,6 @@ export const onboardingProcedures = {
           })),
         })),
       };
-    }),
-
-  saveSchoolProgram: roleProcedure('student')
-    .input(saveSchoolProgramInputSchema)
-    .output(onboardingProgressOutputSchema)
-    .mutation(async ({ ctx, input }) => {
-      const matchingProgram = await ctx.db.query.programs.findFirst({
-        where: and(eq(programs.id, input.programId), eq(programs.schoolId, input.schoolId)),
-        columns: { id: true },
-      });
-
-      if (!matchingProgram) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Program does not belong to selected school.',
-        });
-      }
-
-      const existingStudentProfile = await ctx.db.query.studentProfiles.findFirst({
-        where: eq(studentProfiles.userId, ctx.user!.id),
-        columns: { id: true, onboardingStep: true },
-      });
-
-      if (existingStudentProfile) {
-        await ctx.db
-          .update(studentProfiles)
-          .set({
-            schoolId: input.schoolId,
-            programId: input.programId,
-            onboardingStep: Math.max(existingStudentProfile.onboardingStep, 2),
-            updatedAt: new Date(),
-          })
-          .where(eq(studentProfiles.userId, ctx.user!.id));
-      } else {
-        await ctx.db.insert(studentProfiles).values({
-          userId: ctx.user!.id,
-          schoolId: input.schoolId,
-          programId: input.programId,
-          onboardingStep: 2,
-          updatedAt: new Date(),
-        });
-      }
-
-      return { onboardingComplete: false, currentStep: 2 };
     }),
 
   saveFundingType: roleProcedure('student')

@@ -1,15 +1,13 @@
 import { TRPCError } from '@trpc/server';
 import { notFound, redirect } from 'next/navigation';
 
-import { studentOnboardingCopy } from '@/config/copy/student-onboarding.copy';
-import { sponsorCopy } from '@/config/copy/sponsor';
-import { universityCopy } from '@/config/copy/university';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 
 import { OnboardingPageClient } from './onboarding-page-client';
 import { SponsorOnboardingPageClient } from './sponsor-onboarding-page-client';
 import { UniversityOnboardingPageClient } from './university-onboarding-page-client';
+import { routes } from '@/config/routes';
 
 type OnboardingPageProps = {
   params: Promise<{ role: string }>;
@@ -51,34 +49,19 @@ export default async function OnboardingPage({ params }: OnboardingPageProps) {
     }
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
-      redirect('/login');
+      redirect(routes.auth.login);
     }
 
     throw error;
   }
 
   if (role === 'sponsor') {
-    return (
-      <>
-        <h1 className="sr-only">{sponsorCopy.onboarding.title}</h1>
-        <SponsorOnboardingPageClient />
-      </>
-    );
+    return <SponsorOnboardingPageClient />;
   }
 
   if (role === 'university') {
-    return (
-      <>
-        <h1 className="sr-only">{universityCopy.onboarding.title}</h1>
-        <UniversityOnboardingPageClient />
-      </>
-    );
+    return <UniversityOnboardingPageClient />;
   }
 
-  return (
-    <>
-      <h1 className="sr-only">{studentOnboardingCopy.onboardingWizard.title}</h1>
-      <OnboardingPageClient />
-    </>
-  );
+  return <OnboardingPageClient />;
 }

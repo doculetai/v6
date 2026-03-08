@@ -1,7 +1,9 @@
 'use client';
 
-import { ExternalLink } from 'lucide-react';
+import { useState } from 'react';
+import { Eye } from '@/components/icons';
 
+import { DocumentPreviewModal } from '@/components/shared/DocumentPreviewModal';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { cn } from '@/lib/utils';
@@ -11,7 +13,7 @@ type DocumentQueueItem = {
   studentId: string;
   studentEmail: string | null;
   documentType: 'passport' | 'bank_statement' | 'offer_letter' | 'affidavit' | 'cac';
-  status: 'pending' | 'approved' | 'rejected' | 'more_info_requested';
+  status: 'pending' | 'approved' | 'rejected' | 'more_info_requested' | 'expired';
   storageUrl: string;
   createdAt: Date;
 };
@@ -36,6 +38,7 @@ type DocumentsCopy = {
     approved: string;
     rejected: string;
     more_info_requested: string;
+    expired: string;
   };
   actions: { view: string; approve: string; reject: string };
   empty: { title: string; description: string };
@@ -51,6 +54,7 @@ const statusBadgeClass: Record<DocumentQueueItem['status'], string> = {
   approved: 'bg-primary/10 text-primary',
   rejected: 'bg-destructive/10 text-destructive',
   more_info_requested: 'bg-muted text-muted-foreground',
+  expired: 'bg-muted text-muted-foreground',
 };
 
 function formatDate(date: Date): string {
@@ -62,6 +66,9 @@ function formatDate(date: Date): string {
 }
 
 export function UniversityDocumentsPageClient({ documents, copy }: Props) {
+  const [previewDocId, setPreviewDocId] = useState<string | null>(null);
+  const previewDoc = documents.find((d) => d.documentId === previewDocId);
+
   if (documents.length === 0) {
     return (
       <EmptyState
@@ -72,6 +79,7 @@ export function UniversityDocumentsPageClient({ documents, copy }: Props) {
   }
 
   return (
+    <>
     <div className="overflow-x-auto rounded-lg border border-border">
       <table className="w-full text-sm">
         <thead>
@@ -126,28 +134,10 @@ export function UniversityDocumentsPageClient({ documents, copy }: Props) {
                     variant="outline"
                     size="sm"
                     className="min-h-8 gap-1.5 text-xs"
-                    asChild
+                    onClick={() => setPreviewDocId(doc.documentId)}
                   >
-                    <a href={doc.storageUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="size-3" aria-hidden="true" />
-                      {copy.actions.view}
-                    </a>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="min-h-8 text-xs"
-                    disabled
-                  >
-                    {copy.actions.approve}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="min-h-8 text-xs text-destructive hover:text-destructive"
-                    disabled
-                  >
-                    {copy.actions.reject}
+                    <Eye weight="duotone" className="size-3" aria-hidden="true" />
+                    {copy.actions.view}
                   </Button>
                 </div>
               </td>
@@ -156,5 +146,17 @@ export function UniversityDocumentsPageClient({ documents, copy }: Props) {
         </tbody>
       </table>
     </div>
+
+    {previewDocId ? (
+      <DocumentPreviewModal
+        documentId={previewDocId}
+        open={Boolean(previewDocId)}
+        onOpenChange={(open) => { if (!open) setPreviewDocId(null); }}
+        documentTypeLabel={previewDoc ? copy.typeLabels[previewDoc.documentType] : undefined}
+        studentEmail={previewDoc?.studentEmail ?? undefined}
+        reviewActions={null}
+      />
+    ) : null}
+    </>
   );
 }

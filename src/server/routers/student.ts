@@ -8,8 +8,13 @@ import { createTRPCRouter, protectedProcedure } from '../trpc';
 import { documentProcedures } from './student-documents.procedures';
 import { inviteProcedures } from './student-invites.procedures';
 import { onboardingProcedures } from './student-onboarding.procedures';
+import { balanceProcedures } from './student-balance.procedures';
+import { certificateShareProcedures } from './student-certificate-share.procedures';
+import { paymentProcedures } from './student-payment.procedures';
 import { proofProcedures } from './student-proof.procedures';
 import { schoolsProcedures } from './student-schools.procedures';
+import { settingsProcedures } from './student-settings.procedures';
+import { supportProcedures } from './student-support.procedures';
 import { verificationProcedures } from './student-verification.procedures';
 
 const profileRoleSchema = z.enum(dashboardRoles);
@@ -83,4 +88,19 @@ export const studentRouter = createTRPCRouter({
 
   // ── Sponsor Invitations ──────────────────────────────────────────────────
   ...inviteProcedures,
+
+  // ── Certificate Payment ────────────────────────────────────────────────
+  ...paymentProcedures,
+
+  // ── Balance Verification ──────────────────────────────────────────────
+  ...balanceProcedures,
+
+  // ── Certificate Sharing ──────────────────────────────────────────────
+  ...certificateShareProcedures,
+
+  // ── Settings ──────────────────────────────────────────────────────────
+  ...settingsProcedures,
+
+  // ── Support ───────────────────────────────────────────────────────────
+  ...supportProcedures,
 });

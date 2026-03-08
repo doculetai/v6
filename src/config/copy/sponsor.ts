@@ -166,6 +166,12 @@ export const sponsorCopy = {
       started: "Verification submitted. We will update your status after provider confirmation.",
       error: "Unable to start verification. Please try again.",
     },
+    rejected: {
+      badge: 'Rejected',
+      reason: (reason: string) => `Reason: ${reason}`,
+      resubmit: 'Resubmit KYC',
+      cannotCommitNote: 'Your KYC must be approved before you can commit to students.',
+    },
   },
 
   disbursements: {
@@ -252,6 +258,31 @@ export const sponsorCopy = {
     },
   },
 
+  commitmentPaused: {
+    badge: 'Paused',
+    heading: 'This commitment is paused',
+    body: 'Your commitment has been temporarily paused. You can resume it at any time to continue funding this student.',
+    resumeCta: 'Resume commitment',
+    resumingCta: 'Resuming...',
+    resumeSuccess: 'Commitment resumed.',
+  },
+
+  commitment: {
+    confirmModal: {
+      title: 'Confirm commitment',
+      body: (amount: string, name: string) => `You are committing ${amount} to ${name}'s application. This is not a payment.`,
+      confirm: 'Commit',
+      cancel: 'Cancel',
+    },
+    uncommitModal: {
+      title: 'Remove commitment',
+      body: (amount: string, name: string) => `You are removing your commitment of ${amount} to ${name}.`,
+      confirm: 'Remove commitment',
+      cancel: 'Cancel',
+    },
+    lockedPostCert: 'Certificate already issued for this student. Commitments are closed.',
+  },
+
   commitments: {
     title: 'Commitments',
     subtitle: 'Your financial pledges and commitment status.',
@@ -262,7 +293,7 @@ export const sponsorCopy = {
       status: 'Status',
       since: 'Since',
     },
-    statusLabels: { pending: 'Pending', active: 'Active', completed: 'Completed', cancelled: 'Cancelled', withdrawn: 'Withdrawn' },
+    statusLabels: { pending: 'Pending', active: 'Active', completed: 'Completed', cancelled: 'Cancelled', withdrawn: 'Withdrawn', paused: 'Paused' },
   },
   impact: {
     title: 'Impact',

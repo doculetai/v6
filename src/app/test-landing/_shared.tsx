@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { routes } from "@/config/routes";
 import { cn } from "@/lib/utils";
 
 /* ─── Scroll Reveal ─────────────────────────────────── */
@@ -81,7 +82,7 @@ export function CtaButtons({
             : "bg-primary text-primary-foreground hover:bg-primary/90",
         )}
       >
-        <Link href="/signup">
+        <Link href={routes.auth.signup}>
           {primary}
           <ArrowRight className="ml-1.5 h-4 w-4" />
         </Link>
@@ -96,7 +97,7 @@ export function CtaButtons({
             : "text-primary/70 hover:bg-primary/5 hover:text-primary",
         )}
       >
-        <Link href="/verify">
+        <Link href={routes.marketing.verify}>
           {secondary}
         </Link>
       </Button>

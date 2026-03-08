@@ -7,9 +7,10 @@ import { universityCopy } from '@/config/copy/university';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 import { Button } from '@/components/ui/button';
-import { PageHeader } from '@/components/ui/page-header';
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 
 import { OverviewPageClient } from './overview-page-client';
+import { routes } from '@/config/routes';
 
 export const metadata: Metadata = {
   title: 'Overview — Doculet University',
@@ -26,7 +27,7 @@ async function fetchOverviewData() {
     return await caller.university.getOverview();
   } catch (error) {
     if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
-      redirect('/login');
+      redirect(routes.auth.login);
     }
     throw error;
   }
@@ -41,18 +42,17 @@ export default async function UniversityOverviewPage({ params }: PageProps) {
 
   const data = await fetchOverviewData();
   return (
-    <div className="space-y-6">
-      <h1 className="sr-only">{universityCopy.overview.title}</h1>
+    <PageShell>
       <PageHeader
         title={universityCopy.overview.title}
         subtitle={universityCopy.overview.subtitle}
         actions={
           <Button asChild size="sm" variant="outline" className="min-h-11">
-            <Link href="/dashboard/university/pipeline">{universityCopy.nav.pipeline}</Link>
+            <Link href={routes.dashboard.university.pipeline}>{universityCopy.nav.pipeline}</Link>
           </Button>
         }
       />
       <OverviewPageClient data={data} />
-    </div>
+    </PageShell>
   );
 }

@@ -1,4 +1,5 @@
-import { Building2, FileCheck2, Home, KanbanSquare, ListChecks, Settings } from 'lucide-react';
+import { Gear, GraduationCap, House, Kanban, ListChecks, Users } from '@/components/icons';
+import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
 
@@ -10,45 +11,45 @@ export const universityNavConfig: NavConfig = {
   items: [
     {
       label: 'Overview',
-      href: '/dashboard/university',
-      icon: Home,
-      description: 'Admissions summary',
+      href: routes.dashboard.university.overview,
+      icon: House,
+      description: 'Enrolment summary',
       isPrimary: true,
     },
     {
       label: 'Pipeline',
-      href: '/dashboard/university/pipeline',
-      icon: KanbanSquare,
-      description: 'Applicant review pipeline',
+      href: routes.dashboard.university.pipeline,
+      icon: Kanban,
+      description: 'Applicant pipeline',
       group: 'admissions',
     },
     {
       label: 'Students',
-      href: '/dashboard/university/students',
-      icon: Building2,
-      description: 'Enrolled and admitted students',
+      href: routes.dashboard.university.students,
+      icon: Users,
+      description: 'Enrolled students',
       group: 'admissions',
     },
     {
-      label: 'Documents',
-      href: '/dashboard/university/documents',
-      icon: FileCheck2,
-      description: 'Document review queue',
+      label: 'Programs',
+      href: routes.dashboard.university.programs,
+      icon: GraduationCap,
+      description: 'Programme management',
       group: 'admissions',
     },
     {
       label: 'Settings',
-      href: '/dashboard/university/settings',
-      icon: Settings,
+      href: routes.dashboard.university.settings,
+      icon: Gear,
       description: 'Institution settings',
       group: 'account',
       mobileHidden: true,
     },
   ],
   quickAction: {
-    label: 'Review queue',
+    label: 'View pipeline',
     icon: ListChecks,
-    href: '/dashboard/university/pipeline',
+    href: routes.dashboard.university.pipeline,
   },
 };
 

@@ -1,9 +1,10 @@
 'use client';
 
-import { House } from '@phosphor-icons/react';
+import { House } from '@/components/icons';
 
 import type { DashboardRole } from '@/config/roles';
 import { isDashboardRole } from '@/config/roles';
+import { routes } from '@/config/routes';
 import type { StudentTrustStage } from '@/lib/student-trust-stage';
 
 import { adminNavConfig } from './admin';
@@ -29,7 +30,7 @@ type GetNavConfigOptions = {
 
 export function getNavConfig(role: string, options: GetNavConfigOptions = {}): NavConfig {
   if (!isDashboardRole(role)) {
-    return { groups: [], items: [], quickAction: { label: 'Home', icon: House, href: '/' } };
+    return { groups: [], items: [], quickAction: { label: 'Home', icon: House, href: routes.home } };
   }
   const config = navConfigByRole[role];
 

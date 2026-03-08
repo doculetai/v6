@@ -92,6 +92,11 @@ export const agentCopy = {
   bulkInvite: {
     title: 'Bulk invite',
     subtitle: 'Invite up to 20 students at once by entering their email addresses.',
+    result: {
+      processed: 'Processed',
+      successful: 'Successful',
+      failed: 'Failed',
+    },
     placeholder: 'Enter one email per line, e.g.\nstudent1@example.com\nstudent2@example.com',
     submitLabel: 'Send invitations',
     submittingLabel: 'Sending\u2026',
@@ -233,9 +238,29 @@ export const agentCopy = {
     },
   },
 
+  commissionRow: {
+    student: 'Student',
+    certDate: 'Certificate date',
+    amount: 'Commission',
+    status: 'Status',
+    pending: 'Pending payout',
+    paid: 'Paid out',
+  },
+
   settings: {
     title: "Settings",
     subtitle: "Manage your agent profile and notification preferences.",
+
+    bankDetails: {
+      tabLabel: 'Bank details',
+      description: 'Commission payout account.',
+      accountNumber: 'Account number',
+      bankName: 'Bank name',
+      save: 'Save details',
+      saving: 'Saving\u2026',
+      saved: 'Bank details saved.',
+      notConfigured: 'No bank account linked. Add your account to receive commission payouts.',
+    },
 
     profile: {
       sectionTitle: "Agent profile",
@@ -292,6 +317,23 @@ export const agentCopy = {
     },
   },
 
+  emptyStates: {
+    students: {
+      heading: 'No students assigned',
+      body: 'Share your referral link to onboard your first student and start earning commissions.',
+    },
+    commissions: {
+      heading: 'No commissions yet',
+      body: 'Your commission history will appear here as students complete milestones.',
+    },
+    activity: {
+      heading: 'No activity yet',
+      body: 'Student events and commission updates will appear here.',
+    },
+  },
+
+  certBadge: 'Certified',
+
   students: {
     title: 'Your students',
     subtitle: 'Track every student you manage through their funding journey.',
@@ -333,6 +375,17 @@ export const agentCopy = {
     commissionLabel: 'Commission update',
     studentLabel: 'Student assignment',
     dateLabel: 'Date',
+  },
+
+  inviteSheet: {
+    trigger: 'Invite student',
+    heading: 'Invite a student',
+    description: 'Send an invitation email to a prospective student. They will be linked to your portfolio automatically.',
+    emailLabel: 'Student email address',
+    emailPlaceholder: 'student@example.com',
+    submitCta: 'Send invite',
+    submitting: 'Sending...',
+    cancelCta: 'Cancel',
   },
 
   actions: {

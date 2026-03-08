@@ -20,7 +20,8 @@ import { Label } from '@/components/ui/label';
 import { Container, Stack } from '@/components/layout/content-primitives';
 import { PageHeader } from '@/components/layout/page-header';
 import { SessionManagementWithData } from '@/components/settings/SessionManagementWithData';
-import { browserTrpcClient } from '@/trpc/client';
+import { partnerCopy } from '@/config/copy/partner';
+import { browserTrpcClient, trpc } from '@/trpc/client';
 
 import { FormErrorBanner, FormSuccessBanner } from './settings-shared';
 import { routes } from '@/config/routes';
@@ -30,6 +31,7 @@ import { routes } from '@/config/routes';
 type PartnerSettings = {
   organizationName: string;
   webhookUrl: string | null;
+  webhookIsActive?: boolean;
   brandColor: string | null;
   brandLogoUrl: string | null;
 };
@@ -93,6 +95,47 @@ type FormValues = {
 };
 
 // ── Partner settings form ─────────────────────────────────────────────────────
+
+const webhookDisabledCopy = partnerCopy.webhookDisabled;
+
+function WebhookDisabledBanner() {
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const reEnable = trpc.partner.reEnableWebhook.useMutation({
+    onSuccess() {
+      setFeedback(webhookDisabledCopy.reEnableSuccess);
+      setTimeout(() => setFeedback(null), 4000);
+    },
+  });
+
+  return (
+    <div className="rounded-lg border border-amber-300/40 bg-amber-50/60 px-4 py-3 dark:border-amber-500/30 dark:bg-amber-950/20">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-medium text-foreground">{webhookDisabledCopy.heading}</p>
+            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+              {webhookDisabledCopy.badge}
+            </span>
+          </div>
+          <p className="mt-0.5 text-xs text-muted-foreground">{webhookDisabledCopy.body}</p>
+        </div>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          className="min-h-9"
+          disabled={reEnable.isPending}
+          onClick={() => reEnable.mutate()}
+        >
+          {reEnable.isPending ? webhookDisabledCopy.reEnablingCta : webhookDisabledCopy.reEnableCta}
+        </Button>
+      </div>
+      {feedback && (
+        <p className="mt-2 text-xs font-medium text-[#0F766E]" role="status">{feedback}</p>
+      )}
+    </div>
+  );
+}
 
 function PartnerProfileForm({
   settings,
@@ -196,6 +239,11 @@ function PartnerProfileForm({
               </p>
             ) : null}
           </div>
+
+          {/* Webhook disabled state */}
+          {settings.webhookUrl && settings.webhookIsActive === false && (
+            <WebhookDisabledBanner />
+          )}
 
           {saveError ? <FormErrorBanner message={saveError} /> : null}
           {saved ? <FormSuccessBanner message={copy.profile.savedLabel} /> : null}

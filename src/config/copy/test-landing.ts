@@ -1,3 +1,5 @@
+import { routes } from '@/config/routes';
+
 /** V6 test landing page copy — editorial fintech voice, Nigerian founder warmth */
 export const landingCopy = {
   nav: {
@@ -8,7 +10,7 @@ export const landingCopy = {
       { label: "Pricing", href: "#pricing" },
     ],
     signIn: "Sign in",
-    cta: "Get started",
+    cta: "Apply now",
   },
 
   hero: {
@@ -219,9 +221,9 @@ export const landingCopy = {
     address: "Victoria Island, Lagos, Nigeria",
     regulatory: "NDPR compliant. RC-2847193.",
     links: [
-      { label: "Privacy", href: "/privacy" },
-      { label: "Terms", href: "/terms" },
-      { label: "Contact", href: "/contact" },
+      { label: "Privacy", href: routes.marketing.privacy },
+      { label: "Terms", href: routes.marketing.terms },
+      { label: "Contact", href: routes.marketing.contact },
     ],
   },
 } as const;

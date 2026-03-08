@@ -1,5 +1,4 @@
-import { Circle, CircleCheckBig } from 'lucide-react';
-
+import { Circle, CheckCircle } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 type OnboardingProgressTrackerProps = {
@@ -31,12 +30,14 @@ export function OnboardingProgressTracker({
             )}
           >
             {isComplete ? (
-              <CircleCheckBig
+              <CheckCircle
+                weight="duotone"
                 className="size-4 shrink-0 text-primary dark:text-primary"
                 aria-hidden="true"
               />
             ) : (
               <Circle
+                weight="duotone"
                 className={cn(
                   'size-4 shrink-0',
                   isCurrent

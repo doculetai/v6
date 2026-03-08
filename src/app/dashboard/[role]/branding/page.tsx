@@ -1,9 +1,12 @@
+import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
+import { notFound, redirect } from 'next/navigation';
 
 import { partnerCopy } from '@/config/copy/partner';
 import { api } from '@/trpc/server';
 
 import { BrandingPageClient } from './branding-page-client';
+import { routes } from '@/config/routes';
 
 export const metadata: Metadata = { title: partnerCopy.branding.title };
 
@@ -13,21 +16,17 @@ export default async function BrandingPage({ params }: PageProps) {
   const { role } = await params;
 
   if (role !== 'partner') {
-    return <p className="text-muted-foreground">{partnerCopy.errors.unauthorized}</p>;
+    notFound();
   }
 
-  let branding: Awaited<ReturnType<Awaited<ReturnType<typeof api>>['partner']['getPartnerBranding']>> | null = null;
-  try {
-    const caller = await api();
-    branding = await caller.partner.getPartnerBranding();
-  } catch {
-    branding = null;
-  }
+  const caller = await api();
 
-  return (
-    <div className="space-y-6">
-      <h1 className="sr-only">{partnerCopy.branding.title}</h1>
-      <BrandingPageClient branding={branding} copy={partnerCopy.branding} />
-    </div>
-  );
+  const [brandingResult] = await Promise.allSettled([caller.partner.getPartnerBranding()]);
+  if (brandingResult.status === 'rejected') {
+    const err = brandingResult.reason;
+    if (err instanceof TRPCError && err.code === 'UNAUTHORIZED') redirect(routes.auth.login);
+  }
+  const branding = brandingResult.status === 'fulfilled' ? brandingResult.value : null;
+
+  return <BrandingPageClient branding={branding} copy={partnerCopy.branding} />;
 }

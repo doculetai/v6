@@ -1,3 +1,4 @@
+import { routes } from '@/config/routes';
 const roles = {
   student: 'Student',
   sponsor: 'Sponsor',
@@ -9,10 +10,10 @@ const roles = {
 export const authCopy = {
   brandAlt: 'Doculet.ai logo',
   routes: {
-    login: '/login',
-    signup: '/signup',
-    forgotPassword: '/forgot-password',
-    updatePassword: '/update-password',
+    login: routes.auth.login,
+    signup: routes.auth.signup,
+    forgotPassword: routes.auth.forgotPassword,
+    updatePassword: routes.auth.updatePassword,
   },
   common: {
     emailLabel: 'Email address',
@@ -36,6 +37,8 @@ export const authCopy = {
     trustLabel: 'Secure sign-in',
     submitLabel: 'Sign in',
     genericError: 'We could not sign you in. Check your details and try again.',
+    heroTagline: 'Proof of funds for every student.',
+    heroSub: 'Doculet connects students, sponsors, and universities on a single trusted platform.',
     links: {
       noAccount: "Don't have an account?",
       signup: 'Create one',

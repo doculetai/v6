@@ -16,6 +16,12 @@ export const certificates = pgTable('certificates', {
   issuedAt: timestamp('issued_at').defaultNow().notNull(),
   validUntil: timestamp('valid_until'),
   status: text('status', { enum: ['active', 'revoked'] }).default('active').notNull(),
+  paymentStatus: text('payment_status', { enum: ['unpaid', 'paid', 'waived'] })
+    .default('unpaid')
+    .notNull(),
+  revokedAt: timestamp('revoked_at'),
+  revokedBy: uuid('revoked_by').references(() => users.id, { onDelete: 'set null' }),
+  revokedReason: text('revoked_reason'),
   metaJson: jsonb('meta_json').notNull(),
 });
 

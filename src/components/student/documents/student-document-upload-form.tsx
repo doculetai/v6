@@ -1,6 +1,6 @@
 'use client';
 
-import { CloudArrowUp } from '@phosphor-icons/react';
+import { CloudArrowUp } from '@/components/icons';
 import { useState } from 'react';
 import { Controller, type UseFormReturn } from 'react-hook-form';
 

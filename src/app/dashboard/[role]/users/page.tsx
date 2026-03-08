@@ -1,9 +1,13 @@
+import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
+import { notFound, redirect } from 'next/navigation';
 
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { adminCopy } from '@/config/copy/admin';
 import { api } from '@/trpc/server';
 
 import { UsersPageClient } from './users-page-client';
+import { routes } from '@/config/routes';
 
 export const metadata: Metadata = {
   title: adminCopy.users.title,
@@ -17,33 +21,22 @@ export default async function UsersPage({ params }: PageProps) {
   const { role } = await params;
 
   if (role !== 'admin') {
-    return (
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">{adminCopy.users.title}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{adminCopy.errors.unauthorized}</p>
-      </div>
-    );
+    notFound();
   }
 
-  let result: Awaited<ReturnType<Awaited<ReturnType<typeof api>>['admin']['listAllUsers']>> | null = null;
+  const caller = await api();
 
-  try {
-    const caller = await api();
-    result = await caller.admin.listAllUsers({ limit: 50, offset: 0 });
-  } catch {
-    result = null;
+  const [resultResult] = await Promise.allSettled([caller.admin.listAllUsers({ limit: 50, offset: 0 })]);
+  if (resultResult.status === 'rejected') {
+    const err = resultResult.reason;
+    if (err instanceof TRPCError && err.code === 'UNAUTHORIZED') redirect(routes.auth.login);
   }
+  const result = resultResult.status === 'fulfilled' ? resultResult.value : null;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">{adminCopy.users.title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{adminCopy.users.subtitle}</p>
-      </div>
-      <UsersPageClient
-        data={result}
-        copy={adminCopy.users}
-      />
-    </div>
+    <PageShell>
+      <PageHeader title={adminCopy.users.title} subtitle={adminCopy.users.subtitle} />
+      <UsersPageClient data={result} copy={adminCopy.users} />
+    </PageShell>
   );
 }

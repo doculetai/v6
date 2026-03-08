@@ -523,6 +523,7 @@ export const adminRouter = createTRPCRouter({
               .nullable(),
             onboardingComplete: z.boolean(),
             createdAt: z.date(),
+            frozenAt: z.date().nullable(),
           }),
         ),
         total: z.number(),
@@ -547,6 +548,7 @@ export const adminRouter = createTRPCRouter({
             role: profiles.role,
             onboardingComplete: profiles.onboardingComplete,
             createdAt: users.createdAt,
+            frozenAt: profiles.frozenAt,
           })
           .from(users)
           .leftJoin(profiles, eq(profiles.userId, users.id))
@@ -568,6 +570,7 @@ export const adminRouter = createTRPCRouter({
           role: r.role ?? null,
           onboardingComplete: r.onboardingComplete ?? false,
           createdAt: r.createdAt,
+          frozenAt: r.frozenAt ?? null,
         })),
         total: totalRow[0]?.count ?? 0,
       };
@@ -1080,6 +1083,159 @@ export const adminRouter = createTRPCRouter({
       ),
     )
     .query(async ({ ctx, input }) => listTransactions(ctx.db, input)),
+
+  freezeAccount: roleProcedure('admin')
+    .input(
+      z.object({
+        userId: z.string().uuid(),
+        reason: z.string().min(1).max(500).optional(),
+      }),
+    )
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(profiles)
+        .set({ frozenAt: new Date(), frozenReason: input.reason ?? null })
+        .where(eq(profiles.userId, input.userId));
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user!.id,
+        action: 'admin.freezeAccount',
+        entityType: 'user',
+        entityId: input.userId,
+        meta: { reason: input.reason },
+        ip: ctx.ip ?? undefined,
+        userAgent: ctx.userAgent ?? undefined,
+      });
+      return { success: true };
+    }),
+
+  unfreezeAccount: roleProcedure('admin')
+    .input(z.object({ userId: z.string().uuid() }))
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(profiles)
+        .set({ frozenAt: null, frozenReason: null })
+        .where(eq(profiles.userId, input.userId));
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user!.id,
+        action: 'admin.unfreezeAccount',
+        entityType: 'user',
+        entityId: input.userId,
+        meta: {},
+        ip: ctx.ip ?? undefined,
+        userAgent: ctx.userAgent ?? undefined,
+      });
+      return { success: true };
+    }),
+
+  globalSearch: roleProcedure('admin')
+    .input(z.object({ q: z.string().min(2).max(100) }))
+    .output(
+      z.array(
+        z.object({
+          type: z.enum(['student', 'cert', 'operation']),
+          id: z.string(),
+          label: z.string(),
+          href: z.string(),
+        }),
+      ),
+    )
+    .query(async ({ ctx, input }) => {
+      const { db } = ctx;
+      const q = `%${input.q}%`;
+
+      const [userRows, certRows] = await Promise.all([
+        db
+          .select({
+            id: users.id,
+            email: users.email,
+            fullName: profiles.fullName,
+          })
+          .from(users)
+          .leftJoin(profiles, eq(profiles.userId, users.id))
+          .where(
+            or(
+              ilike(users.email, q),
+              ilike(profiles.fullName, q),
+            ),
+          )
+          .limit(6),
+        db
+          .select({ id: certificates.id, token: certificates.token })
+          .from(certificates)
+          .where(ilike(certificates.id, q))
+          .limit(4),
+      ]);
+
+      type SearchResult = {
+        type: 'student' | 'cert' | 'operation';
+        id: string;
+        label: string;
+        href: string;
+      };
+
+      const results: SearchResult[] = [];
+
+      for (const u of userRows) {
+        results.push({
+          type: 'student',
+          id: u.id,
+          label: u.fullName ? `${u.fullName} (${u.email ?? ''})` : (u.email ?? u.id),
+          href: `/dashboard/admin/users`,
+        });
+      }
+
+      for (const c of certRows) {
+        results.push({
+          type: 'cert',
+          id: c.id,
+          label: `Certificate ${c.id.slice(0, 8).toUpperCase()}`,
+          href: `/certificate/${c.token}`,
+        });
+      }
+
+      return results.slice(0, 10);
+    }),
+
+  getLatestFxRate: roleProcedure('admin')
+    .output(
+      z
+        .object({
+          rateX100: z.number(),
+          fetchedAt: z.date(),
+          source: z.string(),
+        })
+        .nullable(),
+    )
+    .query(async ({ ctx }) => {
+      const { getLatestRate } = await import('@/db/queries/exchange-rates');
+      return getLatestRate(ctx.db, 'NGN', 'USD');
+    }),
+
+  updateFxRate: roleProcedure('admin')
+    .input(z.object({ rateNgnPerUsd: z.number().positive() }))
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const { exchangeRates } = await import('@/db/schema');
+      await ctx.db.insert(exchangeRates).values({
+        baseCurrency: 'NGN',
+        targetCurrency: 'USD',
+        rateX100: Math.round(input.rateNgnPerUsd * 100),
+        source: 'manual',
+        fetchedAt: new Date(),
+      });
+      await insertAuditLog(ctx.db, {
+        actorId: ctx.user!.id,
+        action: 'admin.updateFxRate',
+        entityType: 'exchange_rate',
+        entityId: 'NGN_USD',
+        meta: { rateNgnPerUsd: input.rateNgnPerUsd },
+        ip: ctx.ip ?? undefined,
+        userAgent: ctx.userAgent ?? undefined,
+      });
+      return { success: true };
+    }),
 
   issueCertificate: roleProcedure('admin')
     .input(

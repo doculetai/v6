@@ -45,6 +45,36 @@ export const agentCommissions = pgTable(
   (t) => [index('agent_commissions_agent_status_idx').on(t.agentId, t.status)],
 );
 
+export const agentPayoutRequests = pgTable(
+  'agent_payout_requests',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    agentId: uuid('agent_id')
+      .references(() => users.id, { onDelete: 'cascade' })
+      .notNull(),
+    amountKobo: integer('amount_kobo').notNull(),
+    currency: text('currency').notNull().default('NGN'),
+    status: text('status', {
+      enum: ['pending', 'approved', 'rejected', 'paid'],
+    })
+      .notNull()
+      .default('pending'),
+    bankAccountId: uuid('bank_account_id'),
+    rejectionReason: text('rejection_reason'),
+    approvedAt: timestamp('approved_at'),
+    paidAt: timestamp('paid_at'),
+    ...timestamps,
+  },
+  (t) => [index('agent_payout_requests_agent_status_idx').on(t.agentId, t.status)],
+);
+
+export const agentPayoutRequestsRelations = relations(agentPayoutRequests, ({ one }) => ({
+  agent: one(users, {
+    fields: [agentPayoutRequests.agentId],
+    references: [users.id],
+  }),
+}));
+
 export const agentStudentAssignmentsRelations = relations(agentStudentAssignments, ({ one }) => ({
   agent: one(users, {
     fields: [agentStudentAssignments.agentId],

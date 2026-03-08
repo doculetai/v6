@@ -2,6 +2,11 @@ import { routes } from '@/config/routes';
 import { commonErrors } from "./shared";
 
 export const adminCopy = {
+  subRoles: {
+    reviewer: 'Reviewer',
+    support: 'Support',
+  },
+
   dashboard: {
     title: "Admin dashboard",
     subtitle: "Platform health at a glance. Every action audited.",
@@ -529,6 +534,11 @@ export const adminCopy = {
   settings: {
     title: 'Platform settings',
     subtitle: 'Configuration and administrative preferences.',
+    tabs: {
+      security: 'Security',
+      notifications: 'Notifications',
+      team: 'Team',
+    },
     sections: {
       security: {
         title: 'Security & compliance',
@@ -541,10 +551,37 @@ export const adminCopy = {
         comingSoon: 'Alert routing to email, Slack, or webhooks is managed by the Doculet operations team. Contact support to configure notification channels.',
       },
     },
+    team: {
+      title: 'Team members',
+      description: 'Manage admin accounts with access to this platform.',
+      inviteCta: 'Invite admin',
+      empty: {
+        title: 'No team members',
+        description: 'Invite your first administrator to help manage the platform.',
+      },
+    },
+  },
+
+  freeze: {
+    action: 'Freeze account',
+    unfreezeAction: 'Unfreeze account',
+    badge: 'Frozen',
+    confirmTitle: 'Freeze this account?',
+    confirmDescription: 'The user will retain access but all transactions and document submissions will be blocked until unfrozen.',
+    reasonLabel: 'Reason (internal, not shown to user)',
+    reasonHint: 'Summarise the reason for freezing this account.',
+    confirmCta: 'Freeze account',
+    unfreezeConfirmTitle: 'Unfreeze this account?',
+    unfreezeConfirmDescription: 'The user will regain full access to transactions and document submissions.',
+    unfreezeConfirmCta: 'Unfreeze account',
+    cancel: 'Cancel',
+    freezeSuccess: 'Account frozen.',
+    unfreezeSuccess: 'Account unfrozen.',
   },
 
   impersonation: {
-    banner: (email: string) => `Viewing as ${email}`,
+    banner: (name: string) => `Impersonating ${name}`,
+    exit: 'Exit impersonation',
     endSession: 'End session',
     startCta: 'View as user',
     confirmTitle: 'View as this user?',
@@ -554,6 +591,65 @@ export const adminCopy = {
     cannotImpersonateAdmin: 'Admin accounts cannot be impersonated.',
     cannotImpersonateSelf: 'You cannot impersonate yourself.',
     sessionEnded: 'Impersonation session ended.',
+  },
+
+  itemLock: {
+    beingReviewed: 'Being reviewed',
+    minutesAgo: (n: number) => `${n}m ago`,
+    actionsDisabled: 'Actions unavailable while another admin is reviewing.',
+  },
+
+  rejectionTemplates: [
+    'Document is blurry or unreadable.',
+    'Name on document does not match account.',
+    'Balance not clearly visible.',
+    'Statement is older than 3 months.',
+    'Wrong document type uploaded.',
+  ],
+  rejectionMaxChars: 300,
+  rejectionRequired: 'Rejection reason is required.',
+
+  categoryFilters: {
+    all: 'All categories',
+    documents: 'Documents',
+    banking: 'Banking',
+    cert_ready: 'Cert ready',
+  },
+
+  certIssuance: {
+    title: 'Issue certificate',
+    expiryLabel: 'Expiry date',
+    expiryDefault: '90 days from today',
+    confirm: 'Confirm & Issue',
+    cancel: 'Cancel',
+  },
+
+  globalSearch: {
+    placeholder: 'Search students, certs\u2026',
+  },
+
+  exchangeRates: {
+    tabLabel: 'Exchange Rates',
+    rateLabel: '\u20A6 per $1 USD',
+    saveRate: 'Save rate',
+    savedRate: 'Rate saved.',
+    staleWarning: 'Rate not updated in over 24 hours.',
+    autoPulled: (rate: string, timeAgo: string) => `Auto-pulled: \u20A6 ${rate} \u00B7 Updated ${timeAgo}`,
+  },
+
+  rejectionTemplateSettings: {
+    tabLabel: 'Templates',
+    editAction: 'Edit',
+    archiveAction: 'Archive',
+    addNew: '+ Add template',
+    saveEdit: 'Save',
+    cancelEdit: 'Cancel',
+    superAdminOnly: 'Only Super Admins can manage templates.',
+  },
+
+  concurrentReview: {
+    viewOnly: 'View only',
+    readOnlyNote: 'Document content is not shown to university administrators.',
   },
 
   overview: {

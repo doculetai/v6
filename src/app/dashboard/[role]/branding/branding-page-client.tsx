@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { primitivesCopy } from '@/config/copy/primitives';
 import { type partnerCopy } from '@/config/copy/partner';
 import { trpc } from '@/trpc/client';
@@ -68,12 +69,8 @@ export function BrandingPageClient({ branding, copy }: Props) {
   }
 
   return (
-    <section className="space-y-6">
-      {/* Header */}
-      <div className="border-b border-border pb-4">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">{copy.title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{copy.subtitle}</p>
-      </div>
+    <PageShell>
+      <PageHeader title={copy.title} subtitle={copy.subtitle} />
 
       {branding === null ? (
         <div className="rounded-xl border border-border bg-card p-10 text-center">
@@ -159,6 +156,6 @@ export function BrandingPageClient({ branding, copy }: Props) {
           </div>
         </form>
       )}
-    </section>
+    </PageShell>
   );
 }

@@ -1,5 +1,5 @@
-import { BookOpenText, ShieldCheck, Sparkles } from 'lucide-react';
-
+import { BookOpenText, ShieldCheck, Sparkle } from '@/components/icons';
+import { Container, Stack } from '@/components/layout/content-primitives';
 import { studentCopy } from '@/config/copy/student';
 
 import { OnboardingProgressTracker } from './OnboardingProgressTracker';
@@ -33,15 +33,15 @@ export function OnboardingHero({ currentStep, stepLabels }: OnboardingHeroProps)
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge variant="outline" className="gap-2">
-            <ShieldCheck className="size-4" aria-hidden="true" />
+            <ShieldCheck weight="duotone" className="size-4" aria-hidden="true" />
             {onboardingCopy.trustSignals.secure}
           </Badge>
           <Badge variant="outline" className="gap-2">
-            <BookOpenText className="size-4" aria-hidden="true" />
+            <BookOpenText weight="duotone" className="size-4" aria-hidden="true" />
             {onboardingCopy.trustSignals.audit}
           </Badge>
           <Badge variant="outline" className="gap-2">
-            <Sparkles className="size-4" aria-hidden="true" />
+            <Sparkle weight="duotone" className="size-4" aria-hidden="true" />
             {onboardingCopy.trustSignals.compliant}
           </Badge>
         </div>
@@ -62,21 +62,23 @@ export function OnboardingHero({ currentStep, stepLabels }: OnboardingHeroProps)
 
 export function OnboardingLoadingState() {
   return (
-    <section className="mx-auto w-full max-w-5xl space-y-6">
-      <Card className="border-border bg-card dark:border-border dark:bg-card">
-        <CardHeader className="space-y-3">
-          <Skeleton className="h-6 w-40 bg-accent dark:bg-accent" />
-          <Skeleton className="h-10 w-full max-w-lg bg-accent dark:bg-accent" />
-          <Skeleton className="h-5 w-full max-w-xl bg-accent dark:bg-accent" />
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Skeleton className="h-11 w-full bg-accent dark:bg-accent" />
-          <Skeleton className="h-11 w-full bg-accent dark:bg-accent" />
-          <p className="text-sm text-muted-foreground dark:text-muted-foreground">
-            {onboardingCopy.loading.description}
-          </p>
-        </CardContent>
-      </Card>
-    </section>
+    <Container width="lg">
+      <Stack gap="md">
+        <Card className="border-border bg-card dark:border-border dark:bg-card">
+          <CardHeader className="space-y-3">
+            <Skeleton className="h-6 w-40 bg-accent dark:bg-accent" />
+            <Skeleton className="h-10 w-full max-w-lg bg-accent dark:bg-accent" />
+            <Skeleton className="h-5 w-full max-w-xl bg-accent dark:bg-accent" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Skeleton className="h-11 w-full bg-accent dark:bg-accent" />
+            <Skeleton className="h-11 w-full bg-accent dark:bg-accent" />
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
+              {onboardingCopy.loading.description}
+            </p>
+          </CardContent>
+        </Card>
+      </Stack>
+    </Container>
   );
 }

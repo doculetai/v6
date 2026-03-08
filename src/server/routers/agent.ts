@@ -172,6 +172,7 @@ export const agentRouter = createTRPCRouter({
           kycStatus: z.enum(['not_started', 'pending', 'verified', 'failed']),
           documentCount: z.number(),
           assignedAt: z.date(),
+          certIssued: z.boolean(),
         }),
       ),
     )
@@ -185,7 +186,7 @@ export const agentRouter = createTRPCRouter({
 
       const studentIds = assignments.map((a) => a.studentId);
 
-      const [studentProfiles, docRows, userRows] = await Promise.all([
+      const [studentProfiles, docRows, userRows, certRows] = await Promise.all([
         ctx.db.query.studentProfiles.findMany({
           where: (t, { inArray: inArrayFn }) => inArrayFn(t.userId, studentIds),
           with: { school: true, program: true },
@@ -198,6 +199,11 @@ export const agentRouter = createTRPCRouter({
           where: (t, { inArray: inArrayFn }) => inArrayFn(t.id, studentIds),
           columns: { id: true, email: true },
         }),
+        ctx.db.query.certificates.findMany({
+          where: (t, { inArray: inArrayFn }) =>
+            inArrayFn(t.studentId, studentIds),
+          columns: { studentId: true, status: true },
+        }),
       ]);
 
       const emailMap = new Map(userRows.map((u) => [u.id, u.email]));
@@ -206,6 +212,9 @@ export const agentRouter = createTRPCRouter({
       for (const doc of docRows) {
         docCountMap.set(doc.userId, (docCountMap.get(doc.userId) ?? 0) + 1);
       }
+      const certIssuedSet = new Set(
+        certRows.filter((c) => c.status === 'active').map((c) => c.studentId),
+      );
 
       return assignments.map((a) => {
         const profile = profileMap.get(a.studentId);
@@ -218,6 +227,7 @@ export const agentRouter = createTRPCRouter({
           kycStatus: profile?.kycStatus ?? 'not_started',
           documentCount: docCountMap.get(a.studentId) ?? 0,
           assignedAt: a.assignedAt,
+          certIssued: certIssuedSet.has(a.studentId),
         };
       });
     }),
@@ -383,5 +393,21 @@ export const agentRouter = createTRPCRouter({
     .output(z.array(AgentActivityItemSchema))
     .query(async ({ ctx, input }) => {
       return getAgentActivity(ctx.db, ctx.user.id, input.limit, input.cursor);
+    }),
+
+  inviteStudent: roleProcedure('agent')
+    .input(z.object({ email: z.string().email() }))
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      const profile = await ctx.db.query.agentProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user.id),
+        columns: { fullName: true },
+      });
+      await sendAgentInviteEmail({
+        toEmail: input.email,
+        agentName: profile?.fullName ?? null,
+        agentId: ctx.user.id,
+      });
+      return { success: true };
     }),
 });

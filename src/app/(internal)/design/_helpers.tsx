@@ -5,9 +5,22 @@ import { DataTableShell } from '@/components/ui/data-table-shell';
 import { MoneyValue } from '@/components/ui/money-value';
 import { StatusBadge } from '@/components/ui/status-badge';
 
-export function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+export function Section({
+  id,
+  title,
+  children,
+  variant,
+}: {
+  id: string;
+  title: string;
+  children: React.ReactNode;
+  variant?: 'default' | 'muted';
+}) {
   return (
-    <section id={id} className="scroll-mt-8 space-y-5">
+    <section
+      id={id}
+      className={`scroll-mt-8 space-y-5 rounded-xl p-6 ${variant === 'muted' ? 'bg-muted/40' : ''}`}
+    >
       <div className="flex items-center gap-3">
         <h2 className="text-xl font-semibold text-foreground">{title}</h2>
         <Link href={`#${id}`} className="text-sm text-muted-foreground hover:text-foreground">
@@ -17,6 +30,10 @@ export function Section({ id, title, children }: { id: string; title: string; ch
       {children}
     </section>
   );
+}
+
+export function SectionDivider() {
+  return <hr className="border-border/30" />;
 }
 
 export function Code({ children }: { children: string }) {

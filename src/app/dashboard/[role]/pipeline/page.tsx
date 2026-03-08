@@ -2,12 +2,13 @@ import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
-import { PageHeader } from '@/components/ui/page-header';
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { universityCopy } from '@/config/copy/university';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 
 import { PipelinePageClient } from './pipeline-page-client';
+import { routes } from '@/config/routes';
 
 export const metadata: Metadata = { title: 'Application Pipeline — Doculet' };
 
@@ -24,27 +25,20 @@ export default async function PipelinePage({ params }: PipelinePageProps) {
 
   const caller = await api();
 
-  let queue: Awaited<ReturnType<typeof caller.university.getVerificationQueue>> = [];
-
-  try {
-    queue = await caller.university.getVerificationQueue();
-  } catch (error) {
-    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
-      redirect('/login');
-    }
-    if (error instanceof TRPCError && error.code === 'FORBIDDEN') {
-      notFound();
-    }
-    throw error;
+  const [queueResult] = await Promise.allSettled([caller.university.getVerificationQueue()]);
+  if (queueResult.status === 'rejected') {
+    const err = queueResult.reason;
+    if (err instanceof TRPCError && err.code === 'UNAUTHORIZED') redirect(routes.auth.login);
+    if (err instanceof TRPCError && err.code === 'FORBIDDEN') notFound();
   }
+  const queue = queueResult.status === 'fulfilled' ? queueResult.value : [];
 
   const copy = universityCopy.pipeline;
 
   return (
-    <div className="space-y-6">
-      <h1 className="sr-only">{copy.title}</h1>
+    <PageShell>
       <PageHeader title={copy.title} subtitle={copy.subtitle} />
       <PipelinePageClient queue={queue} />
-    </div>
+    </PageShell>
   );
 }

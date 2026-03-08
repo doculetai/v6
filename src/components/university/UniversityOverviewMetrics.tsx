@@ -1,42 +1,28 @@
-import { MetricCard } from '@/components/ui/metric-card';
+import { Grid } from '@/components/layout/content-primitives';
+import { StatCard } from '@/components/ui/stat-card';
 import { universityCopy } from '@/config/copy/university';
 
 interface UniversityOverviewMetricsProps {
-  pendingCount: number;
-  approvedTodayCount: number;
-  flaggedCount: number;
+  totalPrograms: number;
+  enrolledStudents: number;
+  pendingApplications: number;
   totalStudents: number;
 }
 
 const copy = universityCopy.overview.metrics;
 
 export function UniversityOverviewMetrics({
-  pendingCount,
-  approvedTodayCount,
-  flaggedCount,
+  totalPrograms,
+  enrolledStudents,
+  pendingApplications,
   totalStudents,
 }: UniversityOverviewMetricsProps) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <MetricCard
-        label={copy.pending}
-        value={pendingCount}
-        deltaDirection={pendingCount > 0 ? 'up' : 'neutral'}
-      />
-      <MetricCard
-        label={copy.approvedToday}
-        value={approvedTodayCount}
-        deltaDirection={approvedTodayCount > 0 ? 'up' : 'neutral'}
-      />
-      <MetricCard
-        label={copy.flagged}
-        value={flaggedCount}
-        deltaDirection={flaggedCount > 0 ? 'down' : 'neutral'}
-      />
-      <MetricCard
-        label={copy.totalStudents}
-        value={totalStudents}
-      />
-    </div>
+    <Grid cols={{ sm: 2, lg: 4 }} gap="md">
+      <StatCard label={copy.totalPrograms} value={totalPrograms} />
+      <StatCard label={copy.enrolledStudents} value={enrolledStudents} />
+      <StatCard label={copy.pendingApplications} value={pendingApplications} />
+      <StatCard label={copy.totalStudents} value={totalStudents} />
+    </Grid>
   );
 }

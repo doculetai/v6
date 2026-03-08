@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link"
-import { CaretLeft, CaretRight, Question } from "@phosphor-icons/react"
+import { CaretLeft, CaretRight, Question } from '@/components/icons'
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 
@@ -43,8 +43,8 @@ function PageHeader({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 pb-4",
-        sticky && "sticky top-0 z-30 bg-background border-b border-border",
+        "flex flex-col gap-2 pb-6",
+        sticky && "sticky top-0 z-30 backdrop-blur-sm bg-background/95 border-b border-border shadow-sm",
         className,
       )}
     >
@@ -54,7 +54,7 @@ function PageHeader({
           <MobileBackLink breadcrumbs={breadcrumbs} />
 
           {/* Desktop: full breadcrumb trail */}
-          <nav className="mb-2 hidden items-center gap-1 text-sm text-muted-foreground sm:flex" aria-label="Breadcrumb">
+          <nav className="mb-1 hidden items-center gap-1 text-sm text-muted-foreground sm:flex" aria-label="Breadcrumb">
             {breadcrumbs.map((crumb, i) => (
               <span key={i} className="flex items-center gap-1">
                 {i > 0 ? <CaretRight weight="duotone" className="h-3.5 w-3.5" /> : null}
@@ -63,7 +63,7 @@ function PageHeader({
                     {crumb.label}
                   </Link>
                 ) : (
-                  <span className="text-foreground">{crumb.label}</span>
+                  <span className="text-primary font-medium">{crumb.label}</span>
                 )}
               </span>
             ))}
@@ -75,12 +75,12 @@ function PageHeader({
           {Icon ? <Icon className="h-6 w-6 shrink-0 text-primary" /> : null}
           <div>
             {overline ? (
-              <span className="mb-1 inline-block rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+              <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-primary/70">
                 {overline}
-              </span>
+              </p>
             ) : null}
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
+              <h1 className="text-3xl font-semibold tracking-tight text-foreground">{title}</h1>
               {helpText && (
                 <div className="relative">
                   <button
@@ -99,7 +99,7 @@ function PageHeader({
                 </div>
               )}
             </div>
-            {description ? <p className="mt-0.5 max-w-2xl text-sm text-muted-foreground">{description}</p> : null}
+            {description ? <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{description}</p> : null}
             {subtitle ? <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p> : null}
           </div>
         </div>

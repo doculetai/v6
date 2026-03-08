@@ -1,4 +1,5 @@
-import { Activity, BarChart3, ClipboardCheck, Home, Settings, ShieldAlert, Users } from 'lucide-react';
+import { ChartBar, ClipboardText, Gear, House, Pulse, ShieldWarning, Users } from '@/components/icons';
+import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
 
@@ -10,43 +11,43 @@ export const adminNavConfig: NavConfig = {
   items: [
     {
       label: 'Overview',
-      href: '/dashboard/admin',
-      icon: Home,
+      href: routes.dashboard.admin.overview,
+      icon: House,
       description: 'Platform health and metrics',
       isPrimary: true,
     },
     {
       label: 'Operations',
-      href: '/dashboard/admin/operations',
-      icon: Activity,
+      href: routes.dashboard.admin.operations,
+      icon: Pulse,
       description: 'Live operational activity',
       group: 'ops',
     },
     {
       label: 'Analytics',
-      href: '/dashboard/admin/analytics',
-      icon: BarChart3,
+      href: routes.dashboard.admin.analytics,
+      icon: ChartBar,
       description: 'Business intelligence',
       group: 'ops',
     },
     {
       label: 'Risk',
-      href: '/dashboard/admin/risk',
-      icon: ShieldAlert,
+      href: routes.dashboard.admin.risk,
+      icon: ShieldWarning,
       description: 'Risk and compliance flags',
       group: 'ops',
     },
     {
       label: 'Users',
-      href: '/dashboard/admin/users',
+      href: routes.dashboard.admin.users,
       icon: Users,
       description: 'Manage all users',
       group: 'system',
     },
     {
       label: 'Settings',
-      href: '/dashboard/admin/settings',
-      icon: Settings,
+      href: routes.dashboard.admin.settings,
+      icon: Gear,
       description: 'Platform configuration',
       group: 'system',
       mobileHidden: true,
@@ -54,8 +55,8 @@ export const adminNavConfig: NavConfig = {
   ],
   quickAction: {
     label: 'Review queue',
-    icon: ClipboardCheck,
-    href: '/dashboard/admin/operations',
+    icon: ClipboardText,
+    href: routes.dashboard.admin.operations,
   },
 };
 

@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { WarningCircle } from '@/components/icons';
+import { Money, WarningCircle } from '@/components/icons';
 
 import { EmptyState } from '@/components/ui/empty-state';
 import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import type { agentCopy } from '@/config/copy/agent';
+import { agentCopy as agentCopyData } from '@/config/copy/agent';
 import { cn, formatNGN } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
 
@@ -151,7 +152,13 @@ export function CommissionsPageClient({ commissions: initialCommissions, copy }:
       <PageHeader title={copy.title} subtitle={copy.subtitle} />
 
       {commissions.length === 0 ? (
-        <EmptyState heading={copy.empty.title} body={copy.empty.description} />
+        <EmptyState
+          heading={agentCopyData.emptyStates.commissions.heading}
+          body={agentCopyData.emptyStates.commissions.body}
+          illustration={
+            <Money size={32} weight="duotone" className="text-muted-foreground/50" />
+          }
+        />
       ) : (
         <>
           {/* Payout summary bar */}
@@ -223,16 +230,16 @@ export function CommissionsPageClient({ commissions: initialCommissions, copy }:
                 <tr className="border-b border-border bg-muted/40">
                   <th className="w-10 px-4 py-3" aria-label="Select" />
                   <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    {copy.table.event}
+                    {copy.table.student}
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
+                    {copy.table.date}
                   </th>
                   <th className="px-4 py-3 text-right font-medium text-muted-foreground">
                     {copy.table.amount}
                   </th>
                   <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                     {copy.table.status}
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    {copy.table.date}
                   </th>
                 </tr>
               </thead>
@@ -261,6 +268,9 @@ export function CommissionsPageClient({ commissions: initialCommissions, copy }:
                     <td className="px-4 py-3 text-foreground">
                       {commission.description ?? '\u2014'}
                     </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {formatDate(commission.paidAt ?? commission.createdAt)}
+                    </td>
                     <td className="px-4 py-3 text-right font-mono font-medium text-foreground">
                       {formatNGN(commission.amountKobo)}
                     </td>
@@ -271,11 +281,12 @@ export function CommissionsPageClient({ commissions: initialCommissions, copy }:
                           statusBadgeClass[commission.status],
                         )}
                       >
-                        {copy.statusLabels[commission.status]}
+                        {commission.status === 'pending'
+                          ? agentCopyData.commissionRow.pending
+                          : commission.status === 'paid'
+                            ? agentCopyData.commissionRow.paid
+                            : copy.statusLabels[commission.status]}
                       </span>
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {formatDate(commission.createdAt)}
                     </td>
                   </tr>
                 ))}

@@ -10,7 +10,7 @@ hooks:
     - matcher: "Edit|Write"
       hooks:
         - type: command
-          command: "cd /Users/gm/v6 && npx tsc --noEmit 2>&1 | grep -E 'error TS' | head -5 || true"
+          command: "npx tsc --noEmit 2>&1 | grep -E 'error TS' | head -5 || true"
 ---
 
 You are a senior full-stack engineer implementing features for Doculet V6, a fintech/edtech proof-of-funds platform for Nigerian students.

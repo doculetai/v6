@@ -1,6 +1,6 @@
 'use client';
 
-import { LogOut, Moon, MoreVertical, Sun } from 'lucide-react';
+import { DotsThreeVertical, Moon, SignOut, Sun } from '@/components/icons';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -22,12 +22,12 @@ export function SidebarUserCard({ role, isCollapsed, onSignOut }: SidebarUserCar
   const dropdownContent = (
     <DropdownMenuContent align={isCollapsed ? 'start' : 'end'} className="w-48">
       <DropdownMenuItem onClick={toggleMode}>
-        {isDark ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
+        {isDark ? <Sun className="mr-2 h-4 w-4" weight="duotone" /> : <Moon className="mr-2 h-4 w-4" weight="duotone" />}
         {isDark ? 'Light mode' : 'Dark mode'}
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onClick={onSignOut} className="text-destructive focus:text-destructive">
-        <LogOut className="mr-2 h-4 w-4" />
+        <SignOut className="mr-2 h-4 w-4" weight="duotone" />
         {dashboardShellCopy.sidebar.logoutLabel}
       </DropdownMenuItem>
     </DropdownMenuContent>
@@ -63,11 +63,17 @@ export function SidebarUserCard({ role, isCollapsed, onSignOut }: SidebarUserCar
           {dashboardShellCopy.sidebar.avatarFallback}
         </AvatarFallback>
       </Avatar>
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="truncate text-sm font-semibold text-sidebar-foreground">
           {getFallbackUserName(role)}
         </span>
-        <span className="truncate text-xs text-sidebar-foreground/60">
+        <span
+          className="inline-flex w-fit items-center rounded-full px-1.5 py-0 text-[10px] font-semibold uppercase tracking-wide"
+          style={{
+            backgroundColor: 'var(--role-accent-bg)',
+            color: 'var(--role-accent)',
+          }}
+        >
           {roleDisplayNames[role]}
         </span>
       </div>
@@ -78,7 +84,7 @@ export function SidebarUserCard({ role, isCollapsed, onSignOut }: SidebarUserCar
             aria-label="User menu"
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
           >
-            <MoreVertical className="h-4 w-4" />
+            <DotsThreeVertical className="h-4 w-4" weight="duotone" />
           </button>
         </DropdownMenuTrigger>
         {dropdownContent}

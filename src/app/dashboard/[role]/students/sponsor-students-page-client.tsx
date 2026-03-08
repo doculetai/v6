@@ -4,14 +4,28 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { CircleNotch } from '@/components/icons';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { sponsorCopy as sponsorCopyData } from '@/config/copy/sponsor';
 import type { sponsorCopy } from '@/config/copy/sponsor';
 import { formatNGN } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
+
+const commitmentCopy = sponsorCopyData.commitment;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -186,7 +200,19 @@ function ActiveStudentsList({
   students: SponsoredStudent[];
   copy: Copy;
 }) {
-  const active = students.filter((s) => s.status !== 'pending');
+  const [localStudents, setLocalStudents] = useState<SponsoredStudent[]>(students);
+  const utils = trpc.useUtils();
+
+  const cancelMutation = trpc.sponsor.cancelSponsorship.useMutation({
+    onSuccess: (_, vars) => {
+      setLocalStudents((prev) =>
+        prev.map((s) => (s.id === vars.sponsorshipId ? { ...s, status: 'cancelled' as const } : s)),
+      );
+      void utils.sponsor.listSponsoredStudents.invalidate();
+    },
+  });
+
+  const active = localStudents.filter((s) => s.status !== 'pending');
 
   if (active.length === 0) {
     return (
@@ -214,34 +240,74 @@ function ActiveStudentsList({
             <th className="px-4 py-3 text-left font-medium text-muted-foreground">
               {copy.active.since}
             </th>
+            <th className="px-4 py-3 text-right font-medium text-muted-foreground">
+              {copy.active.actions}
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-border">
-          {active.map((student) => (
-            <tr key={student.id} className="bg-card transition-colors hover:bg-muted/30">
-              <td className="px-4 py-3">
-                <Link
-                  href={`/dashboard/sponsor/students/${student.id}`}
-                  className="font-medium text-foreground hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
-                >
-                  {student.studentEmail ?? <span className="text-muted-foreground">—</span>}
-                </Link>
-              </td>
-              <td className="px-4 py-3 text-right font-mono text-foreground">
-                {formatNGN(student.amountKobo)}
-              </td>
-              <td className="px-4 py-3">
-                <StatusBadge status={student.status} labels={copy.statusLabels} />
-              </td>
-              <td className="px-4 py-3 text-muted-foreground">
-                {new Date(student.createdAt).toLocaleDateString('en-NG', {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                })}
-              </td>
-            </tr>
-          ))}
+          {active.map((student) => {
+            const canCancel = student.status === 'active';
+            return (
+              <tr key={student.id} className="bg-card transition-colors hover:bg-muted/30">
+                <td className="px-4 py-3">
+                  <Link
+                    href={`/dashboard/sponsor/students/${student.id}`}
+                    className="font-medium text-foreground hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                  >
+                    {student.studentEmail ?? <span className="text-muted-foreground">—</span>}
+                  </Link>
+                </td>
+                <td className="px-4 py-3 text-right font-mono text-foreground">
+                  {formatNGN(student.amountKobo)}
+                </td>
+                <td className="px-4 py-3">
+                  <StatusBadge status={student.status} labels={copy.statusLabels} />
+                </td>
+                <td className="px-4 py-3 text-muted-foreground">
+                  {new Date(student.createdAt).toLocaleDateString('en-NG', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  {canCancel ? (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <button
+                          type="button"
+                          className="text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          {copy.active.cancelSponsorship}
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>{commitmentCopy.uncommitModal.title}</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {commitmentCopy.uncommitModal.body(
+                              formatNGN(student.amountKobo),
+                              student.studentEmail ?? 'this student',
+                            )}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>{commitmentCopy.uncommitModal.cancel}</AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            onClick={() => cancelMutation.mutate({ sponsorshipId: student.id })}
+                          >
+                            {commitmentCopy.uncommitModal.confirm}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  ) : null}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

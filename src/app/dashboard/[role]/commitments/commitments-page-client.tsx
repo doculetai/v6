@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { WarningCircle, Eye } from '@/components/icons';
+import { WarningCircle, Eye, PauseCircle } from '@/components/icons';
 
 import {
   EmptyState,
@@ -13,6 +13,7 @@ import {
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import type { sponsorCopy } from '@/config/copy/sponsor';
+import { sponsorCopy as sponsorCopyData } from '@/config/copy/sponsor';
 import { useDashboardBreadcrumbs } from '@/lib/hooks/useDashboardBreadcrumbs';
 import { cn, formatNGN } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
@@ -21,7 +22,7 @@ import { routes } from '@/config/routes';
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type Copy = (typeof sponsorCopy)['commitments'];
-type CommitmentStatus = 'pending' | 'active' | 'completed' | 'cancelled' | 'withdrawn';
+type CommitmentStatus = 'pending' | 'active' | 'completed' | 'cancelled' | 'withdrawn' | 'paused';
 
 type Commitment = {
   id: string;
@@ -40,6 +41,7 @@ const statusBadgeClass: Record<CommitmentStatus, string> = {
   completed: 'bg-primary/10 text-primary',
   cancelled: 'bg-muted text-muted-foreground',
   withdrawn: 'bg-muted text-muted-foreground',
+  paused: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
 };
 
 function formatDate(date: Date): string {
@@ -48,6 +50,46 @@ function formatDate(date: Date): string {
     month: 'short',
     year: 'numeric',
   }).format(new Date(date));
+}
+
+// ── Paused commitment banner ──────────────────────────────────────────────────
+
+function PausedCommitmentBanner({
+  commitmentId,
+  onResumed,
+}: {
+  commitmentId: string;
+  onResumed: () => void;
+}) {
+  const pausedCopy = sponsorCopyData.commitmentPaused;
+  const resumeMutation = trpc.sponsor.resumeCommitment.useMutation({
+    onSuccess: onResumed,
+  });
+
+  return (
+    <div className="flex flex-col gap-2 rounded-lg border border-amber-300/50 bg-amber-50 p-4 dark:border-amber-700/50 dark:bg-amber-950/20 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-start gap-2.5 min-w-0">
+        <PauseCircle
+          className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400"
+          weight="duotone"
+          aria-hidden="true"
+        />
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-foreground">{pausedCopy.heading}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{pausedCopy.body}</p>
+        </div>
+      </div>
+      <Button
+        size="sm"
+        variant="outline"
+        className="shrink-0"
+        disabled={resumeMutation.isPending}
+        onClick={() => resumeMutation.mutate({ commitmentId })}
+      >
+        {resumeMutation.isPending ? pausedCopy.resumingCta : pausedCopy.resumeCta}
+      </Button>
+    </div>
+  );
 }
 
 // ── Mobile card ───────────────────────────────────────────────────────────────
@@ -102,6 +144,7 @@ function CommitmentCard({
 
 export function CommitmentsPageClient({ copy }: { copy: Copy }) {
   const breadcrumbs = useDashboardBreadcrumbs(copy.title);
+  const utils = trpc.useUtils();
   const {
     data: commitments,
     isPending,
@@ -169,6 +212,17 @@ export function CommitmentsPageClient({ copy }: { copy: Copy }) {
     <PageShell width="default">
       <Section>
         <PageHeader title={copy.title} subtitle={copy.subtitle} breadcrumbs={breadcrumbs} />
+
+        {/* Paused commitment banners */}
+        {commitments
+          .filter((c) => c.status === 'paused')
+          .map((c) => (
+            <PausedCommitmentBanner
+              key={`paused-${c.id}`}
+              commitmentId={c.id}
+              onResumed={() => utils.sponsor.listCommitments.invalidate()}
+            />
+          ))}
 
         {/* Mobile: stacked cards */}
         <div className="space-y-3 md:hidden">

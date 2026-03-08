@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 
 import { authCopy } from '@/config/copy/auth';
 import { browserTrpcClient } from '@/trpc/client';
+import { routes } from '@/config/routes';
 
 export default function AuthCompletePage() {
   const router = useRouter();

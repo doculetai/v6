@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle } from '@/components/icons';
 
 import { adminCopy } from '@/config/copy/admin';
 
@@ -28,6 +28,7 @@ const TYPE_LABEL_KEYS = [
   'repeated_kyc_failure',
   'repeated_document_rejection',
   'unverified_with_active_sponsorship',
+  'ocr_high_risk',
 ] as const;
 type TypeLabelKey = typeof TYPE_LABEL_KEYS[number];
 
@@ -70,7 +71,7 @@ export function RiskPageClient({ flags, copy }: Props) {
   if (flags.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card py-16 text-center">
-        <CheckCircle className="size-10 text-primary" aria-hidden="true" />
+        <CheckCircle weight="duotone" className="size-10 text-primary" aria-hidden="true" />
         <div>
           <p className="text-sm font-medium text-foreground">{copy.empty.title}</p>
           <p className="mt-1 text-xs text-muted-foreground">{copy.empty.description}</p>

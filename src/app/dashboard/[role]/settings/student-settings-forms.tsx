@@ -1,13 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { GraduationCap, ArrowsClockwise } from '@phosphor-icons/react';
+import { GraduationCap, ArrowsClockwise, LockKey, IdentificationCard } from '@/components/icons';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { studentCopy } from '@/config/copy/student';
+import { cn } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
 
 export type StudentSettings = {
@@ -17,7 +19,71 @@ export type StudentSettings = {
   programId: string | null;
   programName: string | null;
   fundingType: string | null;
+  /** D1: KYC approval status — when true, locks identity fields */
+  kycApproved?: boolean;
+  /** D1: Locked identity values */
+  legalName?: string | null;
+  dob?: string | null;
+  identityNumber?: string | null;
 };
+
+// ── KYC Locked Identity Card (D1) ────────────────────────────────────────────
+
+type KycLockedFieldProps = {
+  label: string;
+  value: string | null | undefined;
+};
+
+function KycLockedField({ label, value }: KycLockedFieldProps) {
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-xs text-muted-foreground">{label}</Label>
+      <div className="relative">
+        <Input
+          readOnly
+          value={value ?? '\u2014'}
+          className="cursor-not-allowed pr-9 opacity-70"
+          aria-readonly="true"
+        />
+        <LockKey
+          size={14}
+          weight="duotone"
+          className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+          aria-hidden="true"
+        />
+      </div>
+    </div>
+  );
+}
+
+export function KycLockedIdentityCard({ settings }: { settings: StudentSettings }) {
+  if (!settings.kycApproved) return null;
+
+  return (
+    <Card className="border-border bg-card dark:border-border dark:bg-card">
+      <CardHeader>
+        <div className="flex items-center gap-2">
+          <IdentificationCard size={20} weight="duotone" className="text-muted-foreground" />
+          <CardTitle className="text-base">Identity details</CardTitle>
+        </div>
+        <CardDescription>
+          These fields are locked after KYC approval. Contact support if you need to make changes.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {settings.legalName !== undefined ? (
+          <KycLockedField label="Legal name" value={settings.legalName} />
+        ) : null}
+        {settings.dob !== undefined ? (
+          <KycLockedField label="Date of birth" value={settings.dob} />
+        ) : null}
+        {settings.identityNumber !== undefined ? (
+          <KycLockedField label="BVN / NIN" value={settings.identityNumber ? `****${settings.identityNumber.slice(-4)}` : null} />
+        ) : null}
+      </CardContent>
+    </Card>
+  );
+}
 
 // ── Change School Card ────────────────────────────────────────────────────────
 
@@ -43,7 +109,7 @@ export function ChangeSchoolCard({ settings }: { settings: StudentSettings }) {
   const copy = studentCopy.settings.changeSchool;
 
   return (
-    <Card className="border-border bg-card">
+    <Card className="border-border bg-card dark:border-border dark:bg-card">
       <CardHeader>
         <div className="flex items-center gap-2">
           <GraduationCap size={20} weight="duotone" className="text-muted-foreground" />
@@ -56,7 +122,7 @@ export function ChangeSchoolCard({ settings }: { settings: StudentSettings }) {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <p className="text-sm font-medium text-foreground">
-                {settings.schoolName ?? 'No school selected'}
+                {settings.schoolName ?? copy.noSchoolSelected}
               </p>
               {settings.programName && (
                 <p className="text-sm text-muted-foreground">{settings.programName}</p>
@@ -72,9 +138,9 @@ export function ChangeSchoolCard({ settings }: { settings: StudentSettings }) {
         ) : (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>School</Label>
+              <Label>{copy.schoolLabel}</Label>
               <Select value={selectedSchool} onValueChange={(v) => { setSelectedSchool(v); setSelectedProgram(''); }}>
-                <SelectTrigger><SelectValue placeholder="Select school" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={copy.schoolPlaceholder} /></SelectTrigger>
                 <SelectContent>
                   {schoolsList?.map((s) => (
                     <SelectItem key={s.id} value={s.id}>{s.name} ({s.country})</SelectItem>
@@ -84,9 +150,9 @@ export function ChangeSchoolCard({ settings }: { settings: StudentSettings }) {
             </div>
             {currentSchool && currentSchool.programs.length > 0 && (
               <div className="space-y-2">
-                <Label>Program</Label>
+                <Label>{copy.programLabel}</Label>
                 <Select value={selectedProgram} onValueChange={setSelectedProgram}>
-                  <SelectTrigger><SelectValue placeholder="Select program" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={copy.programPlaceholder} /></SelectTrigger>
                   <SelectContent>
                     {currentSchool.programs.map((p) => (
                       <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
@@ -101,10 +167,10 @@ export function ChangeSchoolCard({ settings }: { settings: StudentSettings }) {
                 disabled={!selectedSchool || !selectedProgram || mutation.isPending}
                 onClick={() => mutation.mutate({ schoolId: selectedSchool, programId: selectedProgram })}
               >
-                {mutation.isPending ? 'Saving...' : 'Save'}
+                {mutation.isPending ? copy.savingCta : copy.saveCta}
               </Button>
               <Button variant="ghost" size="sm" onClick={() => setEditing(false)}>
-                Cancel
+                {copy.cancelCta}
               </Button>
             </div>
           </div>
@@ -119,6 +185,7 @@ export function ChangeSchoolCard({ settings }: { settings: StudentSettings }) {
 export function SponsorInvitesCard() {
   const { data: invites } = trpc.student.listSponsorInvites.useQuery();
   const utils = trpc.useUtils();
+  const inviteCopy = studentCopy.settings.sponsorInvites;
 
   const inviteMutation = trpc.student.inviteSponsorByEmail.useMutation({
     onSuccess: () => utils.student.listSponsorInvites.invalidate(),
@@ -129,13 +196,13 @@ export function SponsorInvitesCard() {
   if (declinedInvites.length === 0) return null;
 
   return (
-    <Card className="border-border bg-card">
+    <Card className="border-border bg-card dark:border-border dark:bg-card">
       <CardHeader>
         <div className="flex items-center gap-2">
           <ArrowsClockwise size={20} weight="duotone" className="text-muted-foreground" />
-          <CardTitle className="text-base">Declined sponsors</CardTitle>
+          <CardTitle className="text-base">{inviteCopy.title}</CardTitle>
         </div>
-        <CardDescription>Re-invite sponsors who previously declined.</CardDescription>
+        <CardDescription>{inviteCopy.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
@@ -148,7 +215,7 @@ export function SponsorInvitesCard() {
                 disabled={inviteMutation.isPending}
                 onClick={() => inviteMutation.mutate({ email: invite.inviteeEmail })}
               >
-                Re-invite
+                {inviteCopy.reinviteCta}
               </Button>
             </div>
           ))}

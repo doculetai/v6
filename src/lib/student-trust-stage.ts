@@ -1,3 +1,5 @@
+import { routes } from '@/config/routes';
+
 export type StudentTrustStage = 0 | 1 | 2 | 3;
 
 export type StudentTrustStageInput = {
@@ -30,12 +32,12 @@ type QuickActionBase = { label: string; href: string };
 export function getStudentQuickAction(stage: StudentTrustStage): QuickActionBase {
   switch (stage) {
     case 0:
-      return { label: 'Set up your profile', href: '/dashboard/student/setup' };
+      return { label: 'Set up your profile', href: routes.dashboard.student.setup };
     case 1:
-      return { label: 'Continue verification', href: '/dashboard/student/verification' };
+      return { label: 'Continue verification', href: routes.dashboard.student.verification };
     case 2:
-      return { label: 'View your proof', href: '/dashboard/student/proof' };
+      return { label: 'View your proof', href: routes.dashboard.student.proof };
     case 3:
-      return { label: 'Share your certificate', href: '/dashboard/student/proof' };
+      return { label: 'Share your certificate', href: routes.dashboard.student.proof };
   }
 }

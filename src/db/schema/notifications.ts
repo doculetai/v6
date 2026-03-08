@@ -30,6 +30,9 @@ export const notifications = pgTable(
     title: text('title').notNull(),
     body: text('body'),
     metaJson: jsonb('meta_json'),
+    category: text('category'),
+    link: text('link'),
+    priority: text('priority').default('normal').notNull(),
     readAt: timestamp('read_at'),
     ...timestamps,
   },
@@ -48,6 +51,7 @@ export const notificationPreferences = pgTable(
       .references(() => users.id, { onDelete: 'cascade' })
       .notNull(),
     channel: text('channel', { enum: ['email', 'in_app', 'push'] }).notNull(),
+    category: text('category'),
     enabled: boolean('enabled').default(true).notNull(),
     ...timestamps,
   },

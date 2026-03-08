@@ -1,6 +1,8 @@
 import { ArrowRight, Link as LinkIcon, ShieldCheck, Coins, UserFocus } from '@/components/icons';
 import Link from 'next/link';
 
+import { AgentInviteSheet } from '@/components/agent/AgentInviteSheet';
+
 import { Button } from '@/components/ui/button';
 import {
   Grid,
@@ -142,17 +144,18 @@ export async function AgentOverview({ email, caller }: AgentOverviewProps) {
           <div className="mt-6 flex flex-col items-center rounded-xl border border-border bg-card px-6 py-10 text-center shadow-xs">
             <UserFocus className="size-8 text-muted-foreground/50 mb-3" weight="duotone" aria-hidden="true" />
             <p className="text-sm font-medium text-foreground">{copy.caseload.empty}</p>
-            <Button asChild size="sm" variant="default" className="mt-4 min-h-11">
-              <Link href={routes.dashboard.agent.students}>{copy.cta}</Link>
-            </Button>
+            <div className="mt-4">
+              <AgentInviteSheet />
+            </div>
           </div>
         )}
 
         {overview && overview.totalAssignedStudents > 0 && (
-          <div className="mt-4">
-            <Button asChild variant="outline" className="min-h-11 w-full sm:w-auto">
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <Button asChild variant="outline" className="min-h-11">
               <Link href={routes.dashboard.agent.students}>{copy.cta}</Link>
             </Button>
+            <AgentInviteSheet />
           </div>
         )}
       </Section>

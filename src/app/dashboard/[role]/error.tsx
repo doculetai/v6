@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle } from 'lucide-react';
+import { Warning } from '@/components/icons';
 import { captureException } from '@sentry/nextjs';
 import { useEffect } from 'react';
 
@@ -19,8 +19,8 @@ export default function DashboardRoleError({
   }, [error]);
 
   return (
-    <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
-      <AlertTriangle className="size-10 text-destructive" aria-hidden="true" />
+    <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center">
+      <Warning weight="duotone" className="size-10 text-destructive" aria-hidden="true" />
       <div className="space-y-1">
         <p className="font-semibold text-foreground">{commonErrors.generic}</p>
       </div>

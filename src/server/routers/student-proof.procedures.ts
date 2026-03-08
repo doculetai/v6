@@ -3,7 +3,7 @@ import { and, eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 
 import type { DrizzleDB } from '@/db';
-import { certificates, documents, sponsorships, studentProfiles } from '@/db/schema';
+import { certificatePayments, certificates, documents, sponsorships, studentProfiles } from '@/db/schema';
 import {
   calculateProofChecklistStatus,
   createTamperEvidentToken,
@@ -33,6 +33,7 @@ const proofCertificateSchema = z.object({
   certificateId: z.string().uuid().nullable(),
   issuedAt: z.string().datetime().nullable(),
   sharePath: z.string().nullable(),
+  paymentStatus: z.enum(['unpaid', 'paid', 'waived']).nullable(),
 });
 
 const proofTrustSchema = z.object({
@@ -89,7 +90,7 @@ async function loadProofRecords(userId: string, db: DrizzleDB) {
     }),
     db.query.certificates.findFirst({
       where: and(eq(certificates.studentId, userId), eq(certificates.status, 'active')),
-      columns: { id: true, issuedAt: true, token: true },
+      columns: { id: true, issuedAt: true, token: true, paymentStatus: true },
       orderBy: (table, { desc }) => [desc(table.issuedAt)],
     }),
   ]);
@@ -196,6 +197,7 @@ export const proofProcedures = {
           sharePath: snapshot.activeCertificate
             ? getSharePathFromToken(snapshot.activeCertificate.token)
             : null,
+          paymentStatus: (snapshot.activeCertificate?.paymentStatus as 'unpaid' | 'paid' | 'waived') ?? null,
         },
         trust: {
           sponsorCount: snapshot.uniqueSponsorCount,
@@ -220,6 +222,21 @@ export const proofProcedures = {
         throw new TRPCError({
           code: 'PRECONDITION_FAILED',
           message: 'Complete all proof checklist items before generating a share link.',
+        });
+      }
+
+      const payment = await ctx.db.query.certificatePayments.findFirst({
+        where: and(
+          eq(certificatePayments.studentId, ctx.user!.id),
+          inArray(certificatePayments.status, ['paid', 'waived']),
+        ),
+        columns: { id: true },
+      });
+
+      if (!payment) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message: 'Certificate payment must be completed before generating proof.',
         });
       }
 

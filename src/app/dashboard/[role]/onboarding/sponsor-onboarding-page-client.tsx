@@ -4,7 +4,7 @@ import { ArrowLeft, Buildings, CheckCircle, CircleNotch, Handshake } from '@/com
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Container, PageShell, Stack } from '@/components/layout/content-primitives';
+import { Container, Grid, PageShell, Stack } from '@/components/layout/content-primitives';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { sponsorCopy } from '@/config/copy/sponsor';
 import { trpc } from '@/trpc/client';
+import { routes } from '@/config/routes';
 
 type SponsorType = 'individual' | 'corporate';
 
@@ -27,7 +28,7 @@ export function SponsorOnboardingPageClient() {
 
   const completeOnboardingMutation = trpc.sponsor.completeOnboarding.useMutation({
     onSuccess: () => {
-      router.push('/dashboard/sponsor');
+      router.push(routes.dashboard.sponsor.overview);
     },
     onError: () => {
       setSubmitError('Could not complete setup. Please try again.');
@@ -93,7 +94,7 @@ export function SponsorOnboardingPageClient() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>{copy.steps.profile.sponsorTypeLabel}</Label>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <Grid cols={{ sm: 2 }} gap="sm">
                   <SponsorTypeCard
                     type="individual"
                     selected={sponsorType === 'individual'}
@@ -108,7 +109,7 @@ export function SponsorOnboardingPageClient() {
                     description={copy.steps.profile.sponsorTypeOptions.corporate.description}
                     onSelect={() => setSponsorType('corporate')}
                   />
-                </div>
+                </Grid>
               </div>
 
               {sponsorType === 'corporate' ? (

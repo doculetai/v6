@@ -11,11 +11,13 @@ const serverEnvSchema = z.object({
   RESEND_FROM_EMAIL: z.string().email().optional(),
   NEXT_PUBLIC_APP_URL: z.string().url().optional(),
   MONO_SECRET_KEY: z.string().optional(),
+  NEXT_PUBLIC_MONO_PUBLIC_KEY: z.string().optional(),
   DOJAH_APP_ID: z.string().optional(),
   DOJAH_PRIVATE_KEY: z.string().optional(),
   PAYSTACK_SECRET_KEY: z.string().optional(),
   NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: z.string().optional(),
   CERTIFICATE_SHARE_SECRET: z.string().min(16, 'CERTIFICATE_SHARE_SECRET must be at least 16 chars'),
+  GOOGLE_VISION_API_KEY: z.string().optional(),
 });
 
 function validateEnv(): z.infer<typeof serverEnvSchema> {
@@ -30,11 +32,14 @@ function validateEnv(): z.infer<typeof serverEnvSchema> {
     RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     MONO_SECRET_KEY: process.env.MONO_SECRET_KEY,
+    NEXT_PUBLIC_MONO_PUBLIC_KEY: process.env.NEXT_PUBLIC_MONO_PUBLIC_KEY,
     DOJAH_APP_ID: process.env.DOJAH_APP_ID,
     DOJAH_PRIVATE_KEY: process.env.DOJAH_PRIVATE_KEY,
     PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
     NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
     CERTIFICATE_SHARE_SECRET: process.env.CERTIFICATE_SHARE_SECRET,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    GOOGLE_VISION_API_KEY: process.env.GOOGLE_VISION_API_KEY,
   });
 
   if (!parsed.success) {

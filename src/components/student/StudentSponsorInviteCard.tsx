@@ -1,6 +1,6 @@
 'use client';
 
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Warning } from '@/components/icons';
 import { useState, type FormEvent } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -14,18 +14,24 @@ const sponsorCopy = studentCopy.sponsorInvite;
 
 export function StudentSponsorInviteCard() {
   const [email, setEmail] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const utils = trpc.useUtils();
 
   const invitesQuery = trpc.student.listSponsorInvites.useQuery();
   const inviteMutation = trpc.student.inviteSponsorByEmail.useMutation({
     onSuccess: async () => {
       setEmail('');
+      setErrorMessage(null);
       await utils.student.listSponsorInvites.invalidate();
+    },
+    onError: () => {
+      setErrorMessage(sponsorCopy.errorMessage);
     },
   });
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setErrorMessage(null);
     inviteMutation.mutate({ email });
   };
 
@@ -33,7 +39,7 @@ export function StudentSponsorInviteCard() {
     <Card className="border-border bg-card/95 dark:border-border dark:bg-card/90">
       <CardHeader className="space-y-3">
         <div className="inline-flex items-center gap-2 text-card-foreground dark:text-card-foreground">
-          <UserPlus className="size-5" aria-hidden="true" />
+          <UserPlus weight="duotone" className="size-5" aria-hidden="true" />
           <CardTitle className="text-lg md:text-xl">{sponsorCopy.title}</CardTitle>
         </div>
         <CardDescription>{sponsorCopy.subtitle}</CardDescription>
@@ -52,9 +58,16 @@ export function StudentSponsorInviteCard() {
             />
           </div>
           <Button type="submit" disabled={inviteMutation.isPending} className="min-h-11 w-full">
-            {sponsorCopy.inviteByEmail.sendCta}
+            {inviteMutation.isPending ? sponsorCopy.sendingCta : sponsorCopy.inviteByEmail.sendCta}
           </Button>
         </form>
+
+        {errorMessage ? (
+          <div className="flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/5 p-3">
+            <Warning weight="duotone" className="size-4 shrink-0 text-destructive" aria-hidden="true" />
+            <p className="text-sm text-destructive">{errorMessage}</p>
+          </div>
+        ) : null}
 
         {invitesQuery.data && invitesQuery.data.length > 0 ? (
           <ul className="space-y-2" aria-label="Sponsor invitations">

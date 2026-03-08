@@ -1,7 +1,6 @@
 "use client"
 
-import { Monitor, Smartphone, Tablet, HelpCircle } from "lucide-react"
-
+import { Desktop, DeviceMobile, DeviceTablet, Question } from "@/components/icons"
 import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
 
@@ -19,6 +18,9 @@ export interface Session {
 
 export interface SessionManagementProps {
   sessions: Session[]
+  isLoading?: boolean
+  error?: string | null
+  feedback?: string | null
   showIpAddress?: boolean
   onRevoke?: (sessionId: string) => void
   onRevokeAll?: () => void
@@ -27,27 +29,29 @@ export interface SessionManagementProps {
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
+const copy = primitivesCopy.sessionManagement
+
 const DEVICE_ICONS = {
-  desktop: Monitor,
-  mobile: Smartphone,
-  tablet: Tablet,
-  unknown: HelpCircle,
+  desktop: Desktop,
+  mobile: DeviceMobile,
+  tablet: DeviceTablet,
+  unknown: Question,
 } as const
 
 const BROWSER_LABELS: Record<string, string> = {
-  Chrome: primitivesCopy.sessionManagement.browsers.Chrome,
-  Safari: primitivesCopy.sessionManagement.browsers.Safari,
-  Firefox: primitivesCopy.sessionManagement.browsers.Firefox,
-  Edge: primitivesCopy.sessionManagement.browsers.Edge,
-  Opera: primitivesCopy.sessionManagement.browsers.Opera,
-  Unknown: primitivesCopy.sessionManagement.browsers.Unknown,
+  Chrome: copy.browsers.Chrome,
+  Safari: copy.browsers.Safari,
+  Firefox: copy.browsers.Firefox,
+  Edge: copy.browsers.Edge,
+  Opera: copy.browsers.Opera,
+  Unknown: copy.browsers.Unknown,
 }
 
 const DEVICE_TYPE_LABELS: Record<Session["deviceType"], string> = {
-  desktop: primitivesCopy.sessionManagement.devices.desktop,
-  mobile: primitivesCopy.sessionManagement.devices.mobile,
-  tablet: primitivesCopy.sessionManagement.devices.tablet,
-  unknown: primitivesCopy.sessionManagement.devices.unknown,
+  desktop: copy.devices.desktop,
+  mobile: copy.devices.mobile,
+  tablet: copy.devices.tablet,
+  unknown: copy.devices.unknown,
 }
 
 // ── Sub-components ───────────────────────────────────────────────────────────
@@ -61,19 +65,18 @@ function DeviceIcon({ deviceType }: { deviceType: Session["deviceType"] }) {
       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted"
       aria-label={label}
     >
-      <Icon size={20} className="text-muted-foreground" />
+      <Icon size={20} weight="duotone" className="text-muted-foreground" />
     </div>
   )
 }
 
 function CurrentBadge() {
-  const label = primitivesCopy.sessionManagement.thisDevice
   return (
     <span
-      aria-label={label}
+      aria-label={copy.thisDevice}
       className="inline-flex items-center rounded-full bg-success/10 px-2 py-0.5 text-xs font-medium text-success"
     >
-      {label}
+      {copy.thisDevice}
     </span>
   )
 }
@@ -89,7 +92,7 @@ function SessionCard({ session, showIpAddress, onRevoke }: SessionCardProps) {
 
   return (
     <div
-      aria-label={primitivesCopy.sessionManagement.activeSession}
+      aria-label={copy.activeSession}
       className={cn(
         "flex items-start gap-3 rounded-lg border border-border/50 p-3 transition-colors duration-150",
         session.isCurrent && "border-success/30 bg-success/5",
@@ -104,7 +107,9 @@ function SessionCard({ session, showIpAddress, onRevoke }: SessionCardProps) {
         </div>
 
         <p className="text-xs text-muted-foreground">{session.location}</p>
-        <p className="text-xs text-muted-foreground">{primitivesCopy.sessionManagement.lastActive}: {session.lastActive}</p>
+        <p className="text-xs text-muted-foreground">
+          {copy.lastActive}: {session.lastActive}
+        </p>
 
         {showIpAddress && session.ipAddress ? (
           <p className="font-mono text-xs text-muted-foreground">{session.ipAddress}</p>
@@ -115,10 +120,10 @@ function SessionCard({ session, showIpAddress, onRevoke }: SessionCardProps) {
         <button
           type="button"
           onClick={() => onRevoke(session.id)}
-          aria-label="Revoke session"
+          aria-label={copy.revokeSession}
           className="min-h-11 min-w-11 shrink-0 rounded-md px-3 text-sm font-medium text-destructive transition-colors duration-150 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          Revoke
+          {copy.revoke}
         </button>
       ) : null}
     </div>
@@ -128,9 +133,20 @@ function SessionCard({ session, showIpAddress, onRevoke }: SessionCardProps) {
 function NoOtherSessionsNotice() {
   return (
     <div className="py-6 text-center">
-      <p className="text-sm text-muted-foreground">
-        {primitivesCopy.sessionManagement.noOtherSessions}
-      </p>
+      <p className="text-sm text-muted-foreground">{copy.noOtherSessions}</p>
+    </div>
+  )
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-2" aria-busy="true" aria-label={copy.loading}>
+      {[0, 1].map((i) => (
+        <div
+          key={i}
+          className="h-16 animate-pulse rounded-lg bg-muted"
+        />
+      ))}
     </div>
   )
 }
@@ -139,6 +155,9 @@ function NoOtherSessionsNotice() {
 
 export function SessionManagement({
   sessions,
+  isLoading = false,
+  error = null,
+  feedback = null,
   showIpAddress = false,
   onRevoke,
   onRevokeAll,
@@ -156,41 +175,54 @@ export function SessionManagement({
     >
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-base font-semibold text-foreground">Active Sessions</h2>
-        <p className="text-sm text-muted-foreground">
-          Devices and browsers currently signed in to your account.
-        </p>
+        <h2 className="text-base font-semibold text-foreground">{copy.title}</h2>
+        <p className="text-sm text-muted-foreground">{copy.description}</p>
       </div>
+
+      {/* Feedback / error banners */}
+      {error ? (
+        <p role="alert" className="mb-3 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
+
+      {feedback && !error ? (
+        <p role="status" className="mb-3 rounded-lg bg-success/10 px-3 py-2 text-sm text-success">
+          {feedback}
+        </p>
+      ) : null}
 
       {/* Session list */}
-      <div className="space-y-2">
-        {sessions.map((session) => (
-          <SessionCard
-            key={session.id}
-            session={session}
-            showIpAddress={showIpAddress}
-            onRevoke={onRevoke}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <LoadingSkeleton />
+      ) : (
+        <div className="space-y-2">
+          {sessions.map((session) => (
+            <SessionCard
+              key={session.id}
+              session={session}
+              showIpAddress={showIpAddress}
+              onRevoke={onRevoke}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Empty state — no other sessions */}
-      {!hasOtherSessions ? <NoOtherSessionsNotice /> : null}
+      {!isLoading && !hasOtherSessions ? <NoOtherSessionsNotice /> : null}
 
       {/* Revoke all button */}
-      {hasOtherSessions && onRevokeAll ? (
+      {!isLoading && hasOtherSessions && onRevokeAll ? (
         <div className="mt-4 border-t border-border/50 pt-4">
           <button
             type="button"
             onClick={onRevokeAll}
             className="min-h-11 w-full rounded-lg border border-destructive/30 px-4 py-2 text-sm font-medium text-destructive transition-colors duration-200 hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            {primitivesCopy.sessionManagement.signOutAllOthers}
+            {copy.signOutAllOthers}
           </button>
         </div>
       ) : null}
     </div>
   )
 }
-
-// SessionManagementProps is exported inline above via `export interface`

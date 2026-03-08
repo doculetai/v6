@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import {
@@ -20,7 +20,9 @@ import { BankVerificationSection } from '@/components/student/BankVerificationSe
 import { OcrSummaryCard } from '@/components/student/OcrSummaryCard';
 import { DocumentPreviewModal } from '@/components/shared/DocumentPreviewModal';
 import { ActionSuccessBanner } from '@/components/ui/action-success-banner';
+import { Callout } from '@/components/ui/callout';
 import { DocumentUploadProgress, type UploadStage } from '@/components/ui/document-upload-progress';
+import { NavGuardSheet } from '@/components/ui/nav-guard-sheet';
 import { PageShell, Section, Stack } from '@/components/layout/content-primitives';
 import { PageHeader } from '@/components/layout/page-header';
 import { studentCopy } from '@/config/copy/student';
@@ -71,6 +73,22 @@ export function DocumentsPageClient() {
   const [showOcrCardState, setShowOcrCardState] = useState<'visible' | 'dismissed' | 'cancelled'>('visible');
   const [cancelError, setCancelError] = useState<string | null>(null);
   const [previewDocumentId, setPreviewDocumentId] = useState<string | null>(null);
+  // C7: nav guard
+  const [navGuardOpen, setNavGuardOpen] = useState(false);
+  const pendingNavRef = useRef<string | null>(null);
+  const uploadInProgress = uploadStage === 'uploading' || uploadStage === 'scanning' || uploadStage === 'processing';
+
+  // C7: beforeunload guard for browser tab close
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (uploadInProgress) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [uploadInProgress]);
 
   const handleProgressComplete = useCallback(() => {
     // Clear progress after completion animation
@@ -224,6 +242,13 @@ export function DocumentsPageClient() {
         />
       ) : null}
 
+      {/* B3.3: rejection note above upload zone when bank statement rejected */}
+      {bankStatementRejection?.status === 'rejected' && bankStatementRejection.rejectionNote ? (
+        <Callout variant="error">
+          {studentCopy.rejectedPrefix}{bankStatementRejection.rejectionNote}
+        </Callout>
+      ) : null}
+
       <BankVerificationSection
         isConnected={bankConnected}
         bankName={bankName}
@@ -329,6 +354,19 @@ export function DocumentsPageClient() {
           reviewActions={null}
         />
       ) : null}
+
+      {/* C7: Nav guard sheet shown when navigating away mid-upload */}
+      <NavGuardSheet
+        open={navGuardOpen}
+        onStay={() => {
+          setNavGuardOpen(false);
+          pendingNavRef.current = null;
+        }}
+        onLeave={() => {
+          setNavGuardOpen(false);
+          pendingNavRef.current = null;
+        }}
+      />
       </Stack>
     </PageShell>
   );

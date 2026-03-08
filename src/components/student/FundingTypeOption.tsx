@@ -1,5 +1,4 @@
-import { BadgeCheck } from 'lucide-react';
-
+import { SealCheck } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 type FundingTypeOptionProps = {
@@ -27,7 +26,8 @@ export function FundingTypeOption({
       )}
       aria-pressed={selected}
     >
-      <BadgeCheck
+      <SealCheck
+        weight="duotone"
         className={cn(
           'mt-0.5 size-4 shrink-0',
           selected

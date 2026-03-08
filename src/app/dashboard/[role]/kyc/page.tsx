@@ -2,12 +2,13 @@ import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { sponsorCopy } from '@/config/copy/sponsor';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
-import { PageHeader } from '@/components/ui/page-header';
 
 import { KycPageClient } from './kyc-page-client';
+import { routes } from '@/config/routes';
 
 export const metadata: Metadata = { title: 'Verification — Doculet' };
 
@@ -18,31 +19,27 @@ type KycPageProps = {
 export default async function KycPage({ params }: KycPageProps) {
   const { role } = await params;
 
-  if (!isDashboardRole(role)) {
-    notFound();
-  }
-
-  if (role !== 'sponsor') {
+  if (!isDashboardRole(role) || role !== 'sponsor') {
     notFound();
   }
 
   const caller = await api();
 
-  let kycStatus: Awaited<ReturnType<typeof caller.sponsor.getSponsorKycStatus>>;
-  try {
-    kycStatus = await caller.sponsor.getSponsorKycStatus();
-  } catch (error) {
-    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
-      redirect('/login');
-    }
-    throw error;
+  const [kycResult] = await Promise.allSettled([caller.sponsor.getSponsorKycStatus()]);
+  if (kycResult.status === 'rejected') {
+    const err = kycResult.reason;
+    if (err instanceof TRPCError && err.code === 'UNAUTHORIZED') redirect(routes.auth.login);
+  }
+  const kycStatus = kycResult.status === 'fulfilled' ? kycResult.value : null;
+
+  if (!kycStatus) {
+    notFound();
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="sr-only">{sponsorCopy.kyc.title}</h1>
+    <PageShell>
       <PageHeader title={sponsorCopy.kyc.title} subtitle={sponsorCopy.kyc.subtitle} />
       <KycPageClient kycStatus={kycStatus} copy={sponsorCopy.kyc} />
-    </div>
+    </PageShell>
   );
 }

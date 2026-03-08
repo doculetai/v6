@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, CheckCircle, X } from '@phosphor-icons/react';
+import { ArrowRight, CheckCircle, X } from '@/components/icons';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';

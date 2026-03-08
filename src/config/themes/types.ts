@@ -31,6 +31,7 @@ export interface SemanticTokens {
   ring: string;
   success: string;
   warning: string;
+  gold?: string;
 }
 
 export interface Theme {

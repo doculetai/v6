@@ -24,6 +24,9 @@ import { useDashboardBreadcrumbs } from '@/lib/hooks/useDashboardBreadcrumbs';
 import { trpc } from '@/trpc/client';
 import { routes } from '@/config/routes';
 import type { RouterOutputs } from '@/trpc/client';
+import { universityCopy } from '@/config/copy/university';
+
+const programFormCopy = universityCopy.programs.programForm;
 
 type ProgramItem = RouterOutputs['universityManagement']['listUniversityPrograms'][number];
 
@@ -99,16 +102,45 @@ type AddProgramDialogProps = {
   onSuccess: () => void;
 };
 
+// ── Line-item state helpers ───────────────────────────────────────────────────
+
+type LineItems = {
+  tuition: string;
+  accommodation: string;
+  livingExpenses: string;
+  visaAdminFees: string;
+  other: string;
+};
+
+const emptyLineItems: LineItems = {
+  tuition: '',
+  accommodation: '',
+  livingExpenses: '',
+  visaAdminFees: '',
+  other: '',
+};
+
+function sumLineItems(items: LineItems): number {
+  return Object.values(items).reduce((sum, v) => {
+    const n = parseInt(v, 10);
+    return sum + (isNaN(n) ? 0 : n);
+  }, 0);
+}
+
+// ── Add Program Dialog ────────────────────────────────────────────────────────
+
 function AddProgramDialog({ copy, onSuccess }: AddProgramDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
-  const [tuition, setTuition] = useState('');
+  const [lineItems, setLineItems] = useState<LineItems>(emptyLineItems);
   const [currency, setCurrency] = useState('NGN');
   const [duration, setDuration] = useState('');
 
+  const total = sumLineItems(lineItems);
+
   const resetForm = () => {
     setName('');
-    setTuition('');
+    setLineItems(emptyLineItems);
     setCurrency('NGN');
     setDuration('');
   };
@@ -127,11 +159,18 @@ function AddProgramDialog({ copy, onSuccess }: AddProgramDialogProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const tuitionNum = parseInt(tuition, 10);
     const durationNum = parseInt(duration, 10);
-    if (!name || isNaN(tuitionNum) || isNaN(durationNum)) return;
-    createProgram.mutate({ name, tuitionAmount: tuitionNum, currency, durationMonths: durationNum });
+    if (!name || total <= 0 || isNaN(durationNum)) return;
+    createProgram.mutate({ name, tuitionAmount: total, currency, durationMonths: durationNum });
   };
+
+  const lineItemFields: { key: keyof LineItems; label: string }[] = [
+    { key: 'tuition', label: programFormCopy.lineItems.tuition },
+    { key: 'accommodation', label: programFormCopy.lineItems.accommodation },
+    { key: 'livingExpenses', label: programFormCopy.lineItems.livingExpenses },
+    { key: 'visaAdminFees', label: programFormCopy.lineItems.visaAdminFees },
+    { key: 'other', label: programFormCopy.lineItems.other },
+  ];
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -141,7 +180,7 @@ function AddProgramDialog({ copy, onSuccess }: AddProgramDialogProps) {
           {copy.addProgram}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{copy.addProgram}</DialogTitle>
           <DialogDescription>{copy.addProgramDescription}</DialogDescription>
@@ -157,19 +196,34 @@ function AddProgramDialog({ copy, onSuccess }: AddProgramDialogProps) {
               required
             />
           </div>
-          <Grid cols={2}>
-            <div className="space-y-2">
-              <Label htmlFor="add-program-tuition">{copy.form.tuitionLabel}</Label>
-              <Input
-                id="add-program-tuition"
-                type="number"
-                value={tuition}
-                onChange={(e) => setTuition(e.target.value)}
-                placeholder={copy.form.tuitionPlaceholder}
-                min={0}
-                required
-              />
+
+          {/* Line-item breakdown */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-foreground">{copy.form.tuitionLabel}</p>
+            <div className="rounded-lg border border-border bg-muted/30 px-3 py-2 space-y-2">
+              {lineItemFields.map(({ key, label }) => (
+                <div key={key} className="flex items-center gap-3">
+                  <span className="w-36 shrink-0 text-sm text-muted-foreground">{label}</span>
+                  <Input
+                    type="number"
+                    value={lineItems[key]}
+                    onChange={(e) => setLineItems((prev) => ({ ...prev, [key]: e.target.value }))}
+                    placeholder="0"
+                    min={0}
+                    className="h-8 text-sm"
+                  />
+                </div>
+              ))}
             </div>
+            <div className="flex items-center justify-between rounded-md bg-muted px-3 py-2">
+              <span className="text-sm font-medium text-foreground">{programFormCopy.totalLabel}</span>
+              <span className="font-mono text-sm font-semibold text-foreground">
+                {currency} {total.toLocaleString('en-NG')}
+              </span>
+            </div>
+          </div>
+
+          <Grid cols={2}>
             <div className="space-y-2">
               <Label htmlFor="add-program-currency">{copy.form.currencyLabel}</Label>
               <Input
@@ -181,22 +235,23 @@ function AddProgramDialog({ copy, onSuccess }: AddProgramDialogProps) {
                 required
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="add-program-duration">{copy.form.durationLabel}</Label>
+              <Input
+                id="add-program-duration"
+                type="number"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                placeholder={copy.form.durationPlaceholder}
+                min={1}
+                max={120}
+                required
+              />
+            </div>
           </Grid>
-          <div className="space-y-2">
-            <Label htmlFor="add-program-duration">{copy.form.durationLabel}</Label>
-            <Input
-              id="add-program-duration"
-              type="number"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              placeholder={copy.form.durationPlaceholder}
-              min={1}
-              max={120}
-              required
-            />
-          </div>
+
           <DialogFooter>
-            <Button type="submit" disabled={createProgram.isPending}>
+            <Button type="submit" disabled={createProgram.isPending || total <= 0}>
               {createProgram.isPending ? copy.form.submittingLabel : copy.form.submitLabel}
             </Button>
           </DialogFooter>
@@ -312,6 +367,19 @@ function EditProgramDialog({ program, copy, onSuccess }: EditProgramDialogProps)
               required
             />
           </div>
+          {parseInt(tuition, 10) > 0 && (
+            <div className="rounded-lg border border-border bg-muted/30 px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                {programFormCopy.costPreview.heading}
+              </p>
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">{programFormCopy.costPreview.tuitionLabel}</span>
+                <span className="font-mono text-sm font-semibold text-foreground">
+                  {currency} {parseInt(tuition, 10).toLocaleString('en-NG')}
+                </span>
+              </div>
+            </div>
+          )}
           <DialogFooter>
             <Button type="submit" disabled={updateProgram.isPending}>
               {updateProgram.isPending ? copy.editDialog.saving : copy.editDialog.saveCta}

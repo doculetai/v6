@@ -1,22 +1,14 @@
 'use client';
 
-import { UniversityOverviewActivity } from '@/components/university/UniversityOverviewActivity';
 import { UniversityOverviewMetrics } from '@/components/university/UniversityOverviewMetrics';
 import { EmptyState } from '@/components/ui/empty-state';
 import { universityCopy } from '@/config/copy/university';
-interface RecentDocument {
-  id: string;
-  status: 'pending' | 'approved' | 'rejected' | 'more_info_requested';
-  type: 'passport' | 'bank_statement' | 'offer_letter' | 'affidavit' | 'cac';
-  createdAt: string;
-}
 
 interface UniversityOverviewData {
-  pendingCount: number;
-  approvedTodayCount: number;
-  flaggedCount: number;
+  totalPrograms: number;
+  enrolledStudents: number;
+  pendingApplications: number;
   totalStudents: number;
-  recentActivity: RecentDocument[];
 }
 
 interface OverviewPageClientProps {
@@ -27,17 +19,17 @@ const copy = universityCopy.overview;
 
 export function OverviewPageClient({ data }: OverviewPageClientProps) {
   const isEmpty =
-    data.pendingCount === 0 &&
-    data.approvedTodayCount === 0 &&
-    data.flaggedCount === 0 &&
+    data.totalPrograms === 0 &&
+    data.enrolledStudents === 0 &&
+    data.pendingApplications === 0 &&
     data.totalStudents === 0;
 
   return (
     <div className="space-y-6">
       <UniversityOverviewMetrics
-        pendingCount={data.pendingCount}
-        approvedTodayCount={data.approvedTodayCount}
-        flaggedCount={data.flaggedCount}
+        totalPrograms={data.totalPrograms}
+        enrolledStudents={data.enrolledStudents}
+        pendingApplications={data.pendingApplications}
         totalStudents={data.totalStudents}
       />
 
@@ -47,9 +39,7 @@ export function OverviewPageClient({ data }: OverviewPageClientProps) {
           body={copy.empty.body}
           action={{ label: copy.empty.action, href: copy.empty.actionHref }}
         />
-      ) : (
-        <UniversityOverviewActivity items={data.recentActivity} />
-      )}
+      ) : null}
     </div>
   );
 }

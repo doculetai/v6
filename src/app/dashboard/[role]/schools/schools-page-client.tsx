@@ -1,13 +1,13 @@
 'use client';
 
-import { Warning, CheckCircle, GraduationCap, MapPin, Globe, Buildings } from '@phosphor-icons/react';
+import { Warning, CheckCircle, GraduationCap, MapPin, Globe, Buildings } from '@/components/icons';
 import { useMemo, useState } from 'react';
 
 import { ActionSuccessBanner } from '@/components/ui/action-success-banner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Grid, PageShell, Stack } from '@/components/layout/content-primitives';
+import { Grid, PageHeader, PageShell, Section, Stack } from '@/components/layout/content-primitives';
 import { EmptyState } from '@/components/ui/empty-state';
 import { MoneyValue } from '@/components/ui/money-value';
 import { SearchAutosuggest } from '@/components/ui/search-autosuggest';
@@ -324,17 +324,11 @@ export function SchoolsPageClient({ initialSchools, initialSelection }: SchoolsP
 
   return (
     <PageShell width="default">
-      <Stack gap="md">
-        <header className="space-y-2">
-          <h2 className="text-3xl font-semibold text-foreground md:text-5xl">
-            {copy.title}
-          </h2>
-          <p className="max-w-3xl text-sm text-muted-foreground md:text-base">
-            {copy.subtitle}
-          </p>
-        </header>
+      <Section>
+        <Stack gap="md">
+          <PageHeader title={copy.title} description={copy.subtitle} />
 
-        <SearchAutosuggest
+          <SearchAutosuggest
           query={search}
           onQueryChange={(v) => {
             setSearch(v);
@@ -354,7 +348,7 @@ export function SchoolsPageClient({ initialSchools, initialSelection }: SchoolsP
               size="sm"
               variant={countryFilter === filter.value ? 'default' : 'outline'}
               onClick={() => handleCountryChange(filter.value)}
-              className="min-h-9 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="min-h-11 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               {filter.label}
             </Button>
@@ -362,7 +356,7 @@ export function SchoolsPageClient({ initialSchools, initialSelection }: SchoolsP
 
           {countryFilter === 'United States' ? (
             <Select value={stateFilter ?? '__all__'} onValueChange={handleStateChange}>
-              <SelectTrigger className="h-9 w-44">
+              <SelectTrigger className="min-h-11 w-full md:w-44">
                 <SelectValue placeholder={copy.filters.statePlaceholder} />
               </SelectTrigger>
               <SelectContent>
@@ -456,7 +450,8 @@ export function SchoolsPageClient({ initialSchools, initialSelection }: SchoolsP
             ) : null}
           </>
         )}
-      </Stack>
+        </Stack>
+      </Section>
     </PageShell>
   );
 }

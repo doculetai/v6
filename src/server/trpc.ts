@@ -71,6 +71,7 @@ export function roleProcedure(role: ProfileRole) {
     return next({
       ctx: {
         ...ctx,
+        user: ctx.user!,
         profile: ctx.profile,
       },
     });

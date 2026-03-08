@@ -110,4 +110,20 @@ export const uiPrimitives = {
     downloadCta: "Download",
     openNewTabAriaLabel: "Open in new tab",
   },
+  accountDeletion: {
+    button: 'Delete account',
+    dialogTitle: 'Delete account',
+    dialogBody: 'Your account will be scheduled for deletion after a 30-day grace period. Certificates issued remain on the public verification URL.',
+    typeToConfirm: 'Type DELETE to confirm',
+    confirmPlaceholder: 'DELETE',
+    confirm: 'Schedule deletion',
+    cancel: 'Cancel',
+  },
+  sessionTimeout: {
+    title: 'Session expiring',
+    body: (seconds: number) =>
+      `You will be signed out in ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')} due to inactivity.`,
+    dismiss: 'Stay signed in',
+    signOut: 'Sign out now',
+  },
 } as const

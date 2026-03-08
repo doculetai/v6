@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { boolean, index, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { index, integer, pgTable, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core';
 
 import { timestamps } from './_helpers';
 import { users } from './users';
@@ -29,6 +29,7 @@ export const partnerApiKeys = pgTable(
     keyPrefix: text('key_prefix').notNull(),
     scopes: text('scopes').array().notNull(),
     lastUsedAt: timestamp('last_used_at'),
+    environment: text('environment').default('production').notNull(),
     revokedAt: timestamp('revoked_at'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
@@ -49,22 +50,38 @@ export const partnerStudents = pgTable('partner_students', {
   ...timestamps,
 });
 
-export const partnerWebhookConfigs = pgTable(
-  'partner_webhook_configs',
+export const partnerApiRequestLogs = pgTable(
+  'partner_api_request_logs',
   {
     id: uuid('id').primaryKey().defaultRandom(),
     partnerId: uuid('partner_id')
       .references(() => partnerProfiles.id, { onDelete: 'cascade' })
       .notNull(),
-    url: text('url').notNull(),
-    secretHash: text('secret_hash').notNull(),
-    events: text('events').array().notNull(),
-    description: text('description'),
-    enabled: boolean('enabled').default(true).notNull(),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
+    keyId: uuid('key_id').references(() => partnerApiKeys.id, { onDelete: 'set null' }),
+    method: text('method').notNull(),
+    endpoint: text('endpoint').notNull(),
+    statusCode: integer('status_code').notNull(),
+    durationMs: integer('duration_ms'),
+    environment: text('environment').default('production').notNull(),
+    errorMessage: text('error_message'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
   },
-  (t) => [index('partner_webhook_configs_partner_id_idx').on(t.partnerId)],
+  (t) => [index('partner_api_request_logs_partner_created_idx').on(t.partnerId, t.createdAt)],
+);
+
+export const partnerTeamMembers = pgTable(
+  'partner_team_members',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    partnerId: uuid('partner_id')
+      .references(() => partnerProfiles.id, { onDelete: 'cascade' })
+      .notNull(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    role: text('role', { enum: ['admin', 'developer', 'viewer'] }).default('viewer').notNull(),
+    ...timestamps,
+  },
+  (t) => [index('partner_team_members_partner_email_idx').on(t.partnerId, t.email)],
 );
 
 export const partnerProfilesRelations = relations(partnerProfiles, ({ one, many }) => ({
@@ -74,7 +91,8 @@ export const partnerProfilesRelations = relations(partnerProfiles, ({ one, many 
   }),
   apiKeys: many(partnerApiKeys),
   students: many(partnerStudents),
-  webhookConfigs: many(partnerWebhookConfigs),
+  requestLogs: many(partnerApiRequestLogs),
+  teamMembers: many(partnerTeamMembers),
 }));
 
 export const partnerApiKeysRelations = relations(partnerApiKeys, ({ one }) => ({
@@ -95,9 +113,20 @@ export const partnerStudentsRelations = relations(partnerStudents, ({ one }) => 
   }),
 }));
 
-export const partnerWebhookConfigsRelations = relations(partnerWebhookConfigs, ({ one }) => ({
+export const partnerApiRequestLogsRelations = relations(partnerApiRequestLogs, ({ one }) => ({
   partner: one(partnerProfiles, {
-    fields: [partnerWebhookConfigs.partnerId],
+    fields: [partnerApiRequestLogs.partnerId],
+    references: [partnerProfiles.id],
+  }),
+  apiKey: one(partnerApiKeys, {
+    fields: [partnerApiRequestLogs.keyId],
+    references: [partnerApiKeys.id],
+  }),
+}));
+
+export const partnerTeamMembersRelations = relations(partnerTeamMembers, ({ one }) => ({
+  partner: one(partnerProfiles, {
+    fields: [partnerTeamMembers.partnerId],
     references: [partnerProfiles.id],
   }),
 }));

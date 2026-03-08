@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { CircleNotch } from '@/components/icons';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -115,7 +115,7 @@ export function UniversityProfileSettingsForm({ profile }: { profile: University
             <Button type="submit" className="min-h-11" disabled={isSubmitting}>
               {isSubmitting ? (
                 <span className="inline-flex items-center gap-2">
-                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  <CircleNotch weight="bold" className="size-4 animate-spin" aria-hidden="true" />
                   {copy.profile.savingLabel}
                 </span>
               ) : (

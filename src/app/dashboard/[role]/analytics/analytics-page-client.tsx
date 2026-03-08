@@ -1,5 +1,6 @@
 'use client';
 
+import { Grid } from '@/components/layout/content-primitives';
 import { adminCopy } from '@/config/copy/admin';
 import { formatNGN } from '@/lib/utils';
 
@@ -101,10 +102,10 @@ export function AnalyticsPageClient({ data, copy }: Props) {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <Grid cols={{ sm: 2, lg: 3 }} gap="md">
       {stats.map((stat) => (
         <StatCard key={stat.label} label={stat.label} value={stat.value} sub={stat.sub} />
       ))}
-    </div>
+    </Grid>
   );
 }

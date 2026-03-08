@@ -1,12 +1,11 @@
-import type { LucideIcon } from 'lucide-react';
-
+import type { Icon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 type OnboardingStateCardProps = {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon: Icon;
   actionLabel?: string;
   onAction?: () => void;
   actionDisabled?: boolean;
@@ -15,7 +14,7 @@ type OnboardingStateCardProps = {
 export function OnboardingStateCard({
   title,
   description,
-  icon: Icon,
+  icon: IconComponent,
   actionLabel,
   onAction,
   actionDisabled = false,
@@ -23,7 +22,7 @@ export function OnboardingStateCard({
   return (
     <Card className="border-border bg-card dark:border-border dark:bg-card">
       <CardHeader className="space-y-3">
-        <Icon className="size-5 text-muted-foreground dark:text-muted-foreground" aria-hidden="true" />
+        <IconComponent weight="duotone" className="size-5 text-muted-foreground dark:text-muted-foreground" aria-hidden="true" />
         <CardTitle className="text-xl text-card-foreground dark:text-card-foreground">{title}</CardTitle>
         <CardDescription className="text-sm text-muted-foreground dark:text-muted-foreground">
           {description}

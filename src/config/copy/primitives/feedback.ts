@@ -28,7 +28,7 @@ export const feedbackPrimitives = {
     saved: "Saved successfully",
     deleted: "Deleted successfully",
     updated: "Updated successfully",
-    failed: "Something went wrong",
+    failed: "Action could not be completed",
     copied: "Copied to clipboard",
   },
   confirm: {

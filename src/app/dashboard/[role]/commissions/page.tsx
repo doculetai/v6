@@ -1,11 +1,12 @@
 import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 import { agentCopy } from '@/config/copy/agent';
 import { api } from '@/trpc/server';
 
 import { CommissionsPageClient } from './commissions-page-client';
+import { routes } from '@/config/routes';
 
 export const metadata: Metadata = { title: `${agentCopy.commissions.title} — Doculet` };
 
@@ -15,24 +16,17 @@ export default async function CommissionsPage({ params }: PageProps) {
   const { role } = await params;
 
   if (role !== 'agent') {
-    return <p className="text-muted-foreground">{agentCopy.errors.unauthorized}</p>;
+    notFound();
   }
 
   const caller = await api();
 
-  let commissions: Awaited<ReturnType<typeof caller.agent.listAgentCommissions>> | null;
-
-  try {
-    commissions = await caller.agent.listAgentCommissions();
-  } catch (error) {
-    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
-    commissions = null;
+  const [commissionsResult] = await Promise.allSettled([caller.agent.listAgentCommissions()]);
+  if (commissionsResult.status === 'rejected') {
+    const err = commissionsResult.reason;
+    if (err instanceof TRPCError && err.code === 'UNAUTHORIZED') redirect(routes.auth.login);
   }
+  const commissions = commissionsResult.status === 'fulfilled' ? commissionsResult.value : null;
 
-  return (
-    <div className="space-y-6">
-      <h1 className="sr-only">{agentCopy.commissions.title}</h1>
-      <CommissionsPageClient commissions={commissions} copy={agentCopy.commissions} />
-    </div>
-  );
+  return <CommissionsPageClient commissions={commissions} copy={agentCopy.commissions} />;
 }

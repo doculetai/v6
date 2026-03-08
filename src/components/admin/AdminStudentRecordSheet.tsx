@@ -18,6 +18,8 @@ import { trpc } from '@/trpc/client';
 interface AdminStudentRecordSheetProps {
   studentId: string | null;
   onClose: () => void;
+  /** When true, hides action buttons and shows a read-only indicator. */
+  readOnly?: boolean;
 }
 
 const copy = adminCopy.studentRecord;
@@ -272,6 +274,7 @@ function RecordContent({ studentId }: { studentId: string }) {
 export function AdminStudentRecordSheet({
   studentId,
   onClose,
+  readOnly = false,
 }: AdminStudentRecordSheetProps) {
   return (
     <Sheet open={studentId !== null} onOpenChange={(open) => { if (!open) onClose(); }}>
@@ -280,7 +283,17 @@ export function AdminStudentRecordSheet({
           <SheetTitle className="flex items-center gap-2 text-base font-semibold text-foreground">
             <User size={20} weight="duotone" aria-hidden="true" className="text-muted-foreground" />
             {copy.title}
+            {readOnly && (
+              <span className="ml-auto rounded-md border border-border bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                {adminCopy.concurrentReview.viewOnly}
+              </span>
+            )}
           </SheetTitle>
+          {readOnly && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              {adminCopy.concurrentReview.readOnlyNote}
+            </p>
+          )}
         </SheetHeader>
         {studentId && <RecordContent studentId={studentId} />}
       </SheetContent>

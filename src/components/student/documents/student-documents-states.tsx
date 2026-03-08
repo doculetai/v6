@@ -1,4 +1,4 @@
-import { FileSearch, RotateCw, TriangleAlert } from 'lucide-react';
+import { MagnifyingGlass, ArrowClockwise, Warning } from '@/components/icons';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,7 +42,7 @@ export function StudentDocumentsErrorState({ copy, onRetry }: StudentDocumentsEr
     <Card className="border-border bg-card/95 dark:border-border dark:bg-card/95">
       <CardHeader className="space-y-2">
         <div className="flex items-center gap-2">
-          <TriangleAlert className="size-5 text-destructive dark:text-destructive" aria-hidden="true" />
+          <Warning weight="duotone" className="size-5 text-destructive dark:text-destructive" aria-hidden="true" />
           <CardTitle className="text-xl text-card-foreground dark:text-card-foreground">
             {copy.errorTitle}
           </CardTitle>
@@ -55,7 +55,7 @@ export function StudentDocumentsErrorState({ copy, onRetry }: StudentDocumentsEr
 
       <CardContent>
         <Button type="button" onClick={onRetry} className="min-h-11 w-full gap-2 sm:w-auto">
-          <RotateCw className="size-5" aria-hidden="true" />
+          <ArrowClockwise weight="duotone" className="size-5" aria-hidden="true" />
           <span>{copy.retryCta}</span>
         </Button>
       </CardContent>
@@ -68,8 +68,9 @@ export function StudentDocumentsEmptyState({ copy }: StudentDocumentsStateProps)
     <Card className="border-border bg-card/95 dark:border-border dark:bg-card/95">
       <CardHeader className="space-y-2">
         <div className="flex items-center gap-2">
-          <FileSearch
-            className="size-5 text-muted-foreground dark:text-muted-foreground"
+          <MagnifyingGlass
+            weight="duotone"
+            className="size-8 text-muted-foreground dark:text-muted-foreground"
             aria-hidden="true"
           />
           <CardTitle className="text-xl text-card-foreground dark:text-card-foreground">

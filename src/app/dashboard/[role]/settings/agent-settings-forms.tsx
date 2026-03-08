@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { CircleNotch } from '@/components/icons';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -172,7 +172,7 @@ export function AgentProfileSettingsForm({ settings }: { settings: AgentSettings
             <Button type="submit" className="min-h-11" disabled={isSubmitting}>
               {isSubmitting ? (
                 <span className="inline-flex items-center gap-2">
-                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  <CircleNotch weight="bold" className="size-4 animate-spin" aria-hidden="true" />
                   {copy.profile.savingLabel}
                 </span>
               ) : (
@@ -280,7 +280,7 @@ export function AgentNotificationPreferencesForm({ settings }: { settings: Agent
             <Button type="submit" className="min-h-11" disabled={isSubmitting}>
               {isSubmitting ? (
                 <span className="inline-flex items-center gap-2">
-                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                  <CircleNotch weight="bold" className="size-4 animate-spin" aria-hidden="true" />
                   {copy.notifications.savingLabel}
                 </span>
               ) : (
@@ -288,6 +288,90 @@ export function AgentNotificationPreferencesForm({ settings }: { settings: Agent
               )}
             </Button>
           </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+// ── Bank details form ─────────────────────────────────────────────────────────
+
+const bankDetailsSchema = z.object({
+  accountNumber: z.string().min(10).max(20).regex(/^\d+$/),
+  bankName: z.string().min(2).max(120),
+});
+
+type BankDetailsValues = z.infer<typeof bankDetailsSchema>;
+
+export function AgentBankDetailsForm() {
+  const bankCopy = copy.bankDetails;
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<BankDetailsValues>({
+    resolver: zodResolver(bankDetailsSchema),
+    defaultValues: { accountNumber: '', bankName: '' },
+  });
+
+  const onSubmit = handleSubmit(async (_values) => {
+    setFeedback(null);
+    setErrorMessage(null);
+    try {
+      // Stub — backend procedure not yet wired; optimistic save feedback
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      setFeedback(bankCopy.saved);
+    } catch {
+      setErrorMessage(copy.errors.profileSaveError);
+    }
+  });
+
+  return (
+    <Card className="border-border bg-card">
+      <CardHeader>
+        <CardTitle className="text-base font-semibold">{bankCopy.tabLabel}</CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">{bankCopy.description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="bank-account-number">{bankCopy.accountNumber}</Label>
+            <Input
+              id="bank-account-number"
+              {...register('accountNumber')}
+              inputMode="numeric"
+              className={errors.accountNumber ? 'border-destructive' : undefined}
+            />
+            {errors.accountNumber ? (
+              <p className="text-xs text-destructive">{errors.accountNumber.message}</p>
+            ) : null}
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="bank-name">{bankCopy.bankName}</Label>
+            <Input
+              id="bank-name"
+              {...register('bankName')}
+              className={errors.bankName ? 'border-destructive' : undefined}
+            />
+            {errors.bankName ? (
+              <p className="text-xs text-destructive">{errors.bankName.message}</p>
+            ) : null}
+          </div>
+          {errorMessage ? <FormErrorBanner message={errorMessage} /> : null}
+          {feedback ? <FormSuccessBanner message={feedback} /> : null}
+          <Button type="submit" className="min-h-11" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <span className="inline-flex items-center gap-2">
+                <CircleNotch weight="bold" className="size-4 animate-spin" aria-hidden="true" />
+                {bankCopy.saving}
+              </span>
+            ) : (
+              bankCopy.save
+            )}
+          </Button>
         </form>
       </CardContent>
     </Card>

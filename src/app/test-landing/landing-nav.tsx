@@ -7,6 +7,7 @@ import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { landingCopy as copy } from "@/config/copy/test-landing";
+import { routes } from '@/config/routes';
 
 function MobileMenu({
   open,
@@ -59,14 +60,14 @@ function MobileMenu({
 
         <div className="mt-8 space-y-3">
           <Link
-            href="/login"
+            href={routes.auth.login}
             onClick={onClose}
             className="flex min-h-13 items-center justify-center rounded-xl border border-border text-sm font-semibold text-foreground transition-colors hover:bg-muted"
           >
             {copy.nav.signIn}
           </Link>
           <Link
-            href="/signup"
+            href={routes.auth.signup}
             onClick={onClose}
             className="flex min-h-13 items-center justify-center gap-2 rounded-xl bg-primary text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
           >
@@ -132,7 +133,7 @@ export function Nav() {
 
           <div className="flex items-center gap-3">
             <Link
-              href="/login"
+              href={routes.auth.login}
               className="hidden min-h-11 items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring md:inline-flex"
             >
               {copy.nav.signIn}
@@ -142,7 +143,7 @@ export function Nav() {
               asChild
               className="hidden min-h-11 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 md:inline-flex"
             >
-              <Link href="/signup">
+              <Link href={routes.auth.signup}>
                 {copy.nav.cta}
                 <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
               </Link>

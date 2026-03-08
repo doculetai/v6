@@ -6,14 +6,50 @@
  * Or run: npm run db:seed:e2e (then E2E_SEED_ON_SETUP=false to skip seed in setup)
  */
 
-import { test as setup, expect } from '@playwright/test';
-import { existsSync, mkdirSync } from 'node:fs';
+import { test as setup, expect, type Page } from '@playwright/test';
+import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { e2ePersonas, e2eConfig } from './fixtures/e2e-personas';
 
 const authDir = join(process.cwd(), 'tests', 'e2e', '.auth');
-const authFile = join(authDir, 'student.json');
+const studentAuthFile = join(authDir, 'student.json');
+const sponsorAuthFile = join(authDir, 'sponsor.json');
+const universityAuthFile = join(authDir, 'university.json');
+const adminAuthFile = join(authDir, 'admin.json');
+
+async function authenticateAndSaveState(
+  page: Page,
+  credentials: { email: string; password: string },
+  outputPath: string,
+  optional = false,
+) {
+  await page.goto(`${e2eConfig.baseUrl}/login`);
+  if (/\/dashboard/.test(page.url())) {
+    await page.context().storageState({ path: outputPath });
+    return true;
+  }
+  await expect(page.getByLabel(/email/i)).toBeVisible();
+  await page.waitForTimeout(400);
+  await page.getByLabel(/email/i).fill(credentials.email);
+  await page.locator('#login-password').fill(credentials.password);
+  await page.locator('form button[type="submit"]').first().click();
+
+  if (optional) {
+    const landedOnDashboard = await page
+      .waitForURL(/\/(dashboard|auth\/complete)/, { timeout: 20_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!landedOnDashboard) {
+      return false;
+    }
+  } else {
+    await expect(page).toHaveURL(/\/(dashboard|auth\/complete)/, { timeout: 20_000 });
+  }
+
+  await page.context().storageState({ path: outputPath });
+  return true;
+}
 
 setup('seed E2E data', async () => {
   setup.setTimeout(90_000);
@@ -36,12 +72,26 @@ setup('authenticate as student', async ({ page }) => {
     mkdirSync(authDir, { recursive: true });
   }
 
-  await page.goto(`${e2eConfig.baseUrl}/login`);
-  await page.getByLabel(/email/i).fill(e2ePersonas.student.email);
-  await page.getByLabel(/password/i).fill(e2ePersonas.student.password);
-  await page.getByRole('button', { name: /sign in/i }).click();
+  await authenticateAndSaveState(page, e2ePersonas.student, studentAuthFile);
+});
 
-  await expect(page).toHaveURL(/\/(dashboard|auth\/complete)/, { timeout: 15_000 });
+setup('authenticate as sponsor', async ({ page }) => {
+  if (existsSync(sponsorAuthFile)) {
+    rmSync(sponsorAuthFile);
+  }
+  await authenticateAndSaveState(page, e2ePersonas.sponsor, sponsorAuthFile);
+});
 
-  await page.context().storageState({ path: authFile });
+setup('authenticate as university', async ({ page }) => {
+  if (existsSync(universityAuthFile)) {
+    rmSync(universityAuthFile);
+  }
+  await authenticateAndSaveState(page, e2ePersonas.university, universityAuthFile);
+});
+
+setup('authenticate as admin', async ({ page }) => {
+  if (existsSync(adminAuthFile)) {
+    rmSync(adminAuthFile);
+  }
+  await authenticateAndSaveState(page, e2ePersonas.admin, adminAuthFile);
 });

@@ -1,4 +1,5 @@
 /** Marketing and public page copy — about, pricing, terms, privacy, contact */
+import { routes } from '@/config/routes';
 
 export const marketingCopy = {
   about: {
@@ -14,7 +15,7 @@ export const marketingCopy = {
       { title: 'Speed', body: 'Tier 2 verification in under 24 hours. Tier 3 in 2–5 business days.' },
     ],
     cta: 'Get your certificate',
-    ctaHref: '/signup',
+    ctaHref: routes.auth.signup,
   },
   pricing: {
     title: 'Pricing',
@@ -33,8 +34,8 @@ export const marketingCopy = {
       freeLabel: 'For admissions offices',
       features: ['Instant certificate verification', 'No account required', 'API available', 'Tamper-evident seal validation'],
     },
-    cta: 'Get started',
-    ctaHref: '/signup',
+    cta: 'Begin now',
+    ctaHref: routes.auth.signup,
   },
   terms: {
     title: 'Terms of Service',
@@ -78,6 +79,9 @@ export const marketingCopy = {
     verified: 'Doculet Seal — Verified',
     invalid: 'Invalid or expired',
     notFound: 'Certificate not found',
+    lookupDescription: 'Enter the certificate token to validate the Doculet seal.',
+    lookupPlaceholder: 'Certificate token',
+    lookupCta: 'Verify certificate',
     holder: 'Holder',
     institution: 'Institution',
     amount: 'Verified balance',

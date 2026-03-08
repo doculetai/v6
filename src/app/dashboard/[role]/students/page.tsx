@@ -2,18 +2,19 @@ import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { agentCopy } from '@/config/copy/agent';
 import { partnerCopy } from '@/config/copy/partner';
 import { sponsorCopy } from '@/config/copy/sponsor';
 import { universityCopy } from '@/config/copy/university';
 import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
-import { PageHeader } from '@/components/ui/page-header';
 
 import { AgentStudentsPageClient } from './agent-students-page-client';
 import { StudentsPageClient } from './students-page-client';
 import { SponsorStudentsPageClient } from './sponsor-students-page-client';
 import { UniversityStudentsPageClient } from './university-students-page-client';
+import { routes } from '@/config/routes';
 
 export const metadata: Metadata = { title: 'Students — Doculet' };
 
@@ -41,68 +42,53 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
       invitesResult.reason instanceof TRPCError &&
       invitesResult.reason.code === 'UNAUTHORIZED'
     ) {
-      redirect('/login');
+      redirect(routes.auth.login);
     }
     const invites = invitesResult.status === 'fulfilled' ? invitesResult.value : [];
     const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
     return (
-      <div className="space-y-6">
-        <h1 className="sr-only">{sponsorCopy.students.title}</h1>
+      <PageShell>
         <PageHeader title={sponsorCopy.students.title} subtitle={sponsorCopy.students.subtitle} />
         <SponsorStudentsPageClient invites={invites} students={students} copy={sponsorCopy.students} />
-      </div>
+      </PageShell>
     );
   }
 
   // University branch
   if (role === 'university') {
-    const [studentsResult, programsResult] = await Promise.allSettled([
-      caller.university.listUniversityStudentsWithCert({}),
-      caller.university.listUniversityPrograms(),
-    ]);
-    if (
-      studentsResult.status === 'rejected' &&
-      studentsResult.reason instanceof TRPCError &&
-      studentsResult.reason.code === 'UNAUTHORIZED'
-    ) {
-      redirect('/login');
+    const [studentsResult] = await Promise.allSettled([caller.university.listUniversityStudents()]);
+    if (studentsResult.status === 'rejected') {
+      const err = studentsResult.reason;
+      if (err instanceof TRPCError && err.code === 'UNAUTHORIZED') redirect(routes.auth.login);
     }
     const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
-    const programs = programsResult.status === 'fulfilled' ? programsResult.value : [];
     return (
-      <div className="space-y-6">
-        <h1 className="sr-only">{universityCopy.students.title}</h1>
+      <PageShell>
         <PageHeader
           title={universityCopy.students.title}
           subtitle={universityCopy.students.subtitle}
         />
-        <UniversityStudentsPageClient
-          initialStudents={students}
-          programs={programs.map((p) => ({ id: p.id, name: p.name }))}
-          copy={universityCopy.students}
-        />
-      </div>
+        <UniversityStudentsPageClient students={students} copy={universityCopy.students} />
+      </PageShell>
     );
   }
 
   // Agent branch
   if (role === 'agent') {
-    let students: Awaited<ReturnType<typeof caller.agent.listAgentStudents>>;
-    try {
-      students = await caller.agent.listAgentStudents();
-    } catch (error) {
-      if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
-      students = [];
+    const [studentsResult] = await Promise.allSettled([caller.agent.listAgentStudents()]);
+    if (studentsResult.status === 'rejected') {
+      const err = studentsResult.reason;
+      if (err instanceof TRPCError && err.code === 'UNAUTHORIZED') redirect(routes.auth.login);
     }
+    const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
     return (
-      <div className="space-y-6">
-        <h1 className="sr-only">{agentCopy.students.title}</h1>
+      <PageShell>
         <PageHeader
           title={agentCopy.students.title}
           subtitle={agentCopy.students.subtitle}
         />
         <AgentStudentsPageClient students={students} copy={agentCopy.students} />
-      </div>
+      </PageShell>
     );
   }
 
@@ -114,7 +100,7 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
       students = await caller.partner.listStudents();
     } catch (error) {
       if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') {
-        redirect('/login');
+        redirect(routes.auth.login);
       }
       if (error instanceof TRPCError && error.code === 'FORBIDDEN') {
         notFound();
@@ -123,14 +109,13 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
     }
 
     return (
-      <div className="space-y-6">
-        <h1 className="sr-only">{partnerCopy.students.title}</h1>
+      <PageShell>
         <PageHeader
           title={partnerCopy.students.title}
           subtitle={partnerCopy.students.subtitle}
         />
         <StudentsPageClient students={students} copy={partnerCopy.students} />
-      </div>
+      </PageShell>
     );
   }
 

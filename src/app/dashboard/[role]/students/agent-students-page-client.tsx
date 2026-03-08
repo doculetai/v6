@@ -1,6 +1,8 @@
 'use client';
 
+import { UserCircle } from '@/components/icons';
 import { EmptyState } from '@/components/ui/empty-state';
+import { agentCopy as agentCopyData } from '@/config/copy/agent';
 import type { agentCopy } from '@/config/copy/agent';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +17,7 @@ type AgentStudent = {
   kycStatus: 'not_started' | 'pending' | 'verified' | 'failed';
   documentCount: number;
   assignedAt: Date;
+  certIssued: boolean;
 };
 
 type Props = {
@@ -54,14 +57,21 @@ function StudentCard({
         <p className="truncate text-sm font-medium text-foreground">
           {student.studentEmail ?? '\u2014'}
         </p>
-        <span
-          className={cn(
-            'inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-xs font-medium',
-            kycBadgeClass[student.kycStatus],
+        <div className="flex shrink-0 items-center gap-1.5">
+          {student.certIssued && (
+            <span className="inline-flex items-center rounded-full bg-[#15803D]/10 px-2 py-0.5 text-xs font-medium text-[#15803D]">
+              {agentCopyData.certBadge}
+            </span>
           )}
-        >
-          {copy.kycLabels[student.kycStatus]}
-        </span>
+          <span
+            className={cn(
+              'inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-xs font-medium',
+              kycBadgeClass[student.kycStatus],
+            )}
+          >
+            {copy.kycLabels[student.kycStatus]}
+          </span>
+        </div>
       </div>
 
       <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
@@ -92,8 +102,11 @@ export function AgentStudentsPageClient({ students, copy }: Props) {
   if (students.length === 0) {
     return (
       <EmptyState
-        heading={copy.empty.title}
-        body={copy.empty.description}
+        heading={agentCopyData.emptyStates.students.heading}
+        body={agentCopyData.emptyStates.students.body}
+        illustration={
+          <UserCircle size={32} weight="duotone" className="text-muted-foreground/50" />
+        }
       />
     );
   }
@@ -148,14 +161,21 @@ export function AgentStudentsPageClient({ students, copy }: Props) {
                   {student.programName ?? '\u2014'}
                 </td>
                 <td className="px-4 py-3">
-                  <span
-                    className={cn(
-                      'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
-                      kycBadgeClass[student.kycStatus],
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={cn(
+                        'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
+                        kycBadgeClass[student.kycStatus],
+                      )}
+                    >
+                      {copy.kycLabels[student.kycStatus]}
+                    </span>
+                    {student.certIssued && (
+                      <span className="inline-flex items-center rounded-full bg-[#15803D]/10 px-2 py-0.5 text-xs font-medium text-[#15803D]">
+                        {agentCopyData.certBadge}
+                      </span>
                     )}
-                  >
-                    {copy.kycLabels[student.kycStatus]}
-                  </span>
+                  </div>
                 </td>
                 <td className="px-4 py-3 tabular-nums text-muted-foreground">
                   {student.documentCount}

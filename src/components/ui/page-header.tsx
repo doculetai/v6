@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { CaretLeft, CaretRight } from "@phosphor-icons/react"
+import { CaretLeft, CaretRight } from '@/components/icons'
 
 import { cn } from "@/lib/utils"
 

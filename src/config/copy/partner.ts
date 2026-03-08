@@ -143,6 +143,12 @@ export const partnerCopy = {
   },
 
   apiKeys: {
+    usage: {
+      heading: 'API usage today',
+      of: 'of',
+      requests: 'requests',
+      warningThreshold: 'Approaching daily limit',
+    },
     title: "API keys",
     subtitle:
       "Create and manage API keys for your integration. Keep your secret keys secure — they are shown only once.",
@@ -426,6 +432,39 @@ export const partnerCopy = {
       },
     },
     completionMessage: 'Integration active. Students enrolling and verifying through your platform.',
+  },
+
+  highUsage: {
+    note: (used: number, limit: number) =>
+      `${new Intl.NumberFormat('en').format(used)} of ${new Intl.NumberFormat('en').format(limit)} calls used this month`,
+    requestIncrease: 'Request limit increase',
+  },
+  limitRequest: {
+    title: 'Request a limit increase',
+    reasonLabel: 'Reason for increase',
+    reasonPlaceholder: 'Describe your use case and expected traffic\u2026',
+    submit: 'Submit request',
+    submitting: 'Submitting\u2026',
+    success: 'Request submitted.',
+  },
+
+  webhookDisabled: {
+    badge: 'Disabled',
+    heading: 'Webhook delivery is disabled',
+    body: 'Events are not being sent to your endpoint. Re-enable to resume delivery.',
+    reEnableCta: 'Re-enable webhook',
+    reEnablingCta: 'Re-enabling\u2026',
+    reEnableSuccess: 'Webhook re-enabled.',
+  },
+  keyLimit: {
+    heading: 'Key limit reached',
+    body: 'You have reached the maximum of 3 active API keys. Revoke an existing key to create a new one.',
+  },
+
+  revoked: {
+    keyBadge: 'Revoked',
+    reinstateAction: 'Request reinstatement',
+    reinstateSuccess: 'Reinstatement request submitted.',
   },
 
   webhooks: {

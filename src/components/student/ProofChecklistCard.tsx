@@ -1,10 +1,12 @@
 'use client';
 
-import { CheckCircle, CircleDashed, ShieldCheck } from '@phosphor-icons/react';
+import { ArrowRight, CheckCircle, CircleDashed, ShieldCheck } from '@/components/icons';
+import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { studentCopy } from '@/config/copy/student';
+import { cn } from '@/lib/utils';
 
 type ProofChecklist = {
   kycComplete: boolean;
@@ -55,18 +57,21 @@ export function ProofChecklistCard({ checklist }: ProofChecklistCardProps) {
             label={studentCopy.proof.progress.items.kyc.label}
             completeDetail={studentCopy.proof.progress.items.kyc.completeDetail}
             pendingDetail={studentCopy.proof.progress.items.kyc.pendingDetail}
+            href={studentCopy.proof.progress.items.kyc.pendingHref}
           />
           <ChecklistItem
             complete={checklist.schoolComplete}
             label={studentCopy.proof.progress.items.school.label}
             completeDetail={studentCopy.proof.progress.items.school.completeDetail}
             pendingDetail={studentCopy.proof.progress.items.school.pendingDetail}
+            href={studentCopy.proof.progress.items.school.pendingHref}
           />
           <ChecklistItem
             complete={checklist.bankComplete}
             label={studentCopy.proof.progress.items.bank.label}
             completeDetail={studentCopy.proof.progress.items.bank.completeDetail}
             pendingDetail={studentCopy.proof.progress.items.bank.pendingDetail}
+            href={studentCopy.proof.progress.items.bank.pendingHref}
           />
           {checklist.requiresSponsor ? (
             <ChecklistItem
@@ -74,6 +79,7 @@ export function ProofChecklistCard({ checklist }: ProofChecklistCardProps) {
               label={studentCopy.proof.progress.items.sponsor.label}
               completeDetail={studentCopy.proof.progress.items.sponsor.completeDetail}
               pendingDetail={studentCopy.proof.progress.items.sponsor.pendingDetail}
+              href={studentCopy.proof.progress.items.sponsor.pendingHref}
             />
           ) : null}
           <ChecklistItem
@@ -81,6 +87,7 @@ export function ProofChecklistCard({ checklist }: ProofChecklistCardProps) {
             label={studentCopy.proof.progress.items.documents.label}
             completeDetail={studentCopy.proof.progress.items.documents.completeDetail}
             pendingDetail={studentCopy.proof.progress.items.documents.pendingDetail}
+            href={studentCopy.proof.progress.items.documents.pendingHref}
           />
         </ul>
       </CardContent>
@@ -93,25 +100,48 @@ type ChecklistItemProps = {
   label: string;
   completeDetail: string;
   pendingDetail: string;
+  href?: string;
 };
 
-function ChecklistItem({ complete, label, completeDetail, pendingDetail }: ChecklistItemProps) {
-  return (
-    <li className="min-h-11 rounded-lg border border-border bg-background/70 p-3 transition-colors duration-150">
-      <div className="flex items-start gap-3">
-        {complete ? (
-          <CheckCircle weight="duotone" className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
-        ) : (
-          <CircleDashed weight="duotone" className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-        )}
+function ChecklistItem({ complete, label, completeDetail, pendingDetail, href }: ChecklistItemProps) {
+  const showLink = !complete && href;
 
-        <div className="space-y-1">
-          <p className="text-sm font-medium text-foreground">{label}</p>
-          <p className="text-xs text-muted-foreground">
-            {complete ? completeDetail : pendingDetail}
-          </p>
-        </div>
+  const content = (
+    <div className="flex items-start gap-3">
+      {complete ? (
+        <CheckCircle weight="duotone" className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
+      ) : (
+        <CircleDashed weight="duotone" className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+      )}
+
+      <div className="min-w-0 flex-1 space-y-1">
+        <p className="text-sm font-medium text-foreground">{label}</p>
+        <p className="text-xs text-muted-foreground">
+          {complete ? completeDetail : pendingDetail}
+        </p>
       </div>
+
+      {showLink ? (
+        <ArrowRight weight="bold" className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+      ) : null}
+    </div>
+  );
+
+  return (
+    <li className={cn(
+      "min-h-11 rounded-lg border border-border bg-background/70 transition-all duration-150",
+      showLink && "hover:shadow-sm hover:border-primary/20",
+    )}>
+      {showLink ? (
+        <Link
+          href={href}
+          className="block p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          {content}
+        </Link>
+      ) : (
+        <div className="p-3">{content}</div>
+      )}
     </li>
   );
 }

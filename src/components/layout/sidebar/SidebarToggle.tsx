@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CaretLeft, CaretRight } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 type SidebarToggleProps = {
@@ -20,10 +20,10 @@ export function SidebarToggle({ isCollapsed, onToggle }: SidebarToggleProps) {
       )}
     >
       {isCollapsed ? (
-        <ChevronRight className="h-4 w-4" />
+        <CaretRight className="h-4 w-4" weight="duotone" />
       ) : (
         <>
-          <ChevronLeft className="h-4 w-4" />
+          <CaretLeft className="h-4 w-4" weight="duotone" />
           <span>{label}</span>
         </>
       )}

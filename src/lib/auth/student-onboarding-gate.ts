@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import type { DashboardRole } from '@/config/roles';
+import { routes } from '@/config/routes';
 
 export type StudentOnboardingGateSession = {
   profileRole: DashboardRole | null;
@@ -15,6 +16,6 @@ export async function enforceStudentOnboardingGate(
   session: StudentOnboardingGateSession,
 ): Promise<void> {
   if (session.profileRole === 'student' && !session.onboardingComplete) {
-    redirect('/dashboard/student/onboarding');
+    redirect(routes.dashboard.student.onboarding);
   }
 }

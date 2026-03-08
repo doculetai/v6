@@ -1,4 +1,4 @@
-import { Inbox } from "lucide-react"
+import { Tray } from '@/components/icons'
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
@@ -27,7 +27,7 @@ function EmptyState({ heading, body, action, illustration, className }: EmptySta
           {illustration}
         </div>
       ) : (
-        <Inbox size={48} className="text-muted-foreground/50" aria-hidden="true" />
+        <Tray size={48} className="text-muted-foreground/50" weight="duotone" aria-hidden="true" />
       )}
 
       <h3 className="text-base font-semibold text-foreground mt-4">{heading}</h3>

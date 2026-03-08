@@ -1,4 +1,5 @@
-import { and, count, eq, ilike, or, sql } from 'drizzle-orm';
+import { TRPCError } from '@trpc/server';
+import { and, count, eq, ilike, or } from 'drizzle-orm';
 import { z } from 'zod';
 
 import { schools, programs, studentProfiles } from '@/db/schema';
@@ -51,6 +52,16 @@ const schoolCountryCountSchema = z.object({
 });
 
 const getSchoolCountriesOutputSchema = z.array(schoolCountryCountSchema);
+
+const saveSchoolProgramInputSchema = z.object({
+  schoolId: z.string().uuid(),
+  programId: z.string().uuid(),
+});
+
+const saveSchoolProgramOutputSchema = z.object({
+  onboardingComplete: z.boolean(),
+  currentStep: z.number().int().min(1).max(4),
+});
 
 export const schoolsProcedures = {
   listSchools: roleProcedure('student')
@@ -143,5 +154,49 @@ export const schoolsProcedures = {
         .orderBy(schools.country);
 
       return rows.map((r) => ({ country: r.country, count: r.count }));
+    }),
+
+  saveSchoolProgram: roleProcedure('student')
+    .input(saveSchoolProgramInputSchema)
+    .output(saveSchoolProgramOutputSchema)
+    .mutation(async ({ ctx, input }) => {
+      const matchingProgram = await ctx.db.query.programs.findFirst({
+        where: and(eq(programs.id, input.programId), eq(programs.schoolId, input.schoolId)),
+        columns: { id: true },
+      });
+
+      if (!matchingProgram) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Program does not belong to selected school.',
+        });
+      }
+
+      const existingStudentProfile = await ctx.db.query.studentProfiles.findFirst({
+        where: eq(studentProfiles.userId, ctx.user!.id),
+        columns: { id: true, onboardingStep: true },
+      });
+
+      if (existingStudentProfile) {
+        await ctx.db
+          .update(studentProfiles)
+          .set({
+            schoolId: input.schoolId,
+            programId: input.programId,
+            onboardingStep: Math.max(existingStudentProfile.onboardingStep, 2),
+            updatedAt: new Date(),
+          })
+          .where(eq(studentProfiles.userId, ctx.user!.id));
+      } else {
+        await ctx.db.insert(studentProfiles).values({
+          userId: ctx.user!.id,
+          schoolId: input.schoolId,
+          programId: input.programId,
+          onboardingStep: 2,
+          updatedAt: new Date(),
+        });
+      }
+
+      return { onboardingComplete: false, currentStep: 2 };
     }),
 };

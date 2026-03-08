@@ -25,7 +25,25 @@ type ProofCertificate = {
   certificateId: string | null;
   issuedAt: string | null;
   sharePath: string | null;
+  expiresAt: Date | null;
+  renewalStatus: 'none' | 'in_progress' | null;
 };
+
+type CertStatus = 'active' | 'expiry_soon' | 'expired' | 'renewal';
+
+function getCertStatus(cert: ProofCertificate): CertStatus {
+  if (cert.renewalStatus === 'in_progress') return 'renewal';
+  if (!cert.expiresAt) return 'active';
+  const daysLeft = Math.ceil((cert.expiresAt.getTime() - Date.now()) / 86_400_000);
+  if (daysLeft <= 0) return 'expired';
+  if (daysLeft <= 30) return 'expiry_soon';
+  return 'active';
+}
+
+function getDaysUntilExpiry(expiresAt: Date | null): number {
+  if (!expiresAt) return Infinity;
+  return Math.ceil((expiresAt.getTime() - Date.now()) / 86_400_000);
+}
 
 type ProofTrust = {
   sponsorCount: number;
@@ -68,6 +86,10 @@ export function ProofCertificateCard({
     isGeneratingShareLink,
   });
 
+  const certStatus = certificate.issued ? getCertStatus(certificate) : null;
+  const daysLeft = getDaysUntilExpiry(certificate.expiresAt);
+  const certStatesCopy = studentCopy.certStates;
+
   return (
     <Card className="relative overflow-hidden border-border bg-card shadow-lg ring-1 ring-primary/20">
       <div
@@ -103,6 +125,48 @@ export function ProofCertificateCard({
 
       <CardContent className="relative space-y-6">
         <CertificateMeta certificate={certificate} />
+
+        {/* Certificate expiry / renewal status */}
+        {certStatus === 'expiry_soon' && (
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-800 dark:bg-amber-950/30">
+            <div className="space-y-0.5">
+              <p className="text-xs font-semibold text-amber-700 dark:text-amber-400">
+                {certStatesCopy.expirySoon.badge}
+              </p>
+              <p className="text-sm text-amber-700 dark:text-amber-400">
+                {certStatesCopy.expirySoon.note(daysLeft)}
+              </p>
+            </div>
+            <Button size="sm" variant="outline" className="min-h-11 shrink-0">
+              {certStatesCopy.expirySoon.action}
+            </Button>
+          </div>
+        )}
+        {certStatus === 'expired' && (
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3">
+            <div className="space-y-0.5">
+              <p className="text-xs font-semibold text-destructive">
+                {certStatesCopy.expired.badge}
+              </p>
+              <p className="text-sm text-destructive/80">
+                {certStatesCopy.expired.note}
+              </p>
+            </div>
+            <Button size="sm" className="min-h-11 shrink-0">
+              {certStatesCopy.expired.action}
+            </Button>
+          </div>
+        )}
+        {certStatus === 'renewal' && (
+          <div className="rounded-xl border border-border bg-muted px-4 py-3 space-y-0.5">
+            <p className="text-xs font-semibold text-muted-foreground">
+              {certStatesCopy.renewal.badge}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {certStatesCopy.renewal.note}
+            </p>
+          </div>
+        )}
 
         <div className="space-y-3">
           <h3 className="text-sm font-semibold text-foreground">

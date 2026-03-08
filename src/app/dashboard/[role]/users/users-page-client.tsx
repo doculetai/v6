@@ -2,8 +2,28 @@
 
 import { useState } from 'react';
 
+import { Prohibit } from '@/components/icons';
 import { AdminStudentRecordSheet } from '@/components/admin/AdminStudentRecordSheet';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { DotsThreeVertical } from '@/components/icons';
 import { adminCopy } from '@/config/copy/admin';
+import { browserTrpcClient } from '@/trpc/client';
 
 type User = {
   id: string;
@@ -11,6 +31,7 @@ type User = {
   role: string | null;
   onboardingComplete: boolean;
   createdAt: Date;
+  frozenAt: Date | null;
 };
 
 type Props = {
@@ -34,10 +55,34 @@ function RoleBadge({ role, copy }: { role: string | null; copy: typeof adminCopy
   );
 }
 
+function FrozenBadge() {
+  const freezeCopy = adminCopy.freeze;
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
+      <Prohibit size={12} weight="duotone" />
+      {freezeCopy.badge}
+    </span>
+  );
+}
+
+function StatusLabel({ user, copy }: { user: User; copy: typeof adminCopy.users }) {
+  if (user.frozenAt) return <FrozenBadge />;
+  return (
+    <span className="text-sm text-foreground">
+      {user.onboardingComplete ? copy.statusLabels.active : copy.statusLabels.pending}
+    </span>
+  );
+}
+
 export function UsersPageClient({ data, copy }: Props) {
   const [recordStudentId, setRecordStudentId] = useState<string | null>(null);
+  const [freezeTarget, setFreezeTarget] = useState<User | null>(null);
+  const [unfreezeTarget, setUnfreezeTarget] = useState<User | null>(null);
+  const [localUsers, setLocalUsers] = useState<User[] | null>(data?.users ?? null);
+  const [isFreezePending, setIsFreezePending] = useState(false);
+  const freezeCopy = adminCopy.freeze;
 
-  if (data === null) {
+  if (data === null || localUsers === null) {
     return (
       <div className="rounded-xl border border-border bg-card p-10 text-center">
         <p className="text-sm font-medium text-foreground">{copy.error.title}</p>
@@ -49,6 +94,38 @@ export function UsersPageClient({ data, copy }: Props) {
   function handleRowClick(user: User) {
     if (user.role === 'student') {
       setRecordStudentId(user.id);
+    }
+  }
+
+  async function handleFreeze() {
+    if (!freezeTarget) return;
+    setIsFreezePending(true);
+    try {
+      await browserTrpcClient.admin.freezeAccount.mutate({ userId: freezeTarget.id });
+      setLocalUsers((prev) =>
+        (prev ?? []).map((u) =>
+          u.id === freezeTarget.id ? { ...u, frozenAt: new Date() } : u,
+        ),
+      );
+    } finally {
+      setIsFreezePending(false);
+      setFreezeTarget(null);
+    }
+  }
+
+  async function handleUnfreeze() {
+    if (!unfreezeTarget) return;
+    setIsFreezePending(true);
+    try {
+      await browserTrpcClient.admin.unfreezeAccount.mutate({ userId: unfreezeTarget.id });
+      setLocalUsers((prev) =>
+        (prev ?? []).map((u) =>
+          u.id === unfreezeTarget.id ? { ...u, frozenAt: null } : u,
+        ),
+      );
+    } finally {
+      setIsFreezePending(false);
+      setUnfreezeTarget(null);
     }
   }
 
@@ -66,7 +143,7 @@ export function UsersPageClient({ data, copy }: Props) {
         </span>
       </div>
 
-      {data.users.length === 0 ? (
+      {localUsers.length === 0 ? (
         <div className="rounded-xl border border-border bg-card p-10 text-center">
           <p className="text-sm font-medium text-foreground">{copy.empty.title}</p>
           <p className="mt-1 text-xs text-muted-foreground">{copy.empty.description}</p>
@@ -80,24 +157,22 @@ export function UsersPageClient({ data, copy }: Props) {
               <p role="columnheader" className="flex-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.role}</p>
               <p role="columnheader" className="flex-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.status}</p>
               <p role="columnheader" className="flex-1 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.joined}</p>
-              <p role="columnheader" className="w-24 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.action}</p>
+              <p role="columnheader" className="w-28 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.action}</p>
             </div>
             <ul role="list">
-              {data.users.map((user, idx) => (
+              {localUsers.map((user, idx) => (
                 <li
                   key={user.id}
                   role="row"
-                  className={`flex gap-4 px-5 py-4 ${idx < data.users.length - 1 ? 'border-b border-border' : ''}`}
+                  className={`flex items-center gap-4 px-5 py-4 ${idx < localUsers.length - 1 ? 'border-b border-border' : ''}`}
                 >
-                  <p className="flex-1 truncate text-sm text-foreground">{user.email ?? '—'}</p>
+                  <p className="flex-1 truncate text-sm text-foreground">{user.email ?? '\u2014'}</p>
                   <div className="flex-1"><RoleBadge role={user.role} copy={copy.roles} /></div>
-                  <p className="flex-1 text-sm text-foreground">
-                    {user.onboardingComplete ? copy.statusLabels.active : copy.statusLabels.pending}
-                  </p>
+                  <div className="flex-1"><StatusLabel user={user} copy={copy} /></div>
                   <p className="flex-1 text-sm text-muted-foreground">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </p>
-                  <div className="w-24">
+                  <div className="w-28 flex items-center gap-1">
                     {user.role === 'student' && (
                       <button
                         type="button"
@@ -107,6 +182,28 @@ export function UsersPageClient({ data, copy }: Props) {
                         {adminCopy.studentRecord.viewRecord}
                       </button>
                     )}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <DotsThreeVertical size={16} weight="duotone" />
+                          <span className="sr-only">{copy.table.action}</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        {user.frozenAt ? (
+                          <DropdownMenuItem onClick={() => setUnfreezeTarget(user)}>
+                            {freezeCopy.unfreezeAction}
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => setFreezeTarget(user)}
+                          >
+                            {freezeCopy.action}
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </li>
               ))}
@@ -115,14 +212,36 @@ export function UsersPageClient({ data, copy }: Props) {
 
           {/* Mobile cards — shown below md */}
           <ul role="list" className="md:hidden space-y-3">
-            {data.users.map((user) => (
+            {localUsers.map((user) => (
               <li key={user.id} className="rounded-xl border border-border bg-card px-4 py-4 space-y-2">
-                <p className="truncate text-sm font-medium text-foreground">{user.email ?? '—'}</p>
+                <div className="flex items-center justify-between">
+                  <p className="truncate text-sm font-medium text-foreground">{user.email ?? '\u2014'}</p>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <DotsThreeVertical size={16} weight="duotone" />
+                        <span className="sr-only">{copy.table.action}</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {user.frozenAt ? (
+                        <DropdownMenuItem onClick={() => setUnfreezeTarget(user)}>
+                          {freezeCopy.unfreezeAction}
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive"
+                          onClick={() => setFreezeTarget(user)}
+                        >
+                          {freezeCopy.action}
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
                 <div className="flex items-center gap-2">
                   <RoleBadge role={user.role} copy={copy.roles} />
-                  <span className="text-xs text-muted-foreground">
-                    {user.onboardingComplete ? copy.statusLabels.active : copy.statusLabels.pending}
-                  </span>
+                  <StatusLabel user={user} copy={copy} />
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {copy.table.joined}: {new Date(user.createdAt).toLocaleDateString()}
@@ -146,6 +265,42 @@ export function UsersPageClient({ data, copy }: Props) {
         studentId={recordStudentId}
         onClose={() => setRecordStudentId(null)}
       />
+
+      {/* Freeze confirmation dialog */}
+      <AlertDialog open={freezeTarget !== null} onOpenChange={(open) => !open && setFreezeTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{freezeCopy.confirmTitle}</AlertDialogTitle>
+            <AlertDialogDescription>{freezeCopy.confirmDescription}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isFreezePending}>{freezeCopy.cancel}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleFreeze}
+              disabled={isFreezePending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {freezeCopy.confirmCta}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Unfreeze confirmation dialog */}
+      <AlertDialog open={unfreezeTarget !== null} onOpenChange={(open) => !open && setUnfreezeTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{freezeCopy.unfreezeConfirmTitle}</AlertDialogTitle>
+            <AlertDialogDescription>{freezeCopy.unfreezeConfirmDescription}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isFreezePending}>{freezeCopy.cancel}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleUnfreeze} disabled={isFreezePending}>
+              {freezeCopy.unfreezeConfirmCta}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

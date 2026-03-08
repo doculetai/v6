@@ -18,13 +18,19 @@ config({ path: '.env.local' });
 config({ path: '.env' });
 
 import * as schema from '../src/db/schema';
-import { users, profiles, studentProfiles, schools, programs } from '../src/db/schema';
+import { users, profiles, studentProfiles, schools, programs, universityProfiles } from '../src/db/schema';
 
 const DATABASE_URL = process.env.DATABASE_URL;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const E2E_STUDENT_EMAIL = process.env.E2E_STUDENT_EMAIL;
 const E2E_STUDENT_PASSWORD = process.env.E2E_STUDENT_PASSWORD;
+const E2E_SPONSOR_EMAIL = process.env.E2E_SPONSOR_EMAIL;
+const E2E_SPONSOR_PASSWORD = process.env.E2E_SPONSOR_PASSWORD;
+const E2E_UNIVERSITY_EMAIL = process.env.E2E_UNIVERSITY_EMAIL;
+const E2E_UNIVERSITY_PASSWORD = process.env.E2E_UNIVERSITY_PASSWORD;
+const E2E_ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL;
+const E2E_ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD;
 
 if (!DATABASE_URL || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   console.error('Missing DATABASE_URL, NEXT_PUBLIC_SUPABASE_URL, or SUPABASE_SERVICE_ROLE_KEY');
@@ -36,7 +42,20 @@ if (!E2E_STUDENT_EMAIL || !E2E_STUDENT_PASSWORD) {
   process.exit(1);
 }
 
-const db = drizzle(postgres(DATABASE_URL, { prepare: false }), { schema });
+if (
+  !E2E_SPONSOR_EMAIL || !E2E_SPONSOR_PASSWORD ||
+  !E2E_UNIVERSITY_EMAIL || !E2E_UNIVERSITY_PASSWORD ||
+  !E2E_ADMIN_EMAIL || !E2E_ADMIN_PASSWORD
+) {
+  console.error(
+    'Missing one or more E2E role credentials. Required: ' +
+      'E2E_SPONSOR_EMAIL/PASSWORD, E2E_UNIVERSITY_EMAIL/PASSWORD, E2E_ADMIN_EMAIL/PASSWORD',
+  );
+  process.exit(1);
+}
+
+const sqlClient = postgres(DATABASE_URL, { prepare: false });
+const db = drizzle(sqlClient, { schema });
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
@@ -160,19 +179,48 @@ async function seedStudentProfile(
     });
 }
 
+async function seedUniversityProfile(userId: string, schoolId: string) {
+  await db
+    .insert(universityProfiles)
+    .values({
+      userId,
+      schoolId,
+      organizationName: 'University of Lagos Admissions',
+    })
+    .onConflictDoUpdate({
+      target: universityProfiles.userId,
+      set: {
+        schoolId,
+        organizationName: 'University of Lagos Admissions',
+        updatedAt: new Date(),
+      },
+    });
+}
+
 export async function runE2ESeed(): Promise<void> {
-  const authUserId = await ensureSupabaseUser(E2E_STUDENT_EMAIL!, E2E_STUDENT_PASSWORD!);
+  const studentAuthUserId = await ensureSupabaseUser(E2E_STUDENT_EMAIL!, E2E_STUDENT_PASSWORD!);
+  const sponsorAuthUserId = await ensureSupabaseUser(E2E_SPONSOR_EMAIL!, E2E_SPONSOR_PASSWORD!);
+  const universityAuthUserId = await ensureSupabaseUser(E2E_UNIVERSITY_EMAIL!, E2E_UNIVERSITY_PASSWORD!);
+  const adminAuthUserId = await ensureSupabaseUser(E2E_ADMIN_EMAIL!, E2E_ADMIN_PASSWORD!);
 
   const { schoolId, programId } = await seedSchoolsAndPrograms();
 
-  await seedDrizzleUser(authUserId, E2E_STUDENT_EMAIL!, 'student', true);
-  await seedStudentProfile(authUserId, schoolId, programId, 'self');
+  await seedDrizzleUser(studentAuthUserId, E2E_STUDENT_EMAIL!, 'student', true);
+  await seedStudentProfile(studentAuthUserId, schoolId, programId, 'self');
+  await seedDrizzleUser(sponsorAuthUserId, E2E_SPONSOR_EMAIL!, 'sponsor', true);
+  await seedDrizzleUser(universityAuthUserId, E2E_UNIVERSITY_EMAIL!, 'university', true);
+  await seedUniversityProfile(universityAuthUserId, schoolId);
+  await seedDrizzleUser(adminAuthUserId, E2E_ADMIN_EMAIL!, 'admin', true);
 }
 
 async function main() {
   console.log('Seeding E2E data...');
-  await runE2ESeed();
-  console.log('E2E seed complete.');
+  try {
+    await runE2ESeed();
+    console.log('E2E seed complete.');
+  } finally {
+    await sqlClient.end({ timeout: 5 });
+  }
 }
 
 if (process.argv[1]?.endsWith('seed-e2e.ts') || process.argv[1]?.includes('seed-e2e')) {

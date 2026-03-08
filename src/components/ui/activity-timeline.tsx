@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock3, Info, TriangleAlert, XCircle } from "lucide-react"
+import { CheckCircle, Clock, Info, Warning, XCircle } from '@/components/icons'
 
 import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
@@ -30,11 +30,11 @@ const toneDotClass: Record<ActivityTone, string> = {
 }
 
 function toneIcon(tone: ActivityTone): React.ReactNode {
-  if (tone === "success") return <CheckCircle2 className="size-4 text-success" />
-  if (tone === "warning") return <TriangleAlert className="size-4 text-warning" />
-  if (tone === "error") return <XCircle className="size-4 text-destructive" />
-  if (tone === "info") return <Info className="size-4 text-primary" />
-  return <Clock3 className="size-4 text-muted-foreground" />
+  if (tone === "success") return <CheckCircle className="size-4 text-success" weight="duotone" />
+  if (tone === "warning") return <Warning className="size-4 text-warning" weight="duotone" />
+  if (tone === "error") return <XCircle className="size-4 text-destructive" weight="duotone" />
+  if (tone === "info") return <Info className="size-4 text-primary" weight="duotone" />
+  return <Clock className="size-4 text-muted-foreground" weight="duotone" />
 }
 
 function ActivityTimeline({

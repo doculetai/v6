@@ -20,6 +20,7 @@ import {
 } from '@/components/layout/content-primitives';
 import { JourneyProgress } from '@/components/ui/journey-progress';
 import { studentHomeCopy } from '@/config/copy/dashboard-shell';
+import { studentCopy } from '@/config/copy/student';
 import type { StudentDocumentType } from '@/lib/documents';
 import { studentDocumentTypeValues } from '@/lib/documents';
 import { getFirstName } from '@/lib/get-first-name';
@@ -484,16 +485,38 @@ export async function StudentOverview({
                     {/* Sponsor invite card — only for sponsor/corporate funding with no accepted sponsor yet */}
                     {showSponsorInviteCard ? <StudentSponsorInviteCard /> : null}
 
-                    {/* Committed sponsor cards */}
-                    {committedSponsors.map((s) => (
-                      <SponsorCommittedCard
-                        key={s.id}
-                        sponsorName={s.sponsorName}
-                        amountKobo={s.amountKobo}
-                        currency={s.currency}
-                        fundingTypeLabel={s.fundingTypeLabel}
-                      />
-                    ))}
+                    {/* B6.1: Multi-sponsor combined card vs single-sponsor card */}
+                    {committedSponsors.length > 1 ? (
+                      <div className="rounded-xl border border-green-200 bg-green-50/50 px-5 py-4 dark:border-green-800 dark:bg-green-950/30">
+                        <p className="font-mono text-sm font-semibold text-foreground">
+                          {studentCopy.multiSponsor.heading(
+                            formatCurrency(
+                              committedSponsors.reduce((sum, s) => sum + s.amountKobo / 100, 0),
+                            ),
+                          )}
+                        </p>
+                        <div className="mt-3 divide-y divide-border">
+                          {committedSponsors.map((s) => (
+                            <div key={s.id} className="flex items-center justify-between py-2.5">
+                              <span className="text-sm text-foreground">{s.sponsorName}</span>
+                              <span className="font-mono text-sm font-medium tabular-nums text-foreground">
+                                {formatCurrency(s.amountKobo / 100)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      committedSponsors.map((s) => (
+                        <SponsorCommittedCard
+                          key={s.id}
+                          sponsorName={s.sponsorName}
+                          amountKobo={s.amountKobo}
+                          currency={s.currency}
+                          fundingTypeLabel={s.fundingTypeLabel}
+                        />
+                      ))
+                    )}
 
                     {/* Withdrawn sponsor cards */}
                     {withdrawnSponsors.map((s) => (

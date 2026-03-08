@@ -8,6 +8,7 @@ import {
   PageShell,
   Section,
 } from '@/components/layout/content-primitives';
+import { FxRateCard } from '@/components/shared/FxRateCard';
 import { adminCopy } from '@/config/copy/admin';
 import { cn } from '@/lib/utils';
 import { api } from '@/trpc/server';
@@ -22,15 +23,17 @@ type AdminOverviewProps = {
 export async function AdminOverview({ caller }: AdminOverviewProps) {
   const copy = adminCopy.overview;
 
-  const [statsResult, riskResult, queueResult] = await Promise.allSettled([
+  const [statsResult, riskResult, queueResult, fxResult] = await Promise.allSettled([
     caller.admin.getOperationsStats(),
     caller.admin.getRiskFlags(),
     caller.admin.getOperationsQueue({ limit: 5 }),
+    caller.admin.getLatestFxRate(),
   ]);
 
   const stats = statsResult.status === 'fulfilled' ? statsResult.value : null;
   const riskFlags = riskResult.status === 'fulfilled' ? riskResult.value : [];
   const recentQueue = queueResult.status === 'fulfilled' ? queueResult.value : [];
+  const fxRate = fxResult.status === 'fulfilled' ? fxResult.value : null;
 
   const hasPendingItems = (stats?.pending ?? 0) > 0 || riskFlags.length > 0;
 
@@ -104,6 +107,15 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
             href={routes.dashboard.admin.risk}
           />
         </Grid>
+
+        {/* ── FX rate card ──────────────────────────────────────────────── */}
+        <div className="mb-6">
+          <FxRateCard
+            rateX100={fxRate?.rateX100 ?? null}
+            fetchedAt={fxRate?.fetchedAt ?? null}
+            source={fxRate?.source ?? null}
+          />
+        </div>
 
         {/* ── Recent operations ────────────────────────────────────────── */}
         <div>

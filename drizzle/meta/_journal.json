@@ -120,6 +120,20 @@
       "when": 1772819688974,
       "tag": "0016_sticky_jubilee",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1772827312858,
+      "tag": "0017_abnormal_bedlam",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1772937128417,
+      "tag": "0018_wooden_night_nurse",
+      "breakpoints": true
     }
   ]
 }

@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { sponsorCopy } from '@/config/copy/sponsor';
+import { sponsorCopy as sponsorCopyData } from '@/config/copy/sponsor';
 import { cn } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
 
@@ -21,6 +22,7 @@ type KycStatus = {
   sponsorType: 'individual' | 'corporate' | 'self' | null;
   kycStatus: 'not_started' | 'pending' | 'verified' | 'failed';
   companyName: string | null;
+  rejectionReason?: string | null;
 };
 
 type Copy = typeof sponsorCopy.kyc;
@@ -103,7 +105,7 @@ function IdentityForm({ tier, copy, onCancel, onSuccess, onError }: IdentityForm
   });
 
   const onSubmit = handleSubmit((values) => {
-    mutation.mutate({ identityType: values.identityType, identityNumber: values.identityNumber });
+    mutation.mutate({ tier, identityType: values.identityType, identityNumber: values.identityNumber });
   });
 
   return (
@@ -316,12 +318,52 @@ function FeedbackBanner({ feedback }: { feedback: FeedbackState }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
+const rejectedCopy = sponsorCopyData.kyc.rejected;
+
 export function KycPageClient({ kycStatus, copy }: KycPageClientProps) {
   const [feedback, setFeedback] = useState<FeedbackState>(null);
 
   return (
     <div className="space-y-4">
       <OverallStatusBanner status={kycStatus.kycStatus} copy={copy} />
+
+      {/* ── Rejection state card ─────────────────────────────────────────── */}
+      {kycStatus.kycStatus === 'failed' && (
+        <Card className="border-destructive/30 bg-destructive/5">
+          <CardHeader className="flex flex-row items-start gap-3 pb-2">
+            <XCircle weight="duotone" className="mt-0.5 size-5 shrink-0 text-destructive" aria-hidden="true" />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-base font-semibold text-card-foreground">
+                  {copy.status.failed}
+                </CardTitle>
+                <Badge className="ml-auto shrink-0 bg-destructive/10 text-destructive border-0">
+                  {rejectedCopy.badge}
+                </Badge>
+              </div>
+              {kycStatus.rejectionReason && (
+                <CardDescription className="mt-1 text-sm text-muted-foreground">
+                  {rejectedCopy.reason(kycStatus.rejectionReason)}
+                </CardDescription>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0 space-y-3">
+            <div className="rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2">
+              <p className="text-sm text-destructive">{rejectedCopy.cannotCommitNote}</p>
+            </div>
+            <Button
+              size="sm"
+              className="min-h-9"
+              onClick={() => {
+                setFeedback(null);
+              }}
+            >
+              {rejectedCopy.resubmit}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="space-y-3">
         {copy.tiers.map((tier, index) => (

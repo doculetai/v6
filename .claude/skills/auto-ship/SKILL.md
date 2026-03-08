@@ -30,29 +30,41 @@ You have full permission to build, test, commit, and open a PR without asking fo
 
 ## Phase 2: Dispatch Parallel Subagents
 
-For each independent task, dispatch a background subagent with:
+For each independent task, use the **Agent tool** with these parameters:
 
 ```
-Use a background subagent with isolation: worktree to implement [task name].
+subagent_type: "doculet-builder"
+run_in_background: true
+model: "sonnet"
+prompt: |
+  ## Task: [task name]
 
-Subagent instructions:
-- Read the plan task: [paste full task description]
-- Implement exactly what the plan specifies — no more, no less
-- CLAUDE.md rules are mandatory: layout primitives, copy config, Phosphor icons, strict TypeScript
-- After every file edit: run `npm run check` and fix any errors before proceeding
-- Run `npm run layout-check` when touching dashboard pages
-- Commit each logical unit with: git add [specific files] && git commit -m "type(scope): message"
-- No Co-Authored-By lines. No emojis. No hardcoded strings.
-- When done, report: files changed, tests passing, commit hashes
+  [paste full task description from the plan]
+
+  ## Acceptance Criteria
+  - [list specific outputs: files, procedures, tests]
+  - Run `npm run check` before finishing — must pass clean
+  - Run `npm run layout-check` if any dashboard pages were touched
+  - Commit each logical unit: git add [specific files] && git commit -m "type(scope): message"
+
+  ## When Done
+  Report: files created/modified, tRPC procedures added, tests written, npm run check status, commit hashes.
 ```
+
+The doculet-builder agent already knows the full Doculet stack (layout primitives, copy config, Phosphor icons, strict TypeScript, no emojis). Do NOT repeat conventions in the prompt — only provide the task-specific instructions.
 
 Dispatch all independent tasks simultaneously. Do not wait for one before starting another.
 
 ## Phase 3: Sequential Tasks
 
-After all parallel subagents complete:
-- Run sequential tasks in main context
-- Apply the same rules: check after every edit, commit per logical unit
+After all parallel subagents complete, collect their results (files changed, commit hashes).
+
+For tasks that depend on prior output, run them in main context:
+- Use the same doculet-builder conventions (layout primitives, copy config, strict TS)
+- Run `npm run check` after every edit
+- Commit each logical unit with specific file adds
+
+Note: subagents cannot spawn subagents. All orchestration and skill invocations (Phase 5-6) must happen in main context.
 
 ## Phase 4: Integration Check
 
@@ -141,7 +153,8 @@ Return the PR URL.
 
 ## Token Efficiency
 
-- Use Haiku for file searches and grep
-- Use Sonnet for implementation subagents
-- Use Opus only for product-owner evaluation and architecture decisions
-- Summarize subagent results back to main context (do not paste full file contents)
+- **doculet-builder subagents** run on Sonnet (set in agent definition) — do not override
+- Use **Haiku** via `model: "haiku"` for Explore subagents (file searches, grep)
+- **Main context** (orchestrator) handles skill invocations, integration fixes, and PR creation
+- Subagent results are summaries — do not paste full file contents back into main context
+- Subagents cannot spawn subagents — all orchestration stays in main context

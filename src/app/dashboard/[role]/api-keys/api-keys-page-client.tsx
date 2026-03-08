@@ -2,8 +2,15 @@
 
 import { useState } from 'react';
 
+import { Button } from '@/components/ui/button';
+import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { partnerCopy } from '@/config/copy/partner';
+import { cn } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
+
+const revokedCopy = partnerCopy.revoked;
+const usageCopy = partnerCopy.apiKeys.usage;
+const keyLimitCopy = partnerCopy.keyLimit;
 
 type ApiKey = {
   id: string;
@@ -54,6 +61,19 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
     },
   });
 
+  const { data: usageData } = trpc.partner.getApiUsage.useQuery();
+
+  const activeKeys = keys.filter((k) => k.isActive);
+  const atLimit = activeKeys.length >= 3;
+
+  const [reinstateFeedback, setReinstateFeedback] = useState<string | null>(null);
+  const reinstateMutation = trpc.partner.requestKeyReinstatement.useMutation({
+    onSuccess() {
+      setReinstateFeedback(revokedCopy.reinstateSuccess);
+      setTimeout(() => setReinstateFeedback(null), 4000);
+    },
+  });
+
   function toggleScope(scope: ScopeKey) {
     setSelectedScopes((prev) =>
       prev.includes(scope) ? prev.filter((s) => s !== scope) : [...prev, scope],
@@ -68,27 +88,65 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
     });
   }
 
-  const activeKeys = keys.filter((k) => k.isActive);
-
   return (
-    <section className="space-y-6">
-      {/* Header */}
-      <header className="flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">{copy.title}</h1>
-          <p className="text-sm text-muted-foreground">{copy.subtitle}</p>
+    <PageShell>
+      <PageHeader
+        title={copy.title}
+        subtitle={copy.subtitle}
+        actions={
+          atLimit ? undefined : (
+            <Button onClick={() => setShowCreateDialog(true)}>
+              {copy.createKey.cta}
+            </Button>
+          )
+        }
+      />
+
+      {/* Key limit notice */}
+      {atLimit && (
+        <div className="mb-4 rounded-xl border border-amber-300/40 bg-amber-50/60 px-5 py-4 dark:border-amber-500/30 dark:bg-amber-950/20">
+          <p className="text-sm font-medium text-foreground">{keyLimitCopy.heading}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{keyLimitCopy.body}</p>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowCreateDialog(true)}
-          className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {copy.createKey.cta}
-        </button>
-      </header>
+      )}
+
+      {/* Inline usage meter */}
+      {usageData && usageData.total > 0 && (
+        <div className="mb-4 rounded-xl border border-border bg-card px-5 py-4 shadow-xs">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              {usageCopy.heading}
+            </p>
+            <p className="font-mono text-sm text-foreground">
+              {usageData.total.toLocaleString()} {usageCopy.of} {usageData.dailyLimit.toLocaleString()} {usageCopy.requests}
+            </p>
+          </div>
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className={cn(
+                'h-full rounded-full transition-all',
+                usageData.total / usageData.dailyLimit >= 0.8
+                  ? 'bg-amber-500'
+                  : 'bg-primary',
+              )}
+              style={{ width: `${Math.min((usageData.total / usageData.dailyLimit) * 100, 100)}%` }}
+            />
+          </div>
+          {usageData.total / usageData.dailyLimit >= 0.8 && (
+            <p className="mt-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+              {usageCopy.warningThreshold}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Reinstatement feedback */}
+      {reinstateFeedback && (
+        <p role="status" className="mb-3 text-sm text-[#0F766E]">{reinstateFeedback}</p>
+      )}
 
       {/* Key list */}
-      {activeKeys.length === 0 ? (
+      {keys.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card py-16 text-center">
           <p className="text-sm font-medium text-foreground">{copy.empty.title}</p>
           <p className="max-w-xs text-xs text-muted-foreground">{copy.empty.description}</p>
@@ -131,15 +189,28 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
                       {key.keyPrefix}...
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                          key.isActive
-                            ? 'bg-primary/10 text-primary'
-                            : 'bg-muted text-muted-foreground'
-                        }`}
-                      >
-                        {key.isActive ? copy.statusLabels.active : copy.statusLabels.revoked}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={cn(
+                            'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
+                            key.isActive
+                              ? 'bg-primary/10 text-primary'
+                              : 'bg-destructive/10 text-destructive',
+                          )}
+                        >
+                          {key.isActive ? copy.statusLabels.active : revokedCopy.keyBadge}
+                        </span>
+                        {!key.isActive && (
+                          <button
+                            type="button"
+                            disabled={reinstateMutation.isPending}
+                            onClick={() => reinstateMutation.mutate({ keyId: key.id })}
+                            className="text-xs font-medium text-primary underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            {revokedCopy.reinstateAction}
+                          </button>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
                       {key.createdAt.toLocaleDateString()}
@@ -171,13 +242,14 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
                 <div className="flex items-start justify-between gap-2">
                   <p className="font-mono text-sm text-foreground">{key.keyPrefix}...</p>
                   <span
-                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                    className={cn(
+                      'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
                       key.isActive
                         ? 'bg-primary/10 text-primary'
-                        : 'bg-muted text-muted-foreground'
-                    }`}
+                        : 'bg-destructive/10 text-destructive',
+                    )}
                   >
-                    {key.isActive ? copy.statusLabels.active : copy.statusLabels.revoked}
+                    {key.isActive ? copy.statusLabels.active : revokedCopy.keyBadge}
                   </span>
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
@@ -186,13 +258,22 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
                 <p className="text-xs text-muted-foreground">
                   {copy.table.lastUsed}: {key.lastUsedAt ? key.lastUsedAt.toLocaleDateString() : '—'}
                 </p>
-                {key.isActive && (
+                {key.isActive ? (
                   <button
                     type="button"
                     onClick={() => setRevokeConfirmId(key.id)}
                     className="mt-3 text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {copy.actions.revoke}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={reinstateMutation.isPending}
+                    onClick={() => reinstateMutation.mutate({ keyId: key.id })}
+                    className="mt-3 text-xs font-medium text-primary underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {revokedCopy.reinstateAction}
                   </button>
                 )}
               </div>
@@ -324,6 +405,6 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
           </div>
         </div>
       )}
-    </section>
+    </PageShell>
   );
 }

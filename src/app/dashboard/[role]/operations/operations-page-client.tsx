@@ -2,12 +2,16 @@
 
 import { useEffect, useState } from 'react';
 
+import { AdminCertReadySection } from '@/components/admin/AdminCertReadySection';
 import { AdminOperationsBulkBar } from '@/components/admin/AdminOperationsBulkBar';
 import { AdminOperationsReviewDialog } from '@/components/admin/AdminOperationsReviewDialog';
 import { AdminOperationsTable } from '@/components/admin/AdminOperationsTable';
-import { StudentRecordDrawer } from '@/components/admin/StudentRecordDrawer';
+import { AdminStudentRecordSheet } from '@/components/admin/AdminStudentRecordSheet';
 import { FilterBar } from '@/components/ui/filter-bar';
 import { MetricCard } from '@/components/ui/metric-card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Grid, Stack } from '@/components/layout/content-primitives';
+import { cn } from '@/lib/utils';
 import { adminCopy } from '@/config/copy/admin';
 import type { OperationsQueueRow, OperationsStats, StatusFilter } from '@/db/queries/admin-operations';
 import { trpc } from '@/trpc/client';
@@ -25,19 +29,38 @@ const STATUS_FILTER_CHIPS = [
   { key: 'more_info_requested', labelKey: 'moreInfoRequested' },
 ] as const;
 
+type CategoryFilter = 'all' | 'documents' | 'banking' | 'cert_ready';
+
+const CATEGORY_FILTER_CHIPS: Array<{ key: CategoryFilter; labelKey: keyof typeof adminCopy.categoryFilters }> = [
+  { key: 'all', labelKey: 'all' },
+  { key: 'documents', labelKey: 'documents' },
+  { key: 'banking', labelKey: 'banking' },
+  { key: 'cert_ready', labelKey: 'cert_ready' },
+];
+
+/** Map document types to categories */
+function getDocCategory(type: string): CategoryFilter {
+  if (type === 'bank_statement' || type === 'balance_verification') return 'banking';
+  return 'documents';
+}
+
+const TAB_CLASSES =
+  'relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none';
+
 export default function OperationsPageClient({
   initialQueue,
   initialStats,
 }: OperationsPageClientProps) {
   const copy = adminCopy.operations;
 
+  const [activeTab, setActiveTab] = useState<'active' | 'resolved'>('active');
   const [activeStatus, setActiveStatus] = useState<StatusFilter>('all');
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [reviewTarget, setReviewTarget] = useState<OperationsQueueRow | null>(null);
-  const [drawerStudentId, setDrawerStudentId] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [recordStudentId, setRecordStudentId] = useState<string | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
@@ -56,6 +79,8 @@ export default function OperationsPageClient({
     initialData: initialStats,
   });
 
+  const { data: certReadyStudents = [] } = trpc.admin.getCertReadyStudents.useQuery();
+
   const reviewMutation = trpc.admin.reviewDocument.useMutation({
     onSuccess: () => {
       void utils.admin.getOperationsQueue.invalidate();
@@ -72,12 +97,6 @@ export default function OperationsPageClient({
     },
   });
 
-  const issueCertMutation = trpc.admin.issueCertificate.useMutation({
-    onSuccess: () => {
-      void utils.admin.getOperationsQueue.invalidate();
-    },
-  });
-
   function handleSelect(id: string, checked: boolean) {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -88,27 +107,39 @@ export default function OperationsPageClient({
   }
 
   function handleSelectAll(checked: boolean) {
-    setSelectedIds(checked ? new Set(queue.map((r) => r.id)) : new Set());
+    setSelectedIds(checked ? new Set(tabFilteredQueue.map((r) => r.id)) : new Set());
   }
 
-  type ReviewAction = 'approved' | 'rejected' | 'more_info_requested';
+  type ReviewStatus = 'approved' | 'rejected' | 'more_info_requested';
 
-  function handleBulkAction(status: ReviewAction) {
+  function handleBulkAction(status: ReviewStatus) {
     bulkMutation.mutate({ documentIds: Array.from(selectedIds), status });
   }
 
-  function handleReviewDecision(status: ReviewAction, reason?: string) {
+  function handleReviewDecision(status: ReviewStatus, reason?: string) {
     if (!reviewTarget) return;
     reviewMutation.mutate({ documentId: reviewTarget.id, status, reason });
   }
 
-  function handleStudentClick(studentId: string) {
-    setDrawerStudentId(studentId);
-    setDrawerOpen(true);
+  // Client-side tab + category filter: Active = pending/more_info, Resolved = approved/rejected
+  let tabFilteredQueue = queue;
+
+  // Apply tab filter when status is 'all'
+  if (activeStatus === 'all') {
+    if (activeTab === 'active') {
+      tabFilteredQueue = tabFilteredQueue.filter(
+        (item) => item.status === 'pending' || item.status === 'more_info_requested',
+      );
+    } else {
+      tabFilteredQueue = tabFilteredQueue.filter(
+        (item) => item.status === 'approved' || item.status === 'rejected',
+      );
+    }
   }
 
-  function handleIssueCertificate(studentId: string) {
-    issueCertMutation.mutate({ studentId });
+  // Apply category filter
+  if (activeCategory !== 'all') {
+    tabFilteredQueue = tabFilteredQueue.filter((item) => getDocCategory(item.type) === activeCategory);
   }
 
   const filterChips = STATUS_FILTER_CHIPS.map((chip) => {
@@ -128,10 +159,15 @@ export default function OperationsPageClient({
 
   const isMutating = reviewMutation.isPending || bulkMutation.isPending;
 
+  function handleCertIssued() {
+    void utils.admin.getCertReadyStudents.invalidate();
+    void utils.admin.getOperationsStats.invalidate();
+  }
+
   return (
     <div className="space-y-6">
       {/* Stats row */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Grid cols={{ sm: 2, lg: 4 }} gap="md">
         <MetricCard label={copy.stats.pending} value={stats.pending} />
         <MetricCard
           label={copy.stats.approvedToday}
@@ -144,33 +180,79 @@ export default function OperationsPageClient({
           deltaDirection="down"
         />
         <MetricCard label={copy.stats.moreInfo} value={stats.moreInfoRequested} />
-      </div>
+      </Grid>
 
-      {/* Filter bar */}
-      <FilterBar
-        query={searchQuery}
-        queryPlaceholder={copy.filters.searchPlaceholder}
-        chips={filterChips}
-        activeChip={activeStatus}
-        onQueryChange={setSearchQuery}
-        onChipChange={(key) => {
-          setActiveStatus(key as StatusFilter);
+      {/* Cert-ready students */}
+      <AdminCertReadySection students={certReadyStudents} onIssued={handleCertIssued} />
+
+      {/* Active / Resolved tabs */}
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) => {
+          setActiveTab(v as 'active' | 'resolved');
+          setActiveStatus('all');
           setSelectedIds(new Set());
         }}
-      />
+      >
+        <TabsList className="h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0">
+          <TabsTrigger value="active" className={TAB_CLASSES}>
+            {copy.tabs?.active ?? 'Active'}
+          </TabsTrigger>
+          <TabsTrigger value="resolved" className={TAB_CLASSES}>
+            {copy.tabs?.resolved ?? 'Resolved'}
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Table */}
-      <AdminOperationsTable
-        rows={queueLoading ? [] : queue}
-        selectedIds={selectedIds}
-        onSelect={handleSelect}
-        onSelectAll={handleSelectAll}
-        onReview={setReviewTarget}
-        onStudentClick={handleStudentClick}
-        onIssueCertificate={handleIssueCertificate}
-        isIssuingCert={issueCertMutation.isPending}
-        emptyLabel={queueLoading ? undefined : copy.empty.description}
-      />
+        <TabsContent value={activeTab} className="mt-4 outline-none space-y-4">
+          <Stack gap="sm">
+            {/* Status filter bar */}
+            <FilterBar
+              query={searchQuery}
+              queryPlaceholder={copy.filters.searchPlaceholder}
+              chips={filterChips}
+              activeChip={activeStatus}
+              onQueryChange={setSearchQuery}
+              onChipChange={(key) => {
+                setActiveStatus(key as StatusFilter);
+                setSelectedIds(new Set());
+              }}
+            />
+
+            {/* Category filter chips */}
+            <div className="flex flex-wrap gap-2">
+              {CATEGORY_FILTER_CHIPS.map((chip) => (
+                <button
+                  key={chip.key}
+                  type="button"
+                  onClick={() => {
+                    setActiveCategory(chip.key);
+                    setSelectedIds(new Set());
+                  }}
+                  className={cn(
+                    'rounded-full border px-3 py-1 text-xs font-medium transition-colors',
+                    activeCategory === chip.key
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border bg-card text-muted-foreground hover:bg-accent',
+                  )}
+                >
+                  {adminCopy.categoryFilters[chip.labelKey]}
+                </button>
+              ))}
+            </div>
+          </Stack>
+
+          {/* Table */}
+          <AdminOperationsTable
+            rows={queueLoading ? [] : tabFilteredQueue}
+            selectedIds={selectedIds}
+            onSelect={handleSelect}
+            onSelectAll={handleSelectAll}
+            onReview={setReviewTarget}
+            onViewRecord={setRecordStudentId}
+            emptyLabel={queueLoading ? undefined : copy.empty.description}
+          />
+        </TabsContent>
+      </Tabs>
 
       {/* Bulk action bar */}
       {selectedIds.size > 0 && (
@@ -194,13 +276,9 @@ export default function OperationsPageClient({
       />
 
       {/* Student record drawer */}
-      <StudentRecordDrawer
-        studentId={drawerStudentId}
-        open={drawerOpen}
-        onOpenChange={(open) => {
-          setDrawerOpen(open);
-          if (!open) setDrawerStudentId(null);
-        }}
+      <AdminStudentRecordSheet
+        studentId={recordStudentId}
+        onClose={() => setRecordStudentId(null)}
       />
     </div>
   );

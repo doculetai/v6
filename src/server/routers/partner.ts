@@ -2,9 +2,10 @@ import { TRPCError } from '@trpc/server';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 
+import { listTransactions } from '@/db/queries/admin-transactions';
 import { getPartnerUsageToday } from '@/db/queries/partner-api-usage';
 import { listPartnerStudents } from '@/db/queries/partner';
-import { partnerApiKeys, partnerProfiles } from '@/db/schema';
+import { partnerApiKeys, partnerProfiles, programs, schools } from '@/db/schema';
 
 import { createTRPCRouter, roleProcedure } from '../trpc';
 
@@ -331,5 +332,104 @@ export const partnerRouter = createTRPCRouter({
           updatedAt: new Date(),
         })
         .where(eq(partnerProfiles.userId, ctx.user!.id));
+    }),
+
+  listAllPrograms: roleProcedure('partner')
+    .output(
+      z.array(
+        z.object({
+          id: z.string(),
+          name: z.string(),
+          tuitionAmount: z.number(),
+          currency: z.string(),
+          durationMonths: z.number(),
+          schoolName: z.string(),
+          schoolCountry: z.string(),
+        }),
+      ),
+    )
+    .query(async ({ ctx }) => {
+      const rows = await ctx.db
+        .select({
+          id: programs.id,
+          name: programs.name,
+          tuitionAmount: programs.tuitionAmount,
+          currency: programs.currency,
+          durationMonths: programs.durationMonths,
+          schoolName: schools.name,
+          schoolCountry: schools.country,
+        })
+        .from(programs)
+        .innerJoin(schools, eq(programs.schoolId, schools.id))
+        .where(eq(programs.status, 'active'))
+        .orderBy(schools.name, programs.name);
+
+      return rows;
+    }),
+
+  requestLimitIncrease: roleProcedure('partner')
+    .input(z.object({ reason: z.string().min(10) }))
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      // Log request — placeholder implementation
+      void ctx;
+      void input;
+      return { success: true };
+    }),
+
+  reEnableWebhook: roleProcedure('partner')
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ ctx }) => {
+      const existing = await ctx.db.query.partnerProfiles.findFirst({
+        where: (t, { eq: eqFn }) => eqFn(t.userId, ctx.user!.id),
+        columns: { id: true, webhookUrl: true },
+      });
+      if (!existing) throw new TRPCError({ code: 'NOT_FOUND', message: 'Partner profile not found.' });
+
+      // Placeholder — in production this would flip webhookActive to true
+      return { success: true };
+    }),
+
+  requestKeyReinstatement: roleProcedure('partner')
+    .input(z.object({ keyId: z.string() }))
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      void ctx;
+      void input;
+      return { success: true };
+    }),
+
+  listTransactions: roleProcedure('partner')
+    .input(
+      z.object({
+        type: z
+          .enum(['disbursement', 'platform_fee', 'refund', 'reversal', 'credit', 'debit'])
+          .optional(),
+        dateFrom: z.date().optional(),
+        dateTo: z.date().optional(),
+        limit: z.number().min(1).max(100).optional().default(50),
+        offset: z.number().min(0).optional().default(0),
+      }),
+    )
+    .output(
+      z.array(
+        z.object({
+          id: z.string(),
+          type: z.string(),
+          entityType: z.string(),
+          entityId: z.string().nullable(),
+          amountKobo: z.number(),
+          currency: z.string(),
+          userId: z.string().nullable(),
+          meta: z.string().nullable(),
+          createdAt: z.date(),
+        }),
+      ),
+    )
+    .query(async ({ ctx, input }) => {
+      return listTransactions(ctx.db, {
+        ...input,
+        userId: ctx.user!.id,
+      });
     }),
 });

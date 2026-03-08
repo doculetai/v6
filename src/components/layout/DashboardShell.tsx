@@ -3,7 +3,6 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { authPrimitives } from '@/config/copy/primitives/auth';
 import type { DashboardRole } from '@/config/roles';
 import type { StudentTrustStage } from '@/lib/student-trust-stage';
 import { useKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts';
@@ -14,26 +13,30 @@ import { useSessionTimeout } from '@/lib/hooks/useSessionTimeout';
 import { cn } from '@/lib/utils';
 
 import { CommandPalette } from '@/components/ui/command-palette';
+import { SessionTimeoutSheet } from '@/components/ui/session-timeout-sheet';
 
 import { BottomNav } from './BottomNav';
 import { RouteProgressBar } from './RouteProgressBar';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
+import { routes } from '@/config/routes';
+import { ImpersonationBanner } from '@/components/admin/ImpersonationBanner';
 
 type DashboardShellProps = {
   role: DashboardRole;
   children: React.ReactNode;
   className?: string;
   studentTrustStage?: StudentTrustStage;
+  impersonating?: { name: string; onExit: () => void } | null;
 };
 
-export function DashboardShell({ role, children, className, studentTrustStage }: DashboardShellProps) {
+export function DashboardShell({ role, children, className, studentTrustStage, impersonating }: DashboardShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const mainRef = useRef<HTMLElement>(null);
 
   const handleLogout = useCallback(() => {
-    router.replace('/login');
+    router.replace(routes.auth.login);
   }, [router]);
 
   const { showWarning, remainingSeconds, dismiss } = useSessionTimeout(handleLogout);
@@ -64,10 +67,6 @@ export function DashboardShell({ role, children, className, studentTrustStage }:
     recordPageVisit(role, pathname, label);
   }, [pathname, role]);
 
-  const copy = authPrimitives.sessionTimeout;
-  const minutes = Math.floor(remainingSeconds / 60);
-  const seconds = remainingSeconds % 60;
-
   return (
     <div
       className={cn(
@@ -75,14 +74,22 @@ export function DashboardShell({ role, children, className, studentTrustStage }:
         className,
       )}
     >
-      {/* Desktop sidebar — locked to viewport height, never scrolls */}
-      <aside className="hidden lg:flex lg:flex-none">
+      {/* Sidebar — visible from tablet (768px); collapsed by default at 768–1024px */}
+      <aside className="hidden md:flex md:flex-none">
         <Sidebar role={role} currentPath={pathname} studentTrustStage={studentTrustStage} />
       </aside>
 
       {/* Main content column */}
       <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
         <RouteProgressBar />
+
+        {/* Impersonation banner (admin only, opt-in via prop) */}
+        {impersonating && (
+          <ImpersonationBanner
+            studentName={impersonating.name}
+            onExit={impersonating.onExit}
+          />
+        )}
 
         {/* Mobile topbar */}
         <TopBar role={role} currentPath={pathname} />
@@ -104,37 +111,16 @@ export function DashboardShell({ role, children, className, studentTrustStage }:
       {/* Command palette (Cmd+K) */}
       <CommandPalette role={role} />
 
-      {/* Session timeout warning overlay */}
-      {showWarning && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="mx-4 w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-lg">
-            <h2 className="text-base font-semibold text-foreground">{copy.warningTitle}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{copy.warningBody}</p>
-            <p className="mt-3 text-center font-mono text-2xl font-bold text-foreground">
-              {minutes}:{String(seconds).padStart(2, '0')}
-            </p>
-            <div className="mt-4 flex gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  broadcastLogout();
-                  handleLogout();
-                }}
-                className="flex-1 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
-              >
-                {copy.signOut}
-              </button>
-              <button
-                type="button"
-                onClick={dismiss}
-                className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                {copy.staySignedIn}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Session timeout warning sheet */}
+      <SessionTimeoutSheet
+        open={showWarning}
+        remainingSeconds={remainingSeconds}
+        onDismiss={dismiss}
+        onSignOut={() => {
+          broadcastLogout();
+          handleLogout();
+        }}
+      />
     </div>
   );
 }
