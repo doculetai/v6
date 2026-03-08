@@ -5,18 +5,32 @@ export const sponsorCopy = {
     title: "Sponsor dashboard",
     subtitle: "Fund education with confidence. Every naira tracked.",
     overview: {
+      eyebrow: 'Your sponsorships',
+      title: 'Overview',
       welcomeTitle: (name: string) => `Welcome back, ${name}`,
       subtitle: "Track your commitments and upcoming disbursements.",
       stats: {
         totalCommitted: { label: "Total Committed", sub: "across active sponsorships" },
         activeStudents: { label: "Active Students", sub: "currently sponsored" },
         pendingInvites: { label: "Pending Invites", sub: "awaiting your response" },
+        certsIssued: { label: "Certs Issued", sub: "certificates issued to date" },
         nextDisbursement: {
           label: "Next Disbursement",
           noneValue: "None scheduled",
           noneSub: "accept a sponsorship first",
           scheduledSub: "scheduled date",
         },
+      },
+      yourStudents: {
+        heading: 'Your students',
+        unknownLabel: 'Unknown student',
+        empty: 'No students yet.',
+        statusLabels: {
+          active: 'Active',
+          pending: 'Pending',
+          inactive: 'Inactive',
+          cancelled: 'Cancelled',
+        } as Record<string, string>,
       },
       recentStudents: {
         heading: "Recent Students",

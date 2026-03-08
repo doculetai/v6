@@ -8,7 +8,6 @@ import type { DashboardRole } from '@/config/roles';
 import type { StudentTrustStage } from '@/lib/student-trust-stage';
 import { useKeyboardShortcuts } from '@/lib/hooks/useKeyboardShortcuts';
 import { useMultiTabAuth } from '@/lib/hooks/useMultiTabAuth';
-import { recordPageVisit } from '@/lib/hooks/useRecentPages';
 import { useScrollRestoration } from '@/lib/hooks/useScrollRestoration';
 import { useSessionTimeout } from '@/lib/hooks/useSessionTimeout';
 import { cn } from '@/lib/utils';
@@ -53,16 +52,6 @@ export function DashboardShell({ role, children, className, studentTrustStage }:
       return () => clearTimeout(timer);
     }
   }, [pathname]);
-
-  // Record page visits for "Recent" sidebar section
-  useEffect(() => {
-    const segments = pathname.split('/').filter(Boolean);
-    const lastSegment = segments[segments.length - 1] ?? 'Overview';
-    const label = lastSegment === role
-      ? 'Overview'
-      : lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1).replace(/-/g, ' ');
-    recordPageVisit(role, pathname, label);
-  }, [pathname, role]);
 
   const copy = authPrimitives.sessionTimeout;
   const minutes = Math.floor(remainingSeconds / 60);

@@ -1,19 +1,14 @@
-import { Money, GraduationCap, ShieldCheck, Coins } from '@phosphor-icons/react/dist/ssr';
-import Link from 'next/link';
+import { GraduationCap, Medal, Money, UserFocus } from '@phosphor-icons/react/dist/ssr';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import {
   Grid,
   PageHeader,
   PageShell,
   Section,
+  Stack,
 } from '@/components/layout/content-primitives';
-import { JourneyProgress } from '@/components/ui/journey-progress';
 import { agentCopy } from '@/config/copy/agent';
-import { getFirstName } from '@/lib/get-first-name';
-import { computeAgentJourney } from '@/lib/journey/agent';
-import { formatNGN } from '@/lib/utils';
+import { cn, formatNGN } from '@/lib/utils';
 import { api } from '@/trpc/server';
 
 import { StatCard } from './overview-shared';
@@ -23,80 +18,116 @@ type AgentOverviewProps = {
   caller: Awaited<ReturnType<typeof api>>;
 };
 
-export async function AgentOverview({ email, caller }: AgentOverviewProps) {
-  const firstName = getFirstName(email);
-  const [overviewResult] = await Promise.allSettled([caller.agent.getAgentOverview()]);
-  const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+type StudentRow = {
+  assignmentId: string;
+  studentId: string;
+  studentEmail: string | null;
+  schoolName: string | null;
+  programName: string | null;
+  kycStatus: 'not_started' | 'pending' | 'verified' | 'failed';
+  documentCount: number;
+  assignedAt: Date;
+};
+
+export async function AgentOverview({ caller }: AgentOverviewProps) {
   const copy = agentCopy.dashboard.overview;
-  const journeyState = computeAgentJourney(
-    {
-      totalAssignedStudents: overview?.totalAssignedStudents ?? 0,
-      activeStudents: overview?.activeStudents ?? 0,
-      totalEarnedKobo: overview?.totalEarnedKobo ?? 0,
-    },
-    agentCopy.journey,
-  );
+
+  const [overviewResult, studentsResult] = await Promise.allSettled([
+    caller.agent.getAgentOverview(),
+    caller.agent.listAgentStudents(),
+  ]);
+
+  const overview = overviewResult.status === 'fulfilled' ? overviewResult.value : null;
+  const students: StudentRow[] =
+    studentsResult.status === 'fulfilled' ? (studentsResult.value as StudentRow[]) : [];
+
+  const certsIssued = 0;
+  const pendingCount =
+    overview ? overview.totalAssignedStudents - overview.activeStudents : 0;
 
   return (
     <PageShell width="wide">
       <Section>
-        <PageHeader
-          title={copy.welcomeTitle(firstName)}
-          description={copy.subtitle}
-        />
-        <JourneyProgress
-          stages={journeyState.stages}
-          nextAction={journeyState.nextAction}
-          allComplete={journeyState.allComplete}
-          completionMessage={journeyState.completionMessage}
-        />
+        <Stack gap="md">
+          <div>
+            <p className="text-[10.5px] font-semibold uppercase tracking-[0.13em] text-muted-foreground">
+              {copy.eyebrow}
+            </p>
+            <PageHeader title={copy.title} />
+          </div>
 
-        <Grid cols={{ sm: 2, lg: 4 }} gap="md" className="mt-6">
-          <StatCard
-            icon={<GraduationCap className="size-4.5" weight="duotone" aria-hidden="true" />}
-            label={copy.stats.assignedStudents.label}
-            value={overview ? String(overview.totalAssignedStudents) : '—'}
-            sub={copy.stats.assignedStudents.sub}
-            accent={Boolean(overview?.totalAssignedStudents)}
-          />
-          <StatCard
-            icon={<ShieldCheck className="size-4.5" weight="duotone" aria-hidden="true" />}
-            label={copy.stats.activeStudents.label}
-            value={overview ? String(overview.activeStudents) : '—'}
-            sub={copy.stats.activeStudents.sub}
-            accent={Boolean(overview?.activeStudents)}
-          />
-          <StatCard
-            icon={<Money className="size-4.5" weight="duotone" aria-hidden="true" />}
-            label={copy.stats.pendingCommissions.label}
-            value={overview ? formatNGN(overview.pendingCommissionsKobo) : '—'}
-            sub={copy.stats.pendingCommissions.sub}
-            accent={Boolean(overview?.pendingCommissionsKobo)}
-          />
-          <StatCard
-            icon={<Coins className="size-4.5" weight="duotone" aria-hidden="true" />}
-            label={copy.stats.totalEarned.label}
-            value={overview ? formatNGN(overview.totalEarnedKobo) : '—'}
-            sub={copy.stats.totalEarned.sub}
-            accent={Boolean(overview?.totalEarnedKobo)}
-          />
-        </Grid>
+          <Grid cols={{ sm: 2, lg: 4 }} gap="md">
+            <StatCard
+              icon={
+                <GraduationCap className="size-4.5" weight="duotone" aria-hidden="true" />
+              }
+              label={copy.stats.activeStudents.label}
+              value={overview ? String(overview.activeStudents) : '—'}
+              sub={copy.stats.activeStudents.sub}
+              accent={Boolean(overview?.activeStudents)}
+            />
+            <StatCard
+              icon={<Medal className="size-4.5" weight="duotone" aria-hidden="true" />}
+              label={copy.stats.certsIssued.label}
+              value={String(certsIssued)}
+              sub={copy.stats.certsIssued.sub}
+            />
+            <StatCard
+              icon={<Money className="size-4.5" weight="duotone" aria-hidden="true" />}
+              label={copy.stats.commissions.label}
+              value={overview ? formatNGN(overview.totalEarnedKobo) : '—'}
+              sub={copy.stats.commissions.sub}
+              accent={Boolean(overview?.totalEarnedKobo)}
+            />
+            <StatCard
+              icon={<UserFocus className="size-4.5" weight="duotone" aria-hidden="true" />}
+              label={copy.stats.pending.label}
+              value={overview ? String(pendingCount) : '—'}
+              sub={copy.stats.pending.sub}
+            />
+          </Grid>
 
-        <Card className="border-border bg-card mt-6">
-        <CardContent className="pt-5">
-          <p className="text-sm text-muted-foreground">
-            {overview?.totalAssignedStudents
-              ? overview.totalAssignedStudents === 1
-                ? copy.caseload.filledSingle(overview.totalAssignedStudents)
-                : copy.caseload.filledPlural(overview.totalAssignedStudents)
-              : copy.caseload.empty}
-          </p>
-        </CardContent>
-        </Card>
-
-        <Button asChild className="min-h-11 w-full sm:w-auto mt-6">
-          <Link href="/dashboard/agent/students">{copy.cta}</Link>
-        </Button>
+          <div className="rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
+            <p className="pb-3 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-muted-foreground">
+              {copy.recentStudents.heading}
+            </p>
+            {students.length > 0 ? (
+              <div className="flex flex-col divide-y divide-border/50">
+                {students.slice(0, 5).map((s) => (
+                  <div key={s.assignmentId} className="flex items-center gap-3 py-2.5">
+                    <div
+                      className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary"
+                    >
+                      {(s.studentEmail ?? '?').slice(0, 2).toUpperCase()}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {s.studentEmail ?? copy.recentStudents.unknownLabel}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {s.schoolName ?? s.programName ?? '—'}
+                      </p>
+                    </div>
+                    <span
+                      className={cn(
+                        'shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium',
+                        s.kycStatus === 'verified'
+                          ? 'bg-success/10 text-success'
+                          : 'bg-muted text-muted-foreground',
+                      )}
+                    >
+                      {agentCopy.students.kycLabels[s.kycStatus]}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="py-4 text-center text-sm text-muted-foreground">
+                {copy.recentStudents.empty}
+              </p>
+            )}
+          </div>
+        </Stack>
       </Section>
     </PageShell>
   );

@@ -1,9 +1,7 @@
 'use client';
 
-import { List, X } from '@phosphor-icons/react';
+import { List, MagnifyingGlass, X } from '@/components/icons';
 import Image from 'next/image';
-
-import { NotificationsBell } from './NotificationsBell';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -11,6 +9,7 @@ import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import type { DashboardRole } from '@/config/roles';
 
+import { NotificationsBell } from './NotificationsBell';
 import { Sidebar } from './Sidebar';
 
 type TopBarProps = {
@@ -18,11 +17,39 @@ type TopBarProps = {
   currentPath: string;
 };
 
+const ROLE_ACCENT_HEX: Record<DashboardRole, string> = {
+  student:    '#2B39A3',
+  sponsor:    '#15803D',
+  university: '#0369A1',
+  admin:      '#C2410C',
+  agent:      '#6D28D9',
+  partner:    '#0F766E',
+};
+
+function getPageLabel(currentPath: string, role: DashboardRole): string {
+  const segments = currentPath.split('/').filter(Boolean);
+  const lastSegment = segments[segments.length - 1];
+  if (!lastSegment || lastSegment === role) return 'Overview';
+  return lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1).replace(/-/g, ' ');
+}
+
+function triggerCommandPalette() {
+  const event = new KeyboardEvent('keydown', {
+    key: 'k',
+    metaKey: true,
+    bubbles: true,
+  });
+  document.dispatchEvent(event);
+}
+
 export function TopBar({ role, currentPath }: TopBarProps) {
   const [open, setOpen] = useState(false);
+  const pageLabel = getPageLabel(currentPath, role);
+  const accentHex = ROLE_ACCENT_HEX[role];
 
   return (
     <>
+      {/* Mobile header — hidden on lg+ where sidebar is visible */}
       <header
         className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-background px-4 pt-[env(safe-area-inset-top)] lg:hidden"
       >
@@ -39,7 +66,7 @@ export function TopBar({ role, currentPath }: TopBarProps) {
             className="size-8 shrink-0"
             aria-hidden="true"
           />
-          <span className="text-sm font-bold tracking-tight text-foreground">{dashboardShellCopy.brandName}</span>
+          <span className="text-sm font-bold tracking-tight text-primary">{dashboardShellCopy.brandName}</span>
         </Link>
 
         <div className="flex items-center gap-1">
@@ -54,6 +81,43 @@ export function TopBar({ role, currentPath }: TopBarProps) {
           </button>
         </div>
       </header>
+
+      {/* Desktop topbar — visible on lg+ for all roles */}
+      <div className="hidden h-14 items-center justify-between border-b border-border bg-background px-6 lg:flex">
+        {/* Breadcrumb */}
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted-foreground">
+          <span>Dashboard</span>
+          <span>/</span>
+          <span className="font-medium text-foreground">{pageLabel}</span>
+        </nav>
+
+        {/* Search trigger — opens CommandPalette via ⌘K */}
+        <button
+          type="button"
+          onClick={triggerCommandPalette}
+          className="flex w-56 items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label={dashboardShellCopy.topbar.searchPlaceholder}
+        >
+          <MagnifyingGlass className="size-4 shrink-0" weight="duotone" aria-hidden="true" />
+          <span className="flex-1 text-left">{dashboardShellCopy.topbar.searchPlaceholder}</span>
+          <kbd className="hidden rounded border border-border bg-background px-1 py-0.5 text-[10px] font-medium md:block">
+            ⌘K
+          </kbd>
+        </button>
+
+        {/* Right actions */}
+        <div className="flex items-center gap-2">
+          <NotificationsBell role={role} />
+          <button
+            type="button"
+            aria-label="User menu"
+            style={{ backgroundColor: accentHex }}
+            className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {dashboardShellCopy.sidebar.avatarFallback}
+          </button>
+        </div>
+      </div>
 
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="left" className="w-64 p-0">

@@ -56,13 +56,19 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
 
   // University branch
   if (role === 'university') {
-    let students: Awaited<ReturnType<typeof caller.university.listUniversityStudents>>;
-    try {
-      students = await caller.university.listUniversityStudents();
-    } catch (error) {
-      if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
-      students = [];
+    const [studentsResult, programsResult] = await Promise.allSettled([
+      caller.university.listUniversityStudentsWithCert({}),
+      caller.university.listUniversityPrograms(),
+    ]);
+    if (
+      studentsResult.status === 'rejected' &&
+      studentsResult.reason instanceof TRPCError &&
+      studentsResult.reason.code === 'UNAUTHORIZED'
+    ) {
+      redirect('/login');
     }
+    const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
+    const programs = programsResult.status === 'fulfilled' ? programsResult.value : [];
     return (
       <div className="space-y-6">
         <h1 className="sr-only">{universityCopy.students.title}</h1>
@@ -70,7 +76,11 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
           title={universityCopy.students.title}
           subtitle={universityCopy.students.subtitle}
         />
-        <UniversityStudentsPageClient students={students} copy={universityCopy.students} />
+        <UniversityStudentsPageClient
+          initialStudents={students}
+          programs={programs.map((p) => ({ id: p.id, name: p.name }))}
+          copy={universityCopy.students}
+        />
       </div>
     );
   }

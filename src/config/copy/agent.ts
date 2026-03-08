@@ -5,13 +5,18 @@ export const agentCopy = {
     title: "Agent dashboard",
     subtitle: "Grow your student portfolio. Earn on every verification.",
     overview: {
+      eyebrow: "Your student portfolio",
+      title: "Overview",
       welcomeTitle: (name: string) => `Welcome back, ${name}`,
       subtitle: "Guide your active students through their funding journey.",
       stats: {
         assignedStudents: { label: "Assigned Students", sub: "in your caseload" },
-        activeStudents: { label: "Active Students", sub: "verified and funded" },
+        activeStudents: { label: "Active students", sub: "in your caseload" },
         pendingCommissions: { label: "Pending Commissions", sub: "awaiting payout" },
         totalEarned: { label: "Total Earned", sub: "lifetime commissions paid" },
+        certsIssued: { label: "Certs issued", sub: "To your students" },
+        commissions: { label: "Commissions", sub: "Total earned" },
+        pending: { label: "Pending", sub: "Awaiting progress" },
       },
       caseload: {
         filledSingle: (n: number) =>
@@ -19,6 +24,11 @@ export const agentCopy = {
         filledPlural: (n: number) =>
           `You have ${n} students in your caseload. Keep their journeys moving forward.`,
         empty: "No students assigned yet. Use the Actions page to invite your first student.",
+      },
+      recentStudents: {
+        heading: "Recent students",
+        unknownLabel: "Unknown student",
+        empty: "No students assigned yet.",
       },
       cta: "View your students",
     },

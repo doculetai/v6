@@ -5,6 +5,8 @@ export const partnerCopy = {
     title: "Partner dashboard",
     subtitle: "Your platform, your brand. Powered by Doculet.",
     overview: {
+      eyebrow: 'API and integration health',
+      title: 'Overview',
       welcomeTitle: (name: string) => `Welcome back, ${name}`,
       subtitle: (orgName: string | null) =>
         orgName
@@ -14,11 +16,21 @@ export const partnerCopy = {
         totalStudents: { label: "Total Students", sub: "enrolled via your integration" },
         verifiedStudents: { label: "Verified Students", sub: "KYC complete" },
         activeApiKeys: { label: "Active API Keys", sub: "in use" },
+        apiCallsToday: { label: 'API calls today', sub: 'Requests processed' },
+        studentsVerified: { label: 'Students verified', sub: 'Via your integration' },
+        revenue: { label: 'Revenue', sub: 'Platform share' },
+        webhooks: { label: 'Webhooks', sub: 'Active endpoints' },
       },
       summary: {
         withStudents: (verified: number, total: number) =>
           `${verified} of ${total} students have completed KYC verification.`,
         empty: "No students enrolled yet. Use the API Keys page to get your integration started.",
+      },
+      endpointHealth: {
+        heading: 'Endpoint health',
+        colEndpoint: 'Endpoint',
+        colCalls: 'Calls',
+        empty: 'No API activity yet.',
       },
       apiResetSub: "Resets at midnight UTC",
       cta: "View students",

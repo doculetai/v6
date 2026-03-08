@@ -472,13 +472,27 @@ export const adminCopy = {
   },
 
   overview: {
+    eyebrow: 'Platform health at a glance',
+    title: 'Platform overview',
     welcomeTitle: 'Platform overview',
     subtitle: 'Platform health at a glance. Every action audited.',
+    kpi: {
+      apiUptime: 'API uptime',
+      apiUptimeValue: '99.9%',
+      reviewQueue: 'Review queue',
+      riskFlags: 'Risk flags',
+      certsIssued: 'Certs issued',
+    },
     stats: {
       pendingReview: { label: 'Pending review', sub: 'documents awaiting decision' },
       approvedToday: { label: 'Approved today', sub: 'documents cleared' },
       rejectedToday: { label: 'Rejected today', sub: 'documents returned' },
       riskFlags: { label: 'Risk flags', sub: 'items requiring attention' },
+      platformBalance: { label: 'Platform balance', sub: 'Total funds held' },
+    },
+    activity: {
+      heading: 'Recent activity',
+      empty: 'No recent activity.',
     },
     recentOperations: {
       heading: 'Recent operations',

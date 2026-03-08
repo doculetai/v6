@@ -1,4 +1,6 @@
 import type { DashboardRole } from '@/config/roles';
+import { routes } from '@/config/routes';
+import type { StudentDocumentType } from '@/lib/documents';
 
 type OverviewCopy = {
   title: string;
@@ -24,8 +26,27 @@ export const dashboardShellCopy = {
   },
   notifications: {
     ariaLabel: 'Notifications',
+    title: 'Notifications',
     empty: 'No notifications',
     markAllRead: 'Mark all as read',
+    groups: {
+      today: 'Today',
+      yesterday: 'Yesterday',
+      earlier: 'Earlier',
+    },
+    categoryGroups: {
+      documents: 'Documents',
+      verification: 'Verification',
+      sponsor: 'Sponsor',
+      certificate: 'Certificate',
+      general: 'General',
+    },
+    relativeTime: {
+      now: 'Just now',
+      minutes: (n: number) => `${n}m ago`,
+      hours: (n: number) => `${n}h ago`,
+      days: (n: number) => `${n}d ago`,
+    },
   },
   notificationPreferences: {
     title: 'Notification preferences',
@@ -51,6 +72,7 @@ export const dashboardShellCopy = {
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
     navMenu: 'Navigation menu',
+    searchPlaceholder: 'Search...',
   },
   bottomNav: {
     navAriaLabel: 'Mobile dashboard navigation',
@@ -61,8 +83,8 @@ export const dashboardShellCopy = {
     emptyTitle: 'Complete your profile to continue',
     emptyDescription:
       'Finish setting up your profile to see your verification progress and funding status.',
-    errorTitle: 'We could not load your dashboard',
-    errorDescription: 'Please refresh this page in a moment to try again.',
+    errorTitle: 'Unable to load your dashboard',
+    errorDescription: 'Please refresh this page to try again.',
   },
 } as const;
 
@@ -71,9 +93,53 @@ export function getFallbackUserName(role: DashboardRole): string {
 }
 
 export const studentHomeCopy = {
-  welcomeTitle: (name: string) => `Welcome, ${name}`,
-  title: 'Your proof journey',
-  journeySubtitle: 'Your proof-of-funds journey at a glance.',
+  welcomeTitle: (name: string) => `${name}'s application`,
+  sectionLabel: 'Your application',
+  title: 'Overview',
+  journeySubtitle: 'Your progress toward proof of funds.',
+  continueBanner: {
+    heading: 'Continue your application',
+    description: 'You have outstanding steps. Resume where you left off.',
+    cta: 'Continue',
+  },
+  tabs: {
+    journey: 'Journey',
+    activity: 'Activity',
+    ariaLabel: 'Application progress',
+  },
+  firstTime: {
+    eyebrow: 'Application',
+    heading: 'No active application',
+    description: 'Complete four steps to receive your proof of funds certificate.',
+    cta: 'Begin your application',
+    ctaHref: routes.dashboard.student.setup,
+  },
+  inProgress: {
+    heading: 'Continue your application',
+    description: 'You have outstanding steps. Resume where you left off.',
+  },
+  certified: {
+    eyebrow: 'Certificate issued',
+    heading: 'Proof of funds certificate issued',
+    description: (name: string, school: string) =>
+      `${name} — ${school}`,
+    descriptionNoSchool: (name: string) => `Issued to ${name}`,
+    cta: 'View your certificate',
+    ctaHref: routes.dashboard.student.proof,
+  },
+  postCert: {
+    heading: 'Your proof of funds is verified.',
+    certCard: {
+      eyebrow: 'Certificate',
+      idLabel: 'Certificate ID',
+      issuedLabel: 'Issued',
+      viewCta: 'View certificate',
+      viewHref: routes.dashboard.student.proof,
+    },
+  },
+  schoolAlert: {
+    message: 'Your selected school is no longer active. Contact support to continue your application.',
+  },
   stats: {
     verification: {
       label: 'Verification',
@@ -81,6 +147,13 @@ export const studentHomeCopy = {
       completionSuffix: 'complete',
       tierPassed: (n: number) => `Tier ${n} passed`,
       notStartedLabel: 'Not started',
+      identityPendingLabel: 'Identity pending',
+    },
+    certificate: {
+      label: 'Certificate',
+      issuedLabel: 'Issued',
+      notIssuedLabel: 'Not issued',
+      notIssuedSub: 'Complete all steps to unlock',
     },
     documents: {
       label: 'Documents',
@@ -92,60 +165,79 @@ export const studentHomeCopy = {
       label: 'Bank Account',
       linkedLabel: 'Linked',
       notLinkedLabel: 'Not linked',
-      requiredSub: 'Required for disbursements',
+      notStartedLabel: 'Not started',
+      requiredSub: 'Link to verify your funds',
+      selectProgramSub: 'Select a school and program first',
+      balanceVsTarget: (balance: string, target: string) => `${balance} / ${target}`,
+      verifiedBalanceLabel: (amount: string) => `Verified: ${amount}`,
     },
-  },
-  empty: {
-    cta: 'Start onboarding',
   },
   school: {
-    sectionLabel: 'Selected School',
-    selectedLabel: 'Selected',
-    notSelectedTitle: 'No school selected yet',
+    sectionLabel: 'Institution',
+    selectedLabel: 'Enrolled',
+    notSelectedTitle: 'No institution selected',
     notSelectedDescription: 'Browse partner institutions to set your funding target.',
     ctaLabel: 'Browse schools',
-    ctaHref: '/dashboard/student/schools',
-    programLabel: 'Program',
+    ctaHref: routes.dashboard.student.schools,
+    programLabel: 'Programme',
     durationLabel: (months: number) => `${months} months`,
   },
-  nextSteps: {
-    heading: 'Next Steps',
-    items: {
-      selectSchool: {
-        label: 'Choose your school',
-        description: 'Browse partner institutions and set your funding target.',
-        cta: 'Browse schools',
-        href: '/dashboard/student/schools',
-      },
-      verifyIdentity: {
-        label: 'Verify your identity',
-        description: 'Complete identity checks to unlock higher funding tiers.',
-        cta: 'Continue verification',
-        href: '/dashboard/student/verify',
-      },
-      uploadDocuments: {
-        label: 'Upload your documents',
-        description: 'Submit required documents for sponsor review.',
-        cta: 'Upload now',
-        href: '/dashboard/student/documents',
-      },
-      linkBankAccount: {
-        label: 'Link your bank account',
-        description: 'Connect your account to receive disbursements.',
-        cta: 'Link account',
-        href: '/dashboard/student/verify',
-      },
-    },
+  recentActivity: {
+    sectionLabel: 'Activity',
+    heading: 'Recent activity',
+    viewAll: 'View all',
+    colDocument: 'Document',
+    colStatus: 'Status',
+    colDate: 'Date',
+    empty: 'No activity recorded yet.',
+    emptyHeading: 'No activity yet',
+    emptyDescription: 'Document uploads and verification events will appear here as you progress.',
+    documentUploaded: (type: string) => `Uploaded ${type}`,
+    documentApproved: (type: string) => `${type} approved`,
+    documentRejected: (type: string) => `${type} needs attention`,
+    documentPending: (type: string) => `${type} under review`,
+    documentTypeLabels: {
+      passport: 'Passport',
+      bank_statement: 'Bank statement',
+      offer_letter: 'Offer letter',
+      affidavit: 'Affidavit',
+      cac: 'CAC document',
+    } as Record<StudentDocumentType, string>,
   },
   journey: {
     stages: {
-      school: 'Select school',
-      identity: 'Verify identity',
-      documents: 'Upload documents',
-      bank: 'Link bank',
-      proof: 'View proof',
+      onboarding: 'Profile setup',
+      verification: 'Verification',
+      documents: 'Documents',
+      proof: 'Certificate',
     },
-    completionMessage: 'Your profile is complete and ready for sponsor review.',
+    completionMessage: 'Your proof of funds is verified.',
+    nextActions: {
+      onboarding: {
+        label: 'Profile setup',
+        description: 'Choose your school and program to set your funding target.',
+        cta: 'Set up your profile',
+        href: routes.dashboard.student.setup,
+      },
+      verification: {
+        label: 'Identity verification',
+        description: 'Confirm your phone number, identity, and bank details.',
+        cta: 'Continue verification',
+        href: routes.dashboard.student.verification,
+      },
+      documents: {
+        label: 'Bank statement',
+        description: 'Upload a bank statement showing your available balance.',
+        cta: 'Upload statement',
+        href: routes.dashboard.student.documents,
+      },
+      proof: {
+        label: 'Certificate',
+        description: 'Your application is complete. Review your proof of funds certificate.',
+        cta: 'View certificate',
+        href: routes.dashboard.student.proof,
+      },
+    },
   },
 } as const;
 
@@ -154,37 +246,36 @@ export const dashboardOverviewCopy: Record<DashboardRole, OverviewCopy> = {
     title: 'Welcome back, Student',
     description: 'Review your funding progress and keep your verification timeline moving.',
     ctaLabel: 'Continue verification',
-    ctaHref: '/dashboard/student/verify',
+    ctaHref: routes.dashboard.student.verification,
   },
   sponsor: {
     title: 'Welcome back, Sponsor',
     description: 'Track commitments and confirm the next disbursement milestone with confidence.',
     ctaLabel: 'Review disbursements',
-    ctaHref: '/dashboard/sponsor/disbursements',
+    ctaHref: routes.dashboard.sponsor.disbursements,
   },
   university: {
     title: 'Welcome back, University',
     description: 'Validate student funding records and clear pending enrollment decisions.',
     ctaLabel: 'Open pipeline',
-    ctaHref: '/dashboard/university/pipeline',
+    ctaHref: routes.dashboard.university.pipeline,
   },
   admin: {
     title: 'Welcome back, Admin',
     description: 'Keep platform operations healthy by reviewing active risk and support signals.',
     ctaLabel: 'Check operations',
-    ctaHref: '/dashboard/admin/operations',
+    ctaHref: routes.dashboard.admin.operations,
   },
   agent: {
     title: 'Welcome back, Agent',
     description: 'Guide your active students through the next steps in their funding journey.',
     ctaLabel: 'Open student cases',
-    ctaHref: '/dashboard/agent/cases',
+    ctaHref: routes.dashboard.agent.students,
   },
   partner: {
     title: 'Welcome back, Partner',
     description: 'Monitor embedded performance and move your institution integration forward.',
     ctaLabel: 'View integrations',
-    ctaHref: '/dashboard/partner/integrations',
+    ctaHref: routes.dashboard.partner.integrations,
   },
 };
-
