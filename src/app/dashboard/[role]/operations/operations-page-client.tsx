@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { AdminCertReadySection } from '@/components/admin/AdminCertReadySection';
 import { AdminOperationsBulkBar } from '@/components/admin/AdminOperationsBulkBar';
@@ -9,6 +9,7 @@ import { AdminOperationsTable } from '@/components/admin/AdminOperationsTable';
 import { AdminStudentRecordSheet } from '@/components/admin/AdminStudentRecordSheet';
 import { FilterBar } from '@/components/ui/filter-bar';
 import { MetricCard } from '@/components/ui/metric-card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Grid } from '@/components/layout/content-primitives';
 import { adminCopy } from '@/config/copy/admin';
 import type { OperationsQueueRow, OperationsStats, StatusFilter } from '@/db/queries/admin-operations';
@@ -27,12 +28,16 @@ const STATUS_FILTER_CHIPS = [
   { key: 'more_info_requested', labelKey: 'moreInfoRequested' },
 ] as const;
 
+const TAB_CLASSES =
+  'relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none';
+
 export default function OperationsPageClient({
   initialQueue,
   initialStats,
 }: OperationsPageClientProps) {
   const copy = adminCopy.operations;
 
+  const [activeTab, setActiveTab] = useState<'active' | 'resolved'>('active');
   const [activeStatus, setActiveStatus] = useState<StatusFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -85,7 +90,7 @@ export default function OperationsPageClient({
   }
 
   function handleSelectAll(checked: boolean) {
-    setSelectedIds(checked ? new Set(queue.map((r) => r.id)) : new Set());
+    setSelectedIds(checked ? new Set(tabFilteredQueue.map((r) => r.id)) : new Set());
   }
 
   type ReviewStatus = 'approved' | 'rejected' | 'more_info_requested';
@@ -98,6 +103,19 @@ export default function OperationsPageClient({
     if (!reviewTarget) return;
     reviewMutation.mutate({ documentId: reviewTarget.id, status, reason });
   }
+
+  // Client-side tab filter: Active = pending/more_info, Resolved = approved/rejected
+  const tabFilteredQueue = useMemo(() => {
+    if (activeStatus !== 'all') return queue;
+    if (activeTab === 'active') {
+      return queue.filter(
+        (item) => item.status === 'pending' || item.status === 'more_info_requested',
+      );
+    }
+    return queue.filter(
+      (item) => item.status === 'approved' || item.status === 'rejected',
+    );
+  }, [queue, activeTab, activeStatus]);
 
   const filterChips = STATUS_FILTER_CHIPS.map((chip) => {
     const countMap: Record<string, number> = {
@@ -142,29 +160,50 @@ export default function OperationsPageClient({
       {/* Cert-ready students */}
       <AdminCertReadySection students={certReadyStudents} onIssued={handleCertIssued} />
 
-      {/* Filter bar */}
-      <FilterBar
-        query={searchQuery}
-        queryPlaceholder={copy.filters.searchPlaceholder}
-        chips={filterChips}
-        activeChip={activeStatus}
-        onQueryChange={setSearchQuery}
-        onChipChange={(key) => {
-          setActiveStatus(key as StatusFilter);
+      {/* Active / Resolved tabs */}
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) => {
+          setActiveTab(v as 'active' | 'resolved');
+          setActiveStatus('all');
           setSelectedIds(new Set());
         }}
-      />
+      >
+        <TabsList className="h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0">
+          <TabsTrigger value="active" className={TAB_CLASSES}>
+            {copy.tabs?.active ?? 'Active'}
+          </TabsTrigger>
+          <TabsTrigger value="resolved" className={TAB_CLASSES}>
+            {copy.tabs?.resolved ?? 'Resolved'}
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Table */}
-      <AdminOperationsTable
-        rows={queueLoading ? [] : queue}
-        selectedIds={selectedIds}
-        onSelect={handleSelect}
-        onSelectAll={handleSelectAll}
-        onReview={setReviewTarget}
-        onViewRecord={setRecordStudentId}
-        emptyLabel={queueLoading ? undefined : copy.empty.description}
-      />
+        <TabsContent value={activeTab} className="mt-4 outline-none space-y-4">
+          {/* Filter bar */}
+          <FilterBar
+            query={searchQuery}
+            queryPlaceholder={copy.filters.searchPlaceholder}
+            chips={filterChips}
+            activeChip={activeStatus}
+            onQueryChange={setSearchQuery}
+            onChipChange={(key) => {
+              setActiveStatus(key as StatusFilter);
+              setSelectedIds(new Set());
+            }}
+          />
+
+          {/* Table */}
+          <AdminOperationsTable
+            rows={queueLoading ? [] : tabFilteredQueue}
+            selectedIds={selectedIds}
+            onSelect={handleSelect}
+            onSelectAll={handleSelectAll}
+            onReview={setReviewTarget}
+            onViewRecord={setRecordStudentId}
+            emptyLabel={queueLoading ? undefined : copy.empty.description}
+          />
+        </TabsContent>
+      </Tabs>
 
       {/* Bulk action bar */}
       {selectedIds.size > 0 && (

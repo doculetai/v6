@@ -353,6 +353,10 @@ export const adminCopy = {
       rejectedToday: "Rejected today",
       moreInfo: "More info needed",
     },
+    tabs: {
+      active: "Active",
+      resolved: "Resolved",
+    },
     filters: {
       searchPlaceholder: "Name, email address, or student ID", // copy-audit-disable
       all: "All",
