@@ -94,8 +94,14 @@ export function getFallbackUserName(role: DashboardRole): string {
 
 export const studentHomeCopy = {
   welcomeTitle: (name: string) => `${name}'s application`,
+  sectionLabel: 'Your application',
   title: 'Overview',
   journeySubtitle: 'Your progress toward proof of funds.',
+  continueBanner: {
+    heading: 'Continue your application',
+    description: 'You have outstanding steps. Resume where you left off.',
+    cta: 'Continue',
+  },
   tabs: {
     journey: 'Journey',
     activity: 'Activity',
@@ -141,6 +147,13 @@ export const studentHomeCopy = {
       completionSuffix: 'complete',
       tierPassed: (n: number) => `Tier ${n} passed`,
       notStartedLabel: 'Not started',
+      identityPendingLabel: 'Identity pending',
+    },
+    certificate: {
+      label: 'Certificate',
+      issuedLabel: 'Issued',
+      notIssuedLabel: 'Not issued',
+      notIssuedSub: 'Complete all steps to unlock',
     },
     documents: {
       label: 'Documents',
@@ -171,9 +184,14 @@ export const studentHomeCopy = {
   },
   recentActivity: {
     sectionLabel: 'Activity',
+    heading: 'Recent activity',
+    viewAll: 'View all',
+    colDocument: 'Document',
+    colStatus: 'Status',
+    colDate: 'Date',
     empty: 'No activity recorded yet.',
     emptyHeading: 'No activity yet',
-      emptyDescription: 'Document uploads and verification events will appear here as you progress.',
+    emptyDescription: 'Document uploads and verification events will appear here as you progress.',
     documentUploaded: (type: string) => `Uploaded ${type}`,
     documentApproved: (type: string) => `${type} approved`,
     documentRejected: (type: string) => `${type} needs attention`,

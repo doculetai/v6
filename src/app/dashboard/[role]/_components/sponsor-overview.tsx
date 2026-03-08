@@ -5,6 +5,7 @@ import {
   PageHeader,
   PageShell,
   Section,
+  Stack,
 } from '@/components/layout/content-primitives';
 import { sponsorCopy } from '@/config/copy/sponsor';
 import { cn, formatNGN } from '@/lib/utils';
@@ -30,12 +31,15 @@ export async function SponsorOverview({ email: _email, caller }: SponsorOverview
   return (
     <PageShell width="wide">
       <Section>
-        <p className="text-[10.5px] font-semibold uppercase tracking-[0.13em] text-muted-foreground">
-          {copy.eyebrow}
-        </p>
-        <PageHeader title={copy.title} />
+        <Stack gap="md">
+          <div>
+            <p className="text-[10.5px] font-semibold uppercase tracking-[0.13em] text-muted-foreground">
+              {copy.eyebrow}
+            </p>
+            <PageHeader title={copy.title} />
+          </div>
 
-        <Grid cols={{ sm: 2, lg: 4 }} gap="md" className="mt-6">
+          <Grid cols={{ sm: 2, lg: 4 }} gap="md">
           <StatCard
             icon={<GraduationCap className="size-4.5" weight="duotone" aria-hidden="true" />}
             label={copy.stats.activeStudents.label}
@@ -63,9 +67,9 @@ export async function SponsorOverview({ email: _email, caller }: SponsorOverview
             sub={copy.stats.pendingInvites.sub}
             accent={Boolean(overview?.pendingInvites)}
           />
-        </Grid>
+          </Grid>
 
-        <div className="mt-6 rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
+          <div className="rounded-xl border border-border bg-card px-5 py-5 shadow-xs">
           <p className="pb-3 text-[10.5px] font-semibold uppercase tracking-[0.13em] text-muted-foreground">
             {copy.yourStudents.heading}
           </p>
@@ -106,7 +110,8 @@ export async function SponsorOverview({ email: _email, caller }: SponsorOverview
               {copy.yourStudents.empty}
             </p>
           )}
-        </div>
+          </div>
+        </Stack>
       </Section>
     </PageShell>
   );
