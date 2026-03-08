@@ -160,7 +160,7 @@ function PendingInvitesList({ invites, copy }: { invites: Invite[]; copy: Copy }
                 <Button
                   size="sm"
                   variant="outline"
-                  className="min-h-9"
+                  className="min-h-[44px]"
                   disabled={isResponding}
                   onClick={() => handleRespond(invite.id, 'declined')}
                 >
@@ -172,7 +172,7 @@ function PendingInvitesList({ invites, copy }: { invites: Invite[]; copy: Copy }
                 </Button>
                 <Button
                   size="sm"
-                  className="min-h-9"
+                  className="min-h-[44px]"
                   disabled={isResponding}
                   onClick={() => handleRespond(invite.id, 'accepted')}
                 >
@@ -330,7 +330,7 @@ export function SponsorStudentsPageClient({
         <TabsTrigger value="pending">
           {copy.tabs.pending}
           {pendingCount > 0 ? (
-            <span className="ml-1.5 rounded-full bg-[#15803D]/10 px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-[#15803D]">
+            <span className="ml-1.5 rounded-full bg-success/10 px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-success">
               {pendingCount}
             </span>
           ) : null}

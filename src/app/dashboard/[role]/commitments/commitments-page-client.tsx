@@ -55,7 +55,7 @@ const statusBadgeClass: Record<CommitmentStatus, string> = {
   completed: 'bg-primary/10 text-primary',
   cancelled: 'bg-muted text-muted-foreground',
   withdrawn: 'bg-muted text-muted-foreground',
-  paused: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+  paused: 'bg-warning/10 text-warning',
 };
 
 function formatDate(date: Date): string {
@@ -110,7 +110,7 @@ function CommitmentActions({
           className="text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
           onClick={() => onAction({ kind: 'uncommit', commitment })}
         >
-          {copy.statusLabels.withdrawn}
+          {sponsorCopyData.commitment.uncommitModal.confirm}
         </button>
       )}
       <Button variant="ghost" size="sm" asChild>
@@ -194,7 +194,7 @@ function CommitmentCard({
                 className="text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
                 onClick={() => onAction({ kind: 'uncommit', commitment })}
               >
-                {copy.statusLabels.withdrawn}
+                {sponsorCopyData.commitment.uncommitModal.confirm}
               </button>
             )}
             <Button variant="ghost" size="sm" asChild className="ml-auto">
@@ -225,10 +225,10 @@ function PausedCommitmentBanner({
   });
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-amber-300/50 bg-amber-50 p-4 dark:border-amber-700/50 dark:bg-amber-950/20 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-2 rounded-lg border border-warning/30 bg-warning/5 p-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-start gap-2.5 min-w-0">
         <PauseCircle
-          className="mt-0.5 size-5 shrink-0 text-amber-600 dark:text-amber-400"
+          className="mt-0.5 size-5 shrink-0 text-warning"
           weight="duotone"
           aria-hidden="true"
         />

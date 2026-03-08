@@ -72,7 +72,7 @@ export function SponsorOnboardingPageClient() {
           <Card>
             <CardHeader className="space-y-1">
               <CardTitle className="flex items-center gap-2">
-                <Handshake className="size-5 text-[#15803D]" weight="duotone" aria-hidden="true" />
+                <Handshake className="size-5 text-success" weight="duotone" aria-hidden="true" />
                 {copy.steps.welcome.heading}
               </CardTitle>
               <CardDescription>{copy.steps.welcome.description}</CardDescription>
@@ -143,7 +143,7 @@ export function SponsorOnboardingPageClient() {
           <Card>
             <CardHeader className="space-y-1">
               <CardTitle className="flex items-center gap-2">
-                <CheckCircle className="size-5 text-[#15803D]" weight="duotone" aria-hidden="true" />
+                <CheckCircle className="size-5 text-success" weight="duotone" aria-hidden="true" />
                 {copy.steps.complete.heading}
               </CardTitle>
               <CardDescription>{copy.steps.complete.description}</CardDescription>
