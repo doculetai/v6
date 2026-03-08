@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { MagnifyingGlass, Bell, Moon, Sun } from '@/components/icons';
+import { MagnifyingGlass, Bell, Moon, Sun, CaretLeft, CaretRight } from '@/components/icons';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
 import { dashboardShellCopy, roleDisplayNames } from '@/config/copy/dashboard-shell';
@@ -85,11 +85,13 @@ function MockSidebar({
   activeHref,
   onNavClick,
   collapsed,
+  onToggleCollapsed,
 }: {
   role: DashboardRole;
   activeHref: string;
   onNavClick: (href: string) => void;
   collapsed: boolean;
+  onToggleCollapsed: () => void;
 }) {
   const navConfig = getNavConfig(role);
   const accent = ROLE_ACCENTS[role];
@@ -104,7 +106,7 @@ function MockSidebar({
     <aside
       style={{ '--role-accent': accent.text } as React.CSSProperties}
       className={cn(
-        'flex flex-col h-full bg-sidebar transition-colors duration-150',
+        'flex flex-col h-full overflow-hidden bg-sidebar transition-colors duration-150',
         'border-r border-sidebar-border shadow-[2px_0_12px_rgba(0,0,0,0.05)]',
         collapsed ? 'w-[64px]' : 'w-[240px]',
       )}
@@ -122,9 +124,19 @@ function MockSidebar({
           className={cn('shrink-0', collapsed ? 'size-8' : 'size-10')}
         />
         {!collapsed && (
-          <span className="text-[15px] font-bold tracking-[-0.025em] text-sidebar-foreground">
-            {dashboardShellCopy.brandName}
-          </span>
+          <>
+            <span className="text-[15px] font-bold tracking-[-0.025em] text-sidebar-foreground">
+              {dashboardShellCopy.brandName}
+            </span>
+            <button
+              type="button"
+              onClick={onToggleCollapsed}
+              aria-label={dashboardShellCopy.sidebar.collapseLabel}
+              className="ml-auto flex size-7 shrink-0 cursor-default items-center justify-center rounded-md bg-sidebar-foreground/[0.04] text-sidebar-foreground/35 transition-colors hover:bg-sidebar-foreground/[0.07] hover:text-sidebar-foreground/65"
+            >
+              <CaretLeft className="size-3" weight="bold" aria-hidden="true" />
+            </button>
+          </>
         )}
       </div>
 
@@ -294,6 +306,7 @@ export function SidebarDesignClient() {
           activeHref={activeHref}
           onNavClick={setActiveHref}
           collapsed={collapsed}
+          onToggleCollapsed={() => setCollapsed((v) => !v)}
         />
 
         {/* Main area */}

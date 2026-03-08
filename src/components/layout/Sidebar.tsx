@@ -1,7 +1,7 @@
 'use client';
 
 import { createBrowserClient } from '@supabase/ssr';
-import { CaretDown } from '@/components/icons';
+import { CaretDown, CaretLeft, CaretRight } from '@/components/icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -21,7 +21,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { NotificationsBell } from './NotificationsBell';
 import { SidebarFooter } from './sidebar/SidebarFooter';
 import { SidebarQuickAction } from './sidebar/SidebarQuickAction';
-import { SidebarToggle } from './sidebar/SidebarToggle';
 import { SidebarUserCard } from './sidebar/SidebarUserCard';
 import { routes } from '@/config/routes';
 
@@ -159,7 +158,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         className={cn(
-          'flex flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-md print:hidden',
+          'flex flex-col overflow-hidden border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-md print:hidden',
           !forceVisible && 'hidden md:flex',
           'transition-opacity duration-150 ease-out',
           !hydrated && 'opacity-0',
@@ -190,6 +189,16 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
               </span>
             )}
           </Link>
+          {!visualCollapsed && (
+            <button
+              type="button"
+              onClick={toggleCollapsed}
+              aria-label={dashboardShellCopy.sidebar.collapseLabel}
+              className="ml-auto flex size-7 shrink-0 items-center justify-center rounded-md bg-sidebar-foreground/[0.04] text-sidebar-foreground/35 transition-colors hover:bg-sidebar-foreground/[0.07] hover:text-sidebar-foreground/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+            >
+              <CaretLeft className="size-3" weight="bold" aria-hidden="true" />
+            </button>
+          )}
         </div>
 
         {/* ── Application switcher (student only, expanded mode) ── */}
@@ -298,7 +307,6 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
               role={role}
               className="text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground"
             />
-            <SidebarToggle isCollapsed={visualCollapsed} onToggle={toggleCollapsed} />
           </div>
           <SidebarUserCard role={role} isCollapsed={visualCollapsed} onSignOut={handleLogout} />
           <SidebarFooter isCollapsed={visualCollapsed} />
