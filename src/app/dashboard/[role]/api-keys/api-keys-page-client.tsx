@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Callout } from '@/components/ui/callout';
 import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { partnerCopy } from '@/config/copy/partner';
 import { cn } from '@/lib/utils';
@@ -125,9 +126,12 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
 
       {/* Key limit notice */}
       {atLimit && (
-        <div className="mb-4 rounded-xl border border-amber-300/40 bg-amber-50/60 px-5 py-4 dark:border-amber-500/30 dark:bg-amber-950/20">
-          <p className="text-sm font-medium text-foreground">{keyLimitCopy.heading}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{keyLimitCopy.body}</p>
+        <div className="mb-4">
+          <Callout variant="warning">
+            <span className="font-medium">{keyLimitCopy.heading}</span>
+            {' '}
+            {keyLimitCopy.body}
+          </Callout>
         </div>
       )}
 
@@ -147,14 +151,14 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
               className={cn(
                 'h-full rounded-full transition-all',
                 usageData.total / usageData.dailyLimit >= 0.8
-                  ? 'bg-amber-500'
+                  ? 'bg-warning'
                   : 'bg-primary',
               )}
               style={{ width: `${Math.min((usageData.total / usageData.dailyLimit) * 100, 100)}%` }}
             />
           </div>
           {usageData.total / usageData.dailyLimit >= 0.8 && (
-            <p className="mt-1.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+            <p className="mt-1.5 text-xs font-medium text-warning">
               {usageCopy.warningThreshold}
             </p>
           )}
@@ -163,7 +167,7 @@ export function ApiKeysPageClient({ initialKeys, copy }: Props) {
 
       {/* Reinstatement feedback */}
       {reinstateFeedback && (
-        <p role="status" className="mb-3 text-sm text-[#0F766E]">{reinstateFeedback}</p>
+        <p role="status" className="mb-3 text-sm text-success">{reinstateFeedback}</p>
       )}
 
       {/* Key list */}

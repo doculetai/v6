@@ -392,6 +392,7 @@ export const adminCopy = {
       rejected: "Rejected",
       moreInfoRequested: "More info needed",
       expired: "Expired",
+      escalated: "Escalated",
     },
     tierLabels: {
       tier1: "Tier 1",

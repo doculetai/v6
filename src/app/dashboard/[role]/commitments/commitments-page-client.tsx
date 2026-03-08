@@ -367,7 +367,7 @@ export function CommitmentsPageClient({ copy }: { copy: Copy }) {
             description={copy.empty.description}
             action={
               <Button variant="outline" size="sm" asChild>
-                <Link href={routes.dashboard.sponsor.students}>View students</Link>
+                <Link href={routes.dashboard.sponsor.students}>{copy.empty.viewStudents}</Link>
               </Button>
             }
           />

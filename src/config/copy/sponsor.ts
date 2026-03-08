@@ -287,7 +287,7 @@ export const sponsorCopy = {
   commitments: {
     title: 'Commitments',
     subtitle: 'Your financial pledges and commitment status.',
-    empty: { title: 'No commitments yet', description: 'Commit to a student to fund their education.' },
+    empty: { title: 'No commitments yet', description: 'Commit to a student to fund their education.', viewStudents: 'View students' },
     table: {
       student: 'Student',
       amount: 'Amount',
