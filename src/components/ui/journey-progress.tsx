@@ -18,7 +18,7 @@ interface JourneyProgressProps {
 
 function StagePill({ status, label }: { status: JourneyStage['status']; label: string }) {
   return (
-    <div className="flex flex-col items-center gap-1.5">
+    <div className={cn('flex flex-col items-center gap-1.5', status === 'upcoming' && 'opacity-60 pointer-events-none')}>
       <div
         className={cn(
           'flex h-7 min-w-[6rem] items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold transition-colors',
