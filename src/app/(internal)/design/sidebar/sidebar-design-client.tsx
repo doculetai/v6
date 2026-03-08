@@ -111,7 +111,7 @@ function MockSidebar({
     >
       {/* ── Logo ── */}
       <div className={cn(
-        'flex shrink-0 items-center gap-2.5 border-b border-sidebar-border px-[18px] py-2',
+        'flex h-14 shrink-0 items-center gap-2.5 border-b border-sidebar-border px-[18px]',
         collapsed && 'justify-center px-0',
       )}>
         <Image
