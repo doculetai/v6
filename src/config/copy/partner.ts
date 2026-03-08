@@ -428,6 +428,75 @@ export const partnerCopy = {
     completionMessage: 'Integration active. Students enrolling and verifying through your platform.',
   },
 
+  webhooks: {
+    title: 'Webhooks',
+    subtitle: 'Register endpoint URLs to receive real-time verification events from Doculet.',
+    registerCta: 'Register webhook',
+    table: {
+      url: 'Endpoint URL',
+      events: 'Events',
+      status: 'Status',
+      created: 'Created',
+      actions: 'Actions',
+    },
+    statusLabels: {
+      enabled: 'Enabled',
+      disabled: 'Disabled',
+    },
+    actions: {
+      sendTest: 'Send test',
+      sendingTest: 'Sending…',
+      delete: 'Delete',
+      deleting: 'Deleting…',
+      enable: 'Enable',
+      disable: 'Disable',
+    },
+    registerDialog: {
+      title: 'Register webhook',
+      urlLabel: 'Endpoint URL',
+      urlPlaceholder: 'https://api.yourcompany.com/webhooks/doculet',
+      eventsLabel: 'Events',
+      descriptionLabel: 'Description',
+      descriptionPlaceholder: 'e.g. Production verification events',
+      submitCta: 'Register webhook',
+      submittingCta: 'Registering…',
+      cancelCta: 'Cancel',
+    },
+    eventLabels: {
+      cert_issued: 'Certificate issued',
+      doc_approved: 'Document approved',
+      doc_rejected: 'Document rejected',
+      kyc_complete: 'KYC complete',
+    } as Record<string, string>,
+    secretReveal: {
+      title: 'Webhook registered',
+      description: 'Copy your signing secret now. It will not be shown again.',
+      secretLabel: 'Signing secret',
+      copyCta: 'Copy secret',
+      copied: 'Copied',
+      doneCta: 'Done',
+    },
+    deleteDialog: {
+      title: 'Delete this webhook?',
+      description: 'No further events will be delivered to this endpoint. This action cannot be undone.',
+      confirmCta: 'Delete webhook',
+      cancelCta: 'Cancel',
+    },
+    testResult: {
+      success: (statusCode: number) => `Test delivered — HTTP ${statusCode}.`,
+      failure: 'Test delivery failed. Check the endpoint URL and try again.',
+    },
+    empty: {
+      title: 'No webhooks configured',
+      description: 'Register a webhook to receive real-time events when students complete verification.',
+      cta: 'Register your first webhook',
+    },
+    error: {
+      title: 'Failed to load webhooks',
+      description: 'Please refresh the page to try again.',
+    },
+  },
+
   nav: {
     dashboard: "Dashboard",
     apiKeys: "API keys",

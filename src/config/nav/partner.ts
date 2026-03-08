@@ -1,4 +1,13 @@
-import { BarChart3, FileText, Home, Key, Palette, Settings, Users } from 'lucide-react';
+import {
+  ChartBar,
+  FileText,
+  Gear,
+  House,
+  Key,
+  PaintBrush,
+  Users,
+  WebhooksLogo,
+} from '@phosphor-icons/react/dist/ssr';
 
 import type { NavConfig } from './types';
 
@@ -12,7 +21,7 @@ export const partnerNavConfig: NavConfig = {
     {
       label: 'Overview',
       href: '/dashboard/partner',
-      icon: Home,
+      icon: House,
       description: 'Platform metrics',
       isPrimary: true,
     },
@@ -26,7 +35,7 @@ export const partnerNavConfig: NavConfig = {
     {
       label: 'Analytics',
       href: '/dashboard/partner/analytics',
-      icon: BarChart3,
+      icon: ChartBar,
       description: 'Usage and conversion data',
       group: 'platform',
     },
@@ -38,16 +47,23 @@ export const partnerNavConfig: NavConfig = {
       group: 'developer',
     },
     {
+      label: 'Webhooks',
+      href: '/dashboard/partner/webhooks',
+      icon: WebhooksLogo,
+      description: 'Configure event endpoints',
+      group: 'developer',
+    },
+    {
       label: 'Branding',
       href: '/dashboard/partner/branding',
-      icon: Palette,
+      icon: PaintBrush,
       description: 'White-label customization',
       group: 'developer',
     },
     {
       label: 'Settings',
       href: '/dashboard/partner/settings',
-      icon: Settings,
+      icon: Gear,
       description: 'Partner settings',
       group: 'account',
       mobileHidden: true,
