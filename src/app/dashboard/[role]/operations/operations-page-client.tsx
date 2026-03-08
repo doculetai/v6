@@ -5,10 +5,11 @@ import { useEffect, useState } from 'react';
 import { AdminOperationsBulkBar } from '@/components/admin/AdminOperationsBulkBar';
 import { AdminOperationsReviewDialog } from '@/components/admin/AdminOperationsReviewDialog';
 import { AdminOperationsTable } from '@/components/admin/AdminOperationsTable';
+import { StudentRecordDrawer } from '@/components/admin/StudentRecordDrawer';
 import { FilterBar } from '@/components/ui/filter-bar';
 import { MetricCard } from '@/components/ui/metric-card';
 import { adminCopy } from '@/config/copy/admin';
-import type { DocumentStatus, OperationsQueueRow, OperationsStats, StatusFilter } from '@/db/queries/admin-operations';
+import type { OperationsQueueRow, OperationsStats, StatusFilter } from '@/db/queries/admin-operations';
 import { trpc } from '@/trpc/client';
 
 interface OperationsPageClientProps {
@@ -35,6 +36,8 @@ export default function OperationsPageClient({
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [reviewTarget, setReviewTarget] = useState<OperationsQueueRow | null>(null);
+  const [drawerStudentId, setDrawerStudentId] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
@@ -69,6 +72,12 @@ export default function OperationsPageClient({
     },
   });
 
+  const issueCertMutation = trpc.admin.issueCertificate.useMutation({
+    onSuccess: () => {
+      void utils.admin.getOperationsQueue.invalidate();
+    },
+  });
+
   function handleSelect(id: string, checked: boolean) {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -82,13 +91,24 @@ export default function OperationsPageClient({
     setSelectedIds(checked ? new Set(queue.map((r) => r.id)) : new Set());
   }
 
-  function handleBulkAction(status: DocumentStatus) {
+  type ReviewAction = 'approved' | 'rejected' | 'more_info_requested';
+
+  function handleBulkAction(status: ReviewAction) {
     bulkMutation.mutate({ documentIds: Array.from(selectedIds), status });
   }
 
-  function handleReviewDecision(status: DocumentStatus, reason?: string) {
+  function handleReviewDecision(status: ReviewAction, reason?: string) {
     if (!reviewTarget) return;
     reviewMutation.mutate({ documentId: reviewTarget.id, status, reason });
+  }
+
+  function handleStudentClick(studentId: string) {
+    setDrawerStudentId(studentId);
+    setDrawerOpen(true);
+  }
+
+  function handleIssueCertificate(studentId: string) {
+    issueCertMutation.mutate({ studentId });
   }
 
   const filterChips = STATUS_FILTER_CHIPS.map((chip) => {
@@ -146,6 +166,9 @@ export default function OperationsPageClient({
         onSelect={handleSelect}
         onSelectAll={handleSelectAll}
         onReview={setReviewTarget}
+        onStudentClick={handleStudentClick}
+        onIssueCertificate={handleIssueCertificate}
+        isIssuingCert={issueCertMutation.isPending}
         emptyLabel={queueLoading ? undefined : copy.empty.description}
       />
 
@@ -168,6 +191,16 @@ export default function OperationsPageClient({
         onClose={() => setReviewTarget(null)}
         onDecision={handleReviewDecision}
         isLoading={isMutating}
+      />
+
+      {/* Student record drawer */}
+      <StudentRecordDrawer
+        studentId={drawerStudentId}
+        open={drawerOpen}
+        onOpenChange={(open) => {
+          setDrawerOpen(open);
+          if (!open) setDrawerStudentId(null);
+        }}
       />
     </div>
   );

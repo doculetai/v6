@@ -8,11 +8,13 @@ export const adminOperationsFixtures = {
     rejectionReason: null,
     reviewedAt: null,
     createdAt: new Date('2026-02-10T09:00:00Z'),
+    studentId: 'user-001',
     studentEmail: 'aisha.ibrahim@example.com',
     reviewerEmail: null,
     schoolName: 'University of Michigan',
     kycStatus: 'verified',
     bankStatus: 'not_started',
+    allDocsApproved: false,
   } satisfies OperationsQueueRow,
 
   approvedRow: {
@@ -22,11 +24,13 @@ export const adminOperationsFixtures = {
     rejectionReason: null,
     reviewedAt: new Date('2026-02-15T14:30:00Z'),
     createdAt: new Date('2026-02-12T11:00:00Z'),
+    studentId: 'user-002',
     studentEmail: 'emeka.okonkwo@example.com',
     reviewerEmail: 'admin@doculet.ai',
     schoolName: 'Boston University',
     kycStatus: 'verified',
     bankStatus: 'verified',
+    allDocsApproved: true,
   } satisfies OperationsQueueRow,
 
   rejectedRow: {
@@ -36,11 +40,13 @@ export const adminOperationsFixtures = {
     rejectionReason: 'Document appears to be altered. Please resubmit the original.',
     reviewedAt: new Date('2026-02-14T16:00:00Z'),
     createdAt: new Date('2026-02-11T08:00:00Z'),
+    studentId: 'user-003',
     studentEmail: 'fatima.aliyu@example.com',
     reviewerEmail: 'admin@doculet.ai',
     schoolName: null,
     kycStatus: 'pending',
     bankStatus: 'not_started',
+    allDocsApproved: false,
   } satisfies OperationsQueueRow,
 
   moreInfoRow: {
@@ -50,11 +56,13 @@ export const adminOperationsFixtures = {
     rejectionReason: 'Notarisation stamp is not clearly visible. Please resubmit.',
     reviewedAt: new Date('2026-02-16T10:00:00Z'),
     createdAt: new Date('2026-02-13T13:45:00Z'),
+    studentId: 'user-004',
     studentEmail: 'chidi.nwosu@example.com',
     reviewerEmail: 'admin@doculet.ai',
     schoolName: 'Northeastern University',
     kycStatus: 'verified',
     bankStatus: 'not_started',
+    allDocsApproved: false,
   } satisfies OperationsQueueRow,
 
   stats: {
@@ -62,6 +70,7 @@ export const adminOperationsFixtures = {
     approved: 47,
     rejected: 8,
     moreInfoRequested: 3,
+    expired: 0,
     approvedToday: 5,
     rejectedToday: 2,
   } satisfies OperationsStats,
