@@ -4,9 +4,18 @@ import { cn } from "@/lib/utils"
 type StatusBadgeStatus =
   | "pending"
   | "verified"
+  | "approved"
   | "rejected"
   | "attention"
+  | "under_review"
+  | "more_info_needed"
+  | "expiry_soon"
   | "expired"
+  | "paused"
+  | "frozen"
+  | "active"
+  | "complete"
+  | "locked"
 
 type StatusBadgeSize = "sm" | "md" | "lg"
 
@@ -18,11 +27,20 @@ interface StatusBadgeProps {
 }
 
 const DEFAULT_LABELS: Record<StatusBadgeStatus, string> = {
-  pending: primitivesCopy.statusBadge.pending,
-  verified: primitivesCopy.statusBadge.verified,
-  rejected: primitivesCopy.statusBadge.rejected,
-  attention: primitivesCopy.statusBadge.attention,
-  expired: primitivesCopy.statusBadge.expired,
+  pending:          primitivesCopy.statusBadge.pending,
+  verified:         primitivesCopy.statusBadge.verified,
+  approved:         primitivesCopy.statusBadge.approved,
+  rejected:         primitivesCopy.statusBadge.rejected,
+  attention:        primitivesCopy.statusBadge.attention,
+  under_review:     primitivesCopy.statusBadge.under_review,
+  more_info_needed: primitivesCopy.statusBadge.more_info_needed,
+  expiry_soon:      primitivesCopy.statusBadge.expiry_soon,
+  expired:          primitivesCopy.statusBadge.expired,
+  paused:           primitivesCopy.statusBadge.paused,
+  frozen:           primitivesCopy.statusBadge.frozen,
+  active:           primitivesCopy.statusBadge.active,
+  complete:         primitivesCopy.statusBadge.complete,
+  locked:           primitivesCopy.statusBadge.locked,
 }
 
 const STATUS_STYLES: Record<StatusBadgeStatus, { badge: string; dot: string }> = {
@@ -34,6 +52,18 @@ const STATUS_STYLES: Record<StatusBadgeStatus, { badge: string; dot: string }> =
     badge: "bg-success/10 text-success",
     dot: "bg-success",
   },
+  approved: {
+    badge: "bg-success/10 text-success",
+    dot: "bg-success",
+  },
+  complete: {
+    badge: "bg-success/10 text-success",
+    dot: "bg-success",
+  },
+  active: {
+    badge: "bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-400",
+    dot: "bg-blue-600",
+  },
   rejected: {
     badge: "bg-destructive/10 text-destructive",
     dot: "bg-destructive",
@@ -42,7 +72,31 @@ const STATUS_STYLES: Record<StatusBadgeStatus, { badge: string; dot: string }> =
     badge: "bg-warning/10 text-warning",
     dot: "bg-warning",
   },
+  under_review: {
+    badge: "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400",
+    dot: "bg-amber-500",
+  },
+  more_info_needed: {
+    badge: "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400",
+    dot: "bg-amber-500",
+  },
+  expiry_soon: {
+    badge: "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400",
+    dot: "bg-amber-500",
+  },
   expired: {
+    badge: "bg-muted text-muted-foreground",
+    dot: "bg-muted-foreground",
+  },
+  paused: {
+    badge: "bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-400",
+    dot: "bg-amber-500",
+  },
+  frozen: {
+    badge: "bg-destructive/10 text-destructive",
+    dot: "bg-destructive",
+  },
+  locked: {
     badge: "bg-muted text-muted-foreground",
     dot: "bg-muted-foreground",
   },
