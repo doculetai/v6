@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
-import type { DashboardRole } from '@/config/roles';
+import { ROLE_ACCENTS, type DashboardRole } from '@/config/roles';
 
 import { NotificationsBell } from './NotificationsBell';
 import { Sidebar } from './Sidebar';
@@ -15,15 +15,6 @@ import { Sidebar } from './Sidebar';
 type TopBarProps = {
   role: DashboardRole;
   currentPath: string;
-};
-
-const ROLE_ACCENT_HEX: Record<DashboardRole, string> = {
-  student:    '#2B39A3',
-  sponsor:    '#15803D',
-  university: '#0369A1',
-  admin:      '#C2410C',
-  agent:      '#6D28D9',
-  partner:    '#0F766E',
 };
 
 function getPageLabel(currentPath: string, role: DashboardRole): string {
@@ -45,7 +36,7 @@ function triggerCommandPalette() {
 export function TopBar({ role, currentPath }: TopBarProps) {
   const [open, setOpen] = useState(false);
   const pageLabel = getPageLabel(currentPath, role);
-  const accentHex = ROLE_ACCENT_HEX[role];
+  const accentHex = ROLE_ACCENTS[role].text;
 
   return (
     <>
