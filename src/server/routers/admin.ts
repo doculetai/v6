@@ -16,8 +16,10 @@ import {
 import {
   bulkReviewDocuments,
   getCertReadyStudents,
+  getCertsIssuedToday,
   getOperationsQueue,
   getOperationsStats,
+  getPlatformBalance,
   getStudentRecord,
   reviewDocument,
   validateAndIssueCertificate,
@@ -97,6 +99,20 @@ export const adminRouter = createTRPCRouter({
     .output(operationsStatsSchema)
     .query(async ({ ctx }) => {
       return getOperationsStats(ctx.db);
+    }),
+
+  getPlatformBalance: roleProcedure('admin')
+    .output(z.object({ totalKobo: z.number() }))
+    .query(async ({ ctx }) => {
+      const totalKobo = await getPlatformBalance(ctx.db);
+      return { totalKobo };
+    }),
+
+  getCertsIssuedToday: roleProcedure('admin')
+    .output(z.object({ count: z.number() }))
+    .query(async ({ ctx }) => {
+      const count = await getCertsIssuedToday(ctx.db);
+      return { count };
     }),
 
   getCertReadyStudents: roleProcedure('admin')

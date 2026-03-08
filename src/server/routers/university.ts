@@ -11,6 +11,17 @@ const overviewOutputSchema = z.object({
   enrolledStudents: z.number().int().min(0),
   pendingApplications: z.number().int().min(0),
   totalStudents: z.number().int().min(0),
+  certsIssued: z.number().int().min(0),
+  avgProofTargetKobo: z.number().min(0),
+  programs: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      enrolledCount: z.number().int().min(0),
+      certsIssued: z.number().int().min(0),
+      tuitionAmount: z.number().int().min(0),
+    }),
+  ),
 });
 
 export type UniversityOverviewOutput = z.infer<typeof overviewOutputSchema>;

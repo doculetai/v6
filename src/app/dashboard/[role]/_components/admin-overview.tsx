@@ -1,4 +1,4 @@
-import { ArrowRight, ClipboardText, Warning } from '@/components/icons';
+import { ArrowRight, CheckCircle, ClipboardText, Warning, XCircle } from '@/components/icons';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -8,7 +8,6 @@ import {
   PageShell,
   Section,
 } from '@/components/layout/content-primitives';
-import { FxRateCard } from '@/components/shared/FxRateCard';
 import { adminCopy } from '@/config/copy/admin';
 import { cn } from '@/lib/utils';
 import { api } from '@/trpc/server';
@@ -20,22 +19,65 @@ type AdminOverviewProps = {
   caller: Awaited<ReturnType<typeof api>>;
 };
 
+function formatNgn(kobo: number): string {
+  const naira = kobo / 100;
+  if (naira >= 1_000_000_000) return `₦ ${(naira / 1_000_000_000).toFixed(2)}B`;
+  if (naira >= 1_000_000) return `₦ ${(naira / 1_000_000).toFixed(1)}M`;
+  if (naira >= 1_000) return `₦ ${(naira / 1_000).toFixed(0)}k`;
+  return `₦ ${naira.toLocaleString('en-NG')}`;
+}
+
+type KpiPillProps = {
+  label: string;
+  value: string;
+  status: 'up' | 'warn' | 'down';
+};
+
+function KpiPill({ label, value, status }: KpiPillProps) {
+  const dotClass =
+    status === 'up'
+      ? 'bg-emerald-500'
+      : status === 'warn'
+        ? 'bg-amber-500'
+        : 'bg-destructive';
+  return (
+    <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5">
+      <span className={cn('size-1.5 shrink-0 rounded-full', dotClass)} aria-hidden="true" />
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-xs font-semibold text-foreground">{value}</span>
+    </div>
+  );
+}
+
 export async function AdminOverview({ caller }: AdminOverviewProps) {
   const copy = adminCopy.overview;
 
-  const [statsResult, riskResult, queueResult, fxResult] = await Promise.allSettled([
-    caller.admin.getOperationsStats(),
-    caller.admin.getRiskFlags(),
-    caller.admin.getOperationsQueue({ limit: 5 }),
-    caller.admin.getLatestFxRate(),
-  ]);
+  const [statsResult, riskResult, queueResult, fxResult, balanceResult, certsResult] =
+    await Promise.allSettled([
+      caller.admin.getOperationsStats(),
+      caller.admin.getRiskFlags(),
+      caller.admin.getOperationsQueue({ limit: 5 }),
+      caller.admin.getLatestFxRate(),
+      caller.admin.getPlatformBalance(),
+      caller.admin.getCertsIssuedToday(),
+    ]);
 
   const stats = statsResult.status === 'fulfilled' ? statsResult.value : null;
   const riskFlags = riskResult.status === 'fulfilled' ? riskResult.value : [];
   const recentQueue = queueResult.status === 'fulfilled' ? queueResult.value : [];
   const fxRate = fxResult.status === 'fulfilled' ? fxResult.value : null;
+  const platformBalanceKobo = balanceResult.status === 'fulfilled' ? balanceResult.value.totalKobo : null;
+  const certsToday = certsResult.status === 'fulfilled' ? certsResult.value.count : 0;
 
   const hasPendingItems = (stats?.pending ?? 0) > 0 || riskFlags.length > 0;
+
+  const platformBalanceLabel = platformBalanceKobo !== null
+    ? formatNgn(platformBalanceKobo)
+    : '—';
+
+  const fxLabel = fxRate?.rateX100
+    ? `≈ $1 @ ₦ ${(fxRate.rateX100 / 100).toLocaleString('en-NG')}`
+    : null;
 
   return (
     <PageShell width="wide">
@@ -78,6 +120,32 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
           </div>
         )}
 
+        {/* ── KPI pills ─────────────────────────────────────────────────── */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          <KpiPill
+            label="Review queue"
+            value={stats ? `${stats.pending} pending` : '—'}
+            status={stats?.pending ? 'warn' : 'up'}
+          />
+          <KpiPill
+            label="Risk flags"
+            value={`${riskFlags.length} open`}
+            status={riskFlags.length > 0 ? 'warn' : 'up'}
+          />
+          <KpiPill
+            label="Certs issued"
+            value={`${certsToday} today`}
+            status="up"
+          />
+          {fxRate?.rateX100 ? (
+            <KpiPill
+              label="FX rate"
+              value={`₦ ${(fxRate.rateX100 / 100).toLocaleString('en-NG')}/$`}
+              status="up"
+            />
+          ) : null}
+        </div>
+
         {/* ── Stat cards ───────────────────────────────────────────────── */}
         <Grid cols={{ sm: 2, lg: 4 }} gap="md" className="mb-6">
           <StatCard
@@ -94,9 +162,9 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
             href={routes.dashboard.admin.operations}
           />
           <StatCard
-            label={copy.stats.rejectedToday.label}
-            value={stats ? String(stats.rejectedToday) : '—'}
-            sub={copy.stats.rejectedToday.sub}
+            label="Platform balance"
+            value={platformBalanceLabel}
+            sub={fxLabel ?? 'total verified funds'}
             href={routes.dashboard.admin.operations}
           />
           <StatCard
@@ -108,16 +176,7 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
           />
         </Grid>
 
-        {/* ── FX rate card ──────────────────────────────────────────────── */}
-        <div className="mb-6">
-          <FxRateCard
-            rateX100={fxRate?.rateX100 ?? null}
-            fetchedAt={fxRate?.fetchedAt ?? null}
-            source={fxRate?.source ?? null}
-          />
-        </div>
-
-        {/* ── Recent operations ────────────────────────────────────────── */}
+        {/* ── Activity timeline ────────────────────────────────────────── */}
         <div>
           <SectionHeader
             title={copy.recentOperations.heading}
@@ -135,6 +194,8 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
           {recentQueue.length > 0 ? (
             <ul role="list" className="divide-y divide-border">
               {recentQueue.slice(0, 5).map((item) => {
+                const isApproved = item.status === 'approved';
+                const isRejected = item.status === 'rejected';
                 const statusLabel =
                   item.status === 'more_info_requested'
                     ? adminCopy.operations.statusLabels.moreInfoRequested
@@ -142,9 +203,18 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
                 return (
                   <li
                     key={item.id}
-                    className="flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-muted/30"
+                    className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/30"
                   >
-                    <div className="min-w-0">
+                    <span className="shrink-0" aria-hidden="true">
+                      {isApproved ? (
+                        <CheckCircle className="size-4 text-emerald-600" weight="duotone" />
+                      ) : isRejected ? (
+                        <XCircle className="size-4 text-destructive" weight="duotone" />
+                      ) : (
+                        <ClipboardText className="size-4 text-muted-foreground" weight="duotone" />
+                      )}
+                    </span>
+                    <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-foreground truncate">
                         {item.studentEmail}
                       </p>

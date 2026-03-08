@@ -2,12 +2,14 @@ import { ArrowRight, Buildings, GraduationCap } from '@/components/icons';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
+import { SectionHeader } from '@/components/ui/section-header';
 import {
   Grid,
   PageShell,
   Section,
 } from '@/components/layout/content-primitives';
 import { universityCopy } from '@/config/copy/university';
+import { cn } from '@/lib/utils';
 import { api } from '@/trpc/server';
 
 import { StatCard } from './overview-shared';
@@ -16,6 +18,13 @@ import { routes } from '@/config/routes';
 type UniversityOverviewProps = {
   caller: Awaited<ReturnType<typeof api>>;
 };
+
+function formatNgn(kobo: number): string {
+  const naira = kobo / 100;
+  if (naira >= 1_000_000) return `₦ ${(naira / 1_000_000).toFixed(1)}M`;
+  if (naira >= 1_000) return `₦ ${(naira / 1_000).toFixed(0)}k`;
+  return `₦ ${naira.toLocaleString('en-NG')}`;
+}
 
 export async function UniversityOverview({ caller }: UniversityOverviewProps) {
   const copy = universityCopy.overview;
@@ -29,7 +38,9 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
   const totalPrograms = data?.totalPrograms ?? 0;
   const enrolledStudents = data?.enrolledStudents ?? 0;
   const pendingApplications = data?.pendingApplications ?? 0;
-  const totalStudents = data?.totalStudents ?? 0;
+  const certsIssued = data?.certsIssued ?? 0;
+  const avgProofTargetKobo = data?.avgProofTargetKobo ?? 0;
+  const programRows = data?.programs ?? [];
 
   // Derive next action from state
   const nextAction =
@@ -39,7 +50,7 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
         ? universityCopy.journey.nextActions.monitor_enrolment
         : null;
 
-  const isEmpty = totalPrograms === 0 && enrolledStudents === 0 && pendingApplications === 0;
+  const isEmpty = totalPrograms === 0 && enrolledStudents === 0;
 
   return (
     <PageShell width="wide">
@@ -81,33 +92,87 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
         {/* ── Stat cards ──────────────────────────────────────────────────── */}
         <Grid cols={{ sm: 2, lg: 4 }} gap="md" className="mb-6">
           <StatCard
-            label={copy.metrics.totalPrograms}
-            value={String(totalPrograms)}
-            sub={universityCopy.programs.subtitle}
-            accent={totalPrograms > 0}
-            href={routes.dashboard.university.programs}
-          />
-          <StatCard
-            label={copy.metrics.enrolledStudents}
+            label={copy.metrics.totalStudents}
             value={String(enrolledStudents)}
             sub={universityCopy.students.subtitle}
             accent={enrolledStudents > 0}
             href={routes.dashboard.university.students}
           />
           <StatCard
-            label={copy.metrics.pendingApplications}
-            value={String(pendingApplications)}
-            sub={universityCopy.pipeline.stats.pendingReview}
-            accent={pendingApplications > 0}
-            href={routes.dashboard.university.pipeline}
-          />
-          <StatCard
-            label={copy.metrics.totalStudents}
-            value={String(totalStudents)}
-            sub={universityCopy.pipeline.stats.total}
+            label="Certs issued"
+            value={String(certsIssued)}
+            sub="proof of funds"
+            accent={certsIssued > 0}
             href={routes.dashboard.university.students}
           />
+          <StatCard
+            label={copy.metrics.totalPrograms}
+            value={String(totalPrograms)}
+            sub={universityCopy.programs.subtitle}
+            href={routes.dashboard.university.programs}
+          />
+          <StatCard
+            label="Avg proof target"
+            value={avgProofTargetKobo > 0 ? formatNgn(avgProofTargetKobo) : '—'}
+            sub="all programmes"
+            href={routes.dashboard.university.programs}
+          />
         </Grid>
+
+        {/* ── Programs table with progress ─────────────────────────────── */}
+        {!isEmpty && programRows.length > 0 && (
+          <div className="mb-6">
+            <SectionHeader
+              title="Programmes"
+              action={
+                <Link
+                  href={routes.dashboard.university.programs}
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-primary/70 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+                >
+                  <span>Manage</span>
+                  <ArrowRight className="size-3" weight="duotone" aria-hidden="true" />
+                </Link>
+              }
+            />
+            <ul role="list" className="divide-y divide-border">
+              {programRows.map((prog) => {
+                const total = prog.enrolledCount;
+                const pct = total > 0 ? Math.round((prog.certsIssued / total) * 100) : 0;
+                return (
+                  <li key={prog.id} className="px-4 py-3.5">
+                    <div className="flex items-center justify-between gap-4 mb-2">
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">{prog.name}</p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {prog.enrolledCount} enrolled &middot; {prog.certsIssued} certs
+                        </p>
+                      </div>
+                      <span className="shrink-0 text-xs font-semibold text-foreground font-mono">
+                        {pct}%
+                      </span>
+                    </div>
+                    <div
+                      className="h-1.5 w-full rounded-full bg-muted overflow-hidden"
+                      role="progressbar"
+                      aria-valuenow={pct}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-label={`${prog.name} — ${pct}% of students certified`}
+                    >
+                      <div
+                        className={cn(
+                          'h-full rounded-full transition-all',
+                          pct >= 70 ? 'bg-emerald-500' : pct >= 40 ? 'bg-primary' : 'bg-muted-foreground/40',
+                        )}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
 
         {/* ── Empty state ──────────────────────────────────────────────────── */}
         {isEmpty && (

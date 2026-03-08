@@ -2,7 +2,7 @@ import { and, desc, eq, gte, ilike, inArray, lt, not, notExists, sql } from 'dri
 import { alias } from 'drizzle-orm/pg-core';
 
 import type { DrizzleDB } from '@/db';
-import { bankAccounts, certificatePayments, certificates, documents, notifications, profiles, programs, schools, sponsorships, studentProfiles, users } from '@/db/schema';
+import { balanceVerifications, bankAccounts, certificatePayments, certificates, documents, notifications, profiles, programs, schools, sponsorships, studentProfiles, users } from '@/db/schema';
 import { createTamperEvidentToken } from '@/server/routers/student-proof-utils';
 
 export interface StudentRecordDoc {
@@ -607,4 +607,22 @@ export async function validateAndIssueCertificate(
     issuedAt: created.issuedAt,
     paymentStatus: created.paymentStatus as 'paid' | 'waived',
   };
+}
+
+export async function getPlatformBalance(db: DrizzleDB): Promise<number> {
+  const [row] = await db
+    .select({ totalKobo: sql<number>`coalesce(sum(${balanceVerifications.verifiedAmountKobo}), 0)::bigint` })
+    .from(balanceVerifications);
+  return row?.totalKobo ?? 0;
+}
+
+export async function getCertsIssuedToday(db: DrizzleDB): Promise<number> {
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
+  const [row] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(certificates)
+    .where(and(gte(certificates.issuedAt, startOfDay), lt(certificates.issuedAt, endOfDay)));
+  return row?.count ?? 0;
 }
