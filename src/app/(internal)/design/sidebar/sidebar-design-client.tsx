@@ -3,11 +3,12 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { MagnifyingGlass, Bell } from '@/components/icons';
+import { MagnifyingGlass, Bell, Moon, Sun } from '@/components/icons';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
 import { dashboardShellCopy, roleDisplayNames } from '@/config/copy/dashboard-shell';
 import { dashboardRoles, type DashboardRole } from '@/config/roles';
+import { useTheme } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
 
 // ── Role accents ─────────────────────────────────────────────────────────────
@@ -107,7 +108,7 @@ function MockSidebar({
     <aside
       style={{ '--role-accent': accent.text } as React.CSSProperties}
       className={cn(
-        'flex flex-col h-full bg-sidebar transition-[width] duration-150 ease-out',
+        'flex flex-col h-full bg-sidebar transition-colors duration-150',
         'border-r border-sidebar-border shadow-[2px_0_12px_rgba(0,0,0,0.05)]',
         collapsed ? 'w-[64px]' : 'w-[240px]',
       )}
@@ -230,6 +231,7 @@ export function SidebarDesignClient() {
   const [activeRole, setActiveRole] = useState<DashboardRole>('student');
   const [activeHref, setActiveHref] = useState('/dashboard/student/overview');
   const [collapsed, setCollapsed] = useState(false);
+  const { isDark, toggleMode } = useTheme();
 
   const accent = ROLE_ACCENTS[activeRole];
   const user = MOCK_USERS[activeRole];
@@ -265,7 +267,17 @@ export function SidebarDesignClient() {
             </button>
           ))}
         </div>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-3">
+          <button
+            type="button"
+            onClick={toggleMode}
+            aria-label={isDark ? dashboardShellCopy.sidebar.themeToggle.light : dashboardShellCopy.sidebar.themeToggle.dark}
+            className="flex size-7 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:bg-muted transition-colors"
+          >
+            {isDark
+              ? <Sun className="size-3.5" weight="duotone" aria-hidden="true" />
+              : <Moon className="size-3.5" weight="duotone" aria-hidden="true" />}
+          </button>
           <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Sidebar</span>
           <button
             type="button"
@@ -364,6 +376,7 @@ export function SidebarDesignClient() {
         <span><strong className="text-foreground/60">Accent:</strong> <code style={{ color: accent.text }}>{accent.text}</code></span>
         <span><strong className="text-foreground/60">Route:</strong> <code className="text-muted-foreground">{activeHref}</code></span>
         <span><strong className="text-foreground/60">Width:</strong> {collapsed ? '64px' : '240px'}</span>
+        <span><strong className="text-foreground/60">Mode:</strong> {isDark ? 'dark' : 'light'}</span>
         <a href="/design/sidebar" className="ml-auto text-muted-foreground/50 hover:text-muted-foreground text-[10px] underline">reload</a>
       </div>
     </div>
