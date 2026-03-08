@@ -74,7 +74,7 @@ export function TopBar({ role, currentPath }: TopBarProps) {
       </header>
 
       {/* Desktop topbar — visible on lg+ for all roles */}
-      <div className="hidden h-14 items-center justify-between border-b border-border bg-background px-6 lg:flex">
+      <div className="hidden h-14 items-center gap-3 border-b border-border bg-background px-7 lg:flex">
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <span>Dashboard</span>
@@ -86,7 +86,7 @@ export function TopBar({ role, currentPath }: TopBarProps) {
         <button
           type="button"
           onClick={triggerCommandPalette}
-          className="flex w-56 items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 py-2 text-sm text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex h-[34px] flex-1 max-w-[300px] mx-auto items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 text-[13px] text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={dashboardShellCopy.topbar.searchPlaceholder}
         >
           <MagnifyingGlass className="size-4 shrink-0" weight="duotone" aria-hidden="true" />
