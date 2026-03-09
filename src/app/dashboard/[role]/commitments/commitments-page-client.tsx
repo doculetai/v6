@@ -349,7 +349,7 @@ export function CommitmentsPageClient({ copy }: { copy: Copy }) {
               aria-hidden="true"
             />
             <p className="text-sm font-medium text-foreground">
-              {copy.empty.title}
+              {copy.loadError}
             </p>
           </div>
         </Section>

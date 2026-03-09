@@ -22,6 +22,7 @@ import { initiatePaystackTransfer } from '@/lib/paystack/initiate-transfer';
 import { sendSponsorshipStatusEmail } from '@/lib/email/send-sponsorship-status-email';
 import { sendSponsorResponseEmail } from '@/lib/email/send-sponsor-response-email';
 
+import { getCachedNgnToUsdRate } from '@/db/queries/exchange-rates';
 import { createTRPCRouter, publicProcedure, roleProcedure } from '../trpc';
 
 const invitationStatusSchema = z.enum(['pending', 'accepted', 'declined', 'cancelled']);
@@ -177,6 +178,7 @@ export const sponsorRouter = createTRPCRouter({
         activeStudents: z.number(),
         pendingInvites: z.number(),
         nextDisbursementAt: z.date().nullable(),
+        ngnToUsdRate: z.number(),
       }),
     )
     .query(async ({ ctx }) => {
@@ -219,11 +221,14 @@ export const sponsorRouter = createTRPCRouter({
         .filter((s) => s.status === 'active')
         .reduce((sum, s) => sum + s.amountKobo, 0);
 
+      const ngnToUsdRate = await getCachedNgnToUsdRate(ctx.db);
+
       return {
         totalCommittedKobo,
         activeStudents: activeSponsorshipIds.length,
         pendingInvites: inviteRows.length,
         nextDisbursementAt,
+        ngnToUsdRate,
       };
     }),
 

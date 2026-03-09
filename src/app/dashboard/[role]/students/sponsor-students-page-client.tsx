@@ -72,8 +72,10 @@ function StatusBadge({
 
   const className =
     status === 'active'
-      ? 'bg-primary/10 text-primary border-0'
-      : 'bg-muted text-muted-foreground border-0';
+      ? 'bg-success/10 text-success border-0'
+      : status === 'completed'
+        ? 'bg-primary/10 text-primary border-0'
+        : 'bg-muted text-muted-foreground border-0';
 
   return <Badge className={className}>{label}</Badge>;
 }
@@ -97,7 +99,7 @@ function PendingInvitesList({ invites, copy }: { invites: Invite[]; copy: Copy }
       void utils.sponsor.listPendingInvites.invalidate();
     },
     onError: () => {
-      setInviteError('Could not respond to invite. Please try again.');
+      setInviteError(sponsorCopyData.studentDetail.errors.respondFailed);
     },
   });
 
@@ -277,7 +279,7 @@ function ActiveStudentsList({
                       <AlertDialogTrigger asChild>
                         <button
                           type="button"
-                          className="text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          className="min-h-[44px] px-2 text-xs font-medium text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           {copy.active.cancelSponsorship}
                         </button>

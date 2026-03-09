@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
   Grid,
+  PageHeader,
   PageShell,
   Section,
 } from '@/components/layout/content-primitives';
@@ -23,17 +24,26 @@ type SponsorOverviewProps = {
 
 // ── Status badge ───────────────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: string }) {
-  const isActive = status === 'active';
+  const statusLabels = sponsorCopy.students.statusLabels;
+  const label = status in statusLabels
+    ? statusLabels[status as keyof typeof statusLabels]
+    : status.charAt(0).toUpperCase() + status.slice(1);
+
+  const className =
+    status === 'active'
+      ? 'bg-success/10 text-success'
+      : status === 'completed'
+        ? 'bg-primary/10 text-primary'
+        : 'bg-muted text-muted-foreground';
+
   return (
     <span
       className={cn(
         'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold',
-        isActive
-          ? 'bg-primary/10 text-primary'
-          : 'bg-muted text-muted-foreground',
+        className,
       )}
     >
-      {isActive ? sponsorCopy.students.statusLabels.active : status.charAt(0).toUpperCase() + status.slice(1)}
+      {label}
     </span>
   );
 }
@@ -63,21 +73,25 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
   const totalCommitted = overview?.totalCommittedKobo ?? 0;
   const activeStudents = overview?.activeStudents ?? 0;
   const pendingInvites = overview?.pendingInvites ?? 0;
+  const ngnToUsdRate = overview?.ngnToUsdRate ?? 0;
   const nextAction = journeyState.nextAction;
+
+  function formatDual(kobo: number): string {
+    const ngn = formatNGN(kobo);
+    if (!ngnToUsdRate) return ngn;
+    const usdAmount = Math.round((kobo / 100) * ngnToUsdRate);
+    return `${ngn} · $${usdAmount.toLocaleString('en-US')} USD`;
+  }
 
   return (
     <PageShell width="wide">
       <Section>
 
         {/* ── Page header ─────────────────────────────────────────────────── */}
-        <div className="mb-6">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/80">
-            {copy.subtitle}
-          </p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
-            {copy.welcomeTitle(firstName)}
-          </h1>
-        </div>
+        <PageHeader
+          title={copy.welcomeTitle(firstName)}
+          overline={copy.subtitle}
+        />
 
         {/* ── Pending invites alert ────────────────────────────────────────── */}
         {pendingInvites > 0 && (
@@ -105,7 +119,7 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
         <Grid cols={{ sm: 2, lg: 4 }} gap="md" className="mb-6">
           <StatCard
             label={copy.stats.totalCommitted.label}
-            value={totalCommitted > 0 ? formatNGN(totalCommitted) : '—'}
+            value={totalCommitted > 0 ? formatDual(totalCommitted) : '—'}
             sub={copy.stats.totalCommitted.sub}
             accent={totalCommitted > 0}
             href={routes.dashboard.sponsor.commitments}
@@ -177,7 +191,7 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
                       {s.studentEmail ?? copy.recentStudents.unknownStudentLabel}
                     </Link>
                     <p className="mt-0.5 font-mono text-xs tabular-nums text-muted-foreground">
-                      {formatNGN(s.amountKobo)}
+                      {formatDual(s.amountKobo)}
                     </p>
                   </div>
                   <StatusBadge status={s.status} />

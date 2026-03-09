@@ -90,6 +90,7 @@ export const dashboardShellCopy = {
       'Finish setting up your profile to see your verification progress and funding status.',
     errorTitle: 'Unable to load your dashboard',
     errorDescription: 'Please refresh this page to try again.',
+    vsLastMonth: 'vs last month',
   },
 } as const;
 

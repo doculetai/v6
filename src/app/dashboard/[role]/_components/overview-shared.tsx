@@ -52,18 +52,18 @@ export function StatCard({
   const content = (
     <div
       className={cn(
-        'relative overflow-hidden rounded-xl border border-border bg-card px-5 py-4 shadow-xs transition-shadow',
+        'relative overflow-hidden rounded-xl border border-border bg-card px-4 py-[18px] shadow-xs transition-shadow',
         href && 'hover:shadow-md hover:border-primary/20',
         accent && 'border-t-2 border-t-primary',
       )}
     >
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.09em] text-muted-foreground">
         {label}
       </p>
 
       <div className="mt-2 flex items-end justify-between gap-3">
         <div className="min-w-0">
-          <p className={cn('font-mono text-2xl font-bold tracking-tight text-foreground', valueClassName)}>
+          <p className={cn('text-2xl font-bold tracking-[-0.025em] text-foreground', valueClassName)}>
             {value}
           </p>
           {trend != null && (
@@ -71,7 +71,7 @@ export function StatCard({
               <TrendIcon className="size-3.5" weight="duotone" aria-hidden="true" />
               <span>{trend.value}</span>
               <span className="font-normal text-muted-foreground">
-                {trend.label ?? 'vs last month'}
+                {trend.label ?? dashboardShellCopy.overview.vsLastMonth}
               </span>
             </div>
           )}
@@ -126,7 +126,7 @@ export function NextStepCard({ step, index }: { step: NextStepItemConfig; index:
     <div className="rounded-xl border-l-4 border-l-primary bg-primary/[0.04] px-5 py-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/70">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary/70">
             Step {index + 1}
           </p>
           <p className="mt-0.5 text-sm font-semibold text-foreground">{step.label}</p>

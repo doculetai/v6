@@ -16,6 +16,7 @@ import { ActivityTimeline } from '@/components/ui/activity-timeline';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { MoneyValue } from '@/components/ui/money-value';
+import { sponsorCopy as sponsorCopyData } from '@/config/copy/sponsor';
 import type { sponsorCopy } from '@/config/copy/sponsor';
 import { formatNGN } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
@@ -51,12 +52,13 @@ type Props = {
 };
 
 function buildTimelineItems(detail: Detail, copy: Copy) {
+  const timelineCopy = sponsorCopyData.studentDetail.timeline;
   const items: { id: string; title: string; description?: string; timestamp: string; tone?: 'success' | 'neutral' | 'error' }[] = [];
 
   items.push({
     id: 'sponsorship',
     title: copy.statusLabels.pending,
-    description: `${formatNGN(detail.amountKobo)} committed`,
+    description: timelineCopy.committed(formatNGN(detail.amountKobo)),
     timestamp: detail.createdAt.toISOString(),
     tone: 'neutral',
   });
@@ -65,15 +67,15 @@ function buildTimelineItems(detail: Detail, copy: Copy) {
     if (d.status === 'disbursed') {
       items.push({
         id: d.id,
-        title: 'Disbursement completed',
-        description: `${formatNGN(d.amountKobo)} sent`,
+        title: timelineCopy.disbursementCompleted,
+        description: timelineCopy.sent(formatNGN(d.amountKobo)),
         timestamp: (d.disbursedAt ?? d.scheduledAt).toISOString(),
         tone: 'success',
       });
     } else if (d.status === 'failed') {
       items.push({
         id: d.id,
-        title: 'Disbursement failed',
+        title: timelineCopy.disbursementFailed,
         description: formatNGN(d.amountKobo),
         timestamp: d.scheduledAt.toISOString(),
         tone: 'error',
@@ -81,7 +83,7 @@ function buildTimelineItems(detail: Detail, copy: Copy) {
     } else {
       items.push({
         id: d.id,
-        title: d.status === 'processing' ? 'Processing' : 'Scheduled',
+        title: d.status === 'processing' ? timelineCopy.processing : timelineCopy.scheduled,
         description: formatNGN(d.amountKobo),
         timestamp: d.scheduledAt.toISOString(),
         tone: 'neutral',
@@ -142,7 +144,10 @@ export function SponsorStudentDetailClient({ detail, copy, disbursementCopy }: P
                   </div>
                   {detail.tuitionAmount != null && detail.durationMonths != null ? (
                     <p className="text-sm text-muted-foreground">
-                      Tuition: {formatNGN(detail.tuitionAmount)} · {detail.durationMonths} months
+                      {sponsorCopyData.studentDetail.timeline.tuition(
+                        formatNGN(detail.tuitionAmount),
+                        detail.durationMonths,
+                      )}
                     </p>
                   ) : null}
                   <div className="flex items-center justify-between">
@@ -157,7 +162,7 @@ export function SponsorStudentDetailClient({ detail, copy, disbursementCopy }: P
               <Card className="border-border bg-card">
                 <CardHeader>
                   <CardTitle className="text-xl">{copy.sections.status}</CardTitle>
-                  <CardDescription>Disbursement timeline</CardDescription>
+                  <CardDescription>{sponsorCopyData.studentDetail.timeline.heading}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <ActivityTimeline

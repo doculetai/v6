@@ -18,8 +18,8 @@ export const sponsorCopy = {
         description: "This information helps students and institutions verify your identity.",
         sponsorTypeLabel: "Sponsor type",
         sponsorTypeOptions: {
-          individual: { label: "Individual", description: "I am sponsoring as a private individual or family member." },
-          corporate: { label: "Organisation", description: "I am sponsoring on behalf of a company or institution." },
+          individual: { label: "Family sponsor", description: "I am sponsoring as a private individual or family member." },
+          corporate: { label: "Corporate sponsor", description: "I am sponsoring on behalf of a company or institution." },
         },
         companyNameLabel: "Organisation name",
         companyNamePlaceholder: "Enter your organisation name",
@@ -117,6 +117,19 @@ export const sponsorCopy = {
       pending: "Pending verification",
       verified: "Verified",
       rejected: "Verification failed",
+    },
+    timeline: {
+      heading: 'Disbursement timeline',
+      committed: (amount: string) => `${amount} committed`,
+      disbursementCompleted: 'Disbursement completed',
+      sent: (amount: string) => `${amount} sent`,
+      disbursementFailed: 'Disbursement failed',
+      processing: 'Processing',
+      scheduled: 'Scheduled',
+      tuition: (amount: string, months: number) => `Tuition: ${amount} · ${months} months`,
+    },
+    errors: {
+      respondFailed: 'Unable to respond to invitation. Please try again.',
     },
   },
 
@@ -288,6 +301,7 @@ export const sponsorCopy = {
     title: 'Commitments',
     subtitle: 'Your financial pledges and commitment status.',
     empty: { title: 'No commitments yet', description: 'Commit to a student to fund their education.', viewStudents: 'View students' },
+    loadError: 'Unable to load commitments. Please try again.',
     table: {
       student: 'Student',
       amount: 'Amount',
@@ -327,7 +341,7 @@ export const sponsorCopy = {
     profile: {
       title: 'Sponsor profile',
       sponsorTypeLabel: 'Sponsor type',
-      sponsorTypes: { individual: 'Individual', corporate: 'Organisation', self: 'Paying for own education' },
+      sponsorTypes: { individual: 'Family sponsor', corporate: 'Corporate sponsor', self: 'Self-funded' },
       companyNameLabel: 'Company name',
       companyNameHint: 'Required for corporate sponsors',
       kycStatusLabel: 'KYC status',

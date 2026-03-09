@@ -35,9 +35,9 @@ const badgeLabels = sponsorCopy.disbursements.statusLabels;
 
 function StatusBadge({ status }: { status: Disbursement['status'] }) {
   const classes: Record<Disbursement['status'], string> = {
-    scheduled: 'bg-primary/10 text-primary',
+    scheduled: 'bg-warning/10 text-warning',
     processing: 'bg-muted text-muted-foreground',
-    disbursed: 'bg-primary/10 text-primary',
+    disbursed: 'bg-success/10 text-success',
     failed: 'bg-destructive/10 text-destructive',
   };
 

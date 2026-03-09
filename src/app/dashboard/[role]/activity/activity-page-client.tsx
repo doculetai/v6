@@ -3,8 +3,9 @@
 import { ChartLine, Pulse, WarningCircle } from '@/components/icons';
 
 import { EmptyState } from '@/components/ui/empty-state';
-import { PageHeader, PageShell } from '@/components/layout/content-primitives';
+import { PageHeader, PageShell, Section } from '@/components/layout/content-primitives';
 import type { agentCopy } from '@/config/copy/agent';
+import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -24,6 +25,8 @@ type Props = {
 
 // ── Time formatting ────────────────────────────────────────────────────────────
 
+const relativeTime = dashboardShellCopy.notifications.relativeTime;
+
 function formatTimeAgo(date: Date): string {
   const now = Date.now();
   const diffMs = now - new Date(date).getTime();
@@ -31,10 +34,10 @@ function formatTimeAgo(date: Date): string {
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
 
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffMins < 1) return relativeTime.now;
+  if (diffMins < 60) return relativeTime.minutes(diffMins);
+  if (diffHours < 24) return relativeTime.hours(diffHours);
+  if (diffDays < 7) return relativeTime.days(diffDays);
 
   return new Date(date).toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -70,35 +73,39 @@ export function ActivityPageClient({ items, copy }: Props) {
   if (items === null) {
     return (
       <PageShell>
-        <PageHeader title={copy.title} subtitle={copy.subtitle} />
-        <div className="flex flex-col items-center gap-3 rounded-lg border border-border bg-card py-12 text-center">
-          <WarningCircle weight="duotone" className="size-8 text-destructive/60" aria-hidden="true" />
-          <p className="text-sm font-medium text-foreground">{copy.error.title}</p>
-          <p className="max-w-xs text-xs text-muted-foreground">{copy.error.description}</p>
-        </div>
+        <Section>
+          <PageHeader title={copy.title} subtitle={copy.subtitle} />
+          <div className="flex flex-col items-center gap-3 rounded-lg border border-border bg-card py-12 text-center">
+            <WarningCircle weight="duotone" className="size-8 text-destructive/60" aria-hidden="true" />
+            <p className="text-sm font-medium text-foreground">{copy.error.title}</p>
+            <p className="max-w-xs text-xs text-muted-foreground">{copy.error.description}</p>
+          </div>
+        </Section>
       </PageShell>
     );
   }
 
   return (
     <PageShell>
-      <PageHeader title={copy.title} subtitle={copy.subtitle} />
+      <Section>
+        <PageHeader title={copy.title} subtitle={copy.subtitle} />
 
-      {items.length === 0 ? (
-        <EmptyState
-          heading={copy.empty.title}
-          body={copy.empty.description}
-          illustration={
-            <ChartLine size={32} weight="duotone" className="text-muted-foreground/50" />
-          }
-        />
-      ) : (
-        <div className="space-y-3">
-          {items.map((item) => (
-            <ActivityRow key={item.id} item={item} />
-          ))}
-        </div>
-      )}
+        {items.length === 0 ? (
+          <EmptyState
+            heading={copy.empty.title}
+            body={copy.empty.description}
+            illustration={
+              <ChartLine size={32} weight="duotone" className="text-muted-foreground/50" />
+            }
+          />
+        ) : (
+          <div className="space-y-3">
+            {items.map((item) => (
+              <ActivityRow key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+      </Section>
     </PageShell>
   );
 }
