@@ -55,7 +55,7 @@ export default async function CertificatePage({ params }: CertificatePageProps) 
             <CardContent className="pt-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Status</span>
+                  <span className="text-sm text-muted-foreground">{copy.status}</span>
                   <span
                     className={
                       result.valid
@@ -80,7 +80,7 @@ export default async function CertificatePage({ params }: CertificatePageProps) 
                 )}
                 {result.programName && (
                   <div>
-                    <span className="text-sm text-muted-foreground">Program</span>
+                    <span className="text-sm text-muted-foreground">{copy.program}</span>
                     <p className="font-medium text-foreground">{result.programName}</p>
                   </div>
                 )}
@@ -115,7 +115,7 @@ export default async function CertificatePage({ params }: CertificatePageProps) 
                 {result.tier != null && (
                   <div>
                     <span className="text-sm text-muted-foreground">{copy.tier}</span>
-                    <p className="font-medium text-foreground">Tier {result.tier}</p>
+                    <p className="font-medium text-foreground">{copy.tierLabel(result.tier)}</p>
                   </div>
                 )}
                 {result.certId && (
