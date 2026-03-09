@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { isActivePath } from '@/config/nav';
-import type { DashboardRole } from '@/config/roles';
 import type { Icon } from '@/components/icons';
 import { primitivesCopy } from '@/config/copy/primitives';
 import { cn } from '@/lib/utils';
@@ -17,7 +16,6 @@ type MobileTabItem = {
 
 type MobileTabBarProps = {
   items: MobileTabItem[];
-  role: DashboardRole;
 };
 
 export function MobileTabBar({ items }: MobileTabBarProps) {
@@ -36,7 +34,7 @@ export function MobileTabBar({ items }: MobileTabBarProps) {
             key={item.href}
             href={item.href}
             className={cn(
-              'flex min-h-[44px] min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors',
+              'flex min-h-[44px] min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors duration-150',
               isActive ? '' : 'text-muted-foreground hover:text-foreground',
             )}
             style={isActive ? { color: 'var(--role-accent)' } : undefined}

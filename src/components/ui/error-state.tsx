@@ -60,7 +60,7 @@ function ErrorState({
       {illustration ? (
         <div className="mx-auto max-w-40 mb-6">{illustration}</div>
       ) : (
-        <Warning weight="duotone" className="mb-6 size-12 text-muted-foreground" />
+        <Warning weight="duotone" className="mb-6 size-8 text-muted-foreground" />
       )}
 
       <h3 className="text-lg font-semibold text-foreground">{heading}</h3>
@@ -70,7 +70,7 @@ function ErrorState({
       </p>
 
       {(action || secondaryAction) && (
-        <div className="mt-6 flex flex-row items-center gap-3">
+        <div className="mt-6 flex items-center gap-3">
           {action && <ActionButton action={action} variant="default" />}
           {secondaryAction && (
             <ActionButton action={secondaryAction} variant="outline" />
