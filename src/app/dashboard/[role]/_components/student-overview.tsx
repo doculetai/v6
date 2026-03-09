@@ -140,7 +140,7 @@ function CertifiedBanner({
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-primary/20 bg-primary/[0.04] px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
-        <p className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-primary">
+        <p className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">
           <SealCheck className="size-3.5" weight="duotone" aria-hidden="true" />
           {copy.eyebrow}
         </p>
@@ -248,6 +248,7 @@ export async function StudentOverview({
     sponsorInvitesResult,
     committedSponsorsResult,
     withdrawnSponsorsResult,
+    trustStageResult,
   ] = await Promise.allSettled([
     caller.student.getVerificationStatus(),
     caller.student.getStudentSchoolSelection(),
@@ -258,6 +259,7 @@ export async function StudentOverview({
     caller.student.listSponsorInvites(),
     caller.student.listCommittedSponsors(),
     caller.student.listWithdrawnSponsors(),
+    caller.student.getTrustStageData(),
   ]);
 
   const verification =
@@ -275,6 +277,8 @@ export async function StudentOverview({
     committedSponsorsResult.status === 'fulfilled' ? committedSponsorsResult.value : [];
   const withdrawnSponsors =
     withdrawnSponsorsResult.status === 'fulfilled' ? withdrawnSponsorsResult.value : [];
+  const trustStage =
+    trustStageResult.status === 'fulfilled' ? trustStageResult.value : null;
 
   const selectedSchool = schools.find((s) => s.id === schoolSelection?.schoolId) ?? null;
   const selectedProgram =
@@ -290,11 +294,13 @@ export async function StudentOverview({
   const approvedCount = documents.filter((d) => d.status === 'approved').length;
   const bankConnected = verification?.monoConnection.isConnected ?? false;
   const bankName = verification?.monoConnection.bankName ?? null;
-  const allDocsApproved = approvedCount >= totalRequired && uploadedCount >= totalRequired;
   const verificationComplete = completionPercent >= 100;
-  const onboardingComplete = Boolean(schoolSelection?.schoolId);
+  // onboardingComplete: read from profiles.onboardingComplete (set by completeOnboarding).
+  // Falling back to schoolId presence would mark onboarding complete at step 2/4.
+  const onboardingComplete = trustStage?.onboardingComplete ?? false;
   const t1Complete = Boolean(verification?.tiers.find((t) => t.tier === 1)?.isComplete);
-  const documentsComplete = allDocsApproved;
+  // documentsComplete: at least one bank statement approved (matches journey model + proof checklist).
+  const documentsComplete = trustStage?.documentsComplete ?? false;
 
   // proofReady is true only when the DB confirms an active certificate is issued.
   // Falls back to false if the proof query failed, preventing a false-positive banner.
