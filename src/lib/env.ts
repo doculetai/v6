@@ -18,6 +18,8 @@ const serverEnvSchema = z.object({
   NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: z.string().optional(),
   CERTIFICATE_SHARE_SECRET: z.string().min(16, 'CERTIFICATE_SHARE_SECRET must be at least 16 chars'),
   GOOGLE_VISION_API_KEY: z.string().optional(),
+  CRON_SECRET: z.string().optional(),
+  OPEN_EXCHANGE_RATES_APP_ID: z.string().optional(),
 });
 
 function validateEnv(): z.infer<typeof serverEnvSchema> {
@@ -40,6 +42,8 @@ function validateEnv(): z.infer<typeof serverEnvSchema> {
     CERTIFICATE_SHARE_SECRET: process.env.CERTIFICATE_SHARE_SECRET,
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
     GOOGLE_VISION_API_KEY: process.env.GOOGLE_VISION_API_KEY,
+    CRON_SECRET: process.env.CRON_SECRET,
+    OPEN_EXCHANGE_RATES_APP_ID: process.env.OPEN_EXCHANGE_RATES_APP_ID,
   });
 
   if (!parsed.success) {
