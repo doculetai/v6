@@ -196,24 +196,24 @@ export function VerificationTierCard({
   return (
     <div
       className={cn(
-        'rounded-xl border bg-card p-5',
+        'rounded-xl border bg-card px-[18px] py-4 shadow-[0_1px_2px_rgba(10,22,40,0.03)]',
         'transition-all duration-150 ease-out',
-        isUpcoming && 'opacity-50',
+        isUpcoming && 'opacity-[0.55]',
         isActive && 'ring-1 ring-primary/20',
         isFailed && 'ring-1 ring-destructive/30',
         autoExpand && 'animate-in fade-in-0 slide-in-from-top-1',
       )}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-[14px]">
         {/* Tier indicator */}
         <div
           className={cn(
-            'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold',
+            'flex size-9 shrink-0 items-center justify-center rounded-[10px] text-xs font-semibold',
             isActive
               ? 'bg-primary/10 text-primary'
               : isFailed
                 ? 'bg-destructive/10 text-destructive'
-                : 'bg-muted text-muted-foreground',
+                : 'bg-muted/60 text-foreground/35',
           )}
           aria-hidden="true"
         >
@@ -224,7 +224,7 @@ export function VerificationTierCard({
           <p className="text-sm font-semibold text-foreground">{title}</p>
 
           {isFailed ? null : (
-            <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
+            <p className="mt-0.5 text-[12.5px] leading-[1.5] text-muted-foreground">{description}</p>
           )}
 
           {isActive && ctaLabel && onCta && (

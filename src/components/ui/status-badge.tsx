@@ -24,17 +24,17 @@ type StatusBadgeSize = 'sm' | 'md' | 'lg';
 
 const variantClasses: Record<StatusVariant, string> = {
   pending:          'bg-muted text-muted-foreground border-border',
-  under_review:     'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
-  approved:         'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
-  complete:         'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
-  verified:         'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800',
-  active:           'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800',
+  under_review:     'bg-warning/10 text-warning border-warning/30',
+  approved:         'bg-success/10 text-success border-success/30',
+  complete:         'bg-success/10 text-success border-success/30',
+  verified:         'bg-success/10 text-success border-success/30',
+  active:           'bg-primary/10 text-primary border-primary/30',
   rejected:         'bg-destructive/10 text-destructive border-destructive/30',
-  more_info_needed: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
-  expiry_soon:      'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
+  more_info_needed: 'bg-warning/10 text-warning border-warning/30',
+  expiry_soon:      'bg-warning/10 text-warning border-warning/30',
   expired:          'bg-destructive/10 text-destructive border-destructive/30',
-  paused:           'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
-  attention:        'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800',
+  paused:           'bg-warning/10 text-warning border-warning/30',
+  attention:        'bg-warning/10 text-warning border-warning/30',
   frozen:           'bg-destructive/10 text-destructive border-destructive/30',
   locked:           'bg-muted text-muted-foreground border-border',
 };
@@ -57,9 +57,9 @@ const DEFAULT_LABELS: Record<StatusVariant, string> = {
 };
 
 const SIZE_CLASSES: Record<StatusBadgeSize, string> = {
-  sm: 'text-xs',
-  md: 'text-xs',
-  lg: 'text-sm',
+  sm: 'text-[10px]',
+  md: 'text-[11px]',
+  lg: 'text-xs',
 };
 
 const DOT_SIZE_CLASSES: Record<StatusBadgeSize, string> = {
@@ -81,7 +81,7 @@ export function StatusBadge({ status, label, size = 'md', className }: StatusBad
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-medium',
+        'inline-flex items-center gap-1.5 rounded-full border px-[9px] py-[3px] font-semibold tracking-[0.01em]',
         SIZE_CLASSES[size],
         variantClasses[status],
         status === 'expired' && 'line-through',

@@ -145,7 +145,7 @@ export const studentOnboardingCopy = {
       emailLabel: 'Contact email (optional)',
       submit: 'Submit request',
       submitting: 'Submitting\u2026',
-      successNote: 'Request submitted. We will follow up within 3\u20135 business days.',
+      successNote: 'Request submitted. We will be in touch.',
     },
     costBreakdown: {
       title: 'Programme costs',

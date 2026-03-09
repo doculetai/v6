@@ -8,18 +8,15 @@ const variantConfig: Record<
   { classes: string; Icon: typeof Warning }
 > = {
   warning: {
-    classes:
-      'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-300',
+    classes: 'border-warning/30 bg-warning/10 text-warning',
     Icon: Warning,
   },
   info: {
-    classes:
-      'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-950/30 dark:text-blue-300',
+    classes: 'border-primary/30 bg-primary/10 text-primary',
     Icon: Info,
   },
   success: {
-    classes:
-      'border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-950/30 dark:text-green-300',
+    classes: 'border-success/30 bg-success/10 text-success',
     Icon: CheckCircle,
   },
   error: {
