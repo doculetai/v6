@@ -218,7 +218,7 @@ export function WebhooksPageClient({ initialData }: Props) {
                         <span
                           className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                             webhook.enabled
-                              ? 'bg-primary/10 text-primary'
+                              ? 'bg-success/10 text-success'
                               : 'bg-muted text-muted-foreground'
                           }`}
                         >
@@ -232,7 +232,7 @@ export function WebhooksPageClient({ initialData }: Props) {
                         <div className="flex items-center justify-end gap-3">
                           {testResult !== undefined && testResult !== null && (
                             <span
-                              className={`text-xs ${testResult.success ? 'text-primary' : 'text-destructive'}`}
+                              className={`text-xs ${testResult.success ? 'text-success' : 'text-destructive'}`}
                             >
                               {testResult.success
                                 ? copy.testResult.success(testResult.statusCode ?? 200)
@@ -290,7 +290,7 @@ export function WebhooksPageClient({ initialData }: Props) {
                     <span
                       className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-xs font-medium ${
                         webhook.enabled
-                          ? 'bg-primary/10 text-primary'
+                          ? 'bg-success/10 text-success'
                           : 'bg-muted text-muted-foreground'
                       }`}
                     >
@@ -315,7 +315,7 @@ export function WebhooksPageClient({ initialData }: Props) {
                     {webhook.createdAt ? webhook.createdAt.toLocaleDateString() : '—'}
                   </p>
                   {testResult !== undefined && testResult !== null && (
-                    <p className={`mt-1 text-xs ${testResult.success ? 'text-primary' : 'text-destructive'}`}>
+                    <p className={`mt-1 text-xs ${testResult.success ? 'text-success' : 'text-destructive'}`}>
                       {testResult.success
                         ? copy.testResult.success(testResult.statusCode ?? 200)
                         : copy.testResult.failure}
