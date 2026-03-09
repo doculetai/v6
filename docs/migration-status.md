@@ -1,6 +1,6 @@
 # Migration Status
 
-As of 2026-03-08, Doculet V6 database migrations.
+As of 2026-03-09, Doculet V6 database migrations.
 
 ## Applied Migrations
 
@@ -15,14 +15,12 @@ All migrations through **0019** (nifty_runaways) are tracked in Drizzle and avai
 | 0002 | wakeful_stark_industries | Schema enhancements |
 | 0003 | military_marten_broadcloak | Additional tables |
 | 0004 | boring_maginty | Data structure updates |
-| 0004 | webhook_payload_and_signing | Webhook infrastructure |
 | 0005 | youthful_chamber | Schema refinement |
 | 0006 | unusual_hemingway | Table modifications |
 | 0007 | white_metal_master | Field additions |
 | 0008 | neat_nebula | Data model updates |
 | 0009 | big_spectrum | Schema expansion |
 | 0010 | cultured_jetstream | Core functionality |
-| 0010 | platform_fee_config_seed | Platform fee configuration |
 | 0011 | pretty_swarm | Schema consolidation |
 | 0012 | glamorous_gladiator | Performance optimizations |
 | 0013 | glamorous_warlock | Advanced features |
@@ -32,6 +30,17 @@ All migrations through **0019** (nifty_runaways) are tracked in Drizzle and avai
 | 0017 | abnormal_bedlam | Risk management features |
 | 0018 | wooden_night_nurse | System enhancements |
 | 0019 | nifty_runaways | Pending role assignments table |
+
+### Out-of-Band SQL Scripts (NOT Drizzle-managed)
+
+These files exist in `drizzle/` but are NOT tracked in `_journal.json`. They are manual scripts applied by an engineer directly, not via `npm run db:migrate`.
+
+| File | Purpose |
+|------|---------|
+| `0004_webhook_payload_and_signing.sql` | Webhook payload structure and HMAC signing key columns — applied manually alongside 0004 |
+| `0010_platform_fee_config_seed.sql` | Seed data for platform fee configuration — applied manually after 0010 |
+
+These must be run manually on any new environment (staging, production) that needs them. They are idempotent and safe to re-run.
 
 ## Latest Migration: 0019 (nifty_runaways)
 
@@ -68,7 +77,9 @@ DATABASE_URL=<production-db-url> npm run db:studio
 
 ## Notes
 
-- Migration 0019 (`pending_role_assignments`) should be applied before enabling the invite link feature (role assignment via token).
-- All 20 migrations are generated and ready for production deployment.
+- **Production migration must be run by an engineer before deploy.** Run `DATABASE_URL=<production-db-url> npm run db:migrate` manually — there is no automated CI migration step.
+- Migration 0019 (`pending_role_assignments`) must be applied before enabling the invite link feature (role assignment via token).
+- The two out-of-band scripts (`0004_webhook_payload_and_signing.sql`, `0010_platform_fee_config_seed.sql`) must be applied manually on any new environment — they are not executed by `npm run db:migrate`.
+- All 20 Drizzle-tracked migrations (0000–0019) are generated and ready for production deployment.
 - Database schema is fully documented in `src/db/schema/` with Drizzle ORM definitions.
 - Snapshots for each migration are tracked in `drizzle/meta/`.
