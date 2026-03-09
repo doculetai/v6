@@ -5,10 +5,10 @@ import { marketingCopy } from '@/config/copy/marketing';
 
 export const metadata: Metadata = {
   title: `${marketingCopy.terms.title} — Doculet`,
-  description: 'Terms of service for Doculet proof-of-funds verification.',
+  description: 'Terms governing use of Doculet.ai proof of funds verification services.',
   openGraph: {
     title: `${marketingCopy.terms.title} — Doculet`,
-    description: 'Terms of service for Doculet proof-of-funds verification.',
+    description: 'Terms governing use of Doculet.ai proof of funds verification services.',
     url: 'https://doculet.ai/terms',
     siteName: 'Doculet',
     type: 'website',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: `${marketingCopy.terms.title} — Doculet`,
-    description: 'Terms of service for Doculet proof-of-funds verification.',
+    description: 'Terms governing use of Doculet.ai proof of funds verification services.',
   },
 };
 

@@ -5,10 +5,10 @@ import { marketingCopy } from '@/config/copy/marketing';
 
 export const metadata: Metadata = {
   title: `${marketingCopy.privacy.title} — Doculet`,
-  description: 'Privacy policy for Doculet proof-of-funds verification.',
+  description: 'How Doculet.ai collects, uses, and protects your personal data under NDPR.',
   openGraph: {
     title: `${marketingCopy.privacy.title} — Doculet`,
-    description: 'Privacy policy for Doculet proof-of-funds verification.',
+    description: 'How Doculet.ai collects, uses, and protects your personal data under NDPR.',
     url: 'https://doculet.ai/privacy',
     siteName: 'Doculet',
     type: 'website',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: `${marketingCopy.privacy.title} — Doculet`,
-    description: 'Privacy policy for Doculet proof-of-funds verification.',
+    description: 'How Doculet.ai collects, uses, and protects your personal data under NDPR.',
   },
 };
 
