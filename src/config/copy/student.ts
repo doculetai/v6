@@ -353,6 +353,13 @@ export const studentCopy = {
     ocrManualNote: 'We could not read this document automatically.',
     ocrCancelling: 'Cancelling\u2026',
     ocrCancelledPrompt: 'Submission cancelled. Upload a new document to continue.',
+    cancelError: 'Unable to cancel submission. Please try again.',
+    manualValidation: {
+      nameRequired: 'Enter the account holder name.',
+      accountNumberRequired: 'Enter the account number.',
+      bankNameRequired: 'Enter the bank name.',
+      balanceRequired: 'Enter the account balance.',
+    },
     manualFields: {
       namePlaceholder: 'Account holder name',
       nameLabel: 'Account holder name',
@@ -591,6 +598,16 @@ export const studentCopy = {
     rateDisclaimer: "Exchange rate from {source} as of {date}. Rates are indicative.",
     bufferRecommendation: "We recommend holding 10\u201315% above the current NGN equivalent to account for rate fluctuation.",
     staleRateWarning: "Exchange rate data is more than 24 hours old. Amounts may differ from current market rates.",
+  },
+
+  kycLockedIdentity: {
+    title: 'Identity details',
+    description: 'These fields are locked after KYC approval. Contact support if you need to make changes.',
+    fields: {
+      legalName: 'Legal name',
+      dateOfBirth: 'Date of birth',
+      bvnNin: 'BVN / NIN',
+    },
   },
 
   settings: {

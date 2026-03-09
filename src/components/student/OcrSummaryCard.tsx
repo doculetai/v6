@@ -28,11 +28,13 @@ type OcrSummaryCardProps = {
   isCancelling?: boolean;
 };
 
+const manualValidation = studentCopy.ocrCard.manualValidation;
+
 const manualEntrySchema = z.object({
-  name: z.string().min(1, 'Enter the account holder name.'),
-  accountNumber: z.string().min(1, 'Enter the account number.'),
-  bankName: z.string().min(1, 'Enter the bank name.'),
-  balance: z.string().min(1, 'Enter the account balance.'),
+  name: z.string().min(1, manualValidation.nameRequired),
+  accountNumber: z.string().min(1, manualValidation.accountNumberRequired),
+  bankName: z.string().min(1, manualValidation.bankNameRequired),
+  balance: z.string().min(1, manualValidation.balanceRequired),
 });
 
 type ManualEntryFormValues = z.infer<typeof manualEntrySchema>;

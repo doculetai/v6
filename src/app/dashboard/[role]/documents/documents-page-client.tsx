@@ -190,7 +190,7 @@ export function DocumentsPageClient() {
       ]);
     },
     onError: (err) => {
-      setCancelError(err.message ?? 'Unable to cancel submission. Please try again.');
+      setCancelError(err.message ?? studentCopy.ocrCard.cancelError);
     },
   });
 

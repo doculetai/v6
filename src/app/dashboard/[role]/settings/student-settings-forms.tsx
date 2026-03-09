@@ -59,26 +59,28 @@ function KycLockedField({ label, value }: KycLockedFieldProps) {
 export function KycLockedIdentityCard({ settings }: { settings: StudentSettings }) {
   if (!settings.kycApproved) return null;
 
+  const kycCopy = studentCopy.kycLockedIdentity;
+
   return (
     <Card className="border-border bg-card dark:border-border dark:bg-card">
       <CardHeader>
         <div className="flex items-center gap-2">
           <IdentificationCard size={20} weight="duotone" className="text-muted-foreground" />
-          <CardTitle className="text-base">Identity details</CardTitle>
+          <CardTitle className="text-base">{kycCopy.title}</CardTitle>
         </div>
         <CardDescription>
-          These fields are locked after KYC approval. Contact support if you need to make changes.
+          {kycCopy.description}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {settings.legalName !== undefined ? (
-          <KycLockedField label="Legal name" value={settings.legalName} />
+          <KycLockedField label={kycCopy.fields.legalName} value={settings.legalName} />
         ) : null}
         {settings.dob !== undefined ? (
-          <KycLockedField label="Date of birth" value={settings.dob} />
+          <KycLockedField label={kycCopy.fields.dateOfBirth} value={settings.dob} />
         ) : null}
         {settings.identityNumber !== undefined ? (
-          <KycLockedField label="BVN / NIN" value={settings.identityNumber ? `****${settings.identityNumber.slice(-4)}` : null} />
+          <KycLockedField label={kycCopy.fields.bvnNin} value={settings.identityNumber ? `****${settings.identityNumber.slice(-4)}` : null} />
         ) : null}
       </CardContent>
     </Card>
@@ -131,7 +133,7 @@ export function ChangeSchoolCard({ settings }: { settings: StudentSettings }) {
                 <p className="text-xs text-muted-foreground">{settings.schoolCountry}</p>
               )}
             </div>
-            <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+            <Button variant="outline" size="sm" className="min-h-[44px]" onClick={() => setEditing(true)}>
               {copy.changeCta}
             </Button>
           </div>
