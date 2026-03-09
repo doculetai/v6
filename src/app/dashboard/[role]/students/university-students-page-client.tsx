@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { DownloadSimple } from '@phosphor-icons/react';
+import { DownloadSimple } from '@/components/icons';
 
 import { EmptyState } from '@/components/layout/empty-state';
 import { Button } from '@/components/ui/button';

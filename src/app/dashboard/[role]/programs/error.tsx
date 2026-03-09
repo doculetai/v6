@@ -1,6 +1,6 @@
 'use client';
 
-import { WarningCircle } from '@phosphor-icons/react';
+import { WarningCircle } from '@/components/icons';
 import { captureException } from '@sentry/nextjs';
 import { useEffect } from 'react';
 

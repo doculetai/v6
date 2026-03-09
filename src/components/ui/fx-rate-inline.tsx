@@ -24,7 +24,7 @@ export function FxRateInline({ rateNgnPerUsd, updatedAt, className }: FxRateInli
     <p
       className={cn(
         'font-mono text-xs',
-        stale ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground',
+        stale ? 'text-warning' : 'text-muted-foreground',
         className,
       )}
     >

@@ -1,4 +1,4 @@
-import { ShieldCheck } from '@phosphor-icons/react';
+import { ShieldCheck } from '@/components/icons';
 
 import { cn } from '@/lib/utils';
 
