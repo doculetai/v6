@@ -24,7 +24,7 @@ import { StudentSettingsPageClient } from './student-settings-page-client';
 import { routes } from '@/config/routes';
 
 export const metadata = {
-  title: 'Settings — Doculet.ai',
+  title: adminCopy.settings.title,
 };
 
 type SettingsPageProps = {

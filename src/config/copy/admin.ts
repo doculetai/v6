@@ -657,9 +657,20 @@ export const adminCopy = {
       riskFlags: 'Risk flags',
       certsIssued: 'Certs issued',
       fxRate: 'FX rate',
+      pendingSuffix: 'pending',
+      openSuffix: 'open',
+      todaySuffix: 'today',
     },
+    alert: {
+      pendingDocuments: (n: number) =>
+        `${n} document${n === 1 ? '' : 's'} pending review in the operations queue.`,
+      riskFlags: (n: number) =>
+        `${n} risk flag${n === 1 ? '' : 's'} require attention.`,
+    },
+    fxRateLabel: (rate: string) => `\u2248 \u20A6 ${rate} per $1 USD`,
     recentOperations: {
       heading: 'Recent operations',
+      viewAllLink: 'View all',
       empty: 'No pending operations. All queues are clear.',
       viewAll: 'View all operations',
     },

@@ -202,10 +202,10 @@ export default function OperationsPageClient({
       >
         <TabsList className="h-auto w-full justify-start gap-0 rounded-none border-b border-border bg-transparent p-0">
           <TabsTrigger value="active" className={TAB_CLASSES}>
-            {copy.tabs?.active ?? 'Active'}
+            {copy.tabs.active}
           </TabsTrigger>
           <TabsTrigger value="resolved" className={TAB_CLASSES}>
-            {copy.tabs?.resolved ?? 'Resolved'}
+            {copy.tabs.resolved}
           </TabsTrigger>
         </TabsList>
 

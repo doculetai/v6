@@ -77,7 +77,7 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
     : '—';
 
   const fxLabel = fxRate?.rateX100
-    ? `≈ $1 @ ₦ ${(fxRate.rateX100 / 100).toLocaleString('en-NG')}`
+    ? copy.fxRateLabel((fxRate.rateX100 / 100).toLocaleString('en-NG'))
     : null;
 
   return (
@@ -97,8 +97,8 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
               />
               <p className="text-sm font-medium text-foreground">
                 {stats?.pending
-                  ? `${stats.pending} document${stats.pending === 1 ? '' : 's'} pending review in the operations queue.`
-                  : `${riskFlags.length} risk flag${riskFlags.length === 1 ? '' : 's'} require attention.`}
+                  ? copy.alert.pendingDocuments(stats.pending)
+                  : copy.alert.riskFlags(riskFlags.length)}
               </p>
             </div>
             <Button asChild size="sm" variant="default" className="shrink-0">
@@ -117,23 +117,23 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
         <div className="mb-6 flex flex-wrap gap-2">
           <KpiPill
             label={copy.kpiPills.reviewQueue}
-            value={stats ? `${stats.pending} pending` : '—'}
+            value={stats ? `${stats.pending} ${copy.kpiPills.pendingSuffix}` : '—'}
             status={stats?.pending ? 'warn' : 'up'}
           />
           <KpiPill
             label={copy.kpiPills.riskFlags}
-            value={`${riskFlags.length} open`}
+            value={`${riskFlags.length} ${copy.kpiPills.openSuffix}`}
             status={riskFlags.length > 0 ? 'warn' : 'up'}
           />
           <KpiPill
             label={copy.kpiPills.certsIssued}
-            value={`${certsToday} today`}
+            value={`${certsToday} ${copy.kpiPills.todaySuffix}`}
             status="up"
           />
           {fxRate?.rateX100 ? (
             <KpiPill
               label={copy.kpiPills.fxRate}
-              value={`₦ ${(fxRate.rateX100 / 100).toLocaleString('en-NG')}/$`}
+              value={copy.fxRateLabel((fxRate.rateX100 / 100).toLocaleString('en-NG'))}
               status="up"
             />
           ) : null}
@@ -178,7 +178,7 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
                 href={routes.dashboard.admin.operations}
                 className="inline-flex items-center gap-1 text-[11px] font-medium text-primary/70 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
               >
-                <span>{adminCopy.nav.documents}</span>
+                <span>{copy.recentOperations.viewAllLink}</span>
                 <ArrowRight className="size-3" weight="duotone" aria-hidden="true" />
               </Link>
             }
