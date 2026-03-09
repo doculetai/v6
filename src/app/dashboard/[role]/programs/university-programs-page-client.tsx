@@ -58,7 +58,7 @@ function formatNGN(amount: number): string {
 }
 
 const statusBadgeClass: Record<Program['status'], string> = {
-  active: 'bg-primary/10 text-primary',
+  active: 'bg-success/10 text-success',
   inactive: 'bg-muted text-muted-foreground',
 };
 
@@ -215,7 +215,7 @@ export function UniversityProgramsPageClient({ initialPrograms, copy }: Props) {
                           variant="ghost"
                           size="sm"
                           onClick={() => setDeactivateTarget(program)}
-                          className="min-h-9 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          className="min-h-11 text-destructive hover:bg-destructive/10 hover:text-destructive"
                         >
                           {copy.deactivate.cta}
                         </Button>
@@ -261,7 +261,7 @@ export function UniversityProgramsPageClient({ initialPrograms, copy }: Props) {
                     variant="ghost"
                     size="sm"
                     onClick={() => setDeactivateTarget(program)}
-                    className="min-h-9 w-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="min-h-11 w-full text-destructive hover:bg-destructive/10 hover:text-destructive"
                   >
                     {copy.deactivate.cta}
                   </Button>

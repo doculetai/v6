@@ -40,7 +40,7 @@ type Props = {
 };
 
 const kycBadgeClass: Record<Student['kycStatus'], string> = {
-  verified: 'bg-primary/10 text-primary',
+  verified: 'bg-success/10 text-success',
   pending: 'bg-warning/10 text-warning',
   failed: 'bg-destructive/10 text-destructive',
   not_started: 'bg-muted text-muted-foreground',
@@ -98,7 +98,7 @@ export function UniversityStudentsPageClient({ initialStudents, programs, copy }
           onValueChange={(val) => setSelectedProgramId(val)}
         >
           <SelectTrigger
-            className="w-full sm:w-56"
+            className="min-h-11 w-full sm:w-56"
             aria-label={copy.filterByProgram}
           >
             <SelectValue placeholder={copy.allPrograms} />

@@ -51,7 +51,7 @@ type Props = {
 
 const statusBadgeClass: Record<DocumentQueueItem['status'], string> = {
   pending: 'bg-warning/10 text-warning',
-  approved: 'bg-primary/10 text-primary',
+  approved: 'bg-success/10 text-success',
   rejected: 'bg-destructive/10 text-destructive',
   more_info_requested: 'bg-muted text-muted-foreground',
   expired: 'bg-muted text-muted-foreground',
@@ -133,7 +133,7 @@ export function UniversityDocumentsPageClient({ documents, copy }: Props) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="min-h-8 gap-1.5 text-xs"
+                    className="min-h-11 gap-1.5 text-xs"
                     onClick={() => setPreviewDocId(doc.documentId)}
                   >
                     <Eye weight="duotone" className="size-3" aria-hidden="true" />
