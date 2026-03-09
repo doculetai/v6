@@ -213,26 +213,29 @@ export function NotificationsBell({ role, className }: NotificationsBellProps) {
       <DropdownMenuTrigger
         aria-label={copy.ariaLabel}
         className={cn(
-          'relative rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+          'relative rounded-lg p-[6px] text-slate-900/45 transition-colors hover:bg-black/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
           className,
         )}
       >
-        <Bell weight="duotone" className="size-5" aria-hidden="true" />
+        <Bell weight="duotone" className="size-[18px]" aria-hidden="true" />
         {unreadCount > 0 && (
           <span
-            className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary"
+            className="absolute right-1 top-1 h-2 w-2 rounded-full border-2 border-white bg-[#EF4444]"
             aria-hidden="true"
           />
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-72 sm:w-80">
-        <div className="flex items-center justify-between border-b px-3 py-2">
-          <span className="text-sm font-medium">{copy.title}</span>
+      <DropdownMenuContent
+        align="end"
+        className="w-80 overflow-hidden rounded-xl border border-black/[0.08] p-0 shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
+      >
+        <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-3">
+          <span className="text-[13px] font-semibold">{copy.title}</span>
           {unreadCount > 0 && (
             <button
               type="button"
               onClick={handleMarkAll}
-              className="text-xs text-muted-foreground hover:text-foreground"
+              className="text-xs font-medium text-[#2B39A3] hover:opacity-80"
             >
               {copy.markAllRead}
             </button>
@@ -246,8 +249,8 @@ export function NotificationsBell({ role, className }: NotificationsBellProps) {
           ) : (
             groups.map((group) => (
               <div key={group.key}>
-                <div className="sticky top-0 z-10 bg-popover px-3 py-1.5">
-                  <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                <div className="sticky top-0 z-10 bg-popover px-4 pb-1 pt-2.5">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500/70">
                     {copy.categoryGroups[group.key]}
                   </span>
                 </div>
@@ -269,8 +272,8 @@ export function NotificationsBell({ role, className }: NotificationsBellProps) {
                           )
                         }
                         className={cn(
-                          'flex items-start gap-2.5 px-3 py-2.5',
-                          !n.readAt && 'bg-accent/50',
+                          'flex items-start gap-2.5 border-b border-black/[0.04] px-4 py-2.5 text-[13px] hover:bg-black/[0.03]',
+                          !n.readAt && 'bg-accent/30',
                         )}
                       >
                         <div className="mt-0.5">
@@ -279,7 +282,7 @@ export function NotificationsBell({ role, className }: NotificationsBellProps) {
                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                           <div className="flex items-center justify-between gap-2">
                             <span className="truncate font-medium">{n.title}</span>
-                            <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground">
+                            <span className="shrink-0 text-[11px] tabular-nums text-slate-500/70">
                               {getRelativeTime(n.createdAt)}
                             </span>
                           </div>

@@ -76,6 +76,7 @@ export const dashboardShellCopy = {
     closeMenu: 'Close menu',
     navMenu: 'Navigation menu',
     searchPlaceholder: 'Search...',
+    settings: 'Settings',
   },
   bottomNav: {
     navAriaLabel: 'Mobile dashboard navigation',

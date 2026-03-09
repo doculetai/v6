@@ -1,6 +1,6 @@
 'use client';
 
-import { List, MagnifyingGlass, X } from '@/components/icons';
+import { Gear, List, MagnifyingGlass, X } from '@/components/icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -74,36 +74,46 @@ export function TopBar({ role, currentPath }: TopBarProps) {
       </header>
 
       {/* Desktop topbar — visible on lg+ for all roles */}
-      <div className="hidden h-14 items-center gap-3 border-b border-border bg-background px-7 lg:flex">
+      <div className="hidden h-[58px] items-center gap-3 border-b border-border bg-background px-7 lg:flex">
         {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] font-medium text-foreground/40">
           <span>Dashboard</span>
           <span>/</span>
-          <span className="font-medium text-foreground">{pageLabel}</span>
+          <span className="font-semibold text-foreground">{pageLabel}</span>
         </nav>
 
         {/* Search trigger — opens CommandPalette via ⌘K */}
         <button
           type="button"
           onClick={triggerCommandPalette}
-          className="flex h-[34px] flex-1 max-w-[300px] mx-auto items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 text-[13px] text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mx-auto flex h-[34px] w-full max-w-[300px] cursor-text items-center gap-2 rounded-lg border border-black/[0.07] bg-black/[0.04] px-3 text-[13px] text-slate-900/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={dashboardShellCopy.topbar.searchPlaceholder}
         >
-          <MagnifyingGlass className="size-4 shrink-0" weight="duotone" aria-hidden="true" />
+          <MagnifyingGlass className="size-3.5 shrink-0" weight="duotone" aria-hidden="true" />
           <span className="flex-1 text-left">{dashboardShellCopy.topbar.searchPlaceholder}</span>
-          <kbd className="hidden rounded border border-border bg-background px-1 py-0.5 text-[10px] font-medium md:block">
+          <kbd className="hidden rounded bg-black/[0.06] px-[5px] py-0.5 font-mono text-[10px] text-slate-900/40 md:block">
             ⌘K
           </kbd>
         </button>
 
         {/* Right actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-[6px]">
           <NotificationsBell role={role} />
           <button
             type="button"
+            aria-label={dashboardShellCopy.topbar.settings ?? 'Settings'}
+            className="flex h-[34px] w-[34px] items-center justify-center rounded-lg text-slate-900/45 transition-colors hover:bg-black/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <Gear size={18} weight="duotone" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
             aria-label="User menu"
-            style={{ backgroundColor: accentHex }}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            style={{
+              backgroundColor: accentHex,
+              boxShadow: '0 0 0 2px rgba(255,255,255,0.8), 0 0 0 3px rgba(0,0,0,0.10)',
+            }}
+            className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full text-[11px] font-bold tracking-[-0.02em] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {dashboardShellCopy.sidebar.avatarFallback}
           </button>
