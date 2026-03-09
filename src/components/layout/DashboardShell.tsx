@@ -93,12 +93,12 @@ export function DashboardShell({ role, children, className, studentTrustStage, i
         )}
 
         {/* Mobile topbar */}
-        <TopBar role={role} currentPath={pathname} />
+        <TopBar role={role} currentPath={pathname} user={user} />
 
         <main
           ref={mainRef}
           className={cn(
-            'min-w-0 flex-1 overflow-y-auto p-4 pb-24 transition-opacity duration-200 ease-out md:p-8 lg:pb-8',
+            'min-w-0 flex-1 overflow-y-auto p-4 pb-24 transition-opacity duration-200 ease-out md:px-7 md:pt-8 md:pb-7 lg:pb-7',
             contentVisible ? 'opacity-100' : 'opacity-0',
           )}
         >
@@ -106,7 +106,7 @@ export function DashboardShell({ role, children, className, studentTrustStage, i
         </main>
       </div>
 
-      {/* Mobile bottom nav (5 primary items) */}
+      {/* Mobile bottom nav (4 items per role) */}
       <BottomNav role={role} />
 
       {/* Command palette (Cmd+K) */}

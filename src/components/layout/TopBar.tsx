@@ -15,7 +15,22 @@ import { Sidebar } from './Sidebar';
 type TopBarProps = {
   role: DashboardRole;
   currentPath: string;
+  user?: { fullName: string | null; email: string | null };
 };
+
+function getInitials(user?: { fullName: string | null; email: string | null }): string {
+  if (user?.fullName) {
+    const parts = user.fullName.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    }
+    return parts[0][0].toUpperCase();
+  }
+  if (user?.email) {
+    return user.email[0].toUpperCase();
+  }
+  return 'U';
+}
 
 function getPageLabel(currentPath: string, role: DashboardRole): string {
   const segments = currentPath.split('/').filter(Boolean);
@@ -33,10 +48,11 @@ function triggerCommandPalette() {
   document.dispatchEvent(event);
 }
 
-export function TopBar({ role, currentPath }: TopBarProps) {
+export function TopBar({ role, currentPath, user }: TopBarProps) {
   const [open, setOpen] = useState(false);
   const pageLabel = getPageLabel(currentPath, role);
   const accentHex = ROLE_ACCENTS[role].text;
+  const initials = getInitials(user);
 
   return (
     <>
@@ -115,7 +131,7 @@ export function TopBar({ role, currentPath }: TopBarProps) {
             }}
             className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full text-[11px] font-bold tracking-[-0.02em] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            {dashboardShellCopy.sidebar.avatarFallback}
+            {initials}
           </button>
         </div>
       </div>
