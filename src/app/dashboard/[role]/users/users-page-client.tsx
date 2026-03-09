@@ -80,6 +80,7 @@ export function UsersPageClient({ data, copy }: Props) {
   const [unfreezeTarget, setUnfreezeTarget] = useState<User | null>(null);
   const [localUsers, setLocalUsers] = useState<User[] | null>(data?.users ?? null);
   const [isFreezePending, setIsFreezePending] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const freezeCopy = adminCopy.freeze;
 
   if (data === null || localUsers === null) {
@@ -129,11 +130,22 @@ export function UsersPageClient({ data, copy }: Props) {
     }
   }
 
+  const q = searchQuery.trim().toLowerCase();
+  const filteredUsers = q
+    ? localUsers.filter(
+        (u) =>
+          (u.email?.toLowerCase().includes(q) ?? false) ||
+          (u.role?.toLowerCase().includes(q) ?? false),
+      )
+    : localUsers;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
         <input
           type="search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={copy.search.inputHint}
           className="h-10 w-full max-w-sm rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
           aria-label={copy.search.inputHint}
@@ -143,7 +155,7 @@ export function UsersPageClient({ data, copy }: Props) {
         </span>
       </div>
 
-      {localUsers.length === 0 ? (
+      {filteredUsers.length === 0 ? (
         <div className="rounded-xl border border-border bg-card p-10 text-center">
           <p className="text-sm font-medium text-foreground">{copy.empty.title}</p>
           <p className="mt-1 text-xs text-muted-foreground">{copy.empty.description}</p>
@@ -160,11 +172,11 @@ export function UsersPageClient({ data, copy }: Props) {
               <p role="columnheader" className="w-28 text-xs font-medium text-muted-foreground uppercase tracking-wide">{copy.table.action}</p>
             </div>
             <ul role="list">
-              {localUsers.map((user, idx) => (
+              {filteredUsers.map((user, idx) => (
                 <li
                   key={user.id}
                   role="row"
-                  className={`flex items-center gap-4 px-5 py-4 ${idx < localUsers.length - 1 ? 'border-b border-border' : ''}`}
+                  className={`flex items-center gap-4 px-5 py-4 ${idx < filteredUsers.length - 1 ? 'border-b border-border' : ''}`}
                 >
                   <p className="flex-1 truncate text-sm text-foreground">{user.email ?? '\u2014'}</p>
                   <div className="flex-1"><RoleBadge role={user.role} copy={copy.roles} /></div>
@@ -212,7 +224,7 @@ export function UsersPageClient({ data, copy }: Props) {
 
           {/* Mobile cards — shown below md */}
           <ul role="list" className="md:hidden space-y-3">
-            {localUsers.map((user) => (
+            {filteredUsers.map((user) => (
               <li key={user.id} className="rounded-xl border border-border bg-card px-4 py-4 space-y-2">
                 <div className="flex items-center justify-between">
                   <p className="truncate text-sm font-medium text-foreground">{user.email ?? '\u2014'}</p>
