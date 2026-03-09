@@ -47,7 +47,7 @@ for dirpath, dirnames, filenames in os.walk(ROOT):
             violations.append(rel)
 
 if violations:
-    print(f"ERROR: {len(violation)} file(s) import @phosphor-icons/react without 'use client':\n")
+    print(f"ERROR: {len(violations)} file(s) import @phosphor-icons/react without 'use client':\n")
     for v in violations:
         print(f"  {v}")
     print(
