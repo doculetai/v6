@@ -66,7 +66,7 @@ export function DisbursementSentEmail({
       <div style={cardStyle}>
         <h1 style={headingStyle}>{copy.heading}</h1>
         <p style={bodyStyle}>{copy.body}</p>
-        <p style={amountStyle}>Amount: {amountFormatted}</p>
+        <p style={amountStyle}>{copy.amountLabel}: {amountFormatted}</p>
         <a href={disbursementsUrl} style={ctaStyle}>
           {copy.ctaLabel}
         </a>

@@ -25,6 +25,7 @@ export const uiPrimitives = {
     disbursementProgress: "Disbursement progress",
     hidePassword: "Hide password",
     showPassword: "Show password",
+    mobileNavigation: "Mobile navigation",
   },
   statusBadge: {
     pending:          "Pending",

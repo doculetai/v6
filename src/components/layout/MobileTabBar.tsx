@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { isActivePath } from '@/config/nav';
 import type { DashboardRole } from '@/config/roles';
 import type { Icon } from '@/components/icons';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { cn } from '@/lib/utils';
 
 type MobileTabItem = {
@@ -25,7 +26,7 @@ export function MobileTabBar({ items }: MobileTabBarProps) {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-end justify-around border-t border-border bg-background pb-[env(safe-area-inset-bottom)] lg:hidden"
-      aria-label="Mobile navigation"
+      aria-label={primitivesCopy.aria.mobileNavigation}
     >
       {items.slice(0, 4).map((item) => {
         const isActive = isActivePath(item.href, pathname);

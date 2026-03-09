@@ -64,6 +64,7 @@ export const emailCopy = {
     heading: 'Disbursement failed',
     body:
       'A disbursement from your account could not be processed. Please review your bank details and available balance, then retry from your dashboard.',
+    amountLabel: 'Amount',
     ctaLabel: 'Review Disbursements',
     footer:
       'If this issue persists, contact Doculet.ai support with your account reference number.',
@@ -74,6 +75,7 @@ export const emailCopy = {
     heading: 'Disbursement sent',
     body:
       'A disbursement has been successfully processed from your account. The funds are on their way to the recipient.',
+    amountLabel: 'Amount',
     ctaLabel: 'View Proof of Funds',
     footer:
       'This transaction has been recorded on your account. Sign in to your dashboard for a full record.',
