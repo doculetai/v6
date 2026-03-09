@@ -3,30 +3,41 @@ import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
 import { partnerCopy } from '@/config/copy/partner';
+import { routes } from '@/config/routes';
 import { api } from '@/trpc/server';
 
 import { BrandingPageClient } from './branding-page-client';
-import { routes } from '@/config/routes';
-
-export const metadata: Metadata = { title: partnerCopy.branding.title };
 
 type PageProps = { params: Promise<{ role: string }> };
 
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { role } = await params;
+  if (role !== 'partner') return { title: 'Branding — Doculet' };
+  return {
+    title: `${partnerCopy.branding.title} — Doculet`,
+    description: partnerCopy.branding.subtitle,
+    robots: { index: false, follow: false },
+  };
+}
+
 export default async function BrandingPage({ params }: PageProps) {
   const { role } = await params;
-
-  if (role !== 'partner') {
-    notFound();
-  }
+  if (role !== 'partner') notFound();
 
   const caller = await api();
-
-  const [brandingResult] = await Promise.allSettled([caller.partner.getPartnerBranding()]);
-  if (brandingResult.status === 'rejected') {
-    const err = brandingResult.reason;
-    if (err instanceof TRPCError && err.code === 'UNAUTHORIZED') redirect(routes.auth.login);
+  try {
+    await caller.dashboard.getSession({ role });
+  } catch (e) {
+    if (e instanceof TRPCError && e.code === 'UNAUTHORIZED') redirect(routes.auth.login);
+    throw e;
   }
-  const branding = brandingResult.status === 'fulfilled' ? brandingResult.value : null;
+
+  let branding = null;
+  try {
+    branding = await caller.partner.getPartnerBranding();
+  } catch {
+    // leave branding null — BrandingPageClient renders the error state
+  }
 
   return <BrandingPageClient branding={branding} copy={partnerCopy.branding} />;
 }
