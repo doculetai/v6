@@ -68,11 +68,11 @@ export function LoginPageClient() {
   });
 
   return (
-    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl dark:border-border">
+    <Card className="border-0 bg-card text-card-foreground shadow-2xl dark:border dark:border-border">
       <CardHeader className="space-y-3">
-        <div className="inline-flex items-center gap-2 text-muted-foreground">
-          <ShieldCheck className="size-4 shrink-0" weight="duotone" aria-hidden="true" />
-          <span className="text-sm">{authCopy.login.trustLabel}</span>
+        <div className="inline-flex w-fit items-center gap-1.5">
+          <ShieldCheck className="size-4 shrink-0 text-muted-foreground" weight="duotone" aria-hidden="true" />
+          <span className="text-xs text-muted-foreground">{authCopy.login.trustLabel}</span>
         </div>
         <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.login.title}
@@ -91,7 +91,7 @@ export function LoginPageClient() {
                 autoComplete="email"
                 autoFocus
                 placeholder={authCopy.common.emailHint}
-                className="h-11 bg-background"
+                className="h-11"
                 aria-invalid={Boolean(errors.email)}
                 {...register('email')}
               />
@@ -107,7 +107,7 @@ export function LoginPageClient() {
                 type="password"
                 autoComplete="current-password"
                 placeholder={authCopy.common.passwordHint}
-                className="h-11 bg-background"
+                className="h-11"
                 aria-invalid={Boolean(errors.password)}
                 {...register('password')}
               />
@@ -117,7 +117,7 @@ export function LoginPageClient() {
             </div>
 
             {submitError ? (
-              <p role="alert" aria-live="polite" className="rounded-lg border border-destructive/30 bg-destructive/8 px-3 py-2.5 text-sm text-destructive">
+              <p role="alert" aria-live="polite" className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive dark:border-destructive/40 dark:bg-destructive/15">
                 {submitError}
               </p>
             ) : null}
@@ -138,12 +138,12 @@ export function LoginPageClient() {
             </Button>
 
             {/* Divider */}
-            <div className="relative my-6">
+            <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-background px-2 text-[11px] uppercase tracking-widest text-muted-foreground">
+                <span className="bg-card px-3 text-[11px] uppercase tracking-widest text-muted-foreground">
                   {authCopy.orContinueWith}
                 </span>
               </div>
@@ -214,22 +214,30 @@ function MagicLinkForm() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <input
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:gap-2">
+        <Input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={authCopy.magicLink.inputPlaceholder}
-          className="h-11 flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="h-11 flex-1"
         />
-        <button
+        <Button
           type="submit"
+          variant="outline"
           disabled={loading}
-          className="h-11 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="h-11 shrink-0 transition-transform active:scale-[0.99]"
         >
-          {loading ? authCopy.common.submittingText : authCopy.magicLink.buttonLabel}
-        </button>
+          {loading ? (
+            <span className="inline-flex items-center gap-2">
+              <CircleNotch className="size-4 animate-spin" weight="bold" aria-hidden="true" />
+              {authCopy.common.submittingText}
+            </span>
+          ) : (
+            authCopy.magicLink.buttonLabel
+          )}
+        </Button>
       </form>
       {error ? (
         <p className="mt-2 text-sm text-destructive">{error}</p>

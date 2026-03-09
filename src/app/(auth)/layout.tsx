@@ -1,56 +1,79 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { Certificate, SealCheck, ShieldCheck } from '@/components/icons';
 import { authCopy } from '@/config/copy/auth';
 import { routes } from '@/config/routes';
-import { cn } from '@/lib/utils';
+
+const trustIndicators = [
+  { icon: SealCheck, label: authCopy.layoutTrust[0] },
+  { icon: ShieldCheck, label: authCopy.layoutTrust[1] },
+  { icon: Certificate, label: authCopy.layoutTrust[2] },
+] as const;
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div
-      className={cn(
-        'relative min-h-screen overflow-x-hidden text-foreground',
-        'bg-[radial-gradient(circle_at_top,#dbeafe_0%,#f8fafc_45%,#f8fafc_100%)] dark:bg-[radial-gradient(circle_at_top,#1e293b_0%,#0b1220_55%,#0b1220_100%)]',
-      )}
-    >
-      <div className="pointer-events-none absolute inset-0 opacity-50 [background:radial-gradient(circle_at_25%_20%,rgba(37,99,235,0.18),transparent_35%),radial-gradient(circle_at_80%_80%,rgba(15,23,42,0.14),transparent_35%)]" />
+    <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <div className="relative z-10 mx-auto grid min-h-screen w-full max-w-7xl items-center gap-8 px-4 py-10 lg:grid-cols-[1fr_440px] lg:px-10">
-        <aside className="hidden rounded-3xl border border-primary/15 bg-primary p-10 text-primary-foreground shadow-2xl lg:flex lg:min-h-[620px] lg:flex-col lg:justify-between">
-          <Link href={routes.marketing.landing} className="inline-flex w-fit items-center gap-3">
-            <Image
-              src="/brand/logos/logo-light.svg"
-              alt={authCopy.brandAlt}
-              width={170}
-              height={44}
-              priority
-              className="h-auto w-44"
-            />
-          </Link>
-          <div>
-            <p className="font-serif text-4xl leading-tight tracking-tight text-white/95">
+        {/* Desktop sidebar */}
+        <aside
+          className="hidden rounded-3xl bg-foreground p-10 text-white shadow-2xl lg:flex lg:min-h-[620px] lg:flex-col lg:items-center lg:justify-center"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)',
+            backgroundSize: '24px 24px',
+          }}
+        >
+          <div className="flex flex-1 flex-col items-center justify-center gap-8">
+            <Link href={routes.marketing.landing} className="inline-flex">
+              <Image
+                src="/brand/assets/logo/doculet-shield-200.png"
+                alt={authCopy.brandAlt}
+                width={200}
+                height={200}
+                priority
+                className="size-[120px] shrink-0 brightness-0 invert drop-shadow-[0_0_48px_rgba(255,255,255,0.2)]"
+              />
+            </Link>
+            <p className="max-w-xs text-center font-serif text-2xl leading-snug text-white/90">
               {authCopy.login.heroTagline}
             </p>
-            <p className="mt-4 max-w-md text-sm leading-relaxed text-primary-foreground/70">
-              {authCopy.login.heroSub}
-            </p>
           </div>
-          <div className="grid gap-3 text-xs text-primary-foreground/70">
-            {authCopy.layoutTrust.map((line) => (
-              <p key={line}>{line}</p>
+
+          {/* Trust indicators */}
+          <div className="mt-auto flex items-center gap-6">
+            {trustIndicators.map(({ icon: Icon, label }) => (
+              <span key={label} className="inline-flex items-center gap-1.5 text-xs text-white/40">
+                <Icon className="size-5 shrink-0" weight="duotone" aria-hidden="true" />
+                {label}
+              </span>
             ))}
           </div>
         </aside>
+
+        {/* Form column */}
         <div className="mx-auto w-full max-w-md">
-          <Link href={routes.marketing.landing} className="mb-7 inline-flex items-center gap-3 lg:hidden">
-            <Image
-              src="/brand/logos/logo.svg"
-              alt={authCopy.brandAlt}
-              width={170}
-              height={44}
-              priority
-              className="h-auto w-44"
-            />
-          </Link>
+          {/* Mobile brand header */}
+          <div className="mb-7 flex flex-col items-center gap-3 lg:hidden">
+            <div className="h-1.5 w-12 rounded-full bg-primary" />
+            <Link href={routes.marketing.landing} className="inline-flex items-center gap-2.5">
+              <Image
+                src="/brand/assets/logo/doculet-shield-80.png"
+                alt=""
+                width={80}
+                height={80}
+                priority
+                className="size-10 shrink-0"
+                aria-hidden="true"
+              />
+              <span className="font-serif text-base font-semibold tracking-[-0.01em] text-primary">
+                Doculet
+              </span>
+            </Link>
+            <p className="text-center text-sm text-muted-foreground">
+              {authCopy.login.heroTagline}
+            </p>
+          </div>
           {children}
         </div>
       </div>

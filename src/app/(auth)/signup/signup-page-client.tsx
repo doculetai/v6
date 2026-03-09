@@ -88,7 +88,7 @@ export function SignupPageClient() {
 
   if (confirmationEmail) {
     return (
-      <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl dark:border-border">
+      <Card className="border-0 bg-card text-card-foreground shadow-2xl dark:border dark:border-border">
         <CardHeader className="space-y-3 text-center">
           <div className="mx-auto inline-flex size-11 items-center justify-center rounded-full bg-primary/15 text-primary dark:bg-primary/25">
             <CheckCircle className="size-4" weight="duotone" aria-hidden="true" />
@@ -119,11 +119,11 @@ export function SignupPageClient() {
   }
 
   return (
-    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl dark:border-border">
+    <Card className="border-0 bg-card text-card-foreground shadow-2xl dark:border dark:border-border">
       <CardHeader className="space-y-3">
-        <div className="inline-flex items-center gap-2 text-muted-foreground">
-          <UserPlus className="size-4" weight="duotone" aria-hidden="true" />
-          <span className="text-sm">{authCopy.signup.trustLabel}</span>
+        <div className="inline-flex w-fit items-center gap-1.5">
+          <UserPlus className="size-4 text-muted-foreground" weight="duotone" aria-hidden="true" />
+          <span className="text-xs text-muted-foreground">{authCopy.signup.trustLabel}</span>
         </div>
         <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.signup.title}
@@ -142,7 +142,7 @@ export function SignupPageClient() {
               autoComplete="email"
               autoFocus
               placeholder={authCopy.common.emailHint}
-              className="h-11 bg-background"
+              className="h-11"
               aria-invalid={Boolean(errors.email)}
               {...register('email')}
             />
@@ -158,7 +158,7 @@ export function SignupPageClient() {
               type="password"
               autoComplete="new-password"
               placeholder={authCopy.common.passwordHint}
-              className="h-11 bg-background"
+              className="h-11"
               aria-invalid={Boolean(errors.password)}
               {...register('password')}
             />
@@ -174,7 +174,7 @@ export function SignupPageClient() {
               type="password"
               autoComplete="new-password"
               placeholder={authCopy.common.confirmPasswordHint}
-              className="h-11 bg-background"
+              className="h-11"
               aria-invalid={Boolean(errors.confirmPassword)}
               {...register('confirmPassword')}
             />
@@ -194,7 +194,7 @@ export function SignupPageClient() {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger
                     id="signup-role"
-                    className="h-11 w-full bg-background"
+                    className="h-11 w-full"
                     aria-invalid={Boolean(errors.role)}
                   >
                     <SelectValue placeholder={authCopy.common.roleLabel} />

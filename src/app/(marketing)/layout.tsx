@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 
+import { landingCopy } from '@/config/copy/landing';
+
 export const metadata: Metadata = {
   title: {
-    default: "Doculet.ai — Proof of Funds Verification",
+    default: landingCopy.meta.title,
     template: "%s — Doculet.ai",
   },
-  description:
-    "Connecting Nigerian students, sponsors, and US universities with verified proof-of-funds documentation.",
+  description: landingCopy.meta.description,
 };
 
 export default function MarketingLayout({

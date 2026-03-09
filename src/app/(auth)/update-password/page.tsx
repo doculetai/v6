@@ -8,6 +8,17 @@ import { UpdatePasswordPageClient } from './update-password-page-client';
 
 export const metadata: Metadata = {
   title: authCopy.updatePassword.title,
+  description: authCopy.updatePassword.description,
+  openGraph: {
+    title: authCopy.updatePassword.title,
+    description: authCopy.updatePassword.description,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: authCopy.updatePassword.title,
+    description: authCopy.updatePassword.description,
+  },
 };
 
 export default async function UpdatePasswordPage() {

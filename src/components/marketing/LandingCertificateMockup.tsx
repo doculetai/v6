@@ -10,12 +10,12 @@ export function CertificateCard({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'w-80 overflow-hidden rounded-2xl border border-border bg-white shadow-[0_20px_40px_rgba(15,23,42,0.08),0_2px_8px_rgba(15,23,42,0.06)]',
+        'w-80 overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_40px_rgba(15,23,42,0.08),0_2px_8px_rgba(15,23,42,0.06)]',
         className,
       )}
     >
       {/* Brand stripe */}
-      <div className="h-1 bg-[linear-gradient(90deg,#2B39A3,#2563EB)]" />
+      <div className="h-1 bg-primary" />
 
       <div className="p-5">
         {/* Header row */}
@@ -24,7 +24,7 @@ export function CertificateCard({ className }: { className?: string }) {
             <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
               {cert.badge}
             </p>
-            <p className="mt-0.5 font-serif text-sm font-semibold text-[#2B39A3]">
+            <p className="mt-0.5 font-serif text-sm font-semibold text-primary">
               {cert.brand}
             </p>
           </div>
@@ -36,7 +36,7 @@ export function CertificateCard({ className }: { className?: string }) {
           />
         </div>
 
-        <div className="mb-4 h-px bg-[rgba(43,57,163,0.12)]" />
+        <div className="mb-4 h-px bg-primary/[0.12]" />
 
         {/* Fields */}
         <div className="mb-4 space-y-2.5">
@@ -84,7 +84,7 @@ export function CertificateFull({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'w-full max-w-[420px] overflow-hidden rounded-2xl border border-[rgba(212,168,83,0.4)] bg-white shadow-[0_40px_80px_rgba(0,0,0,0.35)]',
+        'w-full max-w-[420px] overflow-hidden rounded-2xl border border-gold/40 bg-card shadow-[0_40px_80px_rgba(0,0,0,0.35)]',
         className,
       )}
     >
@@ -98,7 +98,7 @@ export function CertificateFull({ className }: { className?: string }) {
             <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
               {cert.fullTitle}
             </p>
-            <p className="mt-1 font-serif text-xl font-semibold text-[#2B39A3]">{cert.brand}</p>
+            <p className="mt-1 font-serif text-xl font-semibold text-primary">{cert.brand}</p>
             <p className="mt-0.5 text-[11px] text-muted-foreground">{cert.fullSubtitle}</p>
           </div>
           <Image
@@ -109,7 +109,7 @@ export function CertificateFull({ className }: { className?: string }) {
           />
         </div>
 
-        <div className="mb-4 h-px bg-[linear-gradient(90deg,#2B39A3,rgba(43,57,163,0.1))]" />
+        <div className="mb-4 h-px bg-[linear-gradient(90deg,var(--primary),var(--primary)/0.1)]" />
 
         <p className="mb-5 font-serif text-[13px] italic leading-relaxed text-muted-foreground">
           {cert.fullBodyText}
@@ -142,7 +142,7 @@ export function CertificateFull({ className }: { className?: string }) {
             </p>
             <p className="mt-1 text-[10px] text-muted-foreground">{cert.fullVerifyUrl}</p>
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[rgba(212,168,83,0.4)]">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gold/40">
             <Image
               src="/brand/assets/logo/doculet-shield-32.png"
               alt="Doculet seal"

@@ -9,13 +9,13 @@ export function LandingTrust() {
   return (
     <section
       id="the-seal"
-      className="border-t-4 border-[#D4A853] bg-[#0A1628] py-16 md:py-20"
+      className="border-t-4 border-gold bg-[--color-primary-950] py-16 md:py-20"
     >
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <div className="grid items-center gap-12 md:grid-cols-[1fr_1.1fr]">
           <LandingReveal>
             <div className="flex flex-col gap-7">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[rgba(212,168,83,0.6)]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gold/60">
                 {copy.trust.label}
               </p>
               <h2
@@ -29,7 +29,7 @@ export function LandingTrust() {
               <ul className="flex flex-col gap-2.5">
                 {copy.trust.features.map((feat) => (
                   <li key={feat} className="flex items-center gap-2.5 text-sm text-white/60">
-                    <CheckCircle weight="duotone" size={14} className="shrink-0 text-[#D4A853]" />
+                    <CheckCircle weight="duotone" size={14} className="shrink-0 text-gold" />
                     {feat}
                   </li>
                 ))}
@@ -37,7 +37,7 @@ export function LandingTrust() {
               <div>
                 <Link
                   href={routes.auth.signup}
-                  className="inline-flex items-center justify-center rounded-full bg-[#D4A853] px-7 py-3 text-sm font-semibold text-[#0A1628] transition-[filter] hover:brightness-110"
+                  className="inline-flex items-center justify-center rounded-full bg-gold px-7 py-3 text-sm font-semibold text-[--color-primary-950] transition-[filter] hover:brightness-110 min-h-[44px]"
                 >
                   {copy.trust.cta}
                 </Link>

@@ -38,7 +38,7 @@ export const authCopy = {
     submitLabel: 'Sign in',
     genericError: 'We could not sign you in. Check your details and try again.',
     heroTagline: 'Proof of funds for every student.',
-    heroSub: 'Doculet connects students, sponsors, and universities on a single trusted platform.',
+    heroSub: '',
     links: {
       noAccount: "Don't have an account?",
       signup: 'Create one',
@@ -91,11 +91,7 @@ export const authCopy = {
   error: {
     backToLogin: 'Back to login',
   },
-  layoutTrust: [
-    'Trusted student funding verification.',
-    'Cryptographic certificate seal.',
-    'University-ready proof in one shareable link.',
-  ],
+  layoutTrust: ['Verified', 'Encrypted', 'Shareable'],
   orContinueWith: 'or',
   roleOptions: roles,
 } as const;

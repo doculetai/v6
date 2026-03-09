@@ -4,6 +4,7 @@ export const commonErrors = {
   sessionExpired: "Your session has expired. Please sign in again.",
   unauthorized: "You don't have permission to access this page.",
   tryAgain: 'Try again',
+  backToHome: 'Back to home',
 } as const;
 
 export const commonUi = {

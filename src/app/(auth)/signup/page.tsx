@@ -7,6 +7,17 @@ import { SignupPageClient } from './signup-page-client';
 
 export const metadata: Metadata = {
   title: authCopy.signup.title,
+  description: authCopy.signup.description,
+  openGraph: {
+    title: authCopy.signup.title,
+    description: authCopy.signup.description,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: authCopy.signup.title,
+    description: authCopy.signup.description,
+  },
 };
 
 export default async function SignupPage() {

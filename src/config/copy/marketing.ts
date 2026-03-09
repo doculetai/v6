@@ -184,6 +184,7 @@ export const marketingCopy = {
     signInPrompt: 'Sign in to respond',
     signInCta: 'Sign in',
     createAccountCta: 'Create account',
+    metaDescription: 'A student has invited you to sponsor their proof-of-funds verification.',
     defaultDescription: 'A student has invited you to sponsor their proof-of-funds verification. Sign in to view details and respond.',
     studentDescription: (email: string, school: string | null) =>
       `A student (${email}) has invited you to sponsor their proof-of-funds verification.${school ? ` They are applying to ${school}.` : ''}`,
@@ -192,5 +193,23 @@ export const marketingCopy = {
     title: 'Join Doculet',
     subtitle: 'Partner program signup',
     earlyAccess: 'We\'re onboarding select partners to grow the Doculet network. Email partners@doculet.ai to apply.',
+    metaDescription: 'Join the Doculet partner network.',
+  },
+  verify: {
+    metaDescription: 'Verify a Doculet proof-of-funds certificate.',
+  },
+  shell: {
+    nav: {
+      about: 'About',
+      pricing: 'Pricing',
+      contact: 'Contact',
+      signIn: 'Sign in',
+    },
+    footer: {
+      copyright: '© 2026 Doculet.ai',
+      privacy: 'Privacy',
+      terms: 'Terms',
+      contact: 'Contact',
+    },
   },
 } as const;

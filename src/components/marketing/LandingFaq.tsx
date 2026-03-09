@@ -14,13 +14,13 @@ export function LandingFaq() {
   const activeCategory = categories[selectedState];
 
   return (
-    <section className="border-b border-border bg-[#F1F5F9] py-16 md:py-20">
+    <section className="border-b border-border bg-muted py-16 md:py-20">
       <div className="mx-auto max-w-3xl px-6 md:px-10">
         <LandingReveal>
-          <h2 className="text-section-h2 font-serif font-semibold tracking-tight text-[#2B39A3]">
+          <h2 className="text-section-h2 font-serif font-semibold tracking-tight text-primary">
             {copy.faq.headline}
           </h2>
-          <div className="mt-3 h-px bg-[linear-gradient(90deg,rgba(43,57,163,0.3),rgba(43,57,163,0.08),transparent)]" />
+          <div className="mt-3 h-px bg-[linear-gradient(90deg,var(--primary)/0.3,var(--primary)/0.08,transparent)]" />
         </LandingReveal>
 
         {/* State tabs */}
@@ -34,8 +34,8 @@ export function LandingFaq() {
                 className={cn(
                   'min-h-[44px] rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors',
                   selectedState === i
-                    ? 'border-[#2B39A3] bg-[#2B39A3] text-white'
-                    : 'border-border bg-white text-muted-foreground hover:border-[rgba(43,57,163,0.3)] hover:text-[#2B39A3]',
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-border bg-card text-muted-foreground hover:border-primary/30 hover:text-primary',
                 )}
               >
                 {cat.state}
@@ -52,8 +52,8 @@ export function LandingFaq() {
               <div
                 key={item.q}
                 className={cn(
-                  'overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow',
-                  isOpen ? 'border-[rgba(43,57,163,0.3)] shadow-md' : 'border-border',
+                  'overflow-hidden rounded-2xl border bg-card shadow-sm transition-shadow',
+                  isOpen ? 'border-primary/30 shadow-md' : 'border-border',
                 )}
               >
                 <button
@@ -69,7 +69,7 @@ export function LandingFaq() {
                     size={16}
                     className={cn(
                       'shrink-0 text-muted-foreground transition-transform duration-200',
-                      isOpen && 'rotate-180 text-[#2B39A3]',
+                      isOpen && 'rotate-180 text-primary',
                     )}
                   />
                 </button>

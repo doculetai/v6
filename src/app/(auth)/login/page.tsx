@@ -7,6 +7,17 @@ import { LoginPageClient } from './login-page-client';
 
 export const metadata: Metadata = {
   title: authCopy.login.title,
+  description: authCopy.login.description,
+  openGraph: {
+    title: authCopy.login.title,
+    description: authCopy.login.description,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: authCopy.login.title,
+    description: authCopy.login.description,
+  },
 };
 
 export default async function LoginPage() {

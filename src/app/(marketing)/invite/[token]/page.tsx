@@ -15,7 +15,17 @@ import { routes } from '@/config/routes';
 
 export const metadata: Metadata = {
   title: `${marketingCopy.invite.title} — Doculet`,
-  description: 'Sponsorship invitation from a student.',
+  description: marketingCopy.invite.metaDescription,
+  openGraph: {
+    title: `${marketingCopy.invite.title} — Doculet`,
+    description: marketingCopy.invite.metaDescription,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: `${marketingCopy.invite.title} — Doculet`,
+    description: marketingCopy.invite.metaDescription,
+  },
 };
 
 const isValidUuid = (s: string) =>
@@ -74,10 +84,10 @@ export default async function InvitePage({ params }: InvitePageProps) {
             </CardContent>
           </Card>
           <div className="flex gap-4">
-            <Button asChild>
+            <Button asChild className="min-h-[44px]">
               <Link href={loginHref}>{invite.signInCta}</Link>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="min-h-[44px]">
               <Link href={routes.auth.signup}>{invite.createAccountCta}</Link>
             </Button>
           </div>

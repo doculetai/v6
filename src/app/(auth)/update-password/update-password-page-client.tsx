@@ -64,11 +64,11 @@ export function UpdatePasswordPageClient() {
   });
 
   return (
-    <Card className="border-border/70 bg-card/95 text-card-foreground shadow-xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl dark:border-border">
+    <Card className="border-0 bg-card text-card-foreground shadow-2xl dark:border dark:border-border">
       <CardHeader className="space-y-3">
-        <div className="inline-flex items-center gap-2 text-muted-foreground">
-          <LockKey weight="duotone" className="size-4" aria-hidden="true" />
-          <span className="text-sm">{authCopy.updatePassword.trustLabel}</span>
+        <div className="inline-flex w-fit items-center gap-1.5">
+          <LockKey weight="duotone" className="size-4 text-muted-foreground" aria-hidden="true" />
+          <span className="text-xs text-muted-foreground">{authCopy.updatePassword.trustLabel}</span>
         </div>
         <h2 className="leading-none font-semibold text-2xl tracking-tight text-card-foreground">
           {authCopy.updatePassword.title}
@@ -87,7 +87,7 @@ export function UpdatePasswordPageClient() {
                 autoComplete="new-password"
                 autoFocus
                 placeholder={authCopy.common.passwordHint}
-                className="h-11 bg-background"
+                className="h-11"
                 aria-invalid={Boolean(errors.newPassword)}
               {...register('newPassword')}
             />
@@ -105,7 +105,7 @@ export function UpdatePasswordPageClient() {
               type="password"
               autoComplete="new-password"
               placeholder={authCopy.common.confirmPasswordHint}
-              className="h-11 bg-background"
+              className="h-11"
               aria-invalid={Boolean(errors.confirmPassword)}
               {...register('confirmPassword')}
             />

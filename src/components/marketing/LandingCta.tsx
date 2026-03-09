@@ -6,7 +6,7 @@ import { routes } from '@/config/routes';
 
 export function LandingCta() {
   return (
-    <section className="border-b border-border bg-[#F1F5F9] py-16 md:py-20">
+    <section className="border-b border-border bg-muted py-16 md:py-20">
       <div className="mx-auto flex max-w-lg flex-col items-center gap-6 px-6 text-center">
         <Image
           src="/brand/assets/logo/doculet-shield-48.png"
@@ -15,7 +15,7 @@ export function LandingCta() {
           height={48}
         />
         <h2
-          className="text-cta-h2 font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
+          className="text-cta-h2 font-serif font-semibold leading-tight tracking-tight text-primary"
         >
           {copy.cta.headline}
         </h2>

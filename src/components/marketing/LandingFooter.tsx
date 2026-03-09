@@ -4,14 +4,7 @@ import { landingCopy as copy } from '@/config/copy/landing';
 
 export function LandingFooter() {
   return (
-    <footer className="bg-white">
-      <div className="flex flex-wrap justify-center gap-5 border-b border-border px-6 py-3.5">
-        {copy.footer.trustMarkers.map((marker) => (
-          <span key={marker} className="text-xs text-muted-foreground">
-            {marker}
-          </span>
-        ))}
-      </div>
+    <footer className="bg-background">
       <div className="flex flex-wrap items-center justify-between gap-4 px-10 py-5">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Image
@@ -27,7 +20,7 @@ export function LandingFooter() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-xs text-muted-foreground transition-colors hover:text-[#2B39A3]"
+              className="text-xs text-muted-foreground transition-colors hover:text-primary"
             >
               {link.label}
             </Link>
