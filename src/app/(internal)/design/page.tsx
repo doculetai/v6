@@ -20,7 +20,13 @@ import { iconography, ICON_SIZES } from '@/config/iconography';
 
 import { DesignDisplaySections } from './DesignDisplaySections';
 import { SidebarPreviews } from './SidebarPreviews';
-import { colorTokens } from './_tokens';
+import {
+  BordersShowcase,
+  ColorsShowcase,
+  CornersShowcase,
+  ShadowsShowcase,
+  TypographyShowcase,
+} from './ThemeShowcase';
 import { Code, Section } from './_helpers';
 
 export const metadata: Metadata = {
@@ -45,7 +51,9 @@ const skeletons = [
 const NAV_SECTIONS = [
   ['colors', 'Colors'],
   ['typography', 'Typography'],
-  ['spacing', 'Spacing & Radius'],
+  ['spacing', 'Spacing'],
+  ['corners', 'Corners'],
+  ['borders', 'Borders'],
   ['shadows', 'Shadows'],
   ['iconography', 'Iconography'],
   ['skeletons', 'Skeletons'],
@@ -57,6 +65,7 @@ const NAV_SECTIONS = [
   ['primitives-data', 'Data'],
   ['primitives-layout', 'Layout'],
   ['primitives-session', 'Session'],
+  ['compositions', 'Compositions'],
 ] as const;
 
 export default function DesignPage() {
@@ -90,100 +99,45 @@ export default function DesignPage() {
         </div>
 
         {/* ── Colors ── */}
-        <Section id="colors" title="Color Tokens">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {colorTokens.map((token) => (
-              <div key={token.name} className="space-y-1.5">
-                <div
-                  className="h-14 w-full rounded-lg border border-border/60 shadow-sm"
-                  style={{ backgroundColor: `var(--${token.name})` } as React.CSSProperties} // design-lint-disable
-                />
-                <p className="text-xs font-medium text-foreground">{token.label}</p>
-                <Code>{`--${token.name}`}</Code>
-              </div>
-            ))}
-          </div>
-        </Section>
+        <ColorsShowcase />
 
         <div className="border-t border-border/40" />
 
         {/* ── Typography ── */}
-        <Section id="typography" title="Typography">
-          <div className="space-y-4 rounded-xl border border-border bg-card p-6">
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground">Heading Scale</p>
-              {(['text-4xl', 'text-3xl', 'text-2xl', 'text-xl', 'text-lg'] as const).map((size, i) => (
-                <p key={size} className={`${size} font-bold text-foreground`}>
-                  H{i + 1} — IBM Plex Sans {size}
-                </p>
+        <TypographyShowcase />
+
+        <div className="border-t border-border/40" />
+
+        {/* ── Spacing ── */}
+        <Section id="spacing" title="Spacing">
+          <div className="rounded-xl border border-border bg-card p-6">
+            <p className="mb-3 text-xs text-muted-foreground">T-shirt sizes</p>
+            <div className="flex flex-wrap items-end gap-3">
+              {[['xs', '4px', 'p-1'], ['sm', '8px', 'p-2'], ['md', '16px', 'p-4'], ['lg', '24px', 'p-6'], ['xl', '32px', 'p-8']].map(([name, size, cls]) => (
+                <div key={name} className="flex flex-col items-center gap-1">
+                  <div className={`rounded bg-primary/20 ${cls}`} />
+                  <p className="text-xs text-muted-foreground">{name}</p>
+                  <p className="text-xs text-muted-foreground/60">{size}</p>
+                </div>
               ))}
-            </div>
-            <div className="border-t border-border/40 pt-4">
-              <p className="text-xs text-muted-foreground">Body Sizes</p>
-              <div className="mt-2 space-y-1">
-                {(['text-sm', 'text-base', 'text-lg'] as const).map((size) => (
-                  <p key={size} className={`${size} text-foreground`}>
-                    {size} — The quick brown fox jumps over the lazy dog
-                  </p>
-                ))}
-              </div>
-            </div>
-            <div className="border-t border-border/40 pt-4">
-              <p className="text-xs text-muted-foreground">Font Weights</p>
-              <div className="mt-2 flex flex-wrap gap-4">
-                {(['font-normal', 'font-medium', 'font-semibold', 'font-bold'] as const).map((w) => (
-                  <span key={w} className={`${w} text-base text-foreground`}>
-                    {w.replace('font-', '')}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
         </Section>
 
         <div className="border-t border-border/40" />
 
-        {/* ── Spacing & Radius ── */}
-        <Section id="spacing" title="Spacing & Radius">
-          <div className="space-y-6 rounded-xl border border-border bg-card p-6">
-            <div>
-              <p className="mb-3 text-xs text-muted-foreground">Spacing (T-shirt sizes)</p>
-              <div className="flex flex-wrap items-end gap-3">
-                {[['xs', '4px', 'p-1'], ['sm', '8px', 'p-2'], ['md', '16px', 'p-4'], ['lg', '24px', 'p-6'], ['xl', '32px', 'p-8']].map(([name, size, cls]) => (
-                  <div key={name} className="flex flex-col items-center gap-1">
-                    <div className={`rounded bg-primary/20 ${cls}`} />
-                    <p className="text-xs text-muted-foreground">{name}</p>
-                    <p className="text-xs text-muted-foreground/60">{size}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="border-t border-border/40 pt-4">
-              <p className="mb-3 text-xs text-muted-foreground">Border Radius</p>
-              <div className="flex flex-wrap items-center gap-4">
-                {[['sm', 'rounded-sm'], ['md', 'rounded-md'], ['lg', 'rounded-lg'], ['xl', 'rounded-xl'], ['2xl', 'rounded-2xl'], ['full', 'rounded-full']].map(([name, cls]) => (
-                  <div key={name} className="flex flex-col items-center gap-1.5">
-                    <div className={`size-12 bg-primary/20 ${cls}`} />
-                    <p className="text-xs text-muted-foreground">{name}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Section>
+        {/* ── Corners ── */}
+        <CornersShowcase />
+
+        <div className="border-t border-border/40" />
+
+        {/* ── Borders ── */}
+        <BordersShowcase />
 
         <div className="border-t border-border/40" />
 
         {/* ── Shadows ── */}
-        <Section id="shadows" title="Shadows">
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {(['shadow-xs', 'shadow-sm', 'shadow', 'shadow-md', 'shadow-lg', 'shadow-xl'] as const).map((cls) => (
-              <div key={cls} className={`${cls} flex h-20 items-center justify-center rounded-xl bg-card`}>
-                <Code>{cls}</Code>
-              </div>
-            ))}
-          </div>
-        </Section>
+        <ShadowsShowcase />
 
         <div className="border-t border-border/40" />
 
@@ -242,7 +196,17 @@ export default function DesignPage() {
 
         {/* ── Navigation ── */}
         <Section id="navigation" title="Navigation — Sidebar Preview">
-          <SidebarPreviews />
+          <div className="space-y-4">
+            <SidebarPreviews />
+            <div className="flex items-center justify-end">
+              <Link
+                href="/design/sidebar"
+                className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                Open full interactive sidebar lab →
+              </Link>
+            </div>
+          </div>
         </Section>
 
         <DesignDisplaySections />

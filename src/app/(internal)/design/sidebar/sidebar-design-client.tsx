@@ -1,25 +1,17 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 
-import { MagnifyingGlass, Bell, Moon, Sun, CaretLeft, SignOut } from '@/components/icons';
+import { MagnifyingGlass, Bell, Moon, Sun, SignOut } from '@/components/icons';
+import { SidebarCollapseButton } from '@/components/layout/sidebar/SidebarCollapseButton';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
 import { dashboardShellCopy, roleDisplayNames } from '@/config/copy/dashboard-shell';
-import { dashboardRoles, type DashboardRole } from '@/config/roles';
+import { dashboardRoles, type DashboardRole, ROLE_ACCENTS } from '@/config/roles';
 import { useTheme } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
-
-// ── Role accents ─────────────────────────────────────────────────────────────
-const ROLE_ACCENTS: Record<DashboardRole, { text: string; bg: string }> = {
-  student:    { text: '#2B39A3', bg: 'rgba(43,57,163,0.13)'   },
-  sponsor:    { text: '#15803D', bg: 'rgba(21,128,61,0.13)'   },
-  university: { text: '#0369A1', bg: 'rgba(3,105,161,0.13)'   },
-  admin:      { text: '#C2410C', bg: 'rgba(194,65,12,0.13)'   },
-  agent:      { text: '#6D28D9', bg: 'rgba(109,40,217,0.13)'  },
-  partner:    { text: '#0F766E', bg: 'rgba(15,118,110,0.13)'  },
-};
 
 const MOCK_USERS: Record<DashboardRole, { name: string; initials: string }> = {
   student:    { name: 'Kemi Adesanya',   initials: 'KA' },
@@ -36,13 +28,11 @@ const MOCK_USERS: Record<DashboardRole, { name: string; initials: string }> = {
 function MockNavItem({
   item,
   isActive,
-  accent,
   collapsed,
   onClick,
 }: {
   item: NavItem;
   isActive: boolean;
-  accent: { text: string; bg: string };
   collapsed: boolean;
   onClick: () => void;
 }) {
@@ -65,7 +55,7 @@ function MockNavItem({
       )}
       style={
         isActive
-          ? { backgroundColor: accent.text, color: '#FFFFFF' }
+          ? { backgroundColor: 'var(--role-accent)', color: 'var(--sidebar-primary-foreground)' }
           : undefined
       }
     >
@@ -98,7 +88,6 @@ function MockSidebar({
   onToggleCollapsed: () => void;
 }) {
   const navConfig = getNavConfig(role);
-  const accent = ROLE_ACCENTS[role];
   const user = MOCK_USERS[role];
 
   const ungroupedItems = navConfig.items.filter((i) => !i.group);
@@ -108,7 +97,7 @@ function MockSidebar({
 
   return (
     <aside
-      style={{ '--role-accent': accent.text } as React.CSSProperties}
+      data-role={role}
       className={cn(
         'flex flex-col h-full overflow-hidden bg-sidebar transition-[width] duration-200 ease-out',
         'border-r border-sidebar-border shadow-[2px_0_12px_rgba(0,0,0,0.05)]',
@@ -132,14 +121,7 @@ function MockSidebar({
             <span className="text-[15px] font-bold tracking-[-0.025em] text-sidebar-foreground">
               {dashboardShellCopy.brandName}
             </span>
-            <button
-              type="button"
-              onClick={onToggleCollapsed}
-              aria-label={dashboardShellCopy.sidebar.collapseLabel}
-              className="ml-auto flex size-7 shrink-0 cursor-default items-center justify-center rounded-md bg-sidebar-foreground/[0.04] text-sidebar-foreground/35 transition-colors hover:bg-sidebar-foreground/[0.07] hover:text-sidebar-foreground/65"
-            >
-              <CaretLeft className="size-3" weight="bold" aria-hidden="true" />
-            </button>
+            <SidebarCollapseButton onClick={onToggleCollapsed} />
           </>
         )}
       </div>
@@ -152,9 +134,8 @@ function MockSidebar({
               type="button"
               className="flex w-full min-h-[36px] cursor-default items-center gap-2 rounded-lg px-3 text-xs font-medium transition-colors hover:opacity-90"
               style={{
-                backgroundColor: accent.bg,
-                color: accent.text,
-                border: `1px solid ${accent.text}22`,
+                backgroundColor: 'var(--role-accent-bg)',
+                color: 'var(--role-accent)',
               }}
             >
               {navConfig.quickAction.icon && (
@@ -168,7 +149,7 @@ function MockSidebar({
       )}
 
       {/* ── Nav — padding on <nav> so buttons are w-full without mx overflow ── */}
-      <nav className="flex-1 overflow-y-auto px-2 py-2" aria-label={dashboardShellCopy.sidebar.navAriaLabel}>
+      <nav className="flex-1 overflow-y-auto px-2 py-2 [&::-webkit-scrollbar]:w-0" aria-label={dashboardShellCopy.sidebar.navAriaLabel}>
         {ungroupedItems.length > 0 && (
           <ul className="flex flex-col gap-1" role="list">
             {ungroupedItems.map((item) => (
@@ -176,7 +157,6 @@ function MockSidebar({
                 <MockNavItem
                   item={item}
                   isActive={activeHref === item.href}
-                  accent={accent}
                   collapsed={collapsed}
                   onClick={() => onNavClick(item.href)}
                 />
@@ -198,7 +178,6 @@ function MockSidebar({
                   <MockNavItem
                     item={item}
                     isActive={activeHref === item.href}
-                    accent={accent}
                     collapsed={collapsed}
                     onClick={() => onNavClick(item.href)}
                   />
@@ -213,12 +192,12 @@ function MockSidebar({
       <div className="shrink-0 border-t border-sidebar-border px-2 pb-2 pt-1.5">
         {/* User card */}
         <div className={cn(
-          'flex items-center gap-2.5 rounded-xl px-2.5 py-2.5 cursor-default hover:bg-sidebar-accent transition-colors',
+          'flex items-center gap-2.5 rounded-xl px-2.5 py-2.5 cursor-default',
           collapsed && 'justify-center px-0',
         )}>
           <div
             className="flex size-[30px] shrink-0 items-center justify-center rounded-full text-[11px] font-bold tracking-tight text-white"
-            style={{ backgroundColor: accent.text }}
+            style={{ backgroundColor: 'var(--role-accent)' }}
           >
             {user.initials}
           </div>
@@ -227,7 +206,7 @@ function MockSidebar({
               <p className="text-[12.5px] font-semibold leading-[1.3] text-sidebar-foreground truncate">{user.name}</p>
               <span
                 className="inline-flex items-center rounded-full px-1.5 py-0 text-[9.5px] font-semibold uppercase tracking-wider mt-0.5"
-                style={{ backgroundColor: accent.bg, color: accent.text }}
+                style={{ backgroundColor: 'var(--role-accent-bg)', color: 'var(--role-accent)' }}
               >
                 {roleDisplayNames[role]}
               </span>
@@ -236,13 +215,13 @@ function MockSidebar({
         </div>
 
         {/* Divider */}
-        <div className="my-1 border-t border-sidebar-border" />
+        <div className="my-1.5 mx-1 border-t border-sidebar-border" />
 
         {/* Sign out */}
         <button
           type="button"
           className={cn(
-            'flex w-full min-h-[40px] cursor-default items-center gap-2.5 rounded-xl px-3 text-[13.5px] font-medium text-sidebar-foreground/50 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground',
+            'flex w-full min-h-[44px] cursor-default items-center gap-2.5 rounded-xl px-3 text-[13px] font-medium text-sidebar-foreground/50 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground',
             collapsed && 'justify-center px-0',
           )}
         >
@@ -257,11 +236,14 @@ function MockSidebar({
 // ── Page shell ────────────────────────────────────────────────────────────────
 export function SidebarDesignClient() {
   const [activeRole, setActiveRole] = useState<DashboardRole>('student');
-  const [activeHref, setActiveHref] = useState('/dashboard/student/overview');
+  const [activeHref, setActiveHref] = useState<string>(() => {
+    const navConfig = getNavConfig('student');
+    return navConfig.items[0]?.href ?? '/dashboard/student';
+  });
   const [collapsed, setCollapsed] = useState(false);
   const { isDark, toggleMode } = useTheme();
 
-  const accent = ROLE_ACCENTS[activeRole];
+  const accentHex = ROLE_ACCENTS[activeRole].text; // debug info only
   const user = MOCK_USERS[activeRole];
 
   const handleRoleSwitch = (role: DashboardRole) => {
@@ -275,6 +257,13 @@ export function SidebarDesignClient() {
 
       {/* ── Controls bar ─────────────────────────────────────────────────── */}
       <div className="flex shrink-0 items-center gap-3 border-b border-border bg-card px-4 py-2.5">
+        <Link
+          href="/design#navigation"
+          className="shrink-0 text-[11px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+        >
+          ← Design lab
+        </Link>
+        <div className="h-3.5 w-px shrink-0 bg-border" />
         <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">Role</span>
         <div className="flex gap-1.5 flex-wrap">
           {dashboardRoles.map((role) => (
@@ -318,7 +307,7 @@ export function SidebarDesignClient() {
       </div>
 
       {/* ── Shell ────────────────────────────────────────────────────────── */}
-      <div className="flex flex-1 overflow-hidden">
+      <div data-role={activeRole} className="flex flex-1 overflow-hidden">
 
         {/* Sidebar */}
         <MockSidebar
@@ -333,7 +322,7 @@ export function SidebarDesignClient() {
         <div className="flex flex-1 flex-col overflow-hidden">
 
           {/* TopBar */}
-          <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-card px-5 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+          <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-card px-7 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
             {/* Breadcrumb */}
             <div className="flex-1 min-w-0">
               <div className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground/50 font-medium">
@@ -346,7 +335,7 @@ export function SidebarDesignClient() {
             {/* Right controls */}
             <div className="flex items-center gap-2">
               {/* Search with ⌘K */}
-              <div className="flex h-[34px] w-52 items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 text-[13px] text-muted-foreground cursor-text">
+              <div className="flex h-[34px] flex-1 max-w-[300px] mx-auto items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 text-[13px] text-muted-foreground cursor-text">
                 <MagnifyingGlass className="size-3.5 shrink-0 opacity-50" weight="duotone" aria-hidden="true" />
                 <span className="flex-1 text-muted-foreground/60">Search...</span>
                 <kbd className="rounded bg-muted-foreground/10 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground/50">⌘K</kbd>
@@ -355,7 +344,7 @@ export function SidebarDesignClient() {
               {/* Bell — borderless icon button, matches reference .topbar-icon-btn */}
               <button
                 type="button"
-                className="flex size-[34px] items-center justify-center rounded-lg text-muted-foreground/60 transition-colors hover:bg-black/[0.05] hover:text-muted-foreground"
+                className="flex size-[34px] items-center justify-center rounded-lg text-muted-foreground/60 transition-colors hover:bg-accent hover:text-muted-foreground"
               >
                 <Bell className="size-[18px]" weight="duotone" aria-hidden="true" />
               </button>
@@ -364,7 +353,7 @@ export function SidebarDesignClient() {
               <div
                 className="flex size-[30px] items-center justify-center rounded-full text-[11px] font-bold tracking-tight text-white"
                 style={{
-                  backgroundColor: accent.text,
+                  backgroundColor: 'var(--role-accent)',
                   boxShadow: '0 0 0 2px rgba(255,255,255,0.85), 0 0 0 3px rgba(0,0,0,0.10)',
                 }}
               >
@@ -376,7 +365,7 @@ export function SidebarDesignClient() {
           {/* Page content */}
           <main className="flex-1 overflow-y-auto p-8">
             <div className="mx-auto max-w-3xl">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] mb-1" style={{ color: accent.text }}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] mb-1" style={{ color: 'var(--role-accent)' }}>
                 {roleDisplayNames[activeRole]} dashboard
               </p>
               <h1 className="text-3xl font-semibold tracking-tight text-foreground mb-7">Overview</h1>
@@ -396,7 +385,7 @@ export function SidebarDesignClient() {
               <div className="rounded-xl border border-border bg-card shadow-sm">
                 <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Recent activity</p>
-                  <a href="#" className="text-[11px] font-medium" style={{ color: accent.text }}>View all</a>
+                  <a href="#" className="text-[11px] font-medium" style={{ color: 'var(--role-accent)' }}>View all</a>
                 </div>
                 {[1, 2, 3, 4].map((n) => (
                   <div key={n} className="flex items-center gap-4 border-b border-border px-5 py-3.5 last:border-b-0">
@@ -417,7 +406,7 @@ export function SidebarDesignClient() {
       {/* ── Design notes ─────────────────────────────────────────────────── */}
       <div className="shrink-0 border-t border-border bg-card px-5 py-2.5 text-[10.5px] text-muted-foreground flex items-center gap-5 flex-wrap">
         <span><strong className="text-foreground/60">Role:</strong> {activeRole}</span>
-        <span><strong className="text-foreground/60">Accent:</strong> <code style={{ color: accent.text }}>{accent.text}</code></span>
+        <span><strong className="text-foreground/60">Accent:</strong> <code style={{ color: accentHex }}>{accentHex}</code></span>
         <span><strong className="text-foreground/60">Route:</strong> <code className="text-muted-foreground">{activeHref}</code></span>
         <span><strong className="text-foreground/60">Width:</strong> {collapsed ? '64px' : '240px'}</span>
         <span><strong className="text-foreground/60">Mode:</strong> {isDark ? 'dark' : 'light'}</span>
