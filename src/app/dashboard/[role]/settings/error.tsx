@@ -1,10 +1,10 @@
 'use client';
 
-import { Warning } from '@/components/icons';
 import { captureException } from '@sentry/nextjs';
 import { useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { PageHeader, PageShell, Section } from '@/components/layout/content-primitives';
 import { commonErrors } from '@/config/copy/shared';
 
 export default function SettingsError({
@@ -19,14 +19,16 @@ export default function SettingsError({
   }, [error]);
 
   return (
-    <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
-      <Warning weight="duotone" className="size-10 text-destructive" aria-hidden="true" />
-      <div className="space-y-1">
-        <p className="font-semibold text-foreground">{commonErrors.generic}</p>
-      </div>
-      <Button variant="outline" onClick={reset} className="min-h-11">
-        {commonErrors.tryAgain}
-      </Button>
-    </div>
+    <PageShell>
+      <Section>
+        <PageHeader
+          title={commonErrors.generic}
+          description={commonErrors.pageLoadFailed}
+        />
+        <Button variant="outline" onClick={reset} className="min-h-[44px]">
+          {commonErrors.tryAgain}
+        </Button>
+      </Section>
+    </PageShell>
   );
 }

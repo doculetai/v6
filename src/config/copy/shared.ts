@@ -1,5 +1,6 @@
 export const commonErrors = {
-  generic: "Unable to complete this action. Please try again.",
+  generic: "This page failed to load",
+  pageLoadFailed: "We could not load this page. Try again or contact support if the issue persists.",
   sessionExpired: "Your session has expired. Please sign in again.",
   unauthorized: "You don't have permission to access this page.",
   tryAgain: 'Try again',

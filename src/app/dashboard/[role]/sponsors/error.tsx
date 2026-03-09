@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { PageHeader, PageShell, Section } from '@/components/layout/content-primitives';
 import { commonErrors } from '@/config/copy/shared';
 
-export default function PipelineError({
+export default function SponsorsError({
   error,
   reset,
 }: {
