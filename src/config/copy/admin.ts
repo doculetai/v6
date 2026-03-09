@@ -465,6 +465,20 @@ export const adminCopy = {
       title: "Queue empty",
       description: "No documents match your current filters.",
     },
+    documentTypes: {
+      passport: "Passport",
+      bank_statement: "Bank statement",
+      offer_letter: "Offer letter",
+      affidavit: "Affidavit",
+      cac: "CAC document",
+    },
+    feedback: {
+      reviewSuccess: (action: string) => `Document ${action}.`,
+      reviewError: "Document review failed. Please try again.",
+      bulkSuccess: (n: number, action: string) =>
+        `${n} document${n === 1 ? '' : 's'} ${action}.`,
+      bulkError: "Bulk action failed. Please try again.",
+    },
   },
 
   analytics: {

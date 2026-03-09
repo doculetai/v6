@@ -84,13 +84,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   expired: 'bg-muted text-muted-foreground',
 };
 
-const DOCUMENT_TYPE_LABELS: Record<string, string> = {
-  passport: 'Passport',
-  bank_statement: 'Bank statement',
-  offer_letter: 'Offer letter',
-  affidavit: 'Affidavit',
-  cac: 'CAC document',
-};
+const DOCUMENT_TYPE_LABELS: Record<string, string> = adminCopy.operations.documentTypes;
 
 function formatDate(date: Date): string {
   return new Date(date).toLocaleDateString('en-GB', {
@@ -188,10 +182,11 @@ export function AdminQueuePageClient({ initialQueue, initialStats }: Props) {
         status: reviewAction,
         reason: reviewNotes.trim() || undefined,
       });
-      toast.success(copy.statusLabels[reviewAction === 'more_info_requested' ? 'moreInfoRequested' : reviewAction]);
+      const actionLabel = copy.statusLabels[reviewAction === 'more_info_requested' ? 'moreInfoRequested' : reviewAction].toLowerCase();
+      toast.success(copy.feedback.reviewSuccess(actionLabel));
       setReviewDialogOpen(false);
     } catch {
-      toast.error('Failed to review document.');
+      toast.error(copy.feedback.reviewError);
     }
   };
 
@@ -209,10 +204,11 @@ export function AdminQueuePageClient({ initialQueue, initialStats }: Props) {
         status: bulkAction,
         reason: bulkNotes.trim() || undefined,
       });
-      toast.success(`${selectedIds.size} documents updated.`);
+      const bulkLabel = copy.statusLabels[bulkAction === 'more_info_requested' ? 'moreInfoRequested' : bulkAction].toLowerCase();
+      toast.success(copy.feedback.bulkSuccess(selectedIds.size, bulkLabel));
       setBulkDialogOpen(false);
     } catch {
-      toast.error('Bulk action failed.');
+      toast.error(copy.feedback.bulkError);
     }
   };
 
@@ -247,7 +243,7 @@ export function AdminQueuePageClient({ initialQueue, initialStats }: Props) {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(0); }}
                 placeholder={copy.filters.searchPlaceholder}
-                className="h-10 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="min-h-[44px] w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               />
             </div>
             <div className="flex flex-wrap gap-1.5">
@@ -257,7 +253,7 @@ export function AdminQueuePageClient({ initialQueue, initialStats }: Props) {
                   type="button"
                   onClick={() => { setStatusFilter(f.value); setPage(0); }}
                   className={cn(
-                    'inline-flex h-8 items-center rounded-full px-3 text-xs font-medium transition-colors',
+                    'inline-flex min-h-[44px] items-center rounded-full px-3 text-xs font-medium transition-colors',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     statusFilter === f.value
                       ? 'bg-primary text-primary-foreground'
