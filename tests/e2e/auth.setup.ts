@@ -24,27 +24,36 @@ async function authenticateAndSaveState(
   outputPath: string,
   optional = false,
 ) {
-  await page.goto(`${e2eConfig.baseUrl}/login`);
-  if (/\/dashboard/.test(page.url())) {
-    await page.context().storageState({ path: outputPath });
-    return true;
+  // Retry up to 5x to handle Next.js Turbopack on-demand compilation (first request may return 404)
+  for (let attempt = 0; attempt < 5; attempt++) {
+    await page.goto(`${e2eConfig.baseUrl}/login`);
+    if (/\/dashboard/.test(page.url())) {
+      await page.context().storageState({ path: outputPath });
+      return true;
+    }
+    const ready = await page.locator('#login-email').isVisible({ timeout: 4_000 }).catch(() => false);
+    if (ready) break;
+    await page.waitForTimeout(1_500);
   }
-  await expect(page.getByLabel(/email/i)).toBeVisible();
-  await page.waitForTimeout(400);
-  await page.getByLabel(/email/i).fill(credentials.email);
+  // Use specific IDs to avoid ambiguity with MagicLinkForm's email placeholder
+  await expect(page.locator('#login-email')).toBeVisible();
+  await page.locator('#login-email').fill(credentials.email);
   await page.locator('#login-password').fill(credentials.password);
-  await page.locator('form button[type="submit"]').first().click();
+  const submitBtn = page.locator('button[type="submit"]').first();
+  // Wait for React hydration — login button starts disabled until useEffect sets isHydrated=true
+  await expect(submitBtn).toBeEnabled({ timeout: 8_000 });
+  await submitBtn.click();
 
   if (optional) {
     const landedOnDashboard = await page
-      .waitForURL(/\/(dashboard|auth\/complete)/, { timeout: 20_000 })
+      .waitForURL(/\/(dashboard|auth\/complete)/, { timeout: 45_000 })
       .then(() => true)
       .catch(() => false);
     if (!landedOnDashboard) {
       return false;
     }
   } else {
-    await expect(page).toHaveURL(/\/(dashboard|auth\/complete)/, { timeout: 20_000 });
+    await expect(page).toHaveURL(/\/(dashboard|auth\/complete)/, { timeout: 45_000 });
   }
 
   await page.context().storageState({ path: outputPath });

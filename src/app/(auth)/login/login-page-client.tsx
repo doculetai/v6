@@ -136,8 +136,10 @@ export function LoginPageClient() {
                 authCopy.login.submitLabel
               )}
             </Button>
+        </form>
 
-            {/* Divider */}
+        {/* Divider + magic link — outside main form to avoid invalid nested <form> */}
+        <div className="space-y-5 pt-1">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border" />
@@ -176,7 +178,7 @@ export function LoginPageClient() {
                 </Link>
               </p>
             </div>
-        </form>
+        </div>
       </CardContent>
     </Card>
   );
