@@ -111,6 +111,7 @@ export const marketingCopy = {
     lookupDescription: 'Enter the certificate token to validate the Doculet seal.',
     lookupPlaceholder: 'Certificate token',
     lookupCta: 'Verify certificate',
+    certId: 'Certificate ID',
     holder: 'Holder',
     institution: 'Institution',
     amount: 'Verified balance',
@@ -118,6 +119,7 @@ export const marketingCopy = {
     expires: 'Expires',
     source: 'Source',
     tier: 'Tier',
+    downloadPdf: 'Download PDF',
     verifyAnother: 'Verify another certificate',
   },
   invite: {

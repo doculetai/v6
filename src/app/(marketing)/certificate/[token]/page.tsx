@@ -118,12 +118,31 @@ export default async function CertificatePage({ params }: CertificatePageProps) 
                     <p className="font-medium text-foreground">Tier {result.tier}</p>
                   </div>
                 )}
+                {result.certId && (
+                  <div>
+                    <span className="text-sm text-muted-foreground">{copy.certId}</span>
+                    <p className="font-mono text-sm font-medium text-foreground">{result.certId}</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
-          <Button asChild variant="outline">
-            <Link href={routes.marketing.landing}>{copy.verifyAnother}</Link>
-          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            {result.valid && (
+              <Button asChild>
+                <a
+                  href={`/api/certificate/${token}/pdf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {copy.downloadPdf}
+                </a>
+              </Button>
+            )}
+            <Button asChild variant="outline">
+              <Link href={routes.marketing.landing}>{copy.verifyAnother}</Link>
+            </Button>
+          </div>
         </Container>
       </Section>
     </PageShell>

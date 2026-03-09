@@ -8,6 +8,7 @@ import { createTRPCRouter, publicProcedure } from '../trpc';
 const verifyOutputSchema = z.object({
   found: z.boolean(),
   valid: z.boolean(),
+  certId: z.string().nullable(),
   holderLabel: z.string().nullable(),
   schoolName: z.string().nullable(),
   programName: z.string().nullable(),
@@ -33,7 +34,7 @@ export const certificateRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const cert = await ctx.db.query.certificates.findFirst({
         where: eq(certificates.token, input.token),
-        columns: { studentId: true, issuedAt: true, validUntil: true, status: true },
+        columns: { id: true, studentId: true, issuedAt: true, validUntil: true, status: true },
         with: {
           student: {
             columns: { email: true },
@@ -45,6 +46,7 @@ export const certificateRouter = createTRPCRouter({
         return {
           found: false,
           valid: false,
+          certId: null,
           holderLabel: null,
           schoolName: null,
           programName: null,
@@ -78,9 +80,16 @@ export const certificateRouter = createTRPCRouter({
       const valid = cert.status === 'active' && !expired;
       const tier = sp?.fundingType ? (sp.fundingType === 'self' ? 2 : 3) : 1;
 
+      // Format cert ID as DOC-YYYY-XXXXX (year from issuedAt + first 5 chars of UUID uppercased)
+      const issuedYear = cert.issuedAt
+        ? new Date(cert.issuedAt).getFullYear()
+        : new Date().getFullYear();
+      const certId = `DOC-${issuedYear}-${cert.id.replace(/-/g, '').slice(0, 5).toUpperCase()}`;
+
       return {
         found: true,
         valid,
+        certId,
         holderLabel,
         schoolName,
         programName,
