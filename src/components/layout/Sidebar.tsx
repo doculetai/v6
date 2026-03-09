@@ -158,7 +158,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
       >
         {/* ── Logo ── */}
         <div className={cn(
-          'flex h-14 shrink-0 items-center gap-2.5 border-b border-sidebar-border px-[18px]',
+          'flex shrink-0 items-center gap-2.5 border-b border-sidebar-border pt-[18px] pb-4 px-4',
           visualCollapsed && 'justify-center px-3',
         )}>
           <Link
@@ -171,7 +171,7 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
               alt=""
               width={64}
               height={64}
-              className={cn('shrink-0', visualCollapsed ? 'size-8' : 'size-10')}
+              className="size-8 shrink-0"
               aria-hidden="true"
             />
             {!visualCollapsed && (
@@ -415,6 +415,7 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       href={item.href}
       data-active={isActive}
       aria-current={isActive ? 'page' : undefined}
+      aria-label={item.label}
       title={isCollapsed ? item.label : undefined}
       style={isActive ? {
         backgroundColor: 'var(--role-accent)',
