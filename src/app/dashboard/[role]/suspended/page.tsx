@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { ShieldWarning } from '@phosphor-icons/react/dist/ssr';
+import { ShieldWarning } from '@/components/icons';
 import { studentCopy } from '@/config/copy/student';
 
 export const metadata: Metadata = {
