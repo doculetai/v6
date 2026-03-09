@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ApplicationSwitcher } from '@/components/student/ApplicationSwitcher';
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
@@ -184,15 +183,6 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
             <SidebarCollapseButton onClick={toggleCollapsed} />
           )}
         </div>
-
-        {/* ── Application switcher (student only, expanded mode) ── */}
-        {role === 'student' && !visualCollapsed && (
-          <ApplicationSwitcher
-            applications={[]}
-            activeId=""
-            onSwitch={() => { /* no-op stub */ }}
-          />
-        )}
 
         {/* ── Quick action (optional — not all roles have one) ── */}
         {quickAction && (
