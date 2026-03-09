@@ -15,6 +15,8 @@ export const landingCopy = {
     ],
     signIn: 'Sign in',
     cta: 'Get your certificate',
+    skipToContent: 'Skip to content',
+    ariaLabel: 'Navigation menu',
   },
 
   hero: {

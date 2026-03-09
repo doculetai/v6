@@ -9,17 +9,17 @@ import { CertificateCard } from './LandingCertificateMockup';
 export function LandingHero() {
   return (
     <section
-      className="relative overflow-hidden border-b border-border bg-[#F8FAFC]"
+      className="relative overflow-hidden border-b border-border bg-background"
     >
-      <div className="pointer-events-none absolute -right-10 top-14 h-[500px] w-[500px] rounded-full bg-[#2B39A3] opacity-[0.04]" aria-hidden="true" />
+      <div className="pointer-events-none absolute -right-10 top-14 h-[500px] w-[500px] rounded-full bg-primary opacity-[0.04]" aria-hidden="true" />
 
       <div className="relative mx-auto max-w-7xl px-6 md:px-10">
         <div className="grid min-h-[72vh] items-center gap-10 py-14 md:grid-cols-[1fr_auto] md:py-16">
 
           <div className="max-w-xl space-y-8">
             <LandingReveal>
-              <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(43,57,163,0.2)] bg-[rgba(43,57,163,0.06)] px-3.5 py-1.5 text-xs font-medium tracking-wide text-[#2B39A3]">
-                <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[#2B39A3]" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-3.5 py-1.5 text-xs font-medium tracking-wide text-primary">
+                <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                 {copy.hero.eyebrow}
               </div>
             </LandingReveal>
@@ -27,7 +27,7 @@ export function LandingHero() {
             <LandingReveal delay={80}>
               <div>
                 <p
-                  className="text-hero-h1 font-serif font-semibold leading-none tracking-[-0.02em] text-[#2B39A3]"
+                  className="text-hero-h1 font-serif font-semibold leading-none tracking-[-0.02em] text-primary"
                 >
                   {copy.hero.headline}
                 </p>
@@ -54,27 +54,30 @@ export function LandingHero() {
             </LandingReveal>
 
             <LandingReveal delay={240}>
-              <div className="flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-6">
+              <div className="flex flex-wrap gap-8 border-t border-border pt-6">
                 {copy.hero.stats.map((stat) => (
                   <div key={stat.label}>
-                    <p className="font-mono text-lg font-bold text-[#2B39A3]">{stat.value}</p>
-                    <p className="text-[11px] text-muted-foreground">{stat.label}</p>
+                    <p className="font-mono text-xl font-semibold text-foreground">{stat.value}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{stat.label}</p>
                   </div>
                 ))}
               </div>
             </LandingReveal>
 
-            <LandingReveal delay={320}>
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[rgba(43,57,163,0.08)] text-xs font-semibold text-[#2B39A3]">
-                  {copy.hero.quoteInitials}
-                </div>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  <em className="not-italic text-foreground">&ldquo;{copy.hero.quote}&rdquo;</em>
-                  {' '}— {copy.hero.quoteAttribution}
-                </p>
-              </div>
+            <LandingReveal delay={300}>
+              <figure className="rounded-xl border border-border bg-card px-5 py-4">
+                <blockquote className="text-sm leading-relaxed text-muted-foreground">
+                  <span className="text-primary">&ldquo;</span>{copy.hero.quote}<span className="text-primary">&rdquo;</span>
+                </blockquote>
+                <figcaption className="mt-3 flex items-center gap-2.5">
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 font-mono text-[10px] font-semibold text-primary">
+                    {copy.hero.quoteInitials}
+                  </span>
+                  <span className="text-xs text-muted-foreground">{copy.hero.quoteAttribution}</span>
+                </figcaption>
+              </figure>
             </LandingReveal>
+
           </div>
 
           <div className="hidden md:block">

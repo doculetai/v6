@@ -5,7 +5,7 @@ export function LandingSteps() {
   return (
     <section
       id="how-it-works"
-      className="border-b border-border bg-[#F1F5F9] py-16 md:py-20"
+      className="border-b border-border bg-muted/40 py-16 md:py-20"
     >
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <LandingReveal>
@@ -13,7 +13,7 @@ export function LandingSteps() {
             {copy.steps.label}
           </p>
           <h2
-            className="text-section-h2 font-serif font-semibold leading-tight tracking-tight text-[#2B39A3]"
+            className="text-section-h2 font-serif font-semibold leading-tight tracking-tight text-primary"
           >
             {copy.steps.headline}
           </h2>
@@ -22,9 +22,9 @@ export function LandingSteps() {
         <div className="mt-10">
           {copy.steps.items.map((step, i) => (
             <LandingReveal key={step.number} delay={i * 60}>
-              <div className="group flex gap-6 border-t border-border py-5 transition-colors hover:bg-[rgba(43,57,163,0.02)]">
+              <div className="group flex gap-6 border-t border-border py-5 transition-colors hover:bg-primary/[0.02]">
                 <div className="w-10 shrink-0 pt-0.5">
-                  <span className="font-mono text-[11px] font-semibold tracking-[0.05em] text-[rgba(43,57,163,0.4)]">
+                  <span className="font-mono text-[11px] font-semibold tracking-[0.05em] text-primary/40">
                     {step.number}
                   </span>
                 </div>
