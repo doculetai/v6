@@ -10,7 +10,7 @@ import { api } from '@/trpc/server';
 import { TransactionsPageClient } from './transactions-page-client';
 import { routes } from '@/config/routes';
 
-export const metadata: Metadata = { title: 'Transactions — Doculet' };
+export const metadata: Metadata = { title: `${sponsorCopy.transactions.title} — Doculet` };
 
 type TransactionsPageProps = {
   params: Promise<{ role: string }>;

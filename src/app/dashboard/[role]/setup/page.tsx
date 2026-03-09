@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
 import { api } from '@/trpc/server';
@@ -6,7 +7,7 @@ import { api } from '@/trpc/server';
 import { OnboardingPageClient } from '../onboarding/onboarding-page-client';
 import { routes } from '@/config/routes';
 
-export const metadata = { title: 'Profile Setup — Doculet' };
+export const metadata: Metadata = { title: 'Profile Setup — Doculet' };
 
 type Props = { params: Promise<{ role: string }> };
 

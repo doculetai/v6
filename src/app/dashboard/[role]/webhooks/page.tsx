@@ -1,19 +1,21 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 import { partnerCopy } from '@/config/copy/partner';
 import { api } from '@/trpc/server';
+import { isDashboardRole } from '@/config/roles';
 
 import { WebhooksPageClient } from './webhooks-page-client';
 
-export const metadata: Metadata = { title: partnerCopy.webhooks.title };
+export const metadata: Metadata = { title: `${partnerCopy.webhooks.title} — Doculet` };
 
 type PageProps = { params: Promise<{ role: string }> };
 
 export default async function WebhooksPage({ params }: PageProps) {
   const { role } = await params;
 
-  if (role !== 'partner') {
-    return <p className="text-muted-foreground">{partnerCopy.errors.unauthorized}</p>;
+  if (!isDashboardRole(role) || role !== 'partner') {
+    notFound();
   }
 
   let webhooks: Awaited<
@@ -26,10 +28,5 @@ export default async function WebhooksPage({ params }: PageProps) {
     webhooks = [];
   }
 
-  return (
-    <div className="space-y-6">
-      <h1 className="sr-only">{partnerCopy.webhooks.title}</h1>
-      <WebhooksPageClient initialData={webhooks} />
-    </div>
-  );
+  return <WebhooksPageClient initialData={webhooks} />;
 }

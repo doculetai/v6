@@ -10,7 +10,7 @@ import { api } from '@/trpc/server';
 import { PipelinePageClient } from './pipeline-page-client';
 import { routes } from '@/config/routes';
 
-export const metadata: Metadata = { title: 'Application Pipeline — Doculet' };
+export const metadata: Metadata = { title: `${universityCopy.pipeline.title} — Doculet` };
 
 type PipelinePageProps = {
   params: Promise<{ role: string }>;

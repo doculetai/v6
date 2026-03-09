@@ -12,7 +12,7 @@ import { SchoolsPageClient } from './schools-page-client';
 import { routes } from '@/config/routes';
 
 export const metadata: Metadata = {
-  title: 'Schools — Doculet',
+  title: `${studentCopy.schools.title} — Doculet`,
 };
 
 type SchoolsRolePageProps = {
