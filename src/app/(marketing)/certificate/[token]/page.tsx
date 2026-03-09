@@ -16,7 +16,7 @@ import { routes } from '@/config/routes';
 
 export const metadata: Metadata = {
   title: `${marketingCopy.certificate.title} — Doculet`,
-  description: 'Verify a Doculet proof-of-funds certificate.',
+  description: marketingCopy.certificate.metaDescription,
 };
 
 type CertificatePageProps = {
@@ -35,7 +35,7 @@ export default async function CertificatePage({ params }: CertificatePageProps) 
         <Section>
           <PageHeader title={copy.title} description={copy.notFound} />
           <Container>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="min-h-[44px]">
               <Link href={routes.marketing.landing}>{copy.verifyAnother}</Link>
             </Button>
           </Container>
@@ -129,7 +129,7 @@ export default async function CertificatePage({ params }: CertificatePageProps) 
           </Card>
           <div className="flex flex-col gap-3 sm:flex-row">
             {result.valid && (
-              <Button asChild>
+              <Button asChild className="min-h-[44px]">
                 <a
                   href={`/api/certificate/${token}/pdf`}
                   target="_blank"
@@ -139,7 +139,7 @@ export default async function CertificatePage({ params }: CertificatePageProps) 
                 </a>
               </Button>
             )}
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="min-h-[44px]">
               <Link href={routes.marketing.landing}>{copy.verifyAnother}</Link>
             </Button>
           </div>

@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
-import { ROLE_ACCENTS, type DashboardRole } from '@/config/roles';
+import type { DashboardRole } from '@/config/roles';
 
 import { NotificationsBell } from './NotificationsBell';
 import { Sidebar } from './Sidebar';
@@ -51,7 +51,6 @@ function triggerCommandPalette() {
 export function TopBar({ role, currentPath, user }: TopBarProps) {
   const [open, setOpen] = useState(false);
   const pageLabel = getPageLabel(currentPath, role);
-  const accentHex = ROLE_ACCENTS[role].text;
   const initials = getInitials(user);
 
   return (
@@ -117,16 +116,16 @@ export function TopBar({ role, currentPath, user }: TopBarProps) {
           <NotificationsBell role={role} />
           <button
             type="button"
-            aria-label={dashboardShellCopy.topbar.settings ?? 'Settings'}
+            aria-label={dashboardShellCopy.topbar.settings}
             className="flex h-[34px] w-[34px] items-center justify-center rounded-lg text-slate-900/45 transition-colors hover:bg-black/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Gear size={18} weight="duotone" aria-hidden="true" />
           </button>
           <button
             type="button"
-            aria-label="User menu"
+            aria-label={dashboardShellCopy.topbar.userMenu}
             style={{
-              backgroundColor: accentHex,
+              backgroundColor: 'var(--role-accent)',
               boxShadow: '0 0 0 2px rgba(255,255,255,0.8), 0 0 0 3px rgba(0,0,0,0.10)',
             }}
             className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full text-[11px] font-bold tracking-[-0.02em] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

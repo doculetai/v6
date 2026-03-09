@@ -111,6 +111,7 @@ export const marketingCopy = {
     lookupDescription: 'Enter the certificate token to validate the Doculet seal.',
     lookupPlaceholder: 'Certificate token',
     lookupCta: 'Verify certificate',
+    metaDescription: 'Verify a Doculet proof-of-funds certificate.',
     certId: 'Certificate ID',
     status: 'Status',
     holder: 'Holder',
