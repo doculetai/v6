@@ -104,6 +104,7 @@ export const marketingCopy = {
   terms: {
     title: 'Terms of Service',
     subtitle: 'Last updated: March 2026',
+    metaDescription: 'Terms governing use of Doculet.ai proof of funds verification services.',
     intro: 'By accessing or using Doculet, you agree to be bound by these Terms of Service. If you do not agree, do not use the platform.',
     sections: [
       { heading: '1. Acceptance of terms', body: 'These Terms of Service constitute a legally binding agreement between you and Doculet Technologies Ltd. Your continued use of the platform after any changes constitutes acceptance of the revised terms.' },
@@ -120,6 +121,7 @@ export const marketingCopy = {
   privacy: {
     title: 'Privacy Policy',
     subtitle: 'Last updated: March 2026',
+    metaDescription: 'How Doculet.ai collects, uses, and protects your personal data under NDPR.',
     intro: 'Doculet Technologies Ltd. is committed to protecting your privacy in accordance with the Nigeria Data Protection Regulation (NDPR) and applicable laws.',
     sections: [
       { heading: '1. Data controller', body: 'Doculet Technologies Ltd., registered in Nigeria (CAC), is the data controller for all personal information processed through our platform. Our Data Protection Officer can be reached at privacy@doculet.ai.' },
@@ -137,9 +139,11 @@ export const marketingCopy = {
   contact: {
     title: 'Contact',
     subtitle: 'We are here to help.',
+    metaDescription: 'Get in touch with the Doculet team.',
     email: 'support@doculet.ai',
     enterpriseEmail: 'enterprise@doculet.ai',
     address: 'Victoria Island, Lagos, Nigeria',
+    addressLabel: 'Address',
     supportLabel: 'General support',
     supportNote: 'For account questions, certificate status, and verification issues.',
     enterpriseLabel: 'Enterprise and partnerships',

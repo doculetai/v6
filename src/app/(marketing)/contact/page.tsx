@@ -5,10 +5,10 @@ import { marketingCopy } from '@/config/copy/marketing';
 
 export const metadata: Metadata = {
   title: `${marketingCopy.contact.title} — Doculet`,
-  description: 'Get in touch with the Doculet team.',
+  description: marketingCopy.contact.metaDescription,
   openGraph: {
     title: `${marketingCopy.contact.title} — Doculet`,
-    description: 'Get in touch with the Doculet team.',
+    description: marketingCopy.contact.metaDescription,
     url: 'https://doculet.ai/contact',
     siteName: 'Doculet',
     type: 'website',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: `${marketingCopy.contact.title} — Doculet`,
-    description: 'Get in touch with the Doculet team.',
+    description: marketingCopy.contact.metaDescription,
   },
 };
 
@@ -51,7 +51,7 @@ export default function ContactPage() {
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{contact.enterpriseNote}</p>
         </article>
         <article className="rounded-xl border border-border/70 bg-background/70 p-5 md:col-span-2">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Address</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{contact.addressLabel}</p>
           <p className="mt-2 text-sm leading-relaxed text-foreground">{contact.address}</p>
         </article>
       </div>
