@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { SectionHeader } from '@/components/ui/section-header';
 import {
   Grid,
+  PageHeader,
   PageShell,
   Section,
 } from '@/components/layout/content-primitives';
@@ -83,15 +84,7 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
     <PageShell width="wide">
       <Section>
 
-        {/* ── Page header ─────────────────────────────────────────────────── */}
-        <div className="mb-6">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/80">
-            {copy.subtitle}
-          </p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
-            {copy.welcomeTitle}
-          </h1>
-        </div>
+        <PageHeader overline={copy.subtitle} title={copy.welcomeTitle} />
 
         {/* ── Alert: items need attention ───────────────────────────────── */}
         {hasPendingItems && (
