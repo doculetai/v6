@@ -1,6 +1,6 @@
 "use client"
 
-import { Search } from "lucide-react"
+import { MagnifyingGlass } from '@/components/icons'
 
 import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
@@ -39,7 +39,7 @@ function FilterBar({
     <div className={cn("rounded-xl border bg-card p-3", className)}>
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:max-w-sm">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <MagnifyingGlass weight="duotone" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
             onChange={(event) => onQueryChange?.(event.target.value)}

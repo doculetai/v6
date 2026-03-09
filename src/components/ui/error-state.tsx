@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle } from "lucide-react";
+import { Warning } from '@/components/icons';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -60,7 +60,7 @@ function ErrorState({
       {illustration ? (
         <div className="mx-auto max-w-40 mb-6">{illustration}</div>
       ) : (
-        <AlertTriangle className="mb-6 size-12 text-muted-foreground" />
+        <Warning weight="duotone" className="mb-6 size-12 text-muted-foreground" />
       )}
 
       <h3 className="text-lg font-semibold text-foreground">{heading}</h3>

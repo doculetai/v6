@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeSlash } from '@/components/icons'
 
 import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
@@ -31,7 +31,7 @@ function MaskedValue({ value, label, className }: MaskedValueProps) {
         className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label={revealed ? primitivesCopy.aria.maskedValueHide : primitivesCopy.aria.maskedValueShow}
       >
-        {revealed ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        {revealed ? <EyeSlash weight="duotone" className="size-4" /> : <Eye weight="duotone" className="size-4" />}
       </button>
     </span>
   )

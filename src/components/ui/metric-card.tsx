@@ -1,5 +1,5 @@
 import * as React from "react"
-import { TrendingDown, TrendingUp } from "lucide-react"
+import { TrendDown, TrendUp } from '@/components/icons'
 
 import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
@@ -74,10 +74,10 @@ function MetricCard({
       {showDelta ? (
         <div className={cn("mt-3 inline-flex items-center gap-1 text-sm", deltaToneClass)}>
           {deltaDirection === "up" ? (
-            <TrendingUp className="size-4" aria-hidden="true" />
+            <TrendUp weight="duotone" className="size-4" aria-hidden="true" />
           ) : null}
           {deltaDirection === "down" ? (
-            <TrendingDown className="size-4" aria-hidden="true" />
+            <TrendDown weight="duotone" className="size-4" aria-hidden="true" />
           ) : null}
           <span>{deltaValue}</span>
           {deltaLabel ? <span className="text-muted-foreground">{deltaLabel}</span> : null}

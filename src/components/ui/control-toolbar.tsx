@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { MagnifyingGlass } from '@/components/icons';
 
 import { primitivesCopy } from "@/config/copy/primitives";
 import { cn } from "@/lib/utils";
@@ -27,7 +27,7 @@ export function ControlToolbar({
   return (
     <div className={cn("flex items-center gap-md", className)}>
       <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+        <MagnifyingGlass weight="duotone" className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
           value={query}

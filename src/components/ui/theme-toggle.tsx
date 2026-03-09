@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from "react"
-import { Moon, Sun } from "lucide-react"
+import { Moon, Sun } from '@/components/icons'
 import { useTheme } from "next-themes"
 
 import { primitivesCopy } from "@/config/copy/primitives"
@@ -28,7 +28,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
         className={cn("h-8 w-8 p-0", className)}
         aria-label={primitivesCopy.labels.toggleTheme}
       >
-        <Sun className="h-4 w-4" />
+        <Sun weight="duotone" className="h-4 w-4" />
       </Button>
     )
   }
@@ -42,9 +42,9 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       aria-label={theme === "dark" ? primitivesCopy.themeToggle.switchToLight : primitivesCopy.themeToggle.switchToDark}
     >
       {theme === "dark" ? (
-        <Sun className="h-4 w-4" />
+        <Sun weight="duotone" className="h-4 w-4" />
       ) : (
-        <Moon className="h-4 w-4" />
+        <Moon weight="duotone" className="h-4 w-4" />
       )}
     </Button>
   )

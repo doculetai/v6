@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from "react";
-import { Upload } from "lucide-react";
+import { UploadSimple } from '@/components/icons';
 
 import { primitivesCopy } from "@/config/copy/primitives";
 import { cn } from "@/lib/utils";
@@ -180,7 +180,8 @@ export function FileUploader({
           !disabled && "cursor-pointer hover:border-muted-foreground/50",
         )}
       >
-        <Upload
+        <UploadSimple
+          weight="duotone"
           className={cn(
             "h-8 w-8",
             isDragHover ? "text-primary" : "text-muted-foreground",

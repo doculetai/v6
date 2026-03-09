@@ -1,4 +1,4 @@
-import { CheckCircle2, Circle, CircleDashed, XCircle } from "lucide-react"
+import { CheckCircle, Circle, CircleDashed, XCircle } from '@/components/icons'
 
 import { primitivesCopy } from "@/config/copy/primitives"
 import { cn } from "@/lib/utils"
@@ -18,18 +18,18 @@ interface PipelineStepperProps {
 
 function statusIcon(status: PipelineStepStatus): React.ReactNode {
   if (status === "completed") {
-    return <CheckCircle2 className="size-4 text-success" aria-hidden="true" />
+    return <CheckCircle weight="duotone" className="size-4 text-success" aria-hidden="true" />
   }
   if (status === "current") {
-    return <Circle className="size-4 text-primary" aria-hidden="true" />
+    return <Circle weight="duotone" className="size-4 text-primary" aria-hidden="true" />
   }
   if (status === "failed") {
-    return <XCircle className="size-4 text-destructive" aria-hidden="true" />
+    return <XCircle weight="duotone" className="size-4 text-destructive" aria-hidden="true" />
   }
   if (status === "blocked") {
-    return <CircleDashed className="size-4 text-warning" aria-hidden="true" />
+    return <CircleDashed weight="duotone" className="size-4 text-warning" aria-hidden="true" />
   }
-  return <Circle className="size-4 text-muted-foreground" aria-hidden="true" />
+  return <Circle weight="duotone" className="size-4 text-muted-foreground" aria-hidden="true" />
 }
 
 function labelClass(status: PipelineStepStatus): string {
