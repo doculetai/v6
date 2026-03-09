@@ -28,6 +28,7 @@ export const marketingCopy = {
       renewalLabel: 'Renewal',
       renewalFee: '₦40,000',
       accountNote: 'Free to create an account.',
+      certNote: 'Free to create an account. Renewal: ₦40,000.',
       features: [
         'Identity verification (BVN/NIN)',
         'Bank connection or PDF upload',

@@ -6,6 +6,7 @@ import {
   Buildings,
   UserCircleGear,
   Globe,
+  Check,
 } from '@phosphor-icons/react/dist/ssr';
 
 import { Button } from '@/components/ui/button';
@@ -76,9 +77,7 @@ function PricingTier({
       <ul className="mb-6 flex-1 space-y-2">
         {features.map((feature) => (
           <li key={feature} className="flex items-start gap-2 text-sm text-muted-foreground">
-            <span className="mt-0.5 shrink-0 text-primary" aria-hidden="true">
-              &bull;
-            </span>
+            <Check weight="duotone" size={16} className="mt-0.5 shrink-0 text-primary" aria-hidden="true" />
             <span>{feature}</span>
           </li>
         ))}
@@ -114,7 +113,7 @@ export default function PricingPage() {
             price={pricing.student.certFee}
             priceLabel={pricing.student.certFeeLabel}
             features={pricing.student.features}
-            note={`${pricing.student.accountNote} ${pricing.student.renewalLabel}: ${pricing.student.renewalFee}.`}
+            note={pricing.student.certNote}
             cta={pricing.student.cta}
             ctaHref={pricing.student.ctaHref}
             highlighted
