@@ -11,6 +11,6 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     passWithNoTests: true,
-    exclude: ['**/node_modules/**', '**/.worktrees/**', 'tests/e2e/**'],
+    exclude: ['**/node_modules/**', '**/.worktrees/**', '**/.claude/worktrees/**', 'tests/e2e/**'],
   },
 });
