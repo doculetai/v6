@@ -17,6 +17,16 @@ import { routes } from '@/config/routes';
 export const metadata: Metadata = {
   title: `${marketingCopy.certificate.title} — Doculet`,
   description: marketingCopy.certificate.metaDescription,
+  openGraph: {
+    title: `${marketingCopy.certificate.title} — Doculet`,
+    description: marketingCopy.certificate.metaDescription,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: `${marketingCopy.certificate.title} — Doculet`,
+    description: marketingCopy.certificate.metaDescription,
+  },
 };
 
 type CertificatePageProps = {
