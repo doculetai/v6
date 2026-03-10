@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Checkbox as CheckboxPrimitive } from "radix-ui"
-import { Check } from "lucide-react"
+import { Check } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 
@@ -23,7 +23,7 @@ const Checkbox = React.forwardRef<
     <CheckboxPrimitive.Indicator
       className={cn("grid place-content-center text-current")}
     >
-      <Check className="h-3.5 w-3.5" />
+      <Check size={14} weight="duotone" />
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 ))

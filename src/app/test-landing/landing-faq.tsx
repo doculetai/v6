@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { CaretDown } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { landingCopy as copy } from "@/config/copy/test-landing";
 import { Reveal } from "./_shared";
@@ -44,9 +44,11 @@ export function FAQ() {
                     className="flex w-full cursor-pointer items-center justify-between px-5 py-4 text-left text-sm font-semibold text-foreground md:px-6 md:py-5"
                   >
                     {item.question}
-                    <ChevronDown
+                    <CaretDown
+                      size={16}
+                      weight="duotone"
                       className={cn(
-                        "h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200",
+                        "shrink-0 text-muted-foreground transition-transform duration-200",
                         isOpen && "rotate-180 text-accent",
                       )}
                     />

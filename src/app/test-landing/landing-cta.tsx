@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check } from "@phosphor-icons/react";
 import { landingCopy as copy } from "@/config/copy/test-landing";
 import { Reveal, CtaButtons } from "./_shared";
 
@@ -39,7 +39,7 @@ export function FinalCta() {
                 key={text}
                 className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-medium text-white/60"
               >
-                <Check className="h-3 w-3 text-success" />
+                <Check size={12} weight="duotone" className="text-success" />
                 {text}
               </span>
             ))}

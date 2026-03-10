@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { ShieldCheck, Database, Timer, Layers } from "lucide-react";
+import { ShieldCheck, Database, Timer, Stack } from "@phosphor-icons/react";
 import { landingCopy as copy } from "@/config/copy/test-landing";
 import { Reveal } from "./_shared";
 import { routes } from '@/config/routes';
 
-const featureIcons = [ShieldCheck, Database, Timer, Layers];
+const featureIcons = [ShieldCheck, Database, Timer, Stack];
 
 export function University() {
   return (
@@ -38,7 +38,7 @@ export function University() {
               <Reveal key={feature.title} delay={i * 100}>
                 <div className="flex gap-4 rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:border-accent/30 hover:shadow-md md:p-6">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary">
-                    <Icon className="h-5 w-5 text-primary-foreground" />
+                    <Icon size={20} weight="duotone" className="text-primary-foreground" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-foreground">

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/config/routes";
 import { cn } from "@/lib/utils";
@@ -84,7 +84,7 @@ export function CtaButtons({
       >
         <Link href={routes.auth.signup}>
           {primary}
-          <ArrowRight className="ml-1.5 h-4 w-4" />
+          <ArrowRight size={16} weight="duotone" className="ml-1.5" />
         </Link>
       </Button>
       <Button
@@ -121,7 +121,7 @@ export function EmailCapture({
   if (submitted) {
     return (
       <div className="flex w-full max-w-md items-center gap-3 rounded-xl border border-success/20 bg-success/10 px-5 py-4">
-        <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
+        <CheckCircle size={20} weight="duotone" className="shrink-0 text-success" />
         <p className="text-sm font-medium text-success">
           Thank you. We will be in touch shortly.
         </p>
@@ -158,7 +158,7 @@ export function EmailCapture({
         )}
       >
         {buttonText}
-        <ArrowRight className="ml-1.5 h-4 w-4" />
+        <ArrowRight size={16} weight="duotone" className="ml-1.5" />
       </Button>
     </form>
   );

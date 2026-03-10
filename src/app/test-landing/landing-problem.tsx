@@ -1,8 +1,8 @@
-import { FileWarning, PhoneOff, FileX } from "lucide-react";
+import { Warning, PhoneSlash, FileX } from "@phosphor-icons/react";
 import { landingCopy as copy } from "@/config/copy/test-landing";
 import { Reveal } from "./_shared";
 
-const icons = [FileWarning, PhoneOff, FileX];
+const icons = [Warning, PhoneSlash, FileX];
 
 export function Problem() {
   return (
@@ -42,7 +42,7 @@ export function Problem() {
 
                   <div className="relative">
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/[0.08]">
-                      <Icon className="h-5 w-5 text-white/90" />
+                      <Icon size={20} weight="duotone" className="text-white/90" />
                     </div>
                     <h3 className="mt-5 text-base font-bold text-white">
                       {card.title}

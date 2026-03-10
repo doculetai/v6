@@ -1,4 +1,4 @@
-import { Shield, CheckCircle2, Clock } from "lucide-react";
+import { Shield, CheckCircle, Clock } from "@phosphor-icons/react";
 import { landingCopy as copy } from "@/config/copy/test-landing";
 import { Reveal, CtaButtons } from "./_shared";
 
@@ -17,7 +17,7 @@ function CertificateMockup() {
         {/* Top bar */}
         <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
           <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-accent" />
+            <Shield size={16} weight="duotone" className="text-accent" />
             <span className="text-xs font-bold uppercase tracking-[0.12em] text-white/60">
               {cert.badge}
             </span>
@@ -83,7 +83,7 @@ function CertificateMockup() {
 
         {/* Bottom seal strip */}
         <div className="flex items-center justify-center gap-2 border-t border-white/10 bg-white/[0.03] px-5 py-3">
-          <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+          <CheckCircle size={14} weight="duotone" className="text-success" />
           <span className="text-xs font-semibold uppercase tracking-[0.15em] text-white/50">
             {cert.status}
           </span>
@@ -92,7 +92,7 @@ function CertificateMockup() {
 
       {/* Floating stat chip */}
       <div className="absolute -bottom-4 -left-4 flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2.5 shadow-lg">
-        <Clock className="h-3.5 w-3.5 text-accent" />
+        <Clock size={14} weight="duotone" className="text-accent" />
         <span className="text-xs font-semibold text-foreground">
           Verified in 4 min
         </span>

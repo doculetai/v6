@@ -1,9 +1,8 @@
-import { Fingerprint, Landmark, ScanEye, Lock } from "lucide-react";
-import { Shield } from "lucide-react";
+import { Fingerprint, Bank, Eye, Lock, Shield } from "@phosphor-icons/react";
 import { landingCopy as copy } from "@/config/copy/test-landing";
 import { Reveal } from "./_shared";
 
-const securityIcons = [Fingerprint, Landmark, ScanEye, Lock];
+const securityIcons = [Fingerprint, Bank, Eye, Lock];
 
 export function Security() {
   return (
@@ -27,7 +26,7 @@ export function Security() {
               <div className="mt-10 hidden rounded-2xl border border-border bg-muted/30 p-6 md:block">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-                    <Shield className="h-5 w-5 text-primary-foreground" />
+                    <Shield size={20} weight="duotone" className="text-primary-foreground" />
                   </div>
                   <div>
                     <p className="text-sm font-bold text-foreground">
@@ -69,7 +68,7 @@ export function Security() {
                 <Reveal key={item.label} delay={i * 100}>
                   <div className="flex gap-4 rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:border-accent/30 hover:bg-muted/30 md:p-6">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary">
-                      <Icon className="h-4 w-4 text-primary-foreground" />
+                      <Icon size={16} weight="duotone" className="text-primary-foreground" />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-foreground">

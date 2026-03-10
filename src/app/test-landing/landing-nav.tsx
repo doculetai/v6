@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, List, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { landingCopy as copy } from "@/config/copy/test-landing";
@@ -39,7 +39,7 @@ function MobileMenu({
           aria-label="Close navigation menu"
           className="flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
-          <X className="h-5 w-5" />
+          <X size={20} weight="duotone" />
         </button>
       </div>
 
@@ -72,7 +72,7 @@ function MobileMenu({
             className="flex min-h-13 items-center justify-center gap-2 rounded-xl bg-primary text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             {copy.nav.cta}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight size={16} weight="duotone" />
           </Link>
         </div>
       </nav>
@@ -145,7 +145,7 @@ export function Nav() {
             >
               <Link href={routes.auth.signup}>
                 {copy.nav.cta}
-                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                <ArrowRight size={14} weight="duotone" className="ml-1.5" />
               </Link>
             </Button>
 
@@ -157,7 +157,7 @@ export function Nav() {
               aria-expanded={mobileOpen}
               className="flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
             >
-              <Menu className="h-5 w-5" />
+              <List size={20} weight="duotone" />
             </button>
           </div>
         </div>

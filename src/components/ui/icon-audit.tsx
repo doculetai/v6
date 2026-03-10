@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react"
+import type { Icon } from "@phosphor-icons/react"
 
 import { primitivesCopy } from "@/config/copy/primitives"
 import { iconography } from "@/config/iconography"
@@ -14,10 +14,10 @@ const sizeClassMap = {
 } as const
 
 // Flatten nested iconography into key → Icon pairs for display
-function flattenIconography(): Array<{ key: string; Icon: LucideIcon }> {
-  const entries: Array<{ key: string; Icon: LucideIcon }> = []
+function flattenIconography(): Array<{ key: string; Icon: Icon }> {
+  const entries: Array<{ key: string; Icon: Icon }> = []
   for (const [group, icons] of Object.entries(iconography)) {
-    for (const [name, Icon] of Object.entries(icons as Record<string, LucideIcon>)) {
+    for (const [name, Icon] of Object.entries(icons as Record<string, Icon>)) {
       entries.push({ key: `${group}.${name}`, Icon })
     }
   }
