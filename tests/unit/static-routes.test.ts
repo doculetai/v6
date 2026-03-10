@@ -1,9 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { execSync } from 'node:child_process';
 
 import { describe, expect, it } from 'vitest';
 
-import { execSync } from 'node:child_process';
+import { studentNavConfig } from '@/config/nav/student';
 
 function listFiles(command: string): string[] {
   const output = execSync(command, { encoding: 'utf8' }).trim();
@@ -87,5 +88,33 @@ describe('internal route wiring', () => {
       .sort();
 
     expect(unresolved).toEqual([]);
+  });
+});
+
+describe('studentNavConfig route wiring', () => {
+  const appFiles = listFiles("find src/app -name 'page.tsx'");
+  const knownRoutes = appFiles.map(normalizeAppRoute);
+
+  it('every student nav item href resolves to a real page.tsx', () => {
+    const broken: string[] = [];
+    for (const item of studentNavConfig.items) {
+      if (!knownRoutes.some((route) => isRouteMatch(item.href, route))) {
+        broken.push(item.href);
+      }
+    }
+    expect(broken).toEqual([]);
+  });
+
+  it('student nav has exactly 6 items', () => {
+    // CLAUDE.md: "Student sidebar nav (6 items): Overview → Onboarding → Verification
+    //             → Documents → Proof of Funds → Settings."
+    expect(studentNavConfig.items).toHaveLength(6);
+  });
+
+  it('every student nav item has a non-empty label and a /dashboard/student href', () => {
+    for (const item of studentNavConfig.items) {
+      expect(item.label.length).toBeGreaterThan(0);
+      expect(item.href.startsWith('/dashboard/student')).toBe(true);
+    }
   });
 });
