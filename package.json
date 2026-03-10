@@ -18,6 +18,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:local": "npm run db:seed:e2e && playwright test",
+    "test:e2e:update-snapshots": "playwright test --project=visual --update-snapshots",
     "layout-check": "bash scripts/swarm/layout-audit.sh",
     "design-check": "bash scripts/swarm/design-audit.sh",
     "supabase:start": "supabase start",

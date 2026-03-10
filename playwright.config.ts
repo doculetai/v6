@@ -19,6 +19,10 @@ export default defineConfig({
     video: 'retain-on-failure',
     navigationTimeout: 60_000,
   },
+  expect: {
+    toHaveScreenshot: { maxDiffPixels: 0 },
+  },
+  snapshotPathTemplate: 'tests/e2e/{testFilePath}/__screenshots__/{arg}{ext}',
   projects: [
     /** Unauthenticated specs — no E2E env required. Run: npx playwright test --project=unauthenticated */
     {
@@ -30,7 +34,29 @@ export default defineConfig({
     { name: 'setup', testMatch: /.*\.setup\.ts/, timeout: 90_000 },
     {
       name: 'chromium',
-      testMatch: /student-dashboard\.spec\.ts|documents\.spec\.ts|disbursement\.spec\.ts|verification-ocr-fraud\.spec\.ts/,
+      testMatch: /student-dashboard\.spec\.ts|documents\.spec\.ts|verification-ocr-fraud\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'tests/e2e/.auth/student.json',
+      },
+      dependencies: ['setup'],
+    },
+    /** Multi-role specs — each describe block declares its own storageState */
+    {
+      name: 'multi-role',
+      testMatch: /disbursement\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'university',
+      testMatch: /university-doc-review\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/university.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'student-interactions',
+      testMatch: /student\/interactions\/.+\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'tests/e2e/.auth/student.json',
@@ -38,9 +64,13 @@ export default defineConfig({
       dependencies: ['setup'],
     },
     {
-      name: 'university',
-      testMatch: /university-doc-review\.spec\.ts/,
-      use: { ...devices['Desktop Chrome'] },
+      name: 'visual',
+      testMatch: /student\/visual\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
+        storageState: 'tests/e2e/.auth/student.json',
+      },
       dependencies: ['setup'],
     },
   ],
