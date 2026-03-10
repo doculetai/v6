@@ -34,7 +34,7 @@ export default defineConfig({
     { name: 'setup', testMatch: /.*\.setup\.ts/, timeout: 90_000 },
     {
       name: 'chromium',
-      testMatch: /student-dashboard\.spec\.ts|documents\.spec\.ts|verification-ocr-fraud\.spec\.ts/,
+      testMatch: /student-dashboard\.spec\.ts|documents\.spec\.ts|verification-ocr-fraud\.spec\.ts|student\/routes\.spec\.ts|student\/brand\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'tests/e2e/.auth/student.json',
