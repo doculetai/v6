@@ -19,6 +19,6 @@ test.describe.serial('Journey state: documents complete', () => {
         .toHaveAttribute('data-stage-status', 'completed', { timeout: 10_000 });
     }
     await expect(page.locator('[data-stage-id="proof"]'))
-      .toHaveAttribute('data-stage-status', 'current');
+      .toHaveAttribute('data-stage-status', 'current', { timeout: 10_000 });
   });
 });

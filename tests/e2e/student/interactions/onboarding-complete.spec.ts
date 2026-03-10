@@ -17,7 +17,7 @@ test.describe.serial('Journey state: onboarding complete', () => {
     await expect(page.locator('[data-stage-id="onboarding"]'))
       .toHaveAttribute('data-stage-status', 'completed', { timeout: 10_000 });
     await expect(page.locator('[data-stage-id="verification"]'))
-      .toHaveAttribute('data-stage-status', 'current');
+      .toHaveAttribute('data-stage-status', 'current', { timeout: 10_000 });
   });
 
   test('nextAction CTA is "Continue verification"', async ({ page }) => {

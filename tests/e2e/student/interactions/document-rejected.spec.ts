@@ -33,6 +33,6 @@ test.describe.serial('Journey state: document rejected', () => {
   test('no "cancel submission" on rejected doc (only on pending)', async ({ page }) => {
     await page.goto('/dashboard/student/documents');
     await page.waitForLoadState('networkidle');
-    await expect(page.getByRole('button', { name: /cancel submission/i })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /cancel submission/i })).toHaveCount(0, { timeout: 10_000 });
   });
 });

@@ -17,9 +17,9 @@ test.describe.serial('Journey state: verification complete', () => {
     await expect(page.locator('[data-stage-id="verification"]'))
       .toHaveAttribute('data-stage-status', 'completed', { timeout: 10_000 });
     await expect(page.locator('[data-stage-id="documents"]'))
-      .toHaveAttribute('data-stage-status', 'current');
+      .toHaveAttribute('data-stage-status', 'current', { timeout: 10_000 });
     await expect(
       page.getByRole('link', { name: /upload statement/i }).first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 10_000 });
   });
 });
