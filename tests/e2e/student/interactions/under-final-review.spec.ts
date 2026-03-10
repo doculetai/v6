@@ -15,9 +15,9 @@ test.describe.serial('Journey state: under final review', () => {
     await page.goto('/dashboard/student/proof');
     await page.waitForLoadState('networkidle');
     await expect(page.getByText(/under final review/i)).toBeVisible({ timeout: 10_000 });
-    // CLAUDE.md: "No action, no countdown"
-    await expect(page.getByRole('button', { name: /download/i })).not.toBeVisible();
-    await expect(page.getByRole('button', { name: /share/i })).not.toBeVisible();
+    // CLAUDE.md: "No action, no countdown" — buttons must not exist in this state
+    await expect(page.getByRole('button', { name: /download/i })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /share/i })).toHaveCount(0);
   });
 
   test('no SLA copy (no countdown, no X days)', async ({ page }) => {

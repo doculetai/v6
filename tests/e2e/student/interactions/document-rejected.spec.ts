@@ -27,12 +27,12 @@ test.describe.serial('Journey state: document rejected', () => {
     await page.goto('/dashboard/student/documents');
     await page.waitForLoadState('networkidle');
     const content = await page.getByRole('main').textContent() ?? '';
-    expect(content.toLowerCase()).not.toMatch(/oops|sorry about that|something went wrong/);
+    expect(content.toLowerCase()).not.toMatch(/oops|sorry about that|something went wrong|we couldn't quite/);
   });
 
   test('no "cancel submission" on rejected doc (only on pending)', async ({ page }) => {
     await page.goto('/dashboard/student/documents');
     await page.waitForLoadState('networkidle');
-    await expect(page.getByRole('button', { name: /cancel submission/i })).not.toBeVisible();
+    await expect(page.getByRole('button', { name: /cancel submission/i })).toHaveCount(0);
   });
 });

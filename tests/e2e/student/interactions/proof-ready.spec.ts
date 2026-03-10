@@ -39,7 +39,7 @@ test.describe.serial('Journey state: proof ready', () => {
     await page.waitForLoadState('networkidle');
     // CLAUDE.md: "Post-cert Overview: H1 'Your proof of funds is verified.'"
     await expect(
-      page.getByRole('heading', { name: /your proof of funds is verified/i }),
+      page.getByRole('heading', { name: /your proof of funds is verified/i, level: 1 }),
     ).toBeVisible({ timeout: 10_000 });
   });
 });

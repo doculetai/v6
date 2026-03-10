@@ -16,6 +16,9 @@ test.describe.serial('Journey state: T1 complete', () => {
     await page.waitForLoadState('networkidle');
     await expect(page.locator('[data-tier="1"]'))
       .toHaveAttribute('data-status', 'verified', { timeout: 10_000 });
+    // T2 expanded as current — unblocked by T1 completion
+    await expect(page.locator('[data-tier="2"]'))
+      .toHaveAttribute('data-status', 'current');
     // T3 visible but no lock icon (CLAUDE.md: "no lock icon")
     await expect(page.locator('[data-tier="3"]')).toBeVisible();
     await expect(
