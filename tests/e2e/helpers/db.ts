@@ -20,6 +20,7 @@ const {
   bankAccounts,
   documents,
   certificates,
+  pipelineRuns,
 } = schema;
 
 function createDb() {
@@ -44,6 +45,12 @@ export interface StudentJourneyState {
   documentStatus: 'none' | 'pending' | 'approved' | 'rejected';
   /** rejection reason when documentStatus='rejected' */
   rejectionReason?: string;
+  /**
+   * When true: inserts a documents(pending) row + pipelineRuns(completed) row
+   * so the OCR review card is visible on the Documents page.
+   * documentStatus is ignored when ocrReviewPending=true (document is always 'pending').
+   */
+  ocrReviewPending?: boolean;
   /** certificates.status='active' */
   certificateIssued: boolean;
 }
@@ -126,8 +133,39 @@ export async function setStudentState(
         .where(eq(studentProfiles.userId, userId));
     }
 
-    // --- 6. Document ---
-    if (state.documentStatus !== 'none') {
+    // --- 6. Document (and optional OCR pipeline run) ---
+    if (state.ocrReviewPending) {
+      // Insert pending document first, capture ID for the pipeline run FK
+      const [doc] = await db
+        .insert(documents)
+        .values({
+          userId,
+          type: 'bank_statement',
+          storageUrl: 'https://placeholder.doculet.ai/e2e/statement.pdf',
+          status: 'pending',
+          rejectionReason: null,
+          reviewedAt: null,
+        })
+        .returning({ id: documents.id });
+
+      await db.insert(pipelineRuns).values({
+        documentId: doc.id,
+        userId,
+        status: 'completed',
+        progress: 100,
+        bankName: 'Zenith Bank',
+        accountHolder: 'E2E Student',
+        compositeScore: 75,
+        riskCategory: 'low',
+        autoDecision: 'review',
+        consensusResult: {
+          extractedName: 'E2E Student',
+          extractedBalance: 1500000,
+          accountNumber: '0123456789',
+          bankName: 'Zenith Bank',
+        },
+      });
+    } else if (state.documentStatus !== 'none') {
       await db.insert(documents).values({
         userId,
         type: 'bank_statement',
@@ -146,7 +184,7 @@ export async function setStudentState(
     if (state.certificateIssued) {
       await db.insert(certificates).values({
         studentId: userId,
-        token: `e2e_cert_${Date.now()}`,
+        token: `e2e_cert_${crypto.randomUUID()}`,
         status: 'active',
         paymentStatus: 'paid',
         issuedAt: new Date(),
