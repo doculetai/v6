@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle, Users } from '@/components/icons';
+import { ArrowRight, CheckCircle, Clock, Users } from '@/components/icons';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -73,6 +73,12 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
   const totalCommitted = overview?.totalCommittedKobo ?? 0;
   const activeStudents = overview?.activeStudents ?? 0;
   const pendingInvites = overview?.pendingInvites ?? 0;
+
+  // Anxiety peaks: sponsor has committed to students, all are in-progress (no disbursement scheduled)
+  const hasCommittedStudents = activeStudents > 0 || students.length > 0;
+  const noDisbursementScheduled = !overview?.nextDisbursementAt;
+  const showInProgressBanner =
+    hasCommittedStudents && noDisbursementScheduled && pendingInvites === 0;
   const ngnToUsdRate = overview?.ngnToUsdRate ?? 0;
   const nextAction = journeyState.nextAction;
 
@@ -92,6 +98,28 @@ export async function SponsorOverview({ email, caller }: SponsorOverviewProps) {
           title={copy.welcomeTitle(firstName)}
           overline={copy.subtitle}
         />
+
+        {/* ── Anxiety peaks: students in progress, no action needed ─────── */}
+        {showInProgressBanner && (
+          <div
+            role="status"
+            className="mb-4 flex items-start gap-3 rounded-xl border border-border bg-muted/40 px-5 py-4"
+          >
+            <Clock
+              className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+              weight="duotone"
+              aria-hidden="true"
+            />
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-foreground">
+                {copy.studentsInProgressBanner.heading}
+              </p>
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {copy.studentsInProgressBanner.body}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* ── Pending invites alert ────────────────────────────────────────── */}
         {pendingInvites > 0 && (

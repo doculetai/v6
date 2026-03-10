@@ -22,6 +22,11 @@ export const partnerCopy = {
       },
       apiResetSub: "Resets at midnight UTC",
       cta: "View students",
+      approachingLimitBanner: {
+        heading: (pct: number) => `API usage at ${pct}% of daily limit.`,
+        body: "Consider reviewing your integration patterns or contacting support to discuss limit increases.",
+        cta: "Manage API keys",
+      },
     },
     stats: {
       totalVerifications: "Total verifications",

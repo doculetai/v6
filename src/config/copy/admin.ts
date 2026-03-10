@@ -680,6 +680,8 @@ export const adminCopy = {
         `${n} document${n === 1 ? '' : 's'} pending review in the operations queue.`,
       riskFlags: (n: number) =>
         `${n} risk flag${n === 1 ? '' : 's'} require attention.`,
+      highRisk: (n: number) =>
+        `${n} high-severity risk flag${n === 1 ? '' : 's'} require immediate attention.`,
     },
     fxRateLabel: (rate: string) => `\u2248 \u20A6 ${rate} per $1 USD`,
     recentOperations: {

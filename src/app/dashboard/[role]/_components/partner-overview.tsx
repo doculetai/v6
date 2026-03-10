@@ -1,4 +1,4 @@
-import { ArrowRight, Key } from '@/components/icons';
+import { ArrowRight, Key, Warning } from '@/components/icons';
 import Link from 'next/link';
 
 import { UsageMeter } from '@/components/ui/usage-meter';
@@ -104,6 +104,38 @@ export async function PartnerOverview({ email, caller }: PartnerOverviewProps) {
             source={fxRate?.source ?? null}
           />
         </div>
+
+        {/* ── Approaching limit warning (50–80%) ───────────────────────────── */}
+        {overview && (() => {
+          const pct = overview.apiCallsToday / overview.apiDailyLimit;
+          return pct >= 0.5 && pct < 0.8;
+        })() && (
+          <div className="mt-4 flex flex-col gap-3 rounded-xl border border-warning/30 bg-warning/5 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-2.5 min-w-0">
+              <Warning
+                className="mt-0.5 size-4 shrink-0 text-warning"
+                weight="duotone"
+                aria-hidden="true"
+              />
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-foreground">
+                  {copy.approachingLimitBanner.heading(
+                    Math.round((overview.apiCallsToday / overview.apiDailyLimit) * 100),
+                  )}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {copy.approachingLimitBanner.body}
+                </p>
+              </div>
+            </div>
+            <Button asChild size="sm" variant="outline" className="shrink-0 min-h-11">
+              <Link href={routes.dashboard.partner.apiKeys} className="inline-flex items-center gap-1.5">
+                {copy.approachingLimitBanner.cta}
+                <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
+        )}
 
         {/* ── High usage callout ────────────────────────────────────────────── */}
         {overview && overview.apiCallsToday / overview.apiDailyLimit >= 0.8 && (

@@ -63,6 +63,10 @@ export const sponsorCopy = {
         cta: "Review invites",
         href: routes.dashboard.sponsor.students,
       },
+      studentsInProgressBanner: {
+        heading: "Your students are progressing through verification.",
+        body: "No action is needed from you at this time. You will be notified when a disbursement is scheduled.",
+      },
     },
     stats: {
       totalCommitted: "Total committed (₦)",

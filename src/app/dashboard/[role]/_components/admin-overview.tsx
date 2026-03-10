@@ -70,7 +70,9 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
   const platformBalanceKobo = balanceResult.status === 'fulfilled' ? balanceResult.value.totalKobo : null;
   const certsToday = certsResult.status === 'fulfilled' ? certsResult.value.count : 0;
 
-  const hasPendingItems = (stats?.pending ?? 0) > 0 || riskFlags.length > 0;
+  const hasPendingDocs = (stats?.pending ?? 0) > 0;
+  const hasRiskFlags = riskFlags.length > 0;
+  const isHighRisk = riskFlags.length >= 5;
 
   const platformBalanceLabel = platformBalanceKobo !== null
     ? formatNgn(platformBalanceKobo)
@@ -86,9 +88,9 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
 
         <PageHeader overline={copy.subtitle} title={copy.welcomeTitle} />
 
-        {/* ── Alert: items need attention ───────────────────────────────── */}
-        {hasPendingItems && (
-          <div className="mb-6 flex flex-col gap-3 rounded-xl border border-primary/20 bg-primary/[0.04] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* ── Alert: pending documents ──────────────────────────────────── */}
+        {hasPendingDocs && (
+          <div className="mb-4 flex flex-col gap-3 rounded-xl border border-primary/20 bg-primary/[0.04] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-2.5 min-w-0">
               <Warning
                 className="mt-0.5 size-4 shrink-0 text-primary"
@@ -96,17 +98,48 @@ export async function AdminOverview({ caller }: AdminOverviewProps) {
                 aria-hidden="true"
               />
               <p className="text-sm font-medium text-foreground">
-                {stats?.pending
-                  ? copy.alert.pendingDocuments(stats.pending)
-                  : copy.alert.riskFlags(riskFlags.length)}
+                {copy.alert.pendingDocuments(stats!.pending)}
               </p>
             </div>
             <Button asChild size="sm" variant="default" className="shrink-0">
               <Link
-                href={stats?.pending ? routes.dashboard.admin.operations : routes.dashboard.admin.risk}
+                href={routes.dashboard.admin.operations}
                 className="inline-flex items-center gap-1.5"
               >
-                {stats?.pending ? adminCopy.journey.nextActions.review_queue.cta : adminCopy.journey.nextActions.resolve_flags.cta}
+                {adminCopy.journey.nextActions.review_queue.cta}
+                <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
+        )}
+
+        {/* ── Alert: risk flags (high-risk = destructive, normal = warning) ── */}
+        {hasRiskFlags && (
+          <div
+            className={`mb-6 flex flex-col gap-3 rounded-xl px-5 py-4 sm:flex-row sm:items-center sm:justify-between ${
+              isHighRisk
+                ? 'border border-destructive/30 bg-destructive/5'
+                : 'border border-warning/30 bg-warning/5'
+            }`}
+          >
+            <div className="flex items-start gap-2.5 min-w-0">
+              <Warning
+                className={`mt-0.5 size-4 shrink-0 ${isHighRisk ? 'text-destructive' : 'text-warning'}`}
+                weight="duotone"
+                aria-hidden="true"
+              />
+              <p className="text-sm font-medium text-foreground">
+                {isHighRisk
+                  ? copy.alert.highRisk(riskFlags.length)
+                  : copy.alert.riskFlags(riskFlags.length)}
+              </p>
+            </div>
+            <Button asChild size="sm" variant={isHighRisk ? 'destructive' : 'outline'} className="shrink-0">
+              <Link
+                href={routes.dashboard.admin.risk}
+                className="inline-flex items-center gap-1.5"
+              >
+                {adminCopy.journey.nextActions.resolve_flags.cta}
                 <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
               </Link>
             </Button>

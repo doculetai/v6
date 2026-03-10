@@ -58,6 +58,12 @@ export const universityCopy = {
       action: "Manage programmes",
       actionHref: routes.dashboard.university.programs,
     },
+    pendingApplicationsBanner: {
+      heading: (n: number) =>
+        `${n} student${n === 1 ? '' : 's'} in the verification pipeline.`,
+      body: "Student documents are under review. No action is needed from your institution at this time.",
+      cta: "View pipeline",
+    },
     error: {
       heading: "Failed to load overview",
       body: "Unable to load the dashboard data. Please try again.",

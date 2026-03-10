@@ -42,21 +42,19 @@ function MockNavItem({
       type="button"
       onClick={onClick}
       className={cn(
-        'group flex w-full min-h-[44px] cursor-default items-center gap-2.5 rounded-xl transition-colors duration-150',
+        'group flex w-full min-h-[44px] cursor-default items-center gap-2.5 transition-colors duration-150',
         collapsed
-          ? 'justify-center px-0'
-          : cn(
-              'px-3',
-              isActive
-                ? 'font-semibold'
-                : 'text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
-            ),
-        !collapsed && isActive && 'font-semibold',
+          ? 'justify-center px-0 rounded-[7px] mx-0'
+          : isActive
+            ? 'rounded-r-[7px] mr-2 pl-[calc(0.75rem_-_3px)] pr-3 font-semibold'
+            : 'rounded-[7px] mx-2 px-3 text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
       )}
       style={
-        isActive
-          ? { backgroundColor: 'var(--role-accent)', color: 'var(--sidebar-primary-foreground)' }
-          : undefined
+        isActive && !collapsed
+          ? { borderLeft: '3px solid var(--role-accent)', backgroundColor: 'var(--role-accent-bg)', color: 'var(--role-accent)' }
+          : isActive && collapsed
+            ? { backgroundColor: 'var(--role-accent-bg)', color: 'var(--role-accent)' }
+            : undefined
       }
     >
       {Icon && (

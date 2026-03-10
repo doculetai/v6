@@ -227,6 +227,18 @@ export const studentHomeCopy = {
       },
     },
   },
+  underReview: {
+    eyebrow: 'Under review',
+    heading: 'Your submission has been received.',
+    body: 'We will be in touch once the review is complete.',
+  },
+  actionRequired: {
+    eyebrow: 'Action required',
+    heading: (docType: string) => `${docType} requires resubmission.`,
+    body: 'Review the feedback and upload a corrected version.',
+    cta: 'Review document',
+    ctaHref: routes.dashboard.student.documents,
+  },
 } as const;
 
 export const dashboardOverviewCopy: Record<DashboardRole, OverviewCopy> = {

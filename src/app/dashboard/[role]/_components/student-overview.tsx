@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   CheckCircle,
+  Clock,
   List,
   SealCheck,
   Warning,
@@ -321,6 +322,12 @@ export async function StudentOverview({
   const isBrandNew =
     !onboardingComplete && !verificationComplete && !documentsComplete && !hasAnyVerificationActivity;
 
+  // Journey state derivations for anxiety peaks + blocked states
+  const hasDocsUnderReview = documents.some(
+    (d) => d.status === 'pending' || d.status === 'more_info_requested',
+  );
+  const rejectedDoc = documents.find((d) => d.status === 'rejected');
+
   const requiresSponsor =
     verification?.fundingType === 'sponsor' || verification?.fundingType === 'corporate';
   const hasAcceptedSponsor = sponsorInvites.some((inv) => inv.status === 'accepted');
@@ -453,6 +460,64 @@ export async function StudentOverview({
 
               {/* Phone verification prompt — shown after onboarding, before T1 is complete */}
               {onboardingComplete && !t1Complete ? <PhoneVerificationPromptCard /> : null}
+
+              {/* Anxiety peaks — docs under admin review, no action needed */}
+              {hasDocsUnderReview && !rejectedDoc && (
+                <div
+                  role="status"
+                  className="flex items-start gap-3 rounded-xl border border-border bg-muted/40 px-5 py-4"
+                >
+                  <Clock
+                    className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                    weight="duotone"
+                    aria-hidden="true"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                      {copy.underReview.eyebrow}
+                    </p>
+                    <p className="mt-0.5 text-sm font-medium text-foreground">
+                      {copy.underReview.heading}
+                    </p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">
+                      {copy.underReview.body}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Blocked — rejected document requires resubmission */}
+              {rejectedDoc && (
+                <div
+                  role="alert"
+                  className="flex flex-col gap-3 rounded-xl border border-destructive/30 bg-destructive/5 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex items-start gap-3 min-w-0">
+                    <Warning
+                      className="mt-0.5 size-4 shrink-0 text-destructive"
+                      weight="duotone"
+                      aria-hidden="true"
+                    />
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-destructive">
+                        {copy.actionRequired.eyebrow}
+                      </p>
+                      <p className="mt-0.5 text-sm font-medium text-foreground">
+                        {copy.actionRequired.heading('Bank statement')}
+                      </p>
+                      <p className="mt-0.5 text-sm text-muted-foreground">
+                        {copy.actionRequired.body}
+                      </p>
+                    </div>
+                  </div>
+                  <Button asChild size="sm" variant="destructive" className="shrink-0 min-h-11">
+                    <Link href={copy.actionRequired.ctaHref} className="inline-flex items-center gap-1.5">
+                      {copy.actionRequired.cta}
+                      <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+                    </Link>
+                  </Button>
+                </div>
+              )}
 
               {/* Tabs: Journey | Activity */}
               <Tabs defaultValue="journey">

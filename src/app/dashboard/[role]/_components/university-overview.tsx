@@ -1,4 +1,4 @@
-import { ArrowRight, Buildings, GraduationCap } from '@/components/icons';
+import { ArrowRight, Buildings, Clock, GraduationCap } from '@/components/icons';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -42,13 +42,12 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
   const avgProofTargetKobo = data?.avgProofTargetKobo ?? 0;
   const programRows = data?.programs ?? [];
 
-  // Derive next action from state
+  // Derive next action — only when no programmes exist (true "get started" state)
   const nextAction =
-    totalPrograms === 0
-      ? universityCopy.journey.nextActions.manage_programmes
-      : pendingApplications > 0
-        ? universityCopy.journey.nextActions.monitor_enrolment
-        : null;
+    totalPrograms === 0 ? universityCopy.journey.nextActions.manage_programmes : null;
+
+  // Anxiety peaks — students in verification pipeline, no university action needed
+  const showPendingBanner = totalPrograms > 0 && pendingApplications > 0;
 
   const isEmpty = totalPrograms === 0 && enrolledStudents === 0;
 
@@ -58,10 +57,10 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
 
         {/* ── Page header ─────────────────────────────────────────────────── */}
         <div className="mb-6">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/80">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/40">
             {copy.subtitle}
           </p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-foreground">
+          <h1 className="mt-1 text-[26px] font-bold tracking-[-0.025em] text-foreground">
             {copy.title}
           </h1>
         </div>
@@ -71,7 +70,7 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
           <div className="mb-6 rounded-xl border-l-4 border-l-primary bg-primary/[0.03] px-5 py-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/70">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary/70">
                   {nextAction.href === routes.dashboard.university.programs
                     ? copy.metrics.totalPrograms
                     : copy.metrics.pendingApplications}
@@ -118,6 +117,36 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
             href={routes.dashboard.university.programs}
           />
         </Grid>
+
+        {/* ── Anxiety peaks: students in verification pipeline ─────────── */}
+        {showPendingBanner && (
+          <div
+            role="status"
+            className="mb-6 flex flex-col gap-3 rounded-xl border border-border bg-muted/40 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="flex items-start gap-3 min-w-0">
+              <Clock
+                className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                weight="duotone"
+                aria-hidden="true"
+              />
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-foreground">
+                  {copy.pendingApplicationsBanner.heading(pendingApplications)}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {copy.pendingApplicationsBanner.body}
+                </p>
+              </div>
+            </div>
+            <Button asChild size="sm" variant="outline" className="shrink-0 min-h-11">
+              <Link href={routes.dashboard.university.pipeline} className="inline-flex items-center gap-1.5">
+                {copy.pendingApplicationsBanner.cta}
+                <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
+        )}
 
         {/* ── Programs table with progress ─────────────────────────────── */}
         {!isEmpty && programRows.length > 0 && (

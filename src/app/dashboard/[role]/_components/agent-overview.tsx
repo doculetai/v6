@@ -1,4 +1,4 @@
-import { ArrowRight, Link as LinkIcon, ShieldCheck, Coins, UserFocus } from '@/components/icons';
+import { ArrowRight, Clock, Link as LinkIcon, ShieldCheck, Coins, UserFocus } from '@/components/icons';
 import Link from 'next/link';
 
 import { AgentInviteSheet } from '@/components/agent/AgentInviteSheet';
@@ -45,6 +45,11 @@ export async function AgentOverview({ email, caller }: AgentOverviewProps) {
     overview && overview.totalAssignedStudents > 0
       ? Math.round((overview.activeStudents / overview.totalAssignedStudents) * 100)
       : null;
+
+  const studentsInProgress =
+    overview && overview.totalAssignedStudents > overview.activeStudents
+      ? overview.totalAssignedStudents - overview.activeStudents
+      : 0;
 
   return (
     <PageShell width="wide">
@@ -138,6 +143,39 @@ export async function AgentOverview({ email, caller }: AgentOverviewProps) {
             </Grid>
           </div>
         </div>
+
+        {/* ── Students in-progress banner (anxiety peaks) ──────────────────── */}
+        {studentsInProgress > 0 && overview && (
+          <div
+            role="status"
+            className="mt-6 flex flex-col gap-3 rounded-xl border border-border bg-muted/40 px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="flex items-start gap-3 min-w-0">
+              <Clock
+                className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                weight="duotone"
+                aria-hidden="true"
+              />
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-foreground">
+                  {copy.studentsInProgressBanner.heading(
+                    studentsInProgress,
+                    overview.totalAssignedStudents,
+                  )}
+                </p>
+                <p className="mt-0.5 text-sm text-muted-foreground">
+                  {copy.studentsInProgressBanner.body}
+                </p>
+              </div>
+            </div>
+            <Button asChild size="sm" variant="outline" className="shrink-0 min-h-11">
+              <Link href={routes.dashboard.agent.students} className="inline-flex items-center gap-1.5">
+                {copy.studentsInProgressBanner.cta}
+                <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
+        )}
 
         {/* ── Caseload summary ─────────────────────────────────────────────── */}
         {overview?.totalAssignedStudents === 0 && (

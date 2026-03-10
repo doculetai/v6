@@ -10,7 +10,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
-import { type DashboardRole, ROLE_ACCENTS } from '@/config/roles';
+import type { DashboardRole } from '@/config/roles';
 import type { StudentTrustStage } from '@/lib/student-trust-stage';
 import { usePinnedItems } from '@/lib/hooks/usePinnedItems';
 import { useRecentPages } from '@/lib/hooks/useRecentPages';
@@ -93,7 +93,6 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
 
   const isExpanded = !isCollapsed || (isTablet && isHoverExpanded);
   const visualCollapsed = !isExpanded;
-  const accent = ROLE_ACCENTS[role];
 
   const activeHref = useMemo(
     () => findBestMatch(navConfig.items, currentPath),
@@ -141,10 +140,6 @@ export function Sidebar({ role, currentPath, defaultCollapsed = false, forceVisi
   return (
     <TooltipProvider delayDuration={300}>
       <aside
-        style={{
-          '--role-accent': accent.text,
-          '--role-accent-bg': accent.bg,
-        } as React.CSSProperties}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
         className={cn(
@@ -374,8 +369,8 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
         aria-disabled="true"
         title={isCollapsed ? (item.disabledReason ?? item.label) : item.disabledReason}
         className={cn(
-          'group relative flex min-h-[44px] cursor-not-allowed items-center gap-2.5 rounded-xl px-3 text-sm opacity-40',
-          isCollapsed && 'justify-center px-0',
+          'group relative flex min-h-[44px] cursor-not-allowed items-center gap-2.5 rounded-[7px] px-3 text-sm opacity-40',
+          isCollapsed ? 'justify-center px-0 mx-0' : 'mx-2',
         )}
       >
         <Icon className="size-5 shrink-0 text-sidebar-foreground/55" weight="duotone" aria-hidden="true" />
@@ -407,17 +402,25 @@ function NavItemLink({ item, isActive, isCollapsed }: NavItemLinkProps) {
       aria-current={isActive ? 'page' : undefined}
       aria-label={item.label}
       title={isCollapsed ? item.label : undefined}
-      style={isActive ? {
-        backgroundColor: 'var(--role-accent)',
-        color: 'var(--sidebar-primary-foreground)',
+      style={isActive && !isCollapsed ? {
+        borderLeft: '3px solid var(--role-accent)',
+        backgroundColor: 'var(--role-accent-bg)',
+        color: 'var(--role-accent)',
+      } : isActive && isCollapsed ? {
+        backgroundColor: 'var(--role-accent-bg)',
+        color: 'var(--role-accent)',
       } : undefined}
       className={cn(
-        'group relative flex min-h-[44px] items-center gap-2.5 px-3 text-sm transition-colors duration-150',
+        'group relative flex min-h-[44px] items-center gap-2.5 text-sm transition-colors duration-150',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--role-accent)]',
-        isActive
-          ? 'rounded-xl font-semibold'
-          : 'rounded-xl font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
-        isCollapsed && 'justify-center px-0',
+        isCollapsed
+          ? cn(
+              'justify-center px-0 rounded-[7px] mx-0',
+              isActive ? 'font-semibold' : 'font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
+            )
+          : isActive
+            ? 'rounded-r-[7px] mr-2 pl-[calc(0.75rem_-_3px)] pr-3 font-semibold'
+            : 'rounded-[7px] mx-2 px-3 font-normal text-sidebar-foreground/55 hover:bg-sidebar-accent hover:text-sidebar-foreground',
       )}
     >
       <span className="relative shrink-0">

@@ -22,6 +22,12 @@ export const agentCopy = {
         empty: "No students assigned yet. Use the Actions page to invite your first student.",
       },
       cta: "View your students",
+      studentsInProgressBanner: {
+        heading: (inProgress: number, total: number) =>
+          `${inProgress} of ${total} student${total === 1 ? '' : 's'} still progressing through verification.`,
+        body: "Review their stages and follow up to keep their applications on track.",
+        cta: "View students",
+      },
     },
     stats: {
       totalStudents: "Students in portfolio",
