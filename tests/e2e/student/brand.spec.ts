@@ -39,12 +39,14 @@ test.describe('Student brand compliance (computed styles)', () => {
         .getPropertyValue('--role-accent')
         .trim(),
     );
-    expect(roleAccent).toBe('#2B39A3');
+    expect(roleAccent.toUpperCase()).toBe('#2B39A3');
   });
 
   test('amount elements use IBM Plex Mono font', async ({ page }) => {
     const monoEl = page.locator('.font-mono, [data-testid="amount"]').first();
-    if ((await monoEl.count()) === 0) return; // No amounts on this state — skip
+    const count = await monoEl.count();
+    test.skip(count === 0, 'No amount elements on this journey state');
+    if (count === 0) return;
     const fontFamily = await monoEl.evaluate((el) =>
       getComputedStyle(el).fontFamily,
     );

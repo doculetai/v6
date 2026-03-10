@@ -4,9 +4,19 @@
  */
 
 import { test, expect } from '@playwright/test';
-import { studentNavConfig } from '@/config/nav/student';
 
-for (const item of studentNavConfig.items) {
+// CLAUDE.md: Student sidebar nav (6 items): Overview → Onboarding → Verification
+//             → Documents → Proof of Funds → Settings
+const STUDENT_NAV_ITEMS = [
+  { label: 'Overview', href: '/dashboard/student' },
+  { label: 'Onboarding', href: '/dashboard/student/setup' },
+  { label: 'Verification', href: '/dashboard/student/verification' },
+  { label: 'Documents', href: '/dashboard/student/documents' },
+  { label: 'Proof of Funds', href: '/dashboard/student/proof' },
+  { label: 'Settings', href: '/dashboard/student/settings' },
+] as const;
+
+for (const item of STUDENT_NAV_ITEMS) {
   test(`route: ${item.label} (${item.href})`, async ({ page }) => {
     await page.goto(item.href);
 
