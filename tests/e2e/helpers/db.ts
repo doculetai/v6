@@ -64,6 +64,26 @@ export interface StudentJourneyState {
   certificateIssued: boolean;
 }
 
+/**
+ * Remove all MFA factors for a user — used before/after MFA flow tests
+ * to ensure a clean "not enrolled" state.
+ */
+export async function unenrollMfaFactors(userId: string): Promise<void> {
+  const { db, client } = createDb();
+  try {
+    await db.execute(
+      sql`DELETE FROM auth.mfa_challenges WHERE factor_id IN (
+            SELECT id FROM auth.mfa_factors WHERE user_id = ${userId}::uuid
+          )`,
+    );
+    await db.execute(
+      sql`DELETE FROM auth.mfa_factors WHERE user_id = ${userId}::uuid`,
+    );
+  } finally {
+    await client.end();
+  }
+}
+
 export async function setStudentState(
   userId: string,
   state: StudentJourneyState,
