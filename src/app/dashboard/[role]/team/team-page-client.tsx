@@ -70,7 +70,7 @@ type TeamCopy = {
   success: string;
   removeSuccess: string;
   error: string;
-  empty: { title: string; description: string };
+  empty: { title: string; description: string; action?: string };
 };
 
 type Props = {
@@ -239,7 +239,7 @@ export function TeamPageClient({ copy }: Props) {
           />
 
           {!members || members.length === 0 ? (
-            <EmptyState heading={copy.empty.title} body={copy.empty.description} action={{ label: 'View settings', href: routes.dashboard.university.settings }} />
+            <EmptyState heading={copy.empty.title} body={copy.empty.description} action={copy.empty.action ? { label: copy.empty.action, href: routes.dashboard.university.settings } : undefined} />
           ) : (
             <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">

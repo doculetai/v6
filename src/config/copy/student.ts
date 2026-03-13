@@ -121,7 +121,7 @@ export const studentCopy = {
       manualReviewDescription: "Upload a clear photo of your government-issued ID (passport, driver's licence, or national ID card) and a selfie holding the ID.",
       governmentIdLabel: "Government-issued ID",
       selfieLabel: "Selfie holding your ID",
-      fileTooLarge: "File must be 8 MB or less.",
+      fileTooLarge: "File must be 10 MB or less.",
       governmentIdPlaceholder: "Select your government ID",
       selfiePlaceholder: "Take or select a selfie",
       uploadError: "Unable to upload files. Please try again.",
@@ -148,7 +148,7 @@ export const studentCopy = {
       orDivider: "or",
       connectMonoCta: "Connect your bank account",
       monoWidgetLoading: "Opening bank connection...",
-      monoWidgetError: "Unable to open the bank connection widget. Please try again.",
+      monoWidgetError: "Bank connection unavailable. Try again or upload a bank statement instead.",
       manualForm: {
         title: "Add bank account manually",
         description: "For banks not supported by Mono, or accounts outside Nigeria.",
@@ -205,7 +205,7 @@ export const studentCopy = {
     },
     upload: {
       title: "Upload your bank statement",
-      description: "PDF, PNG, or JPG. Maximum 8 MB. Make sure your name and current balance are clearly visible.",
+      description: "PDF, PNG, or JPG. Maximum 10 MB. Make sure your name and current balance are clearly visible.",
       documentTypeLabel: "Document type",
       documentTypeHint: "Choose the document type",
       fileLabel: "Document file",
@@ -218,6 +218,7 @@ export const studentCopy = {
       dropzoneLabel: "Drag and drop your file, or",
       dropzoneBrowse: "browse",
       selectedFileChangeHint: "\u2014 click to change",
+      rejectedLabel: "Rejected:",
     },
     reuploadCta: "Resubmit with correction",
     list: {
@@ -226,7 +227,7 @@ export const studentCopy = {
       ariaLabel: "Submitted document list",
       submittedAtLabel: "Submitted",
       rejectionReasonLabel: "Reason",
-      rejectionReasonFallback: "No rejection reason provided.",
+      rejectionReasonFallback: "The reviewer did not include details. Contact support for more information.",
       viewCta: "View",
       reuploadReplacementCta: "Upload a replacement",
       moreInfoNoteLabel: "More information requested",
@@ -246,7 +247,7 @@ export const studentCopy = {
       documentTypeRequired: "Select a document type.",
       fileRequired: "Choose a file before uploading.",
       fileTypeInvalid: "Upload a PDF, PNG, or JPG file.",
-      fileTooLarge: "File size must be 8 MB or less.",
+      fileTooLarge: "File size must be 10 MB or less.",
       uploadFailed: "Document upload failed. Please check your file and try again.",
     },
     empty: {
@@ -281,7 +282,7 @@ export const studentCopy = {
     sendingCta: 'Sending...',
     successMessage: 'Phone number confirmed.',
     errorSend: 'Unable to send the code. Check your number and try again.',
-    errorVerify: 'Code did not match. Please try again.',
+    errorVerify: 'Code did not match. Request a new code if this continues.',
   },
 
   kycSheet: {
@@ -296,7 +297,7 @@ export const studentCopy = {
     },
     submitCta: 'Submit check',
     submittingCta: 'Checking...',
-    successMessage: 'Identity check submitted. Your status will update once verification is complete.',
+    successMessage: 'Identity check submitted. Your verification status will update shortly.',
     errorGeneric: 'Identity check failed. Check your number and try again.',
     failureGuidance: 'The number did not match. Enter your name exactly as it appears on your BVN or NIN registration.',
     manualFallbackCta: 'Upload your ID instead',
@@ -310,7 +311,7 @@ export const studentCopy = {
     monoConnectDescription: 'Secure real-time connection. Your login credentials are never stored.',
     orDivider: 'or',
     statementUploadLabel: 'Upload a bank statement',
-    statementUploadHint: 'PDF or image, 6 months or less, maximum 8 MB.',
+    statementUploadHint: 'PDF or image, 6 months or less, maximum 10 MB.',
     status: {
       verified: 'Verified',
       pendingReview: 'Statement under review',
@@ -323,7 +324,7 @@ export const studentCopy = {
       resubmitCta: 'Upload a new statement',
     },
     connectedBank: '{bankName} (****{last4})',
-    errorConnect: 'Unable to connect bank account. Please try again.',
+    errorConnect: 'Bank connection failed. Try again or upload a bank statement.',
     errorWidget: 'Unable to load the bank connection widget.',
     loadingCta: 'Connecting...',
     monoFailed: {
@@ -450,7 +451,7 @@ export const studentCopy = {
       payCta: "Pay certificate fee",
       payingCta: "Processing payment...",
       successMessage: "Payment confirmed. Your certificate is now active.",
-      errorMessage: "Payment could not be verified. Please try again or contact support.",
+      errorMessage: "Payment verification failed. Check your transaction history or contact support.",
       alreadyPaid: "Certificate fee paid",
       paidAtLabel: "Paid on",
       waived: "Fee waived",

@@ -213,44 +213,61 @@ export function NotificationsBell({ role, className }: NotificationsBellProps) {
       <DropdownMenuTrigger
         aria-label={copy.ariaLabel}
         className={cn(
-          'relative rounded-lg p-[6px] text-slate-900/45 transition-colors hover:bg-black/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+          'relative rounded-lg p-[6px] text-muted-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
           className,
         )}
       >
         <Bell weight="duotone" className="size-[18px]" aria-hidden="true" />
         {unreadCount > 0 && (
           <span
-            className="absolute right-1 top-1 h-2 w-2 rounded-full border-2 border-white bg-[#EF4444]"
+            className="absolute right-1 top-1 h-2 w-2 rounded-full border-2 border-background"
+            style={{ backgroundColor: 'var(--role-accent)' }}
             aria-hidden="true"
           />
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-80 overflow-hidden rounded-xl border border-black/[0.08] p-0 shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
+        className="w-[340px] overflow-hidden rounded-2xl border border-border p-0 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)]"
       >
-        <div className="flex items-center justify-between border-b border-black/[0.06] px-4 py-3">
-          <span className="text-[13px] font-semibold">{copy.title}</span>
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Bell weight="duotone" className="size-3.5 text-muted-foreground" aria-hidden="true" />
+            <span className="text-[13px] font-semibold text-foreground">{copy.title}</span>
+            {unreadCount > 0 && (
+              <span
+                className="flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-bold text-white"
+                style={{ backgroundColor: 'var(--role-accent)' }}
+              >
+                {unreadCount}
+              </span>
+            )}
+          </div>
           {unreadCount > 0 && (
             <button
               type="button"
               onClick={handleMarkAll}
-              className="text-xs font-medium text-[#2B39A3] hover:opacity-80"
+              className="text-[11px] font-medium transition-opacity hover:opacity-70"
+              style={{ color: 'var(--role-accent)' }}
             >
               {copy.markAllRead}
             </button>
           )}
         </div>
-        <div className="max-h-[min(50vh,360px)] overflow-y-auto">
+
+        {/* List */}
+        <div className="max-h-[min(55vh,380px)] overflow-y-auto">
           {list.length === 0 ? (
-            <p className="px-4 py-6 text-center text-sm text-muted-foreground">
-              {copy.empty}
-            </p>
+            <div className="flex flex-col items-center gap-2 px-4 py-8">
+              <Bell weight="duotone" className="size-6 text-muted-foreground/40" aria-hidden="true" />
+              <p className="text-center text-sm text-muted-foreground">{copy.empty}</p>
+            </div>
           ) : (
             groups.map((group) => (
               <div key={group.key}>
-                <div className="sticky top-0 z-10 bg-popover px-4 pb-1 pt-2.5">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500/70">
+                <div className="sticky top-0 z-10 border-b border-border/40 bg-popover/95 px-4 pb-1.5 pt-3 backdrop-blur-sm">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground/60">
                     {copy.categoryGroups[group.key]}
                   </span>
                 </div>
@@ -260,29 +277,44 @@ export function NotificationsBell({ role, className }: NotificationsBellProps) {
                     n.metaJson as Record<string, unknown> | null,
                     role,
                   );
+                  const isUnread = !n.readAt;
                   return (
-                    <DropdownMenuItem key={n.id} asChild>
+                    <DropdownMenuItem
+                      key={n.id}
+                      asChild
+                      className="p-0 rounded-none data-[highlighted]:bg-transparent data-[highlighted]:text-inherit"
+                    >
                       <Link
                         href={href}
                         onClick={() =>
-                          !n.readAt &&
+                          isUnread &&
                           markRead.mutate(
                             { id: n.id },
                             { onSettled: () => utils.notifications.invalidate() },
                           )
                         }
                         className={cn(
-                          'flex items-start gap-2.5 border-b border-black/[0.04] px-4 py-2.5 text-[13px] hover:bg-black/[0.03]',
-                          !n.readAt && 'bg-accent/30',
+                          'relative flex w-full items-start gap-3 border-b border-border/40 py-3 pl-4 pr-4 text-[13px] text-foreground transition-colors last:border-0 hover:bg-accent/50',
+                          isUnread && 'bg-[color-mix(in_srgb,var(--role-accent)_6%,transparent)]',
                         )}
                       >
-                        <div className="mt-0.5">
+                        {/* Role-accent left border for unread */}
+                        {isUnread && (
+                          <span
+                            className="absolute inset-y-0 left-0 w-[3px] rounded-r-full"
+                            style={{ backgroundColor: 'var(--role-accent)' }}
+                            aria-hidden="true"
+                          />
+                        )}
+                        <div className="mt-0.5 shrink-0">
                           {getNotificationIcon(n.type)}
                         </div>
                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="truncate font-medium">{n.title}</span>
-                            <span className="shrink-0 text-[11px] tabular-nums text-slate-500/70">
+                          <div className="flex items-start justify-between gap-2">
+                            <span className={cn('truncate text-[13px]', isUnread ? 'font-semibold text-foreground' : 'font-medium text-foreground/80')}>
+                              {n.title}
+                            </span>
+                            <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground/60">
                               {getRelativeTime(n.createdAt)}
                             </span>
                           </div>
@@ -292,6 +324,14 @@ export function NotificationsBell({ role, className }: NotificationsBellProps) {
                             </span>
                           )}
                         </div>
+                        {/* Unread dot (right side) */}
+                        {isUnread && (
+                          <span
+                            className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                            style={{ backgroundColor: 'var(--role-accent)' }}
+                            aria-hidden="true"
+                          />
+                        )}
                       </Link>
                     </DropdownMenuItem>
                   );
