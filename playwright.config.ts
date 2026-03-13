@@ -73,6 +73,7 @@ export default defineConfig({
       },
       dependencies: ['setup'],
     },
+    // ─── Admin ───────────────────────────────────────────────────────────────
     {
       name: 'admin-routes',
       testMatch: /admin\/routes\.spec\.ts/,
@@ -80,17 +81,24 @@ export default defineConfig({
       dependencies: ['setup'],
     },
     {
-      name: 'sponsor-routes',
-      testMatch: /sponsor\/routes\.spec\.ts/,
-      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/sponsor.json' },
+      name: 'admin-brand',
+      testMatch: /admin\/brand\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/admin.json' },
       dependencies: ['setup'],
     },
     {
-      name: 'university-routes',
-      testMatch: /university\/routes\.spec\.ts/,
-      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/university.json' },
+      name: 'admin-interactions',
+      testMatch: /admin\/interactions\/.+\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/admin.json' },
       dependencies: ['setup'],
     },
+    {
+      name: 'admin-visual',
+      testMatch: /admin\/visual\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, storageState: 'tests/e2e/.auth/admin.json' },
+      dependencies: ['setup'],
+    },
+    // ─── Agent ───────────────────────────────────────────────────────────────
     {
       name: 'agent-routes',
       testMatch: /agent\/routes\.spec\.ts/,
@@ -98,9 +106,96 @@ export default defineConfig({
       dependencies: ['setup'],
     },
     {
+      name: 'agent-brand',
+      testMatch: /agent\/brand\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/agent.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'agent-interactions',
+      testMatch: /agent\/interactions\/.+\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/agent.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'agent-visual',
+      testMatch: /agent\/visual\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, storageState: 'tests/e2e/.auth/agent.json' },
+      dependencies: ['setup'],
+    },
+    // ─── Sponsor ─────────────────────────────────────────────────────────────
+    {
+      name: 'sponsor-routes',
+      testMatch: /sponsor\/routes\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/sponsor.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'sponsor-brand',
+      testMatch: /sponsor\/brand\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/sponsor.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'sponsor-interactions',
+      testMatch: /sponsor\/interactions\/.+\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/sponsor.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'sponsor-visual',
+      testMatch: /sponsor\/visual\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, storageState: 'tests/e2e/.auth/sponsor.json' },
+      dependencies: ['setup'],
+    },
+    // ─── University ──────────────────────────────────────────────────────────
+    {
+      name: 'university-routes',
+      testMatch: /university\/routes\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/university.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'university-brand',
+      testMatch: /university\/brand\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/university.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'university-interactions',
+      testMatch: /university\/interactions\/.+\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/university.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'university-visual',
+      testMatch: /university\/visual\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, storageState: 'tests/e2e/.auth/university.json' },
+      dependencies: ['setup'],
+    },
+    // ─── Partner ─────────────────────────────────────────────────────────────
+    {
       name: 'partner-routes',
       testMatch: /partner\/routes\.spec\.ts/,
       use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/partner.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'partner-brand',
+      testMatch: /partner\/brand\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/partner.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'partner-interactions',
+      testMatch: /partner\/interactions\/.+\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/partner.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'partner-visual',
+      testMatch: /partner\/visual\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 }, storageState: 'tests/e2e/.auth/partner.json' },
       dependencies: ['setup'],
     },
   ],
