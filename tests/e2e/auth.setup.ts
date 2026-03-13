@@ -17,6 +17,8 @@ const studentAuthFile = join(authDir, 'student.json');
 const sponsorAuthFile = join(authDir, 'sponsor.json');
 const universityAuthFile = join(authDir, 'university.json');
 const adminAuthFile = join(authDir, 'admin.json');
+const agentAuthFile = join(authDir, 'agent.json');
+const partnerAuthFile = join(authDir, 'partner.json');
 
 async function authenticateAndSaveState(
   page: Page,
@@ -76,31 +78,45 @@ setup('seed E2E data', async () => {
   }
 });
 
-setup('authenticate as student', async ({ page }) => {
-  if (!existsSync(authDir)) {
-    mkdirSync(authDir, { recursive: true });
-  }
+// Serial to avoid overwhelming local Supabase + Turbopack when all 4 run simultaneously
+setup.describe.serial('authenticate roles', () => {
+  setup('authenticate as student', async ({ page }) => {
+    if (!existsSync(authDir)) {
+      mkdirSync(authDir, { recursive: true });
+    }
+    await authenticateAndSaveState(page, e2ePersonas.student, studentAuthFile);
+  });
 
-  await authenticateAndSaveState(page, e2ePersonas.student, studentAuthFile);
-});
+  setup('authenticate as sponsor', async ({ page }) => {
+    if (existsSync(sponsorAuthFile)) {
+      rmSync(sponsorAuthFile);
+    }
+    await authenticateAndSaveState(page, e2ePersonas.sponsor, sponsorAuthFile);
+  });
 
-setup('authenticate as sponsor', async ({ page }) => {
-  if (existsSync(sponsorAuthFile)) {
-    rmSync(sponsorAuthFile);
-  }
-  await authenticateAndSaveState(page, e2ePersonas.sponsor, sponsorAuthFile);
-});
+  setup('authenticate as university', async ({ page }) => {
+    if (existsSync(universityAuthFile)) {
+      rmSync(universityAuthFile);
+    }
+    await authenticateAndSaveState(page, e2ePersonas.university, universityAuthFile);
+  });
 
-setup('authenticate as university', async ({ page }) => {
-  if (existsSync(universityAuthFile)) {
-    rmSync(universityAuthFile);
-  }
-  await authenticateAndSaveState(page, e2ePersonas.university, universityAuthFile);
-});
+  setup('authenticate as admin', async ({ page }) => {
+    if (existsSync(adminAuthFile)) {
+      rmSync(adminAuthFile);
+    }
+    await authenticateAndSaveState(page, e2ePersonas.admin, adminAuthFile);
+  });
 
-setup('authenticate as admin', async ({ page }) => {
-  if (existsSync(adminAuthFile)) {
-    rmSync(adminAuthFile);
-  }
-  await authenticateAndSaveState(page, e2ePersonas.admin, adminAuthFile);
+  setup('authenticate as agent', async ({ page }) => {
+    if (!e2ePersonas.hasAgent) return;
+    if (existsSync(agentAuthFile)) rmSync(agentAuthFile);
+    await authenticateAndSaveState(page, e2ePersonas.agent, agentAuthFile, true);
+  });
+
+  setup('authenticate as partner', async ({ page }) => {
+    if (!e2ePersonas.hasPartner) return;
+    if (existsSync(partnerAuthFile)) rmSync(partnerAuthFile);
+    await authenticateAndSaveState(page, e2ePersonas.partner, partnerAuthFile, true);
+  });
 });

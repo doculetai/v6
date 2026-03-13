@@ -73,6 +73,36 @@ export default defineConfig({
       },
       dependencies: ['setup'],
     },
+    {
+      name: 'admin-routes',
+      testMatch: /admin\/routes\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/admin.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'sponsor-routes',
+      testMatch: /sponsor\/routes\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/sponsor.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'university-routes',
+      testMatch: /university\/routes\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/university.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'agent-routes',
+      testMatch: /agent\/routes\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/agent.json' },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'partner-routes',
+      testMatch: /partner\/routes\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: 'tests/e2e/.auth/partner.json' },
+      dependencies: ['setup'],
+    },
   ],
   outputDir: 'tests/e2e/test-results',
 });
