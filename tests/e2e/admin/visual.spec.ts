@@ -48,3 +48,8 @@ test('risk page', async ({ page }) => {
   await prep(page, () => setAdminViewState(STUDENT_ID, { queueHasItem: false }), '/dashboard/admin/risk');
   await expect(page).toHaveScreenshot('risk-default.png', DYNAMIC(page));
 });
+
+test('overview — all clear (queue empty, no flags)', async ({ page }) => {
+  await prep(page, () => setAdminViewState(STUDENT_ID, { queueHasItem: false, allClear: true }), '/dashboard/admin');
+  await expect(page).toHaveScreenshot('overview-all-clear.png', DYNAMIC(page));
+});

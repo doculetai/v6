@@ -12,7 +12,7 @@ import { config } from 'dotenv';
 config({ path: '.env.local' });
 config({ path: '.env' });
 
-const { partnerApiKeys, partnerStudents } = schema;
+const { partnerApiKeys, partnerStudents, apiUsage } = schema;
 
 function createDb() {
   const client = postgres(process.env.DATABASE_URL!, { max: 1 });
@@ -25,6 +25,12 @@ export interface PartnerState {
   hasApiKeys: boolean;
   /** Whether the partner has verified students */
   hasStudents: boolean;
+  /**
+   * When true (requires hasApiKeys): seeds api_usage rows for today so the
+   * partner's analytics page shows actual call counts (configure_integration
+   * complete state per partner journey model).
+   */
+  hasApiUsage?: boolean;
 }
 
 export async function setPartnerState(
@@ -60,6 +66,28 @@ export async function setPartnerState(
         tier: 3,
         verifiedAt: new Date(),
       });
+    }
+
+    // Clear prior api_usage for this partner
+    await db.delete(apiUsage).where(eq(apiUsage.partnerId, partnerProfileId));
+
+    if (state.hasApiUsage && state.hasApiKeys) {
+      // Insert daily usage for today — partner analytics page shows call counts
+      const today = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
+      await db.insert(apiUsage).values([
+        {
+          partnerId: partnerProfileId,
+          endpoint: '/v1/students',
+          period: today,
+          requestCount: 47,
+        },
+        {
+          partnerId: partnerProfileId,
+          endpoint: '/v1/certificates/verify',
+          period: today,
+          requestCount: 12,
+        },
+      ]);
     }
   } finally {
     await client.end();

@@ -26,6 +26,12 @@ export interface AdminViewState {
   queueHasItem: boolean;
   /** Whether the pending doc has an OCR pipeline run (shows richer queue row) */
   queueItemHasOcr?: boolean;
+  /**
+   * When true and queueHasItem=false: explicit "all clear" state.
+   * No-op in the seeder (already cleared by the delete step), but documents
+   * intent in specs that test the all-clear overview / risk states.
+   */
+  allClear?: boolean;
 }
 
 /**

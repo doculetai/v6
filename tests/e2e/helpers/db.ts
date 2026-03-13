@@ -21,6 +21,7 @@ const {
   documents,
   certificates,
   pipelineRuns,
+  sponsorshipInvites,
 } = schema;
 
 function createDb() {
@@ -38,13 +39,21 @@ export interface StudentJourneyState {
   t2KycVerified: boolean;
   /** kycVerifications tier=3 verified + bankAccounts + studentProfiles.bankStatus='verified' */
   t3BankVerified: boolean;
-  /**
-   * documents(bank_statement) status. Note: 'more_info_requested' and 'expired'
-   * are valid DB states but not currently seeded — extend interface if needed.
-   */
-  documentStatus: 'none' | 'pending' | 'approved' | 'rejected';
-  /** rejection reason when documentStatus='rejected' */
+  /** documents(bank_statement) status */
+  documentStatus: 'none' | 'pending' | 'approved' | 'rejected' | 'more_info_requested';
+  /** rejection reason when documentStatus='rejected' or 'more_info_requested' */
   rejectionReason?: string;
+  /**
+   * When true: inserts kycVerifications(tier=2, status='failed') so the
+   * Verification page shows the T2 failed state with resubmit guidance.
+   * Mutually exclusive with t2KycVerified.
+   */
+  t2KycFailed?: boolean;
+  /**
+   * When true: inserts a sponsorshipInvites(pending) row so the student
+   * sees the "sponsor invite pending" state on Overview/Proof.
+   */
+  sponsorInvitePending?: boolean;
   /**
    * When true: inserts a documents(pending) row + pipelineRuns(completed) row
    * so the OCR review card is visible on the Documents page.
@@ -62,6 +71,9 @@ export async function setStudentState(
   if (state.t3BankVerified && !state.t2KycVerified) {
     throw new Error('setStudentState: t3BankVerified requires t2KycVerified');
   }
+  if (state.t2KycFailed && state.t2KycVerified) {
+    throw new Error('setStudentState: t2KycFailed and t2KycVerified are mutually exclusive');
+  }
 
   const { db, client } = createDb();
 
@@ -71,6 +83,7 @@ export async function setStudentState(
     await db.delete(documents).where(eq(documents.userId, userId));
     await db.delete(bankAccounts).where(eq(bankAccounts.userId, userId));
     await db.delete(kycVerifications).where(eq(kycVerifications.userId, userId));
+    await db.delete(sponsorshipInvites).where(eq(sponsorshipInvites.studentId, userId));
 
     // --- 2. Reset profile fields ---
     await db
@@ -107,6 +120,22 @@ export async function setStudentState(
       await db
         .update(studentProfiles)
         .set({ kycStatus: 'verified' })
+        .where(eq(studentProfiles.userId, userId));
+    }
+
+    // --- 4b. T2 failed (mutually exclusive with t2KycVerified) ---
+    if (state.t2KycFailed) {
+      await db.insert(kycVerifications).values({
+        userId,
+        tier: 2,
+        status: 'failed',
+        provider: 'dojah',
+        referenceId: `e2e_t2_fail_${crypto.randomUUID()}`,
+        verifiedAt: null,
+      });
+      await db
+        .update(studentProfiles)
+        .set({ kycStatus: 'failed' })
         .where(eq(studentProfiles.userId, userId));
     }
 
@@ -175,12 +204,25 @@ export async function setStudentState(
           state.documentStatus === 'rejected'
             ? (state.rejectionReason ??
               'Balance below required minimum. Resubmit with correct statement.')
-            : null,
+            : state.documentStatus === 'more_info_requested'
+              ? (state.rejectionReason ?? 'Please upload a clearer copy showing account name and balance.')
+              : null,
         reviewedAt: state.documentStatus !== 'pending' ? new Date() : null,
       });
     }
 
-    // --- 7. Certificate ---
+    // --- 7. Sponsor invite pending (student invited a sponsor by email) ---
+    if (state.sponsorInvitePending) {
+      await db.insert(sponsorshipInvites).values({
+        studentId: userId,
+        inviteeEmail: 'e2e.sponsor.invite@test.doculet.ai',
+        inviteeEmailNormalized: 'e2e.sponsor.invite@test.doculet.ai',
+        status: 'pending',
+        message: 'Please support my education.',
+      });
+    }
+
+    // --- 9. Certificate ---
     if (state.certificateIssued) {
       await db.insert(certificates).values({
         studentId: userId,

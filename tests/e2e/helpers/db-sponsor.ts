@@ -12,7 +12,7 @@ import { config } from 'dotenv';
 config({ path: '.env.local' });
 config({ path: '.env' });
 
-const { sponsorships } = schema;
+const { sponsorships, certificates } = schema;
 
 function createDb() {
   const client = postgres(process.env.DATABASE_URL!, { max: 1 });
@@ -24,6 +24,11 @@ export interface SponsorState {
   /** Whether the sponsor has an active commitment to the E2E student */
   hasCommitment: boolean;
   commitmentStatus?: 'pending' | 'active' | 'completed';
+  /**
+   * When true (requires hasCommitment): seeds a certificate for the student
+   * so the sponsor's overview shows the "student certified" state.
+   */
+  studentCertIssued?: boolean;
 }
 
 export async function setSponsorState(
@@ -39,6 +44,8 @@ export async function setSponsorState(
       .delete(sponsorships)
       .where(eq(sponsorships.sponsorId, sponsorId));
 
+    await db.delete(certificates).where(eq(certificates.studentId, studentId));
+
     if (state.hasCommitment) {
       await db.insert(sponsorships).values({
         studentId,
@@ -48,6 +55,23 @@ export async function setSponsorState(
         currency: 'NGN',
         relationship: 'Family sponsor',
         balanceCheckStatus: 'unchecked',
+      });
+    }
+
+    if (state.studentCertIssued) {
+      await db.insert(certificates).values({
+        studentId,
+        token: `e2e_sponsor_cert_${crypto.randomUUID()}`,
+        status: 'active',
+        paymentStatus: 'paid',
+        issuedAt: new Date(),
+        metaJson: {
+          studentName: 'E2E Student',
+          schoolName: 'Test University',
+          programName: 'Computer Science',
+          amount: 1500000,
+          currency: 'NGN',
+        },
       });
     }
   } finally {

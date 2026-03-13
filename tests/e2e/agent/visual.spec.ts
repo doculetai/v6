@@ -44,3 +44,13 @@ test('commissions — with pending commission', async ({ page }) => {
   await prep(page, { hasAssignedStudent: true, hasPendingCommission: true }, '/dashboard/agent/commissions');
   await expect(page).toHaveScreenshot('commissions-pending.png', DYNAMIC(page));
 });
+
+test('overview — needs attention (student blocked)', async ({ page }) => {
+  await prep(page, { hasAssignedStudent: true, hasPendingCommission: false, studentHasRejectedDoc: true }, '/dashboard/agent');
+  await expect(page).toHaveScreenshot('overview-needs-attention.png', DYNAMIC(page));
+});
+
+test('overview — all certified (mature portfolio)', async ({ page }) => {
+  await prep(page, { hasAssignedStudent: true, hasPendingCommission: false, studentCertIssued: true }, '/dashboard/agent');
+  await expect(page).toHaveScreenshot('overview-all-certified.png', DYNAMIC(page));
+});

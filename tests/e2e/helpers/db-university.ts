@@ -13,7 +13,7 @@ import { config } from 'dotenv';
 config({ path: '.env.local' });
 config({ path: '.env' });
 
-const { programs } = schema;
+const { programs, studentProfiles } = schema;
 
 function createDb() {
   const client = postgres(process.env.DATABASE_URL!, { max: 1 });
@@ -24,11 +24,18 @@ function createDb() {
 export interface UniversityState {
   /** Whether programs exist for this school */
   hasPrograms: boolean;
+  /**
+   * When true: links the E2E student to this school via studentProfiles.schoolId
+   * so the university's Students page shows a roster row.
+   * Requires studentId to be passed to setUniversityState.
+   */
+  hasStudents?: boolean;
 }
 
 export async function setUniversityState(
   schoolId: string,
   state: UniversityState,
+  studentId?: string,
 ): Promise<void> {
   const { db, client } = createDb();
 
@@ -55,6 +62,20 @@ export async function setUniversityState(
           status: 'active',
         },
       ]);
+    }
+
+    if (state.hasStudents && studentId) {
+      // Link the E2E student to this school so they appear on the university roster
+      await db
+        .update(studentProfiles)
+        .set({ schoolId })
+        .where(eq(studentProfiles.userId, studentId));
+    } else if (studentId) {
+      // Detach the student from this school so we get a clean state
+      await db
+        .update(studentProfiles)
+        .set({ schoolId: null })
+        .where(eq(studentProfiles.userId, studentId));
     }
   } finally {
     await client.end();

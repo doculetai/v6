@@ -44,3 +44,13 @@ test('commitments — empty', async ({ page }) => {
   await prep(page, { hasCommitment: false }, '/dashboard/sponsor/commitments');
   await expect(page).toHaveScreenshot('commitments-empty.png', DYNAMIC(page));
 });
+
+test('overview — pending commitment', async ({ page }) => {
+  await prep(page, { hasCommitment: true, commitmentStatus: 'pending' }, '/dashboard/sponsor');
+  await expect(page).toHaveScreenshot('overview-pending-commitment.png', DYNAMIC(page));
+});
+
+test('overview — student certified', async ({ page }) => {
+  await prep(page, { hasCommitment: true, commitmentStatus: 'active', studentCertIssued: true }, '/dashboard/sponsor');
+  await expect(page).toHaveScreenshot('overview-student-certified.png', DYNAMIC(page));
+});
