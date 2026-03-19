@@ -27,7 +27,7 @@ test.describe.serial('Sponsor state: with active commitment', () => {
   test('commitment shows NGN amount', async ({ page }) => {
     await page.goto('/dashboard/sponsor/commitments');
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText(/₦|NGN/)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/₦|NGN/).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('sponsor overview reflects the active commitment', async ({ page }) => {

@@ -11,6 +11,9 @@ export const landingCopy = {
     ],
     signIn: "Sign in",
     cta: "Apply now",
+    ariaMain: "Main navigation",
+    ariaOpenMenu: "Open navigation menu",
+    ariaCloseMenu: "Close navigation menu",
   },
 
   hero: {

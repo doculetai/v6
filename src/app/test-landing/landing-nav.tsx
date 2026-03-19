@@ -36,7 +36,7 @@ function MobileMenu({
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close navigation menu"
+          aria-label={copy.nav.ariaCloseMenu}
           className="flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <X size={20} weight="duotone" />
@@ -101,7 +101,7 @@ export function Nav() {
             ? "border-b border-border/50 bg-background/90 backdrop-blur-xl shadow-sm"
             : "bg-transparent",
         )}
-        aria-label="Main navigation"
+        aria-label={copy.nav.ariaMain}
       >
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 md:px-8">
           <Link href="/" className="flex items-center gap-2.5">
@@ -153,7 +153,7 @@ export function Nav() {
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              aria-label="Open navigation menu"
+              aria-label={copy.nav.ariaOpenMenu}
               aria-expanded={mobileOpen}
               className="flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
             >

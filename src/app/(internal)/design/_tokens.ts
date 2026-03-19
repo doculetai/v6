@@ -1,3 +1,6 @@
+import { dashboardRoles, ROLE_ACCENTS } from '@/config/roles';
+import { roleDisplayNames } from '@/config/copy/dashboard-shell';
+
 export const colorTokens = [
   { name: 'background', label: 'Background' },
   { name: 'foreground', label: 'Foreground', dark: true },
@@ -10,27 +13,26 @@ export const colorTokens = [
   { name: 'accent', label: 'Accent' },
   { name: 'border', label: 'Border' },
   { name: 'destructive', label: 'Destructive' },
-  { name: 'color-success', label: 'Success' },
-  { name: 'color-warning', label: 'Warning' },
+  { name: 'success', label: 'Success' },
+  { name: 'warning', label: 'Warning' },
   { name: 'ring', label: 'Ring' },
 ];
 
+// Prefixes match @theme vars in globals.css — var(--color-{prefix}-{stop})
 export const colorScales = [
-  { name: 'Brand', prefix: 'brand', stops: ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'] },
-  { name: 'Neutral', prefix: 'neutral', stops: ['0', '50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] },
-  { name: 'Error', prefix: 'error', stops: ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'] },
-  { name: 'Success', prefix: 'success', stops: ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'] },
-  { name: 'Warning', prefix: 'warning', stops: ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900'] },
+  { name: 'Primary', prefix: 'primary', stops: ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] },
+  { name: 'Neutral', prefix: 'neutral', stops: ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] },
+  { name: 'Success', prefix: 'success', stops: ['200', '300', '400', '500', '600'] },
+  { name: 'Warning', prefix: 'warning', stops: ['400', '500', '600'] },
+  { name: 'Destructive', prefix: 'destructive', stops: ['400', '500', '600'] },
 ];
 
-export const roleAccents = [
-  { role: 'Student', color: '#2B39A3' },
-  { role: 'Sponsor', color: '#15803D' },
-  { role: 'University', color: '#0369A1' },
-  { role: 'Admin', color: '#C2410C' },
-  { role: 'Agent', color: '#6D28D9' },
-  { role: 'Partner', color: '#0F766E' },
-];
+// Derived from canonical ROLE_ACCENTS — no duplication.
+export const roleAccents = dashboardRoles.map((role) => ({
+  role: roleDisplayNames[role],
+  color: ROLE_ACCENTS[role].text,
+  bg: ROLE_ACCENTS[role].bg,
+}));
 
 export const semanticTokens = [
   { name: 'background' },
@@ -45,8 +47,8 @@ export const semanticTokens = [
   { name: 'border' },
   { name: 'destructive' },
   { name: 'ring' },
-  { name: 'color-success' },
-  { name: 'color-warning' },
+  { name: 'success' },
+  { name: 'warning' },
 ];
 
 export const sidebarTokens = [
@@ -91,17 +93,22 @@ export const borderTokens = {
   ],
 };
 
+// Values match --radius-* in globals.css :root
 export const radiusTokens = [
-  { name: 'sm', value: '8px' },
-  { name: 'md / DEFAULT', value: '16px' },
-  { name: 'lg', value: '24px' },
-  { name: 'full', value: '9999px' },
+  { name: 'sm', cssVar: '--radius-sm', value: '6px' },
+  { name: 'md', cssVar: '--radius-md', value: '8px' },
+  { name: 'lg', cssVar: '--radius-lg', value: '12px' },
+  { name: 'xl', cssVar: '--radius-xl', value: '16px' },
+  { name: '2xl', cssVar: '--radius-2xl', value: '24px' },
+  { name: 'full', cssVar: '--radius-full', value: '9999px' },
 ];
 
+// cssVars match --shadow-* in globals.css :root
 export const shadowTokens = [
-  { name: 'sm', label: 'Small', cssVar: '--shadow-sm', usage: 'Inline elements, badges' },
-  { name: 'default', label: 'Default', cssVar: '--shadow-default', usage: 'Cards, dropdowns' },
-  { name: 'md', label: 'Medium', cssVar: '--shadow-md', usage: 'Modals, popovers' },
-  { name: 'lg', label: 'Large', cssVar: '--shadow-lg', usage: 'Sidesheets, elevated panels' },
-  { name: 'overlay', label: 'Overlay', cssVar: '--shadow-overlay', usage: 'Full-screen overlays' },
+  { name: 'xs', label: 'XS', cssVar: '--shadow-xs', usage: 'Badges, status chips' },
+  { name: 'sm', label: 'Small', cssVar: '--shadow-sm', usage: 'Inline elements, nav items' },
+  { name: 'md', label: 'Medium', cssVar: '--shadow-md', usage: 'Cards, dropdowns' },
+  { name: 'lg', label: 'Large', cssVar: '--shadow-lg', usage: 'Modals, sidesheets' },
+  { name: 'xl', label: 'XL', cssVar: '--shadow-xl', usage: 'Elevated panels, drawers' },
+  { name: '2xl', label: '2XL', cssVar: '--shadow-2xl', usage: 'Full-screen overlays' },
 ];

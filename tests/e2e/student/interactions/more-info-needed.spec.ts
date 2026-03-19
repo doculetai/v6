@@ -33,13 +33,15 @@ test.describe.serial('Journey state: document more info needed', () => {
   test('resubmit CTA is present', async ({ page }) => {
     await page.goto('/dashboard/student/documents');
     await page.waitForLoadState('networkidle');
+    // Actual CTA text: "Resubmit with the requested information"
     await expect(
-      page.getByRole('button', { name: /resubmit/i }).or(page.getByRole('link', { name: /resubmit/i })),
+      page.getByRole('button', { name: /resubmit/i }).first()
+        .or(page.getByRole('link', { name: /resubmit/i }).first()),
     ).toBeVisible({ timeout: 10_000 });
   });
 
   test('overview shows "action required" banner', async ({ page }) => {
-    await page.goto('/dashboard/student/overview');
+    await page.goto('/dashboard/student');
     await page.waitForLoadState('networkidle');
     await expect(page.getByText(/action required|more info|attention/i)).toBeVisible({ timeout: 10_000 });
   });

@@ -59,7 +59,7 @@ function FrozenBadge() {
   const freezeCopy = adminCopy.freeze;
   return (
     <span className="inline-flex items-center gap-1 rounded-full border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
-      <Prohibit size={12} weight="duotone" />
+      <Prohibit size={16} weight="duotone" />
       {freezeCopy.badge}
     </span>
   );
@@ -208,7 +208,7 @@ export function UsersPageClient({ data, copy }: Props) {
                           </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
+                            className="text-destructive data-[highlighted]:text-destructive"
                             onClick={() => setFreezeTarget(user)}
                           >
                             {freezeCopy.action}
@@ -242,7 +242,7 @@ export function UsersPageClient({ data, copy }: Props) {
                         </DropdownMenuItem>
                       ) : (
                         <DropdownMenuItem
-                          className="text-destructive focus:text-destructive"
+                          className="text-destructive data-[highlighted]:text-destructive"
                           onClick={() => setFreezeTarget(user)}
                         >
                           {freezeCopy.action}

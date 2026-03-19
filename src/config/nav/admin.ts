@@ -1,4 +1,5 @@
-import { ChartBar, ClipboardText, Gear, House, Pulse, ShieldWarning, Users } from '@/components/icons';
+import { ArrowsClockwise, ChartBar, ClipboardText, Gear, House, Users, Warning } from '@/components/icons';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
@@ -10,7 +11,7 @@ export const adminNavConfig: NavConfig = {
   ],
   items: [
     {
-      label: 'Overview',
+      label: primitivesCopy.nav.overview,
       href: routes.dashboard.admin.overview,
       icon: House,
       description: 'Platform health and metrics',
@@ -19,7 +20,7 @@ export const adminNavConfig: NavConfig = {
     {
       label: 'Operations',
       href: routes.dashboard.admin.operations,
-      icon: Pulse,
+      icon: ArrowsClockwise,
       description: 'Live operational activity',
       group: 'ops',
     },
@@ -33,7 +34,7 @@ export const adminNavConfig: NavConfig = {
     {
       label: 'Risk',
       href: routes.dashboard.admin.risk,
-      icon: ShieldWarning,
+      icon: Warning,
       description: 'Risk and compliance flags',
       group: 'ops',
     },

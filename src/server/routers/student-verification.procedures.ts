@@ -456,8 +456,8 @@ export const verificationProcedures = {
   requestManualKycReview: roleProcedure('student')
     .input(
       z.object({
-        governmentIdStorageUrl: z.string().url(),
-        selfieStorageUrl: z.string().url(),
+        governmentIdStoragePath: z.string().min(1).max(500),
+        selfieStoragePath: z.string().min(1).max(500),
       }),
     )
     .output(z.object({ submitted: z.boolean() }))
@@ -468,13 +468,13 @@ export const verificationProcedures = {
             {
               userId: ctx.user.id,
               type: 'passport',
-              storageUrl: input.governmentIdStorageUrl,
+              storageUrl: input.governmentIdStoragePath,
               status: 'pending',
             },
             {
               userId: ctx.user.id,
               type: 'affidavit',
-              storageUrl: input.selfieStorageUrl,
+              storageUrl: input.selfieStoragePath,
               status: 'pending',
             },
           ]);

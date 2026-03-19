@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { PageHeader, PageShell, Section } from '@/components/layout/content-primitives';
 import type { agentCopy } from '@/config/copy/agent';
 import { agentCopy as agentCopyData } from '@/config/copy/agent';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { cn, formatNGN } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
 
@@ -87,7 +88,7 @@ function CommissionCard({
 
       {commission.certIssued && (
         <div className="flex items-center gap-1.5 text-xs text-primary">
-          <Certificate size={14} weight="duotone" aria-hidden="true" />
+          <Certificate size={16} weight="duotone" aria-hidden="true" />
           <span>{copy.eventLabels.certificateIssued}</span>
         </div>
       )}
@@ -238,7 +239,7 @@ export function CommissionsPageClient({ commissions: initialCommissions, copy }:
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/40">
-                    <th className="w-10 px-4 py-3" aria-label="Select" />
+                    <th className="w-10 px-4 py-3" aria-label={primitivesCopy.table.selectColumn} />
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       {copy.table.student}
                     </th>
@@ -280,7 +281,7 @@ export function CommissionsPageClient({ commissions: initialCommissions, copy }:
                           <span>{commission.description ?? '\u2014'}</span>
                           {commission.certIssued && (
                             <span className="inline-flex items-center gap-1 text-xs text-primary">
-                              <Certificate size={12} weight="duotone" aria-hidden="true" />
+                              <Certificate size={16} weight="duotone" aria-hidden="true" />
                               {copy.eventLabels.certificateIssued}
                             </span>
                           )}

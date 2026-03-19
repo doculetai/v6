@@ -46,7 +46,7 @@ function KycLockedField({ label, value }: KycLockedFieldProps) {
           aria-readonly="true"
         />
         <LockKey
-          size={14}
+          size={16}
           weight="duotone"
           className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
           aria-hidden="true"

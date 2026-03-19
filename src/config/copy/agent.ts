@@ -142,6 +142,7 @@ export const agentCopy = {
     empty: {
       title: 'No sponsors yet',
       description: 'Sponsors will appear here when your students receive sponsorships.',
+      action: 'Invite a student',
     },
     error: {
       title: 'Failed to load sponsors',
@@ -202,6 +203,10 @@ export const agentCopy = {
 
   referral: {
     title: "Referral programme",
+    pageTitle: "Referrals",
+    overline: "Student referrals",
+    inviteCta: "Invite student",
+    referredStudentsTitle: "Referred students",
     subtitle: "Share your link and earn when students complete their proof of funds.",
     linkSection: {
       title: "Your referral link",
@@ -212,8 +217,15 @@ export const agentCopy = {
     },
     stats: {
       totalReferrals: "Total referrals",
+      active: "Active",
       converted: "Converted",
       conversionRate: "Conversion rate",
+      subs: {
+        allTime: "All time",
+        currentlyEnrolled: "Currently enrolled",
+        certificatesIssued: "Certificates issued",
+        referredToConverted: "Referred to converted",
+      },
     },
     howItWorks: {
       title: "How it works",
@@ -236,7 +248,11 @@ export const agentCopy = {
       student: "Student",
       signedUp: "Signed up",
       stage: "Current stage",
+      stageShort: "Stage",
       commission: "Commission (₦)",
+      programme: "Programme",
+      status: "Status",
+      referredOn: "Referred on",
     },
     empty: {
       title: "No referrals yet",

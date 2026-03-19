@@ -1,0 +1,24 @@
+import { TableSkeleton } from '@/components/skeletons/PageSkeletons';
+import { PageShell, Section, Stack } from '@/components/layout/content-primitives';
+import { Skeleton } from '@/components/ui/skeleton';
+
+export default function QueueLoading() {
+  return (
+    <PageShell width="wide">
+      <Section>
+        <Stack gap="lg">
+          <div className="space-y-2 border-b border-border pb-4">
+            <Skeleton className="h-8 w-24" />
+            <Skeleton className="h-4 w-64" />
+          </div>
+          <div className="flex gap-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-9 w-24 rounded-lg" />
+            ))}
+          </div>
+          <TableSkeleton rows={8} columns={5} />
+        </Stack>
+      </Section>
+    </PageShell>
+  );
+}

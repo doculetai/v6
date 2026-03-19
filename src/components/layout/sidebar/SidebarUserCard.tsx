@@ -2,7 +2,7 @@
 
 import { SignOut } from '@/components/icons';
 import { dashboardShellCopy, getFallbackUserName, roleDisplayNames } from '@/config/copy/dashboard-shell';
-import { type DashboardRole, ROLE_ACCENTS } from '@/config/roles';
+import type { DashboardRole } from '@/config/roles';
 import { cn } from '@/lib/utils';
 
 type SidebarUserCardProps = {
@@ -35,7 +35,6 @@ function deriveInitials(user: { fullName: string | null; email: string | null } 
 }
 
 export function SidebarUserCard({ role, isCollapsed, user, onSignOut }: SidebarUserCardProps) {
-  const accent = ROLE_ACCENTS[role];
   const displayName = deriveDisplayName(user, role);
   const initials = deriveInitials(user);
 
@@ -48,7 +47,7 @@ export function SidebarUserCard({ role, isCollapsed, user, onSignOut }: SidebarU
       )}>
         <div
           className="flex size-[30px] shrink-0 items-center justify-center rounded-full text-[11px] font-bold tracking-tight text-white"
-          style={{ backgroundColor: accent.text }}
+          style={{ backgroundColor: 'var(--role-accent)' }}
         >
           {initials}
         </div>
@@ -59,7 +58,7 @@ export function SidebarUserCard({ role, isCollapsed, user, onSignOut }: SidebarU
             </p>
             <span
               className="mt-0.5 inline-flex items-center rounded-full px-1.5 py-0 text-[9.5px] font-semibold uppercase tracking-wider"
-              style={{ backgroundColor: accent.bg, color: accent.text }}
+              style={{ backgroundColor: 'var(--role-accent-bg)', color: 'var(--role-accent)' }}
             >
               {roleDisplayNames[role]}
             </span>

@@ -320,7 +320,7 @@ export const universityCopy = {
       overview: 'Overview metrics',
       breakdown: 'Status breakdown',
     },
-    empty: { title: 'No reports yet', description: 'Report data will appear here once students enrol.' },
+    empty: { title: 'No reports yet', description: 'Report data will appear here once students enrol.', action: 'View pipeline' },
   },
   team: {
     title: 'Team',
@@ -355,7 +355,7 @@ export const universityCopy = {
     success: 'Team member added.',
     removeSuccess: 'Team member removed.',
     error: 'Failed to update team. Please try again.',
-    empty: { title: 'No team members', description: 'Add staff to help with verification.' },
+    empty: { title: 'No team members', description: 'Add staff to help with verification.', action: 'View settings' },
   },
   import: {
     title: 'Bulk import',

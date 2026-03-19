@@ -19,8 +19,9 @@ test.describe.serial('Journey state: document rejected', () => {
     // CLAUDE.md: "Reject (written note shown verbatim to student)"
     await expect(page.getByText(NOTE)).toBeVisible({ timeout: 10_000 });
     await expect(
-      page.getByRole('button', { name: /resubmit/i }).or(page.getByRole('link', { name: /resubmit/i })),
-    ).toBeVisible();
+      page.getByRole('button', { name: /resubmit|upload.*replacement/i }).first()
+        .or(page.getByRole('link', { name: /resubmit|upload.*replacement/i }).first()),
+    ).toBeVisible({ timeout: 10_000 });
   });
 
   test('no apologetic language in rejection state', async ({ page }) => {

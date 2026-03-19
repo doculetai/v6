@@ -78,6 +78,7 @@ export const dashboardShellCopy = {
     searchPlaceholder: 'Search...',
     settings: 'Settings',
     userMenu: 'User menu',
+    breadcrumbRoot: 'Dashboard',
   },
   bottomNav: {
     navAriaLabel: 'Mobile dashboard navigation',
@@ -89,7 +90,7 @@ export const dashboardShellCopy = {
     emptyDescription:
       'Finish setting up your profile to see your verification progress and funding status.',
     errorTitle: 'Unable to load your dashboard',
-    errorDescription: 'Please refresh this page to try again.',
+    errorDescription: 'Refresh the page to reload your dashboard.',
     vsLastMonth: 'vs last month',
   },
 } as const;
@@ -179,7 +180,8 @@ export const studentHomeCopy = {
     sectionLabel: 'Activity',
     empty: 'No activity recorded yet.',
     emptyHeading: 'No activity yet',
-      emptyDescription: 'Document uploads and verification events will appear here as you progress.',
+    emptyDescription: 'Document uploads and verification events will appear here as you progress.',
+    emptyCta: 'Start verification',
     documentUploaded: (type: string) => `Uploaded ${type}`,
     documentApproved: (type: string) => `${type} approved`,
     documentRejected: (type: string) => `${type} needs attention`,
@@ -197,7 +199,7 @@ export const studentHomeCopy = {
       onboarding: 'Profile setup',
       verification: 'Verification',
       documents: 'Documents',
-      proof: 'Certificate',
+      proof: 'Proof of Funds',
     },
     completionMessage: 'Your proof of funds is verified.',
     nextActions: {
@@ -220,7 +222,7 @@ export const studentHomeCopy = {
         href: routes.dashboard.student.documents,
       },
       proof: {
-        label: 'Certificate',
+        label: 'Proof of Funds',
         description: 'Your application is complete. Review your proof of funds certificate.',
         cta: 'View certificate',
         href: routes.dashboard.student.proof,

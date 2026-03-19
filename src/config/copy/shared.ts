@@ -5,6 +5,10 @@ export const commonErrors = {
   unauthorized: "You don't have permission to access this page.",
   tryAgain: 'Try again',
   backToHome: 'Back to home',
+  globalError: {
+    heading: 'A critical error occurred',
+    body: 'Reload the page to continue. Contact support if the issue persists.',
+  },
 } as const;
 
 export const commonUi = {

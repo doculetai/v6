@@ -4,6 +4,7 @@ import Link from "next/link"
 import { CaretLeft, CaretRight, Question } from '@/components/icons'
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import { primitivesCopy } from '@/config/copy/primitives'
 
 interface Breadcrumb {
   label: string
@@ -54,7 +55,7 @@ function PageHeader({
           <MobileBackLink breadcrumbs={breadcrumbs} />
 
           {/* Desktop: full breadcrumb trail */}
-          <nav className="mb-1 hidden items-center gap-1 text-sm text-muted-foreground sm:flex" aria-label="Breadcrumb">
+          <nav className="mb-1 hidden items-center gap-1 text-sm text-muted-foreground sm:flex" aria-label={primitivesCopy.ariaExtended.breadcrumbNav}>
             {breadcrumbs.map((crumb, i) => (
               <span key={i} className="flex items-center gap-1">
                 {i > 0 ? <CaretRight weight="duotone" className="h-3.5 w-3.5" /> : null}
@@ -75,18 +76,18 @@ function PageHeader({
           {Icon ? <Icon className="h-6 w-6 shrink-0 text-primary" /> : null}
           <div>
             {overline ? (
-              <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-primary/70">
+              <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/40">
                 {overline}
               </p>
             ) : null}
             <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-semibold tracking-tight text-foreground">{title}</h1>
+              <h1 className="text-[26px] font-bold tracking-[-0.025em] text-foreground">{title}</h1>
               {helpText && (
                 <div className="relative">
                   <button
                     type="button"
                     onClick={() => setHelpOpen((p) => !p)}
-                    aria-label="Page help"
+                    aria-label={primitivesCopy.ariaExtended.pageHelp}
                     className="inline-flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   >
                     <Question className="size-4" weight="duotone" />
@@ -117,7 +118,7 @@ function MobileBackLink({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) {
   if (!parent?.href) return null
 
   return (
-    <nav className="mb-2 sm:hidden" aria-label="Back">
+    <nav className="mb-2 sm:hidden" aria-label={primitivesCopy.ariaExtended.back}>
       <Link
         href={parent.href}
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"

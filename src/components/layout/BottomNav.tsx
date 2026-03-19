@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
 import { getNavItems, getMobileNavKey, isActivePath, mobileNavKeys } from '@/config/nav';
 import type { DashboardRole } from '@/config/roles';
-import { ROLE_ACCENTS } from '@/config/roles';
 import { cn } from '@/lib/utils';
 
 type BottomNavProps = {
@@ -25,7 +24,6 @@ export function BottomNav({ role }: BottomNavProps) {
   const pathname = usePathname();
   const allItems = getNavItems(role);
   const keys = mobileNavKeys[role];
-  const accent = ROLE_ACCENTS[role];
 
   // Filter nav items to the 4 curated mobile keys, preserving key order.
   const items = keys
@@ -61,8 +59,8 @@ export function BottomNav({ role }: BottomNavProps) {
                 style={
                   isActive
                     ? {
-                        color: accent.text,
-                        backgroundColor: accent.bg,
+                        color: 'var(--role-accent)',
+                        backgroundColor: 'var(--role-accent-bg)',
                       }
                     : undefined
                 }
@@ -73,7 +71,7 @@ export function BottomNav({ role }: BottomNavProps) {
                 {item.badge !== undefined && item.badge > 0 ? (
                   <span
                     className="absolute right-1 top-1 rounded-full px-1.5 py-0.5 text-xs font-medium"
-                    style={{ backgroundColor: accent.text, color: '#fff' }}
+                    style={{ backgroundColor: 'var(--role-accent)', color: '#fff' }}
                   >
                     {item.badge}
                   </span>

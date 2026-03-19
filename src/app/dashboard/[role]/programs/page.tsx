@@ -1,41 +1,46 @@
+import { TRPCError } from '@trpc/server';
 import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { TRPCError } from '@trpc/server';
 
+import { partnerCopy } from '@/config/copy/partner';
 import { universityCopy } from '@/config/copy/university';
+import { isDashboardRole } from '@/config/roles';
 import { api } from '@/trpc/server';
 
-import { UniversityProgramsPageClient } from './university-programs-page-client';
+import { PartnerProgramsPageClient } from './partner-programs-page-client';
+import { ProgramsPageClient } from './programs-page-client';
+import { routes } from '@/config/routes';
 
-export const metadata: Metadata = { title: 'Programs — Doculet' };
+type PageProps = { params: Promise<{ role: string }> };
 
-type ProgramsPageProps = {
-  params: Promise<{ role: string }>;
-};
-
-export default async function ProgramsPage({ params }: ProgramsPageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { role } = await params;
+  const copy = role === 'partner' ? partnerCopy.programs : universityCopy.programs;
+  return { title: `${copy.title} — Doculet` };
+}
 
-  if (role !== 'university') {
-    notFound();
-  }
+export default async function ProgramsPage({ params }: PageProps) {
+  const { role } = await params;
+  if (!isDashboardRole(role) || (role !== 'partner' && role !== 'university')) notFound();
 
   const caller = await api();
-  let programs: Awaited<ReturnType<typeof caller.university.listUniversityPrograms>>;
   try {
-    programs = await caller.university.listUniversityPrograms();
-  } catch (error) {
-    if (error instanceof TRPCError && error.code === 'UNAUTHORIZED') redirect('/login');
-    programs = [];
+    await caller.dashboard.getSession({ role });
+  } catch (e) {
+    if (e instanceof TRPCError && e.code === 'UNAUTHORIZED') redirect(routes.auth.login);
+    throw e;
   }
 
-  return (
-    <div className="space-y-6">
-      <h1 className="sr-only">{universityCopy.programs.title}</h1>
-      <UniversityProgramsPageClient
-        initialPrograms={programs}
-        copy={universityCopy.programs}
+  if (role === 'partner') {
+    const programs = await caller.partner.listAllPrograms();
+    return (
+      <PartnerProgramsPageClient
+        programs={programs}
+        copy={partnerCopy.programs}
       />
-    </div>
-  );
+    );
+  }
+
+  // University role
+  return <ProgramsPageClient copy={universityCopy.programs} />;
 }

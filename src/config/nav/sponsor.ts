@@ -1,4 +1,5 @@
 import { CreditCard, Gear, Handshake, House, Receipt, Users } from '@/components/icons';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
@@ -10,7 +11,7 @@ export const sponsorNavConfig: NavConfig = {
   ],
   items: [
     {
-      label: 'Overview',
+      label: primitivesCopy.nav.overview,
       href: routes.dashboard.sponsor.overview,
       icon: House,
       description: 'Funding summary and activity',

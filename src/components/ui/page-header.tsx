@@ -5,6 +5,7 @@ import Link from "next/link"
 import { CaretLeft, CaretRight } from '@/components/icons'
 
 import { cn } from "@/lib/utils"
+import { primitivesCopy } from '@/config/copy/primitives'
 
 interface Breadcrumb {
   label: string
@@ -26,7 +27,7 @@ function MobileBackLink({ breadcrumbs }: { breadcrumbs: Breadcrumb[] }) {
   if (!parent?.href) return null
 
   return (
-    <nav className="mb-2 sm:hidden" aria-label="Back">
+    <nav className="mb-2 sm:hidden" aria-label={primitivesCopy.ariaExtended.back}>
       <Link
         href={parent.href}
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -62,7 +63,7 @@ function PageHeader({
       {breadcrumbs && breadcrumbs.length > 0 && (
         <>
           <MobileBackLink breadcrumbs={breadcrumbs} />
-          <nav className="hidden items-center gap-1 text-sm text-muted-foreground sm:flex" aria-label="Breadcrumb">
+          <nav className="hidden items-center gap-1 text-sm text-muted-foreground sm:flex" aria-label={primitivesCopy.ariaExtended.breadcrumbNav}>
             {breadcrumbs.map((crumb, i) => (
               <span key={i} className="flex items-center gap-1">
                 {i > 0 ? <CaretRight weight="duotone" className="h-3.5 w-3.5" /> : null}
@@ -81,7 +82,7 @@ function PageHeader({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
+            <h1 className="text-[26px] font-bold tracking-[-0.025em] text-foreground">{title}</h1>
             {badge}
           </div>
           {sub ? <p className="text-sm text-muted-foreground sm:text-base">{sub}</p> : null}

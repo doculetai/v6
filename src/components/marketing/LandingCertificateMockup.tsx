@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { CheckCircle } from '@/components/icons';
 import { landingCopy as copy } from '@/config/copy/landing';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { cn } from '@/lib/utils';
 
 const cert = copy.certificate;
@@ -30,7 +31,7 @@ export function CertificateCard({ className }: { className?: string }) {
           </div>
           <Image
             src="/brand/assets/logo/doculet-shield-24.png"
-            alt="Doculet"
+            alt={primitivesCopy.brand.logoAlt}
             width={24}
             height={24}
           />
@@ -103,7 +104,7 @@ export function CertificateFull({ className }: { className?: string }) {
           </div>
           <Image
             src="/brand/assets/logo/doculet-shield-40.png"
-            alt="Doculet"
+            alt={primitivesCopy.brand.logoAlt}
             width={40}
             height={40}
           />
@@ -145,7 +146,7 @@ export function CertificateFull({ className }: { className?: string }) {
           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gold/40">
             <Image
               src="/brand/assets/logo/doculet-shield-32.png"
-              alt="Doculet seal"
+              alt={primitivesCopy.brand.sealAlt}
               width={28}
               height={28}
             />

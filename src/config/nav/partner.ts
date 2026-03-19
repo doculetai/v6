@@ -1,4 +1,6 @@
-import { ChartBar, Gear, House, Key, PaintBrush } from '@phosphor-icons/react/dist/ssr';
+import { ChartBar, Gear, House, LockKey, Palette, Users } from '@/components/icons';
+import { primitivesCopy } from '@/config/copy/primitives';
+import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
 
@@ -9,47 +11,49 @@ export const partnerNavConfig: NavConfig = {
   ],
   items: [
     {
-      label: 'Overview',
-      href: '/dashboard/partner',
+      label: primitivesCopy.nav.overview,
+      href: routes.dashboard.partner.overview,
       icon: House,
       description: 'Platform metrics',
       isPrimary: true,
     },
     {
       label: 'API Keys',
-      href: '/dashboard/partner/api-keys',
-      icon: Key,
+      href: routes.dashboard.partner.apiKeys,
+      icon: LockKey,
       description: 'Manage integration keys',
       group: 'developer',
     },
     {
+      label: 'Students',
+      href: routes.dashboard.partner.students,
+      icon: Users,
+      description: 'Students through your integration',
+      group: 'developer',
+    },
+    {
       label: 'Analytics',
-      href: '/dashboard/partner/analytics',
+      href: routes.dashboard.partner.analytics,
       icon: ChartBar,
       description: 'Usage and conversion data',
       group: 'developer',
     },
     {
       label: 'Branding',
-      href: '/dashboard/partner/branding',
-      icon: PaintBrush,
+      href: routes.dashboard.partner.branding,
+      icon: Palette,
       description: 'White-label customization',
       group: 'developer',
     },
     {
       label: 'Settings',
-      href: '/dashboard/partner/settings',
+      href: routes.dashboard.partner.settings,
       icon: Gear,
       description: 'Partner settings',
       group: 'account',
       mobileHidden: true,
     },
   ],
-  quickAction: {
-    label: 'View API keys',
-    icon: Key,
-    href: '/dashboard/partner/api-keys',
-  },
 };
 
 // Backward compat

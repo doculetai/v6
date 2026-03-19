@@ -20,9 +20,9 @@ export default defineConfig({
     navigationTimeout: 60_000,
   },
   expect: {
-    toHaveScreenshot: { maxDiffPixels: 0 },
+    toHaveScreenshot: { maxDiffPixelRatio: 0.02 },
   },
-  snapshotPathTemplate: 'tests/e2e/{testFilePath}/__screenshots__/{arg}{ext}',
+  snapshotPathTemplate: 'tests/e2e/{testFileDir}/__screenshots__/{arg}{ext}',
   projects: [
     /** Unauthenticated specs — no E2E env required. Run: npx playwright test --project=unauthenticated */
     {

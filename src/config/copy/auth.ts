@@ -23,7 +23,7 @@ export const authCopy = {
     confirmPasswordLabel: 'Confirm password',
     confirmPasswordHint: 'Re-enter your password',
     roleLabel: 'Role',
-    submittingText: 'Please wait...',
+    submittingText: 'Processing...',
   },
   validation: {
     invalidEmail: 'Enter a valid email address.',
@@ -50,7 +50,7 @@ export const authCopy = {
     description: 'Start your secure funding journey in minutes.',
     trustLabel: 'Secure account setup',
     submitLabel: 'Create account',
-    genericError: 'We could not create your account. Please try again.',
+    genericError: 'Account creation failed. Check your details and try again.',
     successTitle: 'Check your email',
     successDescription: 'We sent a confirmation link. Confirm your email to continue.',
     links: {
@@ -63,7 +63,7 @@ export const authCopy = {
     description: 'Enter your email and we will send a secure reset link.',
     trustLabel: 'Account recovery',
     submitLabel: 'Send reset link',
-    genericError: 'We could not send a reset link. Please try again.',
+    genericError: 'Reset link not sent. Check the email address and try again.',
     successTitle: 'Reset link sent',
     successDescription: (email: string) => `Reset link sent to ${email}.`,
     links: {
@@ -75,7 +75,7 @@ export const authCopy = {
     description: 'Use a strong password with at least 8 characters.',
     trustLabel: 'Password security',
     submitLabel: 'Update password',
-    genericError: 'We could not update your password. Please try again.',
+    genericError: 'Password not updated. Try again.',
   },
   magicLink: {
     buttonLabel: 'Send sign-in link',
@@ -89,7 +89,7 @@ export const authCopy = {
     returnToSignIn: 'Return to sign in',
   },
   error: {
-    backToLogin: 'Back to login',
+    backToLogin: 'Back to sign in',
   },
   layoutTrust: ['Verified', 'Encrypted', 'Shareable'],
   orContinueWith: 'or',

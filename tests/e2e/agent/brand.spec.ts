@@ -11,13 +11,14 @@ test.describe('Agent brand compliance (computed styles)', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('--role-accent CSS variable resolves to agent accent', async ({ page }) => {
-    const roleAccent = await page.evaluate(() =>
-      getComputedStyle(document.documentElement)
-        .getPropertyValue('--role-accent')
-        .trim(),
-    );
-    expect(roleAccent.toUpperCase()).toBe('#6D28D9');
+  test('--accent CSS variable resolves to agent accent', async ({ page }) => {
+    // --accent is set via [data-role="agent"] in globals.css (not on :root)
+    const accent = await page.evaluate(() => {
+      const el = document.querySelector('[data-role]');
+      if (!el) return '';
+      return getComputedStyle(el).getPropertyValue('--accent').trim();
+    });
+    expect(accent.toUpperCase()).toBe('#6D28D9');
   });
 
   test('active sidebar item has agent role accent border-left', async ({ page }) => {

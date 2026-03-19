@@ -67,7 +67,7 @@ export async function UniversityOverview({ caller }: UniversityOverviewProps) {
 
         {/* ── Next action ──────────────────────────────────────────────────── */}
         {nextAction && (
-          <div className="mb-6 rounded-xl border-l-4 border-l-primary bg-primary/[0.03] px-5 py-4">
+          <div className="mb-6 rounded-xl border border-primary/20 bg-primary/[0.04] px-5 py-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary/70">

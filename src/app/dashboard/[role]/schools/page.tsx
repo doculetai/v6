@@ -5,6 +5,7 @@ import { notFound, redirect } from 'next/navigation';
 
 import { PageHeader, PageShell } from '@/components/layout/content-primitives';
 import { studentCopy } from '@/config/copy/student';
+import { primitivesCopy } from '@/config/copy/primitives';
 import type { AppRouter } from '@/server/root';
 import { api } from '@/trpc/server';
 
@@ -63,7 +64,7 @@ export default async function SchoolsRolePage({ params }: SchoolsRolePageProps) 
       <PageHeader
         title={studentCopy.schools.title}
         breadcrumbs={[
-          { label: 'Overview', href: `/dashboard/${role}` },
+          { label: primitivesCopy.nav.overview, href: `/dashboard/${role}` },
           { label: studentCopy.schools.title },
         ]}
       />

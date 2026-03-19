@@ -11,13 +11,14 @@ test.describe('Sponsor brand compliance (computed styles)', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('--role-accent CSS variable resolves to sponsor accent', async ({ page }) => {
-    const roleAccent = await page.evaluate(() =>
-      getComputedStyle(document.documentElement)
-        .getPropertyValue('--role-accent')
-        .trim(),
-    );
-    expect(roleAccent.toUpperCase()).toBe('#15803D');
+  test('--accent CSS variable resolves to sponsor accent', async ({ page }) => {
+    // --accent is set via [data-role="sponsor"] in globals.css (not on :root)
+    const accent = await page.evaluate(() => {
+      const el = document.querySelector('[data-role]');
+      if (!el) return '';
+      return getComputedStyle(el).getPropertyValue('--accent').trim();
+    });
+    expect(accent.toUpperCase()).toBe('#15803D');
   });
 
   test('active sidebar item has sponsor role accent border-left', async ({ page }) => {

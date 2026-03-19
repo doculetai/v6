@@ -33,13 +33,14 @@ test.describe('Student brand compliance (computed styles)', () => {
     expect(fontFamily.toLowerCase()).toContain('ibm plex sans');
   });
 
-  test('--role-accent CSS variable resolves to student accent', async ({ page }) => {
-    const roleAccent = await page.evaluate(() =>
-      getComputedStyle(document.documentElement)
-        .getPropertyValue('--role-accent')
-        .trim(),
-    );
-    expect(roleAccent.toUpperCase()).toBe('#2B39A3');
+  test('--accent CSS variable resolves to student accent', async ({ page }) => {
+    // --accent is set via [data-role="student"] in globals.css (not on :root)
+    const accent = await page.evaluate(() => {
+      const el = document.querySelector('[data-role]');
+      if (!el) return '';
+      return getComputedStyle(el).getPropertyValue('--accent').trim();
+    });
+    expect(accent.toUpperCase()).toBe('#2B39A3');
   });
 
   test('amount elements use IBM Plex Mono font', async ({ page }) => {

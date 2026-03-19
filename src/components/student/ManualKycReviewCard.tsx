@@ -32,8 +32,8 @@ async function uploadToStorage(file: File, userId: string, label: string): Promi
 
   if (error) throw error;
 
-  const { data } = supabaseBrowserClient.storage.from(bucket).getPublicUrl(path);
-  return data.publicUrl;
+  // Return the storage path — never expose public URLs for private KYC documents
+  return path;
 }
 
 export function ManualKycReviewCard({ failedAttempts, onSuccess }: ManualKycReviewCardProps) {
@@ -93,8 +93,8 @@ export function ManualKycReviewCard({ failedAttempts, onSuccess }: ManualKycRevi
         ]);
 
         manualReviewMutation.mutate({
-          governmentIdStorageUrl: govIdUrl,
-          selfieStorageUrl: selfieUrl,
+          governmentIdStoragePath: govIdUrl,
+          selfieStoragePath: selfieUrl,
         });
       } catch {
         setUploadState('error');

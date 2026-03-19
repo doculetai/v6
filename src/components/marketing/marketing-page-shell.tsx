@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { marketingCopy } from '@/config/copy/marketing';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { routes } from '@/config/routes';
 
 type MarketingPageShellProps = {
@@ -18,7 +19,7 @@ export function MarketingPageShell({ title, description, children }: MarketingPa
           <Link href={routes.marketing.landing} className="inline-flex items-center gap-3">
             <Image
               src="/brand/logos/logo.svg"
-              alt="Doculet.ai logo"
+              alt={primitivesCopy.brand.logoFullAlt}
               width={132}
               height={34}
               className="h-auto w-32"
@@ -59,7 +60,7 @@ export function MarketingPageShell({ title, description, children }: MarketingPa
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Image
               src="/brand/assets/logo/doculet-shield-24.png"
-              alt="Doculet"
+              alt={primitivesCopy.brand.logoAlt}
               width={16}
               height={16}
             />

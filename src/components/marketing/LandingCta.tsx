@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { landingCopy as copy } from '@/config/copy/landing';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { routes } from '@/config/routes';
 
 export function LandingCta() {
@@ -10,7 +11,7 @@ export function LandingCta() {
       <div className="mx-auto flex max-w-lg flex-col items-center gap-6 px-6 text-center">
         <Image
           src="/brand/assets/logo/doculet-shield-48.png"
-          alt="Doculet"
+          alt={primitivesCopy.brand.logoAlt}
           width={48}
           height={48}
         />

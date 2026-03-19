@@ -23,9 +23,10 @@ test.describe.serial('Journey state: proof ready', () => {
     await page.goto('/dashboard/student/proof');
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('button', { name: /download pdf/i }).or(page.getByRole('link', { name: /download pdf/i })),
+      page.getByRole('button', { name: /download pdf/i }).first()
+        .or(page.getByRole('link', { name: /download pdf/i }).first()),
     ).toBeVisible({ timeout: 10_000 });
-    await expect(page.getByRole('button', { name: /share/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /share/i }).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('History tab present', async ({ page }) => {

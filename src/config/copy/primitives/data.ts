@@ -17,6 +17,7 @@ export const dataPrimitives = {
     filter: "Filter",
     exportCsv: "Export as CSV",
     selectAll: "Select all",
+    selectColumn: "Select",
     clearSelection: "Clear selection",
     selectedCount: "{n} selected",
     noColumns: "No columns",

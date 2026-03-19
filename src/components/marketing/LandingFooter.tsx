@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { landingCopy as copy } from '@/config/copy/landing';
+import { primitivesCopy } from '@/config/copy/primitives';
 
 export function LandingFooter() {
   return (
@@ -9,7 +10,7 @@ export function LandingFooter() {
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Image
             src="/brand/assets/logo/doculet-shield-24.png"
-            alt="Doculet"
+            alt={primitivesCopy.brand.logoAlt}
             width={16}
             height={16}
           />

@@ -56,7 +56,7 @@ function EarningsPanel({
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Pending payout</span>
+          <span className="text-sm text-muted-foreground">{primitivesCopy.earningsPanel.pendingPayout}</span>
           <span className="font-semibold text-foreground">
             {formatCurrency(pendingPayout, currency)}
           </span>

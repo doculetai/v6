@@ -65,6 +65,7 @@ export const uiPrimitives = {
   ariaExtended: {
     openMenu: "Open menu",
     closeMenu: "Close menu",
+    showPath: "Show path",
     openDialog: "Open dialog",
     closeDialog: "Close dialog",
     expand: "Expand",
@@ -74,6 +75,16 @@ export const uiPrimitives = {
     loading: "Loading",
     error: "Error",
     success: "Success",
+    treeNavigation: "Tree navigation",
+    settingsTabs: "Settings tabs",
+    progressSteps: "Progress steps",
+    breadcrumbNav: "Breadcrumb",
+    breadcrumbNavFull: "Breadcrumb navigation",
+    back: "Back",
+    dismiss: "Dismiss",
+    documentUploadProgress: "Document upload progress",
+    pageHelp: "Page help",
+    sponsorInvitations: "Sponsor invitations",
   },
   journeyProgress: {
     ariaLabel: "Application progress",
@@ -91,6 +102,7 @@ export const uiPrimitives = {
     submitted: "Submitted for review",
   },
   commandPalette: {
+    label: "Command palette",
     placeholder: "Search pages...",
     noResults: "No results found.",
     quickActionsGroup: "Quick actions",

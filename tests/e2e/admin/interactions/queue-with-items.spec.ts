@@ -20,10 +20,10 @@ test.describe.serial('Admin state: queue with items', () => {
     await expect(page.getByText(/queue.*empty|all.*clear/i)).not.toBeVisible({ timeout: 10_000 });
   });
 
-  test('queue row has Approve and Reject actions', async ({ page }) => {
+  test('queue row has a Review action button', async ({ page }) => {
     await page.goto('/dashboard/admin/operations');
     await page.waitForLoadState('networkidle');
-    await expect(page.getByRole('button', { name: /approve/i }).first()).toBeVisible({ timeout: 10_000 });
-    await expect(page.getByRole('button', { name: /reject/i }).first()).toBeVisible({ timeout: 10_000 });
+    // Approve/Reject are inside the review dialog; only "Review" is on the queue row
+    await expect(page.getByRole('button', { name: 'Review' }).first()).toBeVisible({ timeout: 10_000 });
   });
 });

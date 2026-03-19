@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { TimestampLabel } from '@/components/ui/timestamp-label';
 import { adminCopy } from '@/config/copy/admin';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { cn, formatDocumentType } from '@/lib/utils';
 import type { DocumentStatus, OperationsQueueRow } from '@/db/queries/admin-operations';
 
@@ -59,7 +60,7 @@ export function AdminOperationsTable({
   if (rows.length === 0) {
     return (
       <div className="rounded-xl border border-border bg-card p-10 text-center">
-        <FileText size={40} weight="duotone" aria-hidden="true" className="mx-auto mb-3 text-muted-foreground" />
+        <FileText size={32} weight="duotone" aria-hidden="true" className="mx-auto mb-3 text-muted-foreground" />
         <p className="font-medium text-foreground dark:text-foreground">
           {copy.empty.title}
         </p>
@@ -85,7 +86,7 @@ export function AdminOperationsTable({
                     if (el) el.indeterminate = someSelected && !allSelected;
                   }}
                   onChange={(e) => onSelectAll(e.target.checked)}
-                  aria-label="Select all"
+                  aria-label={primitivesCopy.ariaExtended.selectAll}
                   className="size-4 cursor-pointer accent-primary"
                 />
               </th>

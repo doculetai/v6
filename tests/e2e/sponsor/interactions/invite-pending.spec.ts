@@ -34,7 +34,7 @@ test.describe.serial('Sponsor state: invite pending', () => {
   test('commitment shows NGN amount', async ({ page }) => {
     await page.goto('/dashboard/sponsor/commitments');
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText(/₦|NGN/)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/₦|NGN/).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('no "already committed" copy that implies active status', async ({ page }) => {

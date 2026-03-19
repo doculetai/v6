@@ -30,6 +30,7 @@ import { PageHeader } from '@/components/layout/page-header';
 import { useDashboardBreadcrumbs } from '@/lib/hooks/useDashboardBreadcrumbs';
 import { cn } from '@/lib/utils';
 import { adminCopy } from '@/config/copy/admin';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { trpc } from '@/trpc/client';
 
 type OperationsQueueRow = {
@@ -328,7 +329,7 @@ export function AdminQueuePageClient({ initialQueue, initialStats }: Props) {
                           checked={selectedIds.size === queue.length && queue.length > 0}
                           onChange={toggleSelectAll}
                           className="size-4 rounded border-input"
-                          aria-label="Select all"
+                          aria-label={primitivesCopy.table.selectAll}
                         />
                       </th>
                       <th className="px-4 py-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">

@@ -43,8 +43,9 @@ test.describe.serial('Triggered: KYC identity retry sheet', () => {
     await page.goto('/dashboard/student/verification');
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: /resubmit identity/i }).click();
+    // Default tab is BVN; label is type-specific ('BVN Number', 'NIN Number', 'Passport Number')
     await expect(
-      page.getByLabel('Identity number'),
+      page.getByLabel(/BVN Number|NIN Number|Passport Number/i),
     ).toBeVisible({ timeout: 10_000 });
   });
 

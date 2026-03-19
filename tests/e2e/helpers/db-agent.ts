@@ -90,6 +90,7 @@ export async function setAgentState(
       await db.insert(certificates).values({
         studentId,
         token: `e2e_agent_cert_${crypto.randomUUID()}`,
+        certCode: `E2E-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
         status: 'active',
         paymentStatus: 'paid',
         issuedAt: new Date(),

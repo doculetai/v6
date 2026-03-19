@@ -62,6 +62,7 @@ export async function setSponsorState(
       await db.insert(certificates).values({
         studentId,
         token: `e2e_sponsor_cert_${crypto.randomUUID()}`,
+        certCode: `E2E-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
         status: 'active',
         paymentStatus: 'paid',
         issuedAt: new Date(),

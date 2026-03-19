@@ -190,11 +190,12 @@ export const adminRouter = createTRPCRouter({
   reviewDocument: roleProcedure('admin')
     .input(
       z.object({
-        documentId: z.string(),
+        documentId: z.string().uuid(),
         status: z.enum(['approved', 'rejected', 'more_info_requested']),
         reason: z.string().optional(),
       }),
     )
+    .output(z.void())
     .mutation(async ({ ctx, input }) => {
       const [doc] = await ctx.db
         .select({ userId: documents.userId, type: documents.type })
@@ -304,11 +305,12 @@ export const adminRouter = createTRPCRouter({
   bulkReviewDocuments: roleProcedure('admin')
     .input(
       z.object({
-        documentIds: z.array(z.string()).min(1).max(100),
+        documentIds: z.array(z.string().uuid()).min(1).max(100),
         status: z.enum(['approved', 'rejected', 'more_info_requested']),
         reason: z.string().optional(),
       }),
     )
+    .output(z.void())
     .mutation(async ({ ctx, input }) => {
       const docs = await ctx.db
         .select({ id: documents.id, userId: documents.userId, type: documents.type })

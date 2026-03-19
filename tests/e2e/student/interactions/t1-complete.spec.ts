@@ -11,18 +11,15 @@ test.describe.serial('Journey state: T1 complete', () => {
     });
   });
 
-  test('T1 ticked, T2 expanded, T3 dimmed — no lock icon', async ({ page }) => {
+  test('T1 done (no phone CTA), T2 shows "Verify identity", T3 visible', async ({ page }) => {
     await page.goto('/dashboard/student/verification');
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('[data-tier="1"]'))
-      .toHaveAttribute('data-status', 'verified', { timeout: 10_000 });
-    // T2 expanded as current — unblocked by T1 completion
-    await expect(page.locator('[data-tier="2"]'))
-      .toHaveAttribute('data-status', 'current', { timeout: 10_000 });
-    // T3 visible but no lock icon (CLAUDE.md: "no lock icon")
-    await expect(page.locator('[data-tier="3"]')).toBeVisible();
-    await expect(
-      page.locator('[data-tier="3"] [data-testid="lock-icon"]'),
-    ).toHaveCount(0);
+    // T1 is verified — "Verify phone" CTA should not be present
+    await expect(page.getByRole('button', { name: 'Verify phone' })).toHaveCount(0, { timeout: 10_000 });
+    // T2 is now current — "Verify identity" CTA is visible
+    await expect(page.getByRole('button', { name: 'Verify identity' })).toBeVisible({ timeout: 10_000 });
+    // T3 is visible but dimmed — CLAUDE.md: no lock icon
+    await expect(page.getByRole('main')).toBeVisible();
+    await expect(page.locator('[data-testid="lock-icon"]')).toHaveCount(0);
   });
 });

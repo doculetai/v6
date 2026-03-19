@@ -12,11 +12,18 @@ test.describe.serial('Journey state: OCR review', () => {
     });
   });
 
-  test('OCR review card with 4 editable fields + confirm CTA', async ({ page }) => {
+  test('documents page shows "Review required" chip for OCR pending doc', async ({ page }) => {
     await page.goto('/dashboard/student/documents');
     await page.waitForLoadState('networkidle');
-    // OCR card visible inline (CLAUDE.md: "OCR review card inline below uploaded file")
-    await expect(page.locator('[data-ocr-review-field]')).toHaveCount(4, { timeout: 10_000 });
-    await expect(page.getByRole('button', { name: /confirm and submit/i })).toBeVisible();
+    // OCR review chip is the trigger (CLAUDE.md: "OCR review card inline below uploaded file")
+    await expect(page.getByText('Review required')).toBeVisible({ timeout: 10_000 });
+  });
+
+  test('clicking "Review required" chip opens the OCR review sheet', async ({ page }) => {
+    await page.goto('/dashboard/student/documents');
+    await page.waitForLoadState('networkidle');
+    await page.getByText('Review required').click();
+    // OcrReviewSheet has title "Review statement details"
+    await expect(page.getByText('Review statement details')).toBeVisible({ timeout: 10_000 });
   });
 });

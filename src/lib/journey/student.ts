@@ -36,7 +36,7 @@ const FALLBACK_NEXT_ACTIONS: Record<string, JourneyNextAction> = {
     href: routes.dashboard.student.documents,
   },
   proof: {
-    label: 'Certificate',
+    label: 'Proof of Funds',
     description: 'Your application is complete. Review your proof of funds certificate.',
     cta: 'View certificate',
     href: routes.dashboard.student.proof,

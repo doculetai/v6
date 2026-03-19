@@ -80,7 +80,7 @@ export const partnerCopy = {
       months >= 12
         ? `${Math.floor(months / 12)} yr${Math.floor(months / 12) > 1 ? 's' : ''}${months % 12 ? ` ${months % 12} mo` : ''}`
         : `${months} mo`,
-    empty: { title: 'No programs available', description: 'University programs will appear here once configured.' },
+    empty: { title: 'No programs available', description: 'University programs will appear here once configured.', action: 'View overview' },
     error: {
       title: 'Failed to load programs',
       description: 'Please refresh the page to try again.',
@@ -114,7 +114,7 @@ export const partnerCopy = {
       completed: 'Completed',
       cancelled: 'Cancelled',
     } as Record<string, string>,
-    empty: { title: 'No applications yet', description: 'Student applications submitted through your API integration will appear here.' },
+    empty: { title: 'No applications yet', description: 'Student applications submitted through your API integration will appear here.', action: 'View overview' },
     error: {
       title: 'Failed to load applications',
       description: 'Please refresh the page to try again.',

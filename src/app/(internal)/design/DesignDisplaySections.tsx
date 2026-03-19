@@ -1,28 +1,28 @@
 'use client'
 
+import { ActionButton } from '@/components/ui/action-button';
 import { ActivityTimeline } from '@/components/ui/activity-timeline';
 import { Avatar, AvatarFallback, AvatarGroup, AvatarGroupCount } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DataTableShell } from '@/components/ui/data-table-shell';
 import { FilterBar } from '@/components/ui/filter-bar';
+import { IconButton } from '@/components/ui/icon-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MaskedValue } from '@/components/ui/masked-value';
-import { MetricCard } from '@/components/ui/metric-card';
-import { MoneyValue } from '@/components/ui/money-value';
 import { PipelineStepper } from '@/components/ui/pipeline-stepper';
 import { Progress } from '@/components/ui/progress';
-import { StatusBadge } from '@/components/ui/status-badge';
-import { SurfacePanel } from '@/components/ui/surface-panel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TimestampLabel } from '@/components/ui/timestamp-label';
 
+import { DotsThree, DownloadSimple, Funnel, MagnifyingGlass, Trash } from '@/components/icons';
+
+import { CompositionExamples } from './CompositionExamples';
+import { DesignDisplayPrimitivesSection } from './DesignDisplayPrimitivesSection';
 import { DesignLayoutPrimitives } from './DesignLayoutPrimitives';
 import { Code, DataTableShellDemo, Section } from './_helpers';
+import { designLabCopy as c } from '@/config/copy/design-lab';
 
 const now = new Date();
-const threeMinutesAgo = new Date(now.getTime() - 3 * 60 * 1000);
 const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000);
 const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
 const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -34,7 +34,7 @@ export function DesignDisplaySections() {
       <div className="border-t border-border/40" />
 
       {/* ── Interactive Primitives ── */}
-      <Section id="primitives-interactive" title="Interactive Primitives">
+      <Section id="primitives-interactive" title={c.sections.interactivePrimitives}>
         <div className="space-y-10">
 
           {/* Button */}
@@ -175,109 +175,40 @@ export function DesignDisplaySections() {
             </div>
           </div>
 
-        </div>
-      </Section>
-
-      <div className="border-t border-border/40" />
-
-      {/* ── Display Primitives ── */}
-      <Section id="primitives-display" title="Display Primitives">
-        <div className="space-y-10">
+          {/* ActionButton */}
           <div className="space-y-3">
-            <p className="font-medium text-foreground">StatusBadge</p>
-            <Code>{`import { StatusBadge } from '@/components/ui/status-badge'`}</Code>
+            <p className="font-medium text-foreground">ActionButton</p>
+            <Code>{`import { ActionButton } from '@/components/ui/action-button'`}</Code>
             <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-5">
-              <StatusBadge status="pending" />
-              <StatusBadge status="verified" />
-              <StatusBadge status="rejected" />
-              <StatusBadge status="attention" />
-              <StatusBadge status="expired" />
-              <StatusBadge status="verified" size="sm" />
-              <StatusBadge status="verified" size="lg" />
+              <ActionButton variant="primary">Approve</ActionButton>
+              <ActionButton variant="secondary">Cancel</ActionButton>
+              <ActionButton variant="destructive">Reject</ActionButton>
+              <ActionButton variant="primary" disabled>Disabled</ActionButton>
             </div>
           </div>
 
+          {/* IconButton */}
           <div className="space-y-3">
-            <p className="font-medium text-foreground">MetricCard</p>
-            <Code>{`import { MetricCard } from '@/components/ui/metric-card'`}</Code>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <MetricCard
-                label="Total Disbursed"
-                value={<MoneyValue amountMinor={1500000} />}
-                deltaValue="+12%"
-                deltaLabel="vs last month"
-                deltaDirection="up"
-                timestamp={now.toISOString()}
-              />
-              <MetricCard
-                label="Pending Reviews"
-                value="34"
-                deltaValue="-3"
-                deltaLabel="since yesterday"
-                deltaDirection="down"
-              />
-              <MetricCard label="Loading state" value="" loading />
-              <MetricCard label="Error state" value="" error />
+            <p className="font-medium text-foreground">IconButton</p>
+            <Code>{`import { IconButton } from '@/components/ui/icon-button'`}</Code>
+            <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border bg-card p-5">
+              <IconButton tooltip="Search"><MagnifyingGlass size={20} weight="duotone" /></IconButton>
+              <IconButton tooltip="Filter"><Funnel size={20} weight="duotone" /></IconButton>
+              <IconButton tooltip="Download"><DownloadSimple size={20} weight="duotone" /></IconButton>
+              <IconButton tooltip="More options" variant="outline"><DotsThree size={20} weight="duotone" /></IconButton>
+              <IconButton tooltip="Delete" variant="ghost"><Trash size={20} weight="duotone" /></IconButton>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <p className="font-medium text-foreground">MoneyValue</p>
-            <Code>{`import { MoneyValue } from '@/components/ui/money-value'`}</Code>
-            <div className="flex flex-wrap items-baseline gap-6 rounded-xl border border-border bg-card p-5">
-              <MoneyValue amountMinor={150000} display="full" />
-              <MoneyValue amountMinor={2500000} display="full" />
-              <MoneyValue amountMinor={10000000} display="compact" />
-              <MoneyValue amountMinor={150000} showCode={false} />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <p className="font-medium text-foreground">TimestampLabel</p>
-            <Code>{`import { TimestampLabel } from '@/components/ui/timestamp-label'`}</Code>
-            <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-5">
-              <TimestampLabel value={threeMinutesAgo} mode="relative" />
-              <TimestampLabel value={threeMinutesAgo} mode="absolute" />
-              <TimestampLabel value={threeMinutesAgo} mode="both" />
-              <TimestampLabel value="not-a-date" />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <p className="font-medium text-foreground">MaskedValue</p>
-            <Code>{`import { MaskedValue } from '@/components/ui/masked-value'`}</Code>
-            <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-5">
-              <MaskedValue value="1234567890123456" label="Card number" />
-              <MaskedValue value="08123456789" label="Phone" />
-              <MaskedValue value="admin@doculet.ai" />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <p className="font-medium text-foreground">SurfacePanel</p>
-            <Code>{`import { SurfacePanel } from '@/components/ui/surface-panel'`}</Code>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <SurfacePanel variant="default">
-                <p className="text-sm font-medium text-foreground">default</p>
-                <p className="text-xs text-muted-foreground">comfortable density</p>
-              </SurfacePanel>
-              <SurfacePanel variant="glass">
-                <p className="text-sm font-medium text-foreground">glass</p>
-                <p className="text-xs text-muted-foreground">backdrop-blur, white/70</p>
-              </SurfacePanel>
-              <SurfacePanel variant="elevated" density="compact">
-                <p className="text-sm font-medium text-foreground">elevated + compact</p>
-                <p className="text-xs text-muted-foreground">shadow-md, p-3</p>
-              </SurfacePanel>
-            </div>
-          </div>
         </div>
       </Section>
+
+      <DesignDisplayPrimitivesSection />
 
       <div className="border-t border-border/40" />
 
       {/* ── Data Primitives ── */}
-      <Section id="primitives-data" title="Data Primitives">
+      <Section id="primitives-data" title={c.sections.dataPrimitives}>
         <div className="space-y-10">
           <div className="space-y-3">
             <p className="font-medium text-foreground">ActivityTimeline</p>
@@ -357,6 +288,11 @@ export function DesignDisplaySections() {
       </Section>
 
       <DesignLayoutPrimitives />
+
+      <div className="border-t border-border/40" />
+
+      {/* ── Compositions ── */}
+      <CompositionExamples />
     </>
   );
 }

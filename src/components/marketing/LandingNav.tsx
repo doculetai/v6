@@ -38,7 +38,7 @@ export function LandingNav() {
         <Link href={routes.home} className="flex items-center gap-2.5">
           <Image
             src="/brand/assets/logo/doculet-shield-32.png"
-            alt="Doculet"
+            alt={primitivesCopy.brand.logoAlt}
             width={28}
             height={28}
             priority
@@ -92,11 +92,11 @@ export function LandingNav() {
             <Link href={routes.home} className="flex items-center gap-2.5">
               <Image
                 src="/brand/assets/logo/doculet-shield-32.png"
-                alt="Doculet"
+                alt={primitivesCopy.brand.logoAlt}
                 width={28}
                 height={28}
               />
-              <span className="font-serif text-base font-semibold text-primary">Doculet</span>
+              <span className="font-serif text-base font-semibold text-primary">{copy.nav.brandName}</span>
             </Link>
             <button
               onClick={() => setMenuOpen(false)}

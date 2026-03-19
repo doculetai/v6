@@ -9,6 +9,7 @@ import { SidebarCollapseButton } from '@/components/layout/sidebar/SidebarCollap
 import { getNavConfig } from '@/config/nav';
 import type { NavItem } from '@/config/nav/types';
 import { dashboardShellCopy, roleDisplayNames } from '@/config/copy/dashboard-shell';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { dashboardRoles, type DashboardRole, ROLE_ACCENTS } from '@/config/roles';
 import { useTheme } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
@@ -109,7 +110,7 @@ function MockSidebar({
       )}>
         <Image
           src="/brand/assets/logo/doculet-shield-64.png"
-          alt="Doculet"
+          alt={primitivesCopy.brand.logoAlt}
           width={64}
           height={64}
           className={cn('shrink-0', collapsed ? 'size-8' : 'size-10')}

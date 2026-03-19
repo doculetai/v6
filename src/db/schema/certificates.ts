@@ -13,6 +13,7 @@ export const certificates = pgTable('certificates', {
     onDelete: 'cascade',
   }),
   token: text('token').notNull().unique(),
+  certCode: text('cert_code').notNull().unique(),
   issuedAt: timestamp('issued_at').defaultNow().notNull(),
   validUntil: timestamp('valid_until'),
   status: text('status', { enum: ['active', 'revoked'] }).default('active').notNull(),

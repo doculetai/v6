@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, ilike, inArray, lt, not, notExists, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, ilike, inArray, lt, not, notExists, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 
 import type { DrizzleDB } from '@/db';
@@ -246,7 +246,7 @@ export async function getOperationsQueue(
     .leftJoin(studentProfiles, eq(studentProfiles.userId, documents.userId))
     .leftJoin(schools, eq(schools.id, studentProfiles.schoolId))
     .where(conditions.length > 0 ? and(...conditions) : undefined)
-    .orderBy(desc(documents.createdAt))
+    .orderBy(asc(documents.createdAt))
     .limit(filters.limit ?? 50)
     .offset(filters.offset ?? 0);
 

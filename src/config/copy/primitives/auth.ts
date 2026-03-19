@@ -72,6 +72,7 @@ export const authPrimitives = {
     verifyButton: "Verify and enable",
     cancel: "Cancel",
     invalidCode: "Code is incorrect or has expired. Try again.",
+    codeInputPlaceholder: "000000",
   },
   passwordChange: {
     title: "Change password",

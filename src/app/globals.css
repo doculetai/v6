@@ -38,6 +38,11 @@
   --color-warning: var(--warning);
   --color-gold: var(--gold);
 
+  /* Role accent — resolves to the current [data-role] value.
+     Enables: text-role-accent, bg-role-accent, border-role-accent */
+  --color-role-accent: var(--role-accent);
+  --color-role-accent-bg: var(--role-accent-bg);
+
   /* Chart colors (shadcn) */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -66,6 +71,7 @@
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
   --radius-2xl: var(--radius-2xl);
+  --radius-full: var(--radius-full);
 
   /* Shadows */
   --shadow-xs: var(--shadow-xs);
@@ -200,6 +206,70 @@
   /* Glass surfaces (dark) */
   --sidebar-glass-bg: rgba(13, 31, 60, 0.85);
   --topbar-glass-bg: rgba(10, 22, 40, 0.85);
+}
+
+/* ============================================================
+   ROLE ACCENT SYSTEM
+   Set by [data-role] on DashboardShell root (and any preview container).
+   Values mirror ROLE_ACCENTS in src/config/roles.ts — keep in sync.
+   Usage in components: var(--role-accent), var(--role-accent-bg)
+   ============================================================ */
+[data-role="student"]    { --role-accent: #2B39A3; --role-accent-bg: rgba(43,57,163,0.12); }
+[data-role="sponsor"]    { --role-accent: #15803D; --role-accent-bg: rgba(21,128,61,0.12); }
+[data-role="university"] { --role-accent: #0369A1; --role-accent-bg: rgba(3,105,161,0.12); }
+[data-role="admin"]      { --role-accent: #C2410C; --role-accent-bg: rgba(194,65,12,0.12); }
+[data-role="agent"]      { --role-accent: #6D28D9; --role-accent-bg: rgba(109,40,217,0.12); }
+[data-role="partner"]    { --role-accent: #0F766E; --role-accent-bg: rgba(15,118,110,0.12); }
+
+/* ============================================================
+   DOCULET PALETTE
+   Raw color scale — static values from doculet.ts.
+   Used by design lab (ThemeShowcase) and as Tailwind utilities (bg-primary-50 etc).
+   Never use these directly in app UI — use semantic tokens instead.
+   ============================================================ */
+@theme {
+  /* Primary — Deep Navy → Electric Blue */
+  --color-primary-50: #EFF6FF;
+  --color-primary-100: #DBEAFE;
+  --color-primary-200: #BFDBFE;
+  --color-primary-300: #93C5FD;
+  --color-primary-400: #60A5FA;
+  --color-primary-500: #3B82F6;
+  --color-primary-600: #2563EB;
+  --color-primary-700: #1D4ED8;
+  --color-primary-800: #1E40AF;
+  --color-primary-900: #1E3A8A;
+  --color-primary-950: #0A1628;
+
+  /* Neutral — Cool Slate */
+  --color-neutral-50: #F8FAFC;
+  --color-neutral-100: #F1F5F9;
+  --color-neutral-200: #E2E8F0;
+  --color-neutral-300: #CBD5E1;
+  --color-neutral-400: #94A3B8;
+  --color-neutral-500: #64748B;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1E293B;
+  --color-neutral-900: #0F172A;
+  --color-neutral-950: #020617;
+
+  /* Success — Green (verified / money) */
+  --color-success-200: #BBF7D0;
+  --color-success-300: #86EFAC;
+  --color-success-400: #4ADE80;
+  --color-success-500: #16A34A;
+  --color-success-600: #15803D;
+
+  /* Warning — Amber */
+  --color-warning-400: #FBBF24;
+  --color-warning-500: #D97706;
+  --color-warning-600: #B45309;
+
+  /* Destructive — Red */
+  --color-destructive-400: #F87171;
+  --color-destructive-500: #EF4444;
+  --color-destructive-600: #DC2626;
 }
 
 /* Base styles */

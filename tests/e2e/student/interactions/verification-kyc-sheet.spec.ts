@@ -38,20 +38,23 @@ test.describe.serial('Triggered: KYC identity sheet', () => {
     ).toBeVisible({ timeout: 10_000 });
   });
 
-  test('KYC sheet has identity type selector (BVN/NIN/passport)', async ({ page }) => {
+  test('KYC sheet has identity type selector (BVN/NIN/passport tab buttons)', async ({ page }) => {
     await page.goto('/dashboard/student/verification');
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'Verify identity' }).click();
-    // The Select component renders as a combobox role
-    await expect(page.getByRole('combobox')).toBeVisible({ timeout: 10_000 });
+    // KycIdentitySheet uses tab buttons for BVN/NIN/Passport selection (not a combobox)
+    await expect(
+      page.getByRole('button', { name: /BVN|NIN|Passport/i }).first(),
+    ).toBeVisible({ timeout: 10_000 });
   });
 
   test('KYC sheet has identity number input', async ({ page }) => {
     await page.goto('/dashboard/student/verification');
     await page.waitForLoadState('networkidle');
     await page.getByRole('button', { name: 'Verify identity' }).click();
+    // Default tab is BVN; label is type-specific ('BVN Number', 'NIN Number', 'Passport Number')
     await expect(
-      page.getByLabel('Identity number'),
+      page.getByLabel(/BVN Number|NIN Number|Passport Number/i),
     ).toBeVisible({ timeout: 10_000 });
   });
 

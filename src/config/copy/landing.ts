@@ -8,6 +8,7 @@ export const landingCopy = {
   },
 
   nav: {
+    brandName: 'Doculet',
     links: [
       { label: 'How it works', href: '#how-it-works' },
       { label: 'The Seal', href: '#the-seal' },
@@ -188,6 +189,58 @@ export const landingCopy = {
     body: 'Create your account and submit your proof of funds today.',
     ctaPrimary: 'Create your account',
     ctaSecondary: 'Sign in',
+  },
+
+  preview: {
+    nav: {
+      certificateLink: 'Certificate',
+      cta: 'Apply now',
+    },
+    hero: {
+      ctaPrimary: 'Start your application',
+      ctaSecondary: 'See how it works',
+      eyebrow: 'For Nigerian students applying to US universities',
+      headline: 'Verified.',
+      sub: 'Your Nigerian bank statement,\ncertified for US university admission.',
+      quote: '\u201cCertificate issued in 30 hours. My I-20 was processed the same week.\u201d',
+      quoteAttribution: '\u2014 Amara, MSc CS, University of Minnesota',
+      quoteInitials: 'AO',
+      finalQuote: '\u201cCertificate issued in under 30 hours. Our admissions office accepted it the same week.\u201d',
+      finalQuoteAttribution: 'Amara Okonkwo, MSc Computer Science',
+    },
+    steps: {
+      sectionLabel: 'Process',
+      headline: 'From bank statement\nto verified certificate',
+      items: [
+        { num: '01', title: 'Create your profile', body: 'Register with your email. Under 3 minutes.' },
+        { num: '02', title: 'Upload your bank statement', body: 'PDF or image \u2014 any Nigerian bank. We verify balance and account ownership.' },
+        { num: '03', title: 'Connect your sponsor (if applicable)', body: 'If someone is funding your education, invite them to confirm via their own dashboard.' },
+        { num: '04', title: 'Receive your certificate', body: 'A tamper-proof proof of funds document \u2014 the financial evidence US universities require for your I-20.' },
+      ],
+    },
+    certificate: {
+      sectionLabel: 'The certificate',
+      headline: 'The financial proof\nUS admissions accept',
+      body: 'Your certificate shows verified account balance, ownership, and funds availability \u2014 exactly what a US university financial office needs to process your I-20.',
+      features: [
+        'Accepted as proof of funds by US universities',
+        'Bank statement verification in 24\u201348 hours',
+        'Covers tuition, living costs, and all fees',
+        'Cryptographically signed \u2014 tamper-evident',
+        'Secure document storage, 7-year retention',
+        'NDPR-compliant data handling',
+      ],
+      cta: 'Get your certificate',
+    },
+    footer: {
+      trustMarkers: ['256-bit encryption', 'NDPR compliant', '7-year document retention', 'Cryptographically signed'],
+      copyright: '\u00a9 2026 Doculet.ai',
+      links: [
+        { label: 'Privacy policy', href: routes.marketing.privacy },
+        { label: 'Terms of service', href: routes.marketing.terms },
+        { label: 'Contact', href: routes.marketing.contact },
+      ],
+    },
   },
 
   footer: {

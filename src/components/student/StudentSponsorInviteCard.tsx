@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { studentCopy } from '@/config/copy/student';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { trpc } from '@/trpc/client';
 
 const sponsorCopy = studentCopy.sponsorInvite;
@@ -70,7 +71,7 @@ export function StudentSponsorInviteCard() {
         ) : null}
 
         {invitesQuery.data && invitesQuery.data.length > 0 ? (
-          <ul className="space-y-2" aria-label="Sponsor invitations">
+          <ul className="space-y-2" aria-label={primitivesCopy.ariaExtended.sponsorInvitations}>
             {invitesQuery.data.map((inv) => (
               <li
                 key={inv.id}

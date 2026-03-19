@@ -17,14 +17,14 @@ test.describe.serial('University state: with programs', () => {
     await page.goto('/dashboard/university/programs');
     await page.waitForLoadState('networkidle');
     await expect(page.getByText(/no program/i)).not.toBeVisible({ timeout: 10_000 });
-    // Program names seeded
-    await expect(page.getByText('Computer Science')).toBeVisible({ timeout: 10_000 });
+    // Program names seeded (seeded as "BSc Computer Science")
+    await expect(page.getByText(/computer science/i)).toBeVisible({ timeout: 10_000 });
   });
 
   test('each program row shows tuition amount in NGN', async ({ page }) => {
     await page.goto('/dashboard/university/programs');
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText(/₦|NGN/)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/₦|NGN/).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('overview page loads without error', async ({ page }) => {

@@ -4,7 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { commonUi } from '@/config/copy/shared';
+import { landingCopy } from '@/config/copy/landing';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { routes } from '@/config/routes';
+
+const lc = landingCopy;
+const cert = landingCopy.certificate;
+const preview = landingCopy.preview;
 
 // ── BRAND TOKENS ───────────────────────────────────────
 // #2B39A3 = extracted from actual shield PNG pixels
@@ -31,7 +37,7 @@ function ShieldImg({ size, invert = false }: { size: number; invert?: boolean })
   return (
     <Image
       src={`/brand/assets/logo/doculet-shield-${assetSize}.png`}
-      alt="Doculet"
+      alt={primitivesCopy.brand.logoAlt}
       width={size}
       height={size}
       priority
@@ -48,22 +54,8 @@ function Check({ color = C.cta }: { color?: string }) {
   );
 }
 
-// ── DATA ───────────────────────────────────────────────
-const steps = [
-  { num: '01', title: 'Create your profile', body: 'Register with your email. Under 3 minutes.' },
-  { num: '02', title: 'Upload your bank statement', body: 'PDF or image — any Nigerian bank. We verify balance and account ownership.' },
-  { num: '03', title: 'Connect your sponsor (if applicable)', body: 'If someone is funding your education, invite them to confirm via their own dashboard.' },
-  { num: '04', title: 'Receive your certificate', body: 'A tamper-proof proof of funds document — the financial evidence US universities require for your I-20.' },
-];
-
-const features = [
-  'Accepted as proof of funds by US universities',
-  'Bank statement verification in 24–48 hours',
-  'Covers tuition, living costs, and all fees',
-  'Cryptographically signed — tamper-evident',
-  'Secure document storage, 7-year retention',
-  'NDPR-compliant data handling',
-];
+const steps = preview.steps.items;
+const features = preview.certificate.features;
 
 // ── PAGE ───────────────────────────────────────────────
 export default function LandingPreviewPage() {
@@ -165,7 +157,7 @@ export default function LandingPreviewPage() {
         }
       `}</style>
 
-      <a href="#main-content" className="skip-link">Skip to content</a>
+      <a href="#main-content" className="skip-link">{lc.nav.skipToContent}</a>
 
       {/* ── NAV ──────────────────────────────────────────── */}
       <nav
@@ -175,22 +167,22 @@ export default function LandingPreviewPage() {
         <Link href="/" className="flex items-center gap-2.5">
           <ShieldImg size={28} />
           <span style={{ fontFamily: "'IBM Plex Serif', serif", color: C.brand, fontSize: 16, fontWeight: 600, letterSpacing: '-0.01em' }}>
-            Doculet
+            {lc.nav.brandName}
           </span>
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          <Link href="#how-it-works" className="nav-link">How it works</Link>
-          <Link href="#certificate" className="nav-link">Certificate</Link>
-          <Link href={routes.auth.login} className="nav-link">Sign in</Link>
+          <Link href="#how-it-works" className="nav-link">{lc.nav.links[0].label}</Link>
+          <Link href="#certificate" className="nav-link">{preview.nav.certificateLink}</Link>
+          <Link href={routes.auth.login} className="nav-link">{lc.nav.signIn}</Link>
         </div>
 
         <div className="flex items-center gap-3">
-          <Link href={routes.auth.signup} className="primary-btn-sm">Apply now</Link>
+          <Link href={routes.auth.signup} className="primary-btn-sm">{preview.nav.cta}</Link>
           <button
             className="md:hidden p-2"
             onClick={() => setMenuOpen(true)}
-            aria-label="Open menu"
+            aria-label={primitivesCopy.ariaExtended.openMenu}
           >
             <span className="flex flex-col gap-1.5">
               <span className="block w-5 h-0.5 rounded-full" style={{ background: C.ink }} />
@@ -207,15 +199,15 @@ export default function LandingPreviewPage() {
           <button
             onClick={() => setMenuOpen(false)}
             style={{ position: 'absolute', top: 20, right: 24, color: C.muted, fontSize: 14 }}
-            aria-label="Close menu"
+            aria-label={primitivesCopy.ariaExtended.closeMenu}
           >
             {commonUi.close}
           </button>
-          <Link href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</Link>
-          <Link href="#certificate" onClick={() => setMenuOpen(false)}>Certificate</Link>
-          <Link href={routes.auth.login} onClick={() => setMenuOpen(false)}>Sign in</Link>
+          <Link href="#how-it-works" onClick={() => setMenuOpen(false)}>{lc.nav.links[0].label}</Link>
+          <Link href="#certificate" onClick={() => setMenuOpen(false)}>{preview.nav.certificateLink}</Link>
+          <Link href={routes.auth.login} onClick={() => setMenuOpen(false)}>{lc.nav.signIn}</Link>
           <Link href={routes.auth.signup} onClick={() => setMenuOpen(false)} style={{ color: C.cta }}>
-            Apply now
+            {preview.nav.cta}
           </Link>
         </div>
       )}
@@ -250,7 +242,7 @@ export default function LandingPreviewPage() {
                 }}
               >
                 <span className="pulse-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: C.brand, display: 'inline-block' }} />
-                For Nigerian students applying to US universities
+                {preview.hero.eyebrow}
               </div>
 
               {/* Size-contrast headline — brand blue on headline */}
@@ -264,7 +256,7 @@ export default function LandingPreviewPage() {
                   color: C.brand,   // ← logo blue, not near-black
                   margin: 0,
                 }}>
-                  Verified.
+                  {preview.hero.headline}
                 </p>
                 <p style={{
                   fontFamily: "'IBM Plex Serif', serif",
@@ -274,15 +266,16 @@ export default function LandingPreviewPage() {
                   color: C.muted,
                   marginTop: 16,
                 }}>
-                  Your Nigerian bank statement,
-                  <br />certified for US university admission.
+                  {preview.hero.sub.split('\n').map((line, i) => (
+                    <span key={i}>{i > 0 && <br />}{line}</span>
+                  ))}
                 </p>
               </div>
 
               {/* CTAs */}
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                <Link href={routes.auth.signup} className="primary-btn">Start your application</Link>
-                <Link href="#how-it-works" className="ghost-btn">See how it works</Link>
+                <Link href={routes.auth.signup} className="primary-btn">{preview.hero.ctaPrimary}</Link>
+                <Link href="#how-it-works" className="ghost-btn">{preview.hero.ctaSecondary}</Link>
               </div>
 
               {/* Warmth / trust signal inline — critique fix */}
@@ -293,13 +286,13 @@ export default function LandingPreviewPage() {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 12, fontWeight: 600, flexShrink: 0,
                 }}>
-                  AO
+                  {preview.hero.quoteInitials}
                 </div>
                 <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.5, margin: 0 }}>
                   <em style={{ color: C.ink, fontStyle: 'italic' }}>
-                    &ldquo;Certificate issued in 30 hours. My I-20 was processed the same week.&rdquo;
+                    {preview.hero.quote}
                   </em>
-                  {' '}— Amara, MSc CS, University of Minnesota
+                  {' '}{preview.hero.quoteAttribution}
                 </p>
               </div>
             </div>
@@ -330,10 +323,12 @@ export default function LandingPreviewPage() {
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <div style={{ marginBottom: 32 }}>
             <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: C.muted, marginBottom: 12 }}>
-              Process
+              {preview.steps.sectionLabel}
             </p>
             <h2 style={{ fontFamily: "'IBM Plex Serif', serif", fontSize: 'clamp(32px,4vw,48px)', fontWeight: 600, lineHeight: 1.1, color: C.brand, margin: 0 }}>
-              From bank statement<br />to verified certificate
+              {preview.steps.headline.split('\n').map((line, i) => (
+                <span key={i}>{i > 0 && <br />}{line}</span>
+              ))}
             </h2>
           </div>
 
@@ -369,13 +364,15 @@ export default function LandingPreviewPage() {
         <div className="mx-auto max-w-4xl px-6 md:px-10">
           <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(212,168,83,0.6)', margin: 0 }}>
-                The certificate
+                {preview.certificate.sectionLabel}
               </p>
               <h2 style={{ fontFamily: "'IBM Plex Serif', serif", fontSize: 'clamp(32px,4vw,48px)', fontWeight: 600, lineHeight: 1.1, color: '#fff', margin: 0 }}>
-                The financial proof<br />US admissions accept
+                {preview.certificate.headline.split('\n').map((line, i) => (
+                  <span key={i}>{i > 0 && <br />}{line}</span>
+                ))}
               </h2>
               <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, margin: 0 }}>
-                Your certificate shows verified account balance, ownership, and funds availability — exactly what a US university financial office needs to process your I-20.
+                {preview.certificate.body}
               </p>
 
               <ul className="grid gap-2 md:grid-cols-2" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -389,7 +386,7 @@ export default function LandingPreviewPage() {
 
               <div>
                 <Link href={routes.auth.signup} className="gold-btn" style={{ width: 'fit-content' }}>
-                  Get your certificate
+                  {preview.certificate.cta}
                 </Link>
               </div>
           </div>
@@ -413,16 +410,16 @@ export default function LandingPreviewPage() {
           >
             <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: C.muted }}>
               <em style={{ color: C.ink, fontStyle: 'italic' }}>
-                &ldquo;Certificate issued in under 30 hours. Our admissions office accepted it the same week.&rdquo;
+                {preview.hero.finalQuote}
               </em>
             </p>
             <p style={{ margin: '6px 0 0', fontSize: 12, color: C.brand, fontWeight: 600 }}>
-              Amara Okonkwo, MSc Computer Science
+              {preview.hero.finalQuoteAttribution}
             </p>
           </div>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <Link href={routes.auth.signup} className="primary-btn">Create your account</Link>
-            <Link href={routes.auth.login} className="ghost-btn">Sign in</Link>
+            <Link href={routes.auth.signup} className="primary-btn">{lc.cta.ctaPrimary}</Link>
+            <Link href={routes.auth.login} className="ghost-btn">{lc.cta.ctaSecondary}</Link>
           </div>
         </div>
       </section>
@@ -434,17 +431,17 @@ export default function LandingPreviewPage() {
           padding: '14px 24px', borderBottom: `1px solid ${C.border}`,
           fontSize: 12, color: C.muted,
         }}>
-          {['256-bit encryption', 'NDPR compliant', '7-year document retention', 'Cryptographically signed'].map(item => (
+          {preview.footer.trustMarkers.map(item => (
             <span key={item}>{item}</span>
           ))}
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '20px 40px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: C.muted }}>
             <ShieldImg size={16} />
-            © 2026 Doculet.ai
+            {preview.footer.copyright}
           </div>
           <div style={{ display: 'flex', gap: 24, fontSize: 12, color: C.muted }}>
-            {[['Privacy policy', routes.marketing.privacy], ['Terms of service', routes.marketing.terms], ['Contact', routes.marketing.contact]].map(([label, href]) => (
+            {preview.footer.links.map(({ label, href }) => (
               <Link key={href} href={href} style={{ color: C.muted, textDecoration: 'none' }}
                 onMouseOver={e => (e.currentTarget.style.color = C.brand)}
                 onMouseOut={e => (e.currentTarget.style.color = C.muted)}
@@ -474,10 +471,10 @@ function CertificateCard() {
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
           <div>
             <div style={{ fontSize: 9, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.muted, fontFamily: "'IBM Plex Mono', monospace", marginBottom: 2 }}>
-              Proof of Funds
+              {cert.badge}
             </div>
             <div style={{ fontSize: 14, fontWeight: 600, fontFamily: "'IBM Plex Serif', serif", color: C.brand }}>
-              Doculet.ai
+              {cert.brand}
             </div>
           </div>
           <ShieldImg size={24} />
@@ -487,17 +484,17 @@ function CertificateCard() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 14 }}>
           <div>
-            <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.muted, marginBottom: 2 }}>Student</div>
-            <div style={{ fontSize: 14, fontWeight: 600 }}>Amara Okonkwo</div>
+            <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.muted, marginBottom: 2 }}>{cert.holderLabel}</div>
+            <div style={{ fontSize: 14, fontWeight: 600 }}>{cert.holder}</div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             <div>
-              <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.muted, marginBottom: 2 }}>Verified balance</div>
+              <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.muted, marginBottom: 2 }}>{cert.balanceLabel}</div>
               <div style={{ fontSize: 13, fontWeight: 500, fontFamily: "'IBM Plex Mono', monospace" }}>$45,200 USD</div>
             </div>
             <div>
-              <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.muted, marginBottom: 2 }}>Institution</div>
-              <div style={{ fontSize: 13, fontWeight: 500 }}>Univ. of Minnesota</div>
+              <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.muted, marginBottom: 2 }}>{cert.institutionLabel}</div>
+              <div style={{ fontSize: 13, fontWeight: 500 }}>{cert.institution}</div>
             </div>
           </div>
         </div>
@@ -509,7 +506,7 @@ function CertificateCard() {
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor', display: 'inline-block' }} />
             VERIFIED
           </div>
-          <div style={{ fontSize: 9, fontFamily: "'IBM Plex Mono', monospace", color: C.muted }}>DCL-2026-88441</div>
+          <div style={{ fontSize: 9, fontFamily: "'IBM Plex Mono', monospace", color: C.muted }}>{cert.serial}</div>
         </div>
       </div>
     </div>

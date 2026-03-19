@@ -317,7 +317,7 @@ export const sponsorCopy = {
   impact: {
     title: 'Impact',
     subtitle: 'Summary of your contribution to student success.',
-    empty: { title: 'No impact data yet', description: 'Your contribution summary will appear after you sponsor students.' },
+    empty: { title: 'No impact data yet', description: 'Your contribution summary will appear after you sponsor students.', action: 'View students' },
     stats: {
       totalDisbursed: 'Total disbursed',
       studentsHelped: 'Students helped',

@@ -1,4 +1,5 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { BlockedStateCard } from '@/components/ui/blocked-state-card';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { CommitmentEvent } from '@/components/ui/commitment-timeline';
 import { CommitmentTimeline } from '@/components/ui/commitment-timeline';
@@ -10,11 +11,16 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { ErrorState } from '@/components/ui/error-state';
 import { FileUploader } from '@/components/ui/file-uploader';
 import { IconAudit } from '@/components/ui/icon-audit';
+import { JourneyProgress } from '@/components/ui/journey-progress';
 import { PageHeader } from '@/components/ui/page-header';
+import { RadioCardGroup, RadioCardItem } from '@/components/ui/radio-card-group';
+import { SparklineChart } from '@/components/ui/sparkline';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { UsageMeter } from '@/components/ui/usage-meter';
 
 import { SessionManagementDemo } from './SessionManagementDemo';
 import { Code, Section } from './_helpers';
+import { designLabCopy as c } from '@/config/copy/design-lab';
 
 const now = new Date();
 const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -35,15 +41,15 @@ export function DesignLayoutPrimitives() {
       <div className="border-t border-border/40" />
 
       {/* ── Layout Primitives ── */}
-      <Section id="primitives-layout" title="Layout Primitives">
+      <Section id="primitives-layout" title={c.sections.layoutPrimitives}>
         <div className="space-y-10">
           <div className="space-y-3">
             <p className="font-medium text-foreground">PageHeader</p>
             <Code>{`import { PageHeader } from '@/components/ui/page-header'`}</Code>
             <div className="rounded-xl border border-border bg-card p-5">
               <PageHeader
-                title="Student Dashboard"
-                subtitle="Manage your sponsorship applications and documents."
+                title={c.demo.dashboardTitle}
+                subtitle={c.demo.dashboardSubtitle}
                 badge={<StatusBadge status="verified" size="sm" />}
                 meta="Last updated 3 minutes ago"
                 actions={
@@ -64,18 +70,53 @@ export function DesignLayoutPrimitives() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-border bg-card">
                 <EmptyState
-                  heading="No documents uploaded yet"
-                  body="Upload your admission letter, school ID, and other required documents to proceed."
-                  action={{ label: 'Upload your first document', href: '#' }}
+                  heading={c.demo.emptyDocs.heading}
+                  body={c.demo.emptyDocs.body}
+                  action={{ label: c.demo.emptyDocs.action, href: '#' }}
                 />
               </div>
               <div className="rounded-xl border border-border bg-card">
                 <EmptyState
-                  heading="No sponsorships found"
-                  body="You have not received any sponsorship offers. Share your profile to attract sponsors."
+                  heading={c.demo.emptySponsorships.heading}
+                  body={c.demo.emptySponsorships.body}
                 />
               </div>
             </div>
+          </div>
+
+          {/* BlockedStateCard */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">BlockedStateCard</p>
+            <Code>{`import { BlockedStateCard } from '@/components/ui/blocked-state-card'`}</Code>
+            <div className="max-w-sm">
+              <BlockedStateCard
+                heading={c.demo.blockedVerification.heading}
+                body={c.demo.blockedVerification.body}
+                action={{ label: c.demo.blockedVerification.action, href: '#' }}
+              />
+            </div>
+          </div>
+
+          {/* JourneyProgress */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">JourneyProgress</p>
+            <Code>{`import { JourneyProgress } from '@/components/ui/journey-progress'`}</Code>
+            <JourneyProgress
+              stages={[
+                { id: 'setup', label: 'Onboarding', status: 'completed' },
+                { id: 'verify', label: 'Verification', status: 'completed' },
+                { id: 'documents', label: 'Documents', status: 'current' },
+                { id: 'proof', label: 'Proof of Funds', status: 'upcoming' },
+              ]}
+              nextAction={{
+                label: 'Documents',
+                description: 'Upload your bank statement and supporting documents.',
+                cta: 'Upload documents',
+                href: '#',
+              }}
+              allComplete={false}
+              completionMessage={null}
+            />
           </div>
         </div>
       </Section>
@@ -83,7 +124,7 @@ export function DesignLayoutPrimitives() {
       <div className="border-t border-border/40" />
 
       {/* ── Form Controls ── */}
-      <Section id="primitives-forms" title="Form Controls">
+      <Section id="primitives-forms" title={c.sections.formControls}>
         <div className="space-y-10">
 
           {/* Accordion */}
@@ -152,13 +193,26 @@ export function DesignLayoutPrimitives() {
             />
           </div>
 
+          {/* RadioCardGroup */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">RadioCardGroup</p>
+            <Code>{`import { RadioCardGroup, RadioCardItem } from '@/components/ui/radio-card-group'`}</Code>
+            <div className="max-w-sm">
+              <RadioCardGroup defaultValue="self">
+                <RadioCardItem value="self" title={c.demo.sponsorType.self.title} description={c.demo.sponsorType.self.description} />
+                <RadioCardItem value="family" title={c.demo.sponsorType.family.title} description={c.demo.sponsorType.family.description} />
+                <RadioCardItem value="company" title={c.demo.sponsorType.corporate.title} description={c.demo.sponsorType.corporate.description} />
+              </RadioCardGroup>
+            </div>
+          </div>
+
         </div>
       </Section>
 
       <div className="border-t border-border/40" />
 
       {/* ── Finance Primitives ── */}
-      <Section id="primitives-finance" title="Finance Primitives">
+      <Section id="primitives-finance" title={c.sections.financePrimitives}>
         <div className="space-y-10">
 
           {/* CommitmentTimeline */}
@@ -201,17 +255,17 @@ export function DesignLayoutPrimitives() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl border border-border bg-card">
                 <ErrorState
-                  heading="Failed to load documents"
-                  body="There was a problem loading your documents. Please check your connection and try again."
-                  action={{ label: 'Try again', onClick: () => {} }}
+                  heading={c.demo.errorDocs.heading}
+                  body={c.demo.errorDocs.body}
+                  action={{ label: c.demo.errorDocs.action, onClick: () => {} }}
                 />
               </div>
               <div className="rounded-xl border border-border bg-card">
                 <ErrorState
-                  heading="Payment failed"
-                  body="Your payment could not be processed. Please update your payment method."
-                  action={{ label: 'Update payment', href: '#' }}
-                  secondaryAction={{ label: 'Contact support', href: '#' }}
+                  heading={c.demo.errorPayment.heading}
+                  body={c.demo.errorPayment.body}
+                  action={{ label: c.demo.errorPayment.primaryAction, href: '#' }}
+                  secondaryAction={{ label: c.demo.errorPayment.secondaryAction, href: '#' }}
                 />
               </div>
             </div>
@@ -224,13 +278,53 @@ export function DesignLayoutPrimitives() {
             <IconAudit size="md" />
           </div>
 
+          {/* UsageMeter */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">UsageMeter</p>
+            <Code>{`import { UsageMeter } from '@/components/ui/usage-meter'`}</Code>
+            <div className="max-w-xs space-y-4 rounded-xl border border-border bg-card p-5">
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">API calls today — 340 / 500</p>
+                <UsageMeter used={340} limit={500} />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">High usage — 470 / 500</p>
+                <UsageMeter used={470} limit={500} />
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground">Low usage — 50 / 500</p>
+                <UsageMeter used={50} limit={500} />
+              </div>
+            </div>
+          </div>
+
+          {/* SparklineChart */}
+          <div className="space-y-3">
+            <p className="font-medium text-foreground">SparklineChart</p>
+            <Code>{`import { SparklineChart } from '@/components/ui/sparkline'`}</Code>
+            <div className="flex flex-wrap gap-6 rounded-xl border border-border bg-card p-5">
+              <div className="w-32 space-y-1">
+                <p className="text-xs text-muted-foreground">Disbursements</p>
+                <SparklineChart data={[10, 25, 18, 40, 35, 55, 48, 70]} />
+              </div>
+              <div className="w-32 space-y-1">
+                <p className="text-xs text-muted-foreground">Active students</p>
+                <SparklineChart data={[5, 8, 7, 12, 15, 14, 18, 20]} color="var(--color-primary-500)" />
+              </div>
+              <div className="w-32 space-y-1">
+                <p className="text-xs text-muted-foreground">Rejections</p>
+                <SparklineChart data={[3, 5, 2, 8, 4, 6, 3, 2]} color="var(--destructive)" />
+              </div>
+            </div>
+          </div>
+
         </div>
       </Section>
 
       <div className="border-t border-border/40" />
 
       {/* ── Session Management ── */}
-      <Section id="primitives-session" title="Session Management">
+      <Section id="primitives-session" title={c.sections.sessionManagement}>
         <div className="space-y-3">
           <Code>{`import { SessionManagement } from '@/components/ui/session-management'`}</Code>
           <div className="max-w-xl">

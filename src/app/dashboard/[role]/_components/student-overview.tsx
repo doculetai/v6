@@ -171,15 +171,15 @@ function SchoolStrip({
 
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-border bg-card px-5 py-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
-      <div>
+      <div className="min-w-0">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
           {copy.sectionLabel}
         </p>
         {schoolName ? (
           <>
-            <p className="mt-1 text-sm font-semibold text-foreground">{schoolName}</p>
+            <p className="mt-1 truncate text-sm font-semibold text-foreground">{schoolName}</p>
             {programName ? (
-              <p className="mt-0.5 text-sm text-muted-foreground">
+              <p className="mt-0.5 truncate text-sm text-muted-foreground">
                 {programName}
                 {durationMonths ? ` · ${copy.durationLabel(durationMonths)}` : null}
               </p>
@@ -214,7 +214,7 @@ function SchoolStrip({
 function ActivityEmptyState() {
   const copy = studentHomeCopy.recentActivity;
   return (
-    <div className="flex flex-col items-center gap-2 py-10 text-center">
+    <div className="flex flex-col items-center gap-3 py-10 text-center">
       <List
         className="size-8 text-muted-foreground/50"
         weight="duotone"
@@ -222,6 +222,12 @@ function ActivityEmptyState() {
       />
       <p className="text-sm font-medium text-muted-foreground">{copy.emptyHeading}</p>
       <p className="max-w-xs text-sm text-muted-foreground/70">{copy.emptyDescription}</p>
+      <Button asChild size="sm" variant="outline" className="mt-1 min-h-11">
+        <Link href={routes.dashboard.student.verification} className="inline-flex items-center gap-1.5">
+          {copy.emptyCta}
+          <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
+        </Link>
+      </Button>
     </div>
   );
 }
@@ -283,29 +289,29 @@ export async function StudentOverview({
 
   const selectedSchool = schools.find((s) => s.id === schoolSelection?.schoolId) ?? null;
   const selectedProgram =
-    selectedSchool?.programs.find((p) => p.id === schoolSelection?.programId) ?? null;
+    selectedSchool?.programs?.find((p) => p.id === schoolSelection?.programId) ?? null;
 
   const completionPercent = verification?.completionPercent ?? 0;
   const highestTier =
     verification?.tiers
-      .filter((t) => t.isComplete)
+      ?.filter((t) => t.isComplete)
       .map((t) => t.tier)
       .sort((a, b) => b - a)[0] ?? 0;
   const uploadedCount = documents.length;
   const approvedCount = documents.filter((d) => d.status === 'approved').length;
-  const bankConnected = verification?.monoConnection.isConnected ?? false;
-  const bankName = verification?.monoConnection.bankName ?? null;
+  const bankConnected = verification?.monoConnection?.isConnected ?? false;
+  const bankName = verification?.monoConnection?.bankName ?? null;
   const verificationComplete = completionPercent >= 100;
   // onboardingComplete: read from profiles.onboardingComplete (set by completeOnboarding).
   // Falling back to schoolId presence would mark onboarding complete at step 2/4.
   const onboardingComplete = trustStage?.onboardingComplete ?? false;
-  const t1Complete = Boolean(verification?.tiers.find((t) => t.tier === 1)?.isComplete);
+  const t1Complete = Boolean(verification?.tiers?.find((t) => t.tier === 1)?.isComplete);
   // documentsComplete: at least one bank statement approved (matches journey model + proof checklist).
   const documentsComplete = trustStage?.documentsComplete ?? false;
 
   // proofReady is true only when the DB confirms an active certificate is issued.
   // Falls back to false if the proof query failed, preventing a false-positive banner.
-  const proofReady = proofCertificate?.certificate.issued === true;
+  const proofReady = proofCertificate?.certificate?.issued === true;
 
   const journeyState = computeStudentJourney(
     {
@@ -368,8 +374,8 @@ export async function StudentOverview({
           {proofReady ? (
             <>
               <CertIssuedOverviewCard
-                certificateId={proofCertificate?.certificate.certificateId ?? null}
-                issuedAt={proofCertificate?.certificate.issuedAt ?? null}
+                certificateId={proofCertificate?.certificate?.certificateId ?? null}
+                issuedAt={proofCertificate?.certificate?.issuedAt ?? null}
               />
 
               {/* Tabs: Activity only (journey tracker removed post-cert) */}
@@ -380,7 +386,7 @@ export async function StudentOverview({
                 >
                   <TabsTrigger
                     value="activity"
-                    className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-3 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                   >
                     {copy.tabs.activity}
                   </TabsTrigger>
@@ -503,7 +509,9 @@ export async function StudentOverview({
                         {copy.actionRequired.eyebrow}
                       </p>
                       <p className="mt-0.5 text-sm font-medium text-foreground">
-                        {copy.actionRequired.heading('Bank statement')}
+                        {copy.actionRequired.heading(
+                          copy.recentActivity.documentTypeLabels[rejectedDoc.type] ?? rejectedDoc.type
+                        )}
                       </p>
                       <p className="mt-0.5 text-sm text-muted-foreground">
                         {copy.actionRequired.body}
@@ -528,13 +536,13 @@ export async function StudentOverview({
                 >
                   <TabsTrigger
                     value="journey"
-                    className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-3 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                   >
                     {copy.tabs.journey}
                   </TabsTrigger>
                   <TabsTrigger
                     value="activity"
-                    className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="relative rounded-none border-b-2 border-transparent bg-transparent px-4 py-3 text-sm font-medium text-muted-foreground transition-colors data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:shadow-none"
                   >
                     {copy.tabs.activity}
                   </TabsTrigger>
@@ -569,7 +577,7 @@ export async function StudentOverview({
                         <div className="mt-3 divide-y divide-border">
                           {committedSponsors.map((s) => (
                             <div key={s.id} className="flex items-center justify-between py-2.5">
-                              <span className="text-sm text-foreground">{s.sponsorName}</span>
+                              <span className="min-w-0 flex-1 truncate pr-3 text-sm text-foreground">{s.sponsorName}</span>
                               <span className="font-mono text-sm font-medium tabular-nums text-foreground">
                                 {formatCurrency(s.amountKobo / 100)}
                               </span>

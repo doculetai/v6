@@ -24,6 +24,7 @@ import { useDashboardBreadcrumbs } from '@/lib/hooks/useDashboardBreadcrumbs';
 import { trpc } from '@/trpc/client';
 import { routes } from '@/config/routes';
 import type { RouterOutputs } from '@/trpc/client';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { universityCopy } from '@/config/copy/university';
 
 const programFormCopy = universityCopy.programs.programForm;
@@ -230,7 +231,7 @@ function AddProgramDialog({ copy, onSuccess }: AddProgramDialogProps) {
                 id="add-program-currency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                placeholder="NGN"
+                placeholder={primitivesCopy.currency.NGN}
                 maxLength={3}
                 required
               />
@@ -348,7 +349,7 @@ function EditProgramDialog({ program, copy, onSuccess }: EditProgramDialogProps)
                 id={`edit-currency-${program.id}`}
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                placeholder="NGN"
+                placeholder={primitivesCopy.currency.NGN}
                 maxLength={3}
                 required
               />

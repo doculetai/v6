@@ -18,10 +18,10 @@ interface JourneyProgressProps {
 
 function StagePill({ status, label }: { status: JourneyStage['status']; label: string }) {
   return (
-    <div className={cn('flex flex-col items-center gap-1.5', status === 'upcoming' && 'opacity-60 pointer-events-none')}>
+    <div className={cn('flex flex-col items-center gap-1.5 transition-opacity duration-200 ease-out', status === 'upcoming' && 'opacity-60 pointer-events-none')}>
       <div
         className={cn(
-          'flex h-7 min-w-[6rem] items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold transition-colors',
+          'flex h-7 min-w-[6rem] items-center justify-center gap-1.5 rounded-full px-3 text-xs font-semibold transition-colors duration-200 ease-out',
           status === 'completed' && 'bg-primary text-primary-foreground',
           status === 'current' && 'border-2 border-primary bg-primary/8 text-primary',
           status === 'upcoming' && 'border border-border bg-transparent text-muted-foreground',
@@ -42,7 +42,7 @@ function Connector({ completed }: { completed: boolean }) {
   return (
     <div
       className={cn(
-        'hidden h-0.5 flex-1 sm:block',
+        'hidden h-0.5 flex-1 sm:block transition-colors duration-200 ease-out',
         completed ? 'bg-primary/40' : 'bg-border',
       )}
       aria-hidden="true"
@@ -59,7 +59,7 @@ function JourneyProgress({
 }: JourneyProgressProps) {
   const currentIndex = stages.findIndex((s) => s.status === 'current');
   const completedCount = stages.filter((s) => s.status === 'completed').length;
-  const progressPct = Math.round((completedCount / stages.length) * 100);
+  const progressPct = stages.length > 0 ? Math.round((completedCount / stages.length) * 100) : 0;
 
   const stepLabel =
     currentIndex >= 0
@@ -116,23 +116,23 @@ function JourneyProgress({
 
       {/* Next action strip or completion message */}
       {allComplete && completionMessage ? (
-        <div className="rounded-xl border-l-4 border-l-primary bg-primary/[0.04] px-5 py-3.5">
+        <div className="rounded-xl border border-primary/20 bg-primary/[0.04] px-5 py-3.5">
           <div className="flex items-center gap-3">
             <Check className="size-4 shrink-0 text-primary" weight="duotone" aria-hidden="true" />
             <p className="text-sm text-muted-foreground">{completionMessage}</p>
           </div>
         </div>
       ) : nextAction ? (
-        <div className="rounded-xl border-l-4 border-l-primary bg-primary/[0.04] px-5 py-4">
+        <div className="rounded-xl border border-primary/20 bg-primary/[0.04] px-5 py-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-primary/70">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary/70">
                 {uiPrimitives.journeyProgress.nextStep}
               </p>
               <p className="mt-0.5 text-sm font-semibold text-foreground">{nextAction.label}</p>
               <p className="mt-0.5 text-sm text-muted-foreground">{nextAction.description}</p>
             </div>
-            <Button asChild size="sm" variant="default" className="mt-2 shrink-0 sm:mt-0">
+            <Button asChild size="sm" variant="default" className="mt-2 min-h-11 shrink-0 sm:mt-0">
               <Link href={nextAction.href} className="inline-flex items-center gap-1.5">
                 {nextAction.cta}
                 <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />

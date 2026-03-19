@@ -61,7 +61,7 @@ export function StudentDocumentUploadForm({
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
           {rejectionNote ? (
             <Callout variant="error">
-              <span className="font-medium">Rejected:</span> {rejectionNote}
+              <span className="font-medium">{copy.upload.rejectedLabel}</span> {rejectionNote}
             </Callout>
           ) : null}
           <div className="space-y-2">

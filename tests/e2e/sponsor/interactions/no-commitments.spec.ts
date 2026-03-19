@@ -17,7 +17,7 @@ test.describe.serial('Sponsor state: no commitments', () => {
   test('commitments page shows empty state', async ({ page }) => {
     await page.goto('/dashboard/sponsor/commitments');
     await page.waitForLoadState('networkidle');
-    await expect(page.getByText(/no commitment|no.*student/i)).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByText(/commit to a student|fund their education|no commitment/i)).toBeVisible({ timeout: 10_000 });
   });
 
   test('students page shows empty state', async ({ page }) => {

@@ -13,12 +13,14 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { createClient } from '@supabase/supabase-js';
 import { eq } from 'drizzle-orm';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 config({ path: '.env.local' });
 config({ path: '.env' });
 
 import * as schema from '../src/db/schema';
-import { users, profiles, studentProfiles, schools, programs, universityProfiles } from '../src/db/schema';
+import { users, profiles, studentProfiles, schools, programs, universityProfiles, partnerProfiles } from '../src/db/schema';
 
 const DATABASE_URL = process.env.DATABASE_URL;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -179,6 +181,47 @@ async function seedStudentProfile(
     });
 }
 
+/**
+ * Upserts E2E ID env vars into .env.local so db helpers can pick them up.
+ * Updates existing lines in-place; appends new ones at the end.
+ */
+function writeE2EIds(ids: Record<string, string>): void {
+  const envPath = join(process.cwd(), '.env.local');
+  let content = existsSync(envPath) ? readFileSync(envPath, 'utf-8') : '';
+
+  for (const [key, value] of Object.entries(ids)) {
+    const lineRegex = new RegExp(`^${key}=.*$`, 'm');
+    if (lineRegex.test(content)) {
+      content = content.replace(lineRegex, `${key}=${value}`);
+    } else {
+      content = content.endsWith('\n') ? content : content + '\n';
+      content += `${key}=${value}\n`;
+    }
+  }
+
+  writeFileSync(envPath, content);
+  console.log('  Written E2E IDs to .env.local:', Object.keys(ids).join(', '));
+}
+
+async function seedPartnerProfile(userId: string): Promise<string> {
+  await db
+    .insert(partnerProfiles)
+    .values({
+      userId,
+      organizationName: 'E2E Test Partner',
+    })
+    .onConflictDoUpdate({
+      target: partnerProfiles.userId,
+      set: { organizationName: 'E2E Test Partner', updatedAt: new Date() },
+    });
+
+  const profile = await db.query.partnerProfiles.findFirst({
+    where: eq(partnerProfiles.userId, userId),
+  });
+  if (!profile) throw new Error('Could not create partner profile');
+  return profile.id;
+}
+
 async function seedUniversityProfile(userId: string, schoolId: string) {
   await db
     .insert(universityProfiles)
@@ -211,6 +254,24 @@ export async function runE2ESeed(): Promise<void> {
   await seedDrizzleUser(universityAuthUserId, E2E_UNIVERSITY_EMAIL!, 'university', true);
   await seedUniversityProfile(universityAuthUserId, schoolId);
   await seedDrizzleUser(adminAuthUserId, E2E_ADMIN_EMAIL!, 'admin', true);
+
+  const ids: Record<string, string> = {
+    E2E_STUDENT_USER_ID: studentAuthUserId,
+    E2E_SPONSOR_USER_ID: sponsorAuthUserId,
+    E2E_UNIVERSITY_SCHOOL_ID: schoolId,
+  };
+
+  // Partner — optional: only seeded when credentials are present
+  const partnerEmail = process.env.E2E_PARTNER_EMAIL;
+  const partnerPassword = process.env.E2E_PARTNER_PASSWORD;
+  if (partnerEmail && partnerPassword) {
+    const partnerAuthUserId = await ensureSupabaseUser(partnerEmail, partnerPassword);
+    await seedDrizzleUser(partnerAuthUserId, partnerEmail, 'partner', true);
+    const partnerProfileId = await seedPartnerProfile(partnerAuthUserId);
+    ids.E2E_PARTNER_PROFILE_ID = partnerProfileId;
+  }
+
+  writeE2EIds(ids);
 }
 
 async function main() {

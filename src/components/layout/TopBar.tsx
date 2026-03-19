@@ -1,15 +1,24 @@
 'use client';
 
-import { Gear, List, MagnifyingGlass, X } from '@/components/icons';
+import dynamic from 'next/dynamic';
+import { List, MagnifyingGlass, X } from '@/components/icons';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { dashboardShellCopy } from '@/config/copy/dashboard-shell';
+import { primitivesCopy } from '@/config/copy/primitives';
 import type { DashboardRole } from '@/config/roles';
 
 import { NotificationsBell } from './NotificationsBell';
+
+// Desktop bell is client-only to prevent duplicate Radix useId() from causing
+// a server/client hydration mismatch when both responsive layouts are in the DOM.
+const NotificationsBellDesktop = dynamic(
+  () => import('./NotificationsBell').then((m) => ({ default: m.NotificationsBell })),
+  { ssr: false },
+);
 import { Sidebar } from './Sidebar';
 
 type TopBarProps = {
@@ -91,8 +100,8 @@ export function TopBar({ role, currentPath, user }: TopBarProps) {
       {/* Desktop topbar — visible on lg+ for all roles */}
       <div className="hidden h-[58px] items-center gap-3 border-b border-border bg-background px-7 lg:flex">
         {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[13px] font-medium text-foreground/40">
-          <span>Dashboard</span>
+        <nav aria-label={primitivesCopy.ariaExtended.breadcrumbNav} className="flex items-center gap-1.5 text-[13px] font-medium text-foreground/40">
+          <span>{dashboardShellCopy.topbar.breadcrumbRoot}</span>
           <span>/</span>
           <span className="font-semibold text-foreground">{pageLabel}</span>
         </nav>
@@ -101,26 +110,19 @@ export function TopBar({ role, currentPath, user }: TopBarProps) {
         <button
           type="button"
           onClick={triggerCommandPalette}
-          className="mx-auto flex h-[34px] w-full max-w-[300px] cursor-text items-center gap-2 rounded-lg border border-black/[0.07] bg-black/[0.04] px-3 text-[13px] text-slate-900/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mx-auto flex h-[34px] w-full max-w-[300px] cursor-text items-center gap-2 rounded-lg border border-border bg-muted/50 px-3 text-[13px] text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label={dashboardShellCopy.topbar.searchPlaceholder}
         >
           <MagnifyingGlass className="size-3.5 shrink-0" weight="duotone" aria-hidden="true" />
           <span className="flex-1 text-left">{dashboardShellCopy.topbar.searchPlaceholder}</span>
-          <kbd className="hidden rounded bg-black/[0.06] px-[5px] py-0.5 font-mono text-[10px] text-slate-900/40 md:block">
+          <kbd className="hidden rounded bg-muted px-[5px] py-0.5 font-mono text-[10px] text-muted-foreground/60 md:block">
             ⌘K
           </kbd>
         </button>
 
         {/* Right actions */}
         <div className="flex items-center gap-[6px]">
-          <NotificationsBell role={role} />
-          <button
-            type="button"
-            aria-label={dashboardShellCopy.topbar.settings}
-            className="flex h-[34px] w-[34px] items-center justify-center rounded-lg text-slate-900/45 transition-colors hover:bg-black/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <Gear size={18} weight="duotone" aria-hidden="true" />
-          </button>
+          <NotificationsBellDesktop role={role} />
           <button
             type="button"
             aria-label={dashboardShellCopy.topbar.userMenu}

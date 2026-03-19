@@ -26,6 +26,7 @@ export const commonPrimitives = {
   nav: {
     home: "Home",
     dashboard: "Dashboard",
+    overview: "Overview",
     settings: "Settings",
     profile: "Profile",
     help: "Help",
@@ -64,5 +65,10 @@ export const commonPrimitives = {
     EUR: "EUR",
     CAD: "CAD",
     AUD: "AUD",
+  },
+  brand: {
+    logoAlt: "Doculet",
+    logoFullAlt: "Doculet.ai logo",
+    sealAlt: "Doculet seal",
   },
 } as const

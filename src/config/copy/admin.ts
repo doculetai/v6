@@ -474,10 +474,10 @@ export const adminCopy = {
     },
     feedback: {
       reviewSuccess: (action: string) => `Document ${action}.`,
-      reviewError: "Document review failed. Please try again.",
+      reviewError: "Review not saved. Try again.",
       bulkSuccess: (n: number, action: string) =>
         `${n} document${n === 1 ? '' : 's'} ${action}.`,
-      bulkError: "Bulk action failed. Please try again.",
+      bulkError: "Bulk action not applied. Try again.",
     },
   },
 

@@ -56,19 +56,23 @@ export default async function StudentsPage({ params }: StudentsPageProps) {
 
   // University branch
   if (role === 'university') {
-    const [studentsResult] = await Promise.allSettled([caller.university.listUniversityStudents()]);
+    const [studentsResult, programsResult] = await Promise.allSettled([
+      caller.university.listUniversityStudentsWithCert({}),
+      caller.university.listUniversityPrograms(),
+    ]);
     if (studentsResult.status === 'rejected') {
       const err = studentsResult.reason;
       if (err instanceof TRPCError && err.code === 'UNAUTHORIZED') redirect(routes.auth.login);
     }
     const students = studentsResult.status === 'fulfilled' ? studentsResult.value : [];
+    const programs = programsResult.status === 'fulfilled' ? programsResult.value : [];
     return (
       <PageShell>
         <PageHeader
           title={universityCopy.students.title}
           subtitle={universityCopy.students.subtitle}
         />
-        <UniversityStudentsPageClient students={students} copy={universityCopy.students} />
+        <UniversityStudentsPageClient initialStudents={students} programs={programs} copy={universityCopy.students} />
       </PageShell>
     );
   }

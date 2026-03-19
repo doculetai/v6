@@ -1,5 +1,5 @@
-import { UniversityOverviewSkeleton } from '@/components/skeletons';
+import { OverviewPageSkeleton } from '@/components/skeletons';
 
-export default function UniversityOverviewLoading() {
-  return <UniversityOverviewSkeleton />;
+export default function OverviewLoading() {
+  return <OverviewPageSkeleton />;
 }

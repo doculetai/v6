@@ -21,21 +21,21 @@ export default async function BulkInvitePage({ params }: PageProps) {
   return (
     <PageShell>
       <PageHeader
-        overline="Student referrals"
-        title="Referrals"
-        actions={<ActionButton>Invite student</ActionButton>}
+        overline={agentCopy.referral.overline}
+        title={agentCopy.referral.pageTitle}
+        actions={<ActionButton>{agentCopy.referral.inviteCta}</ActionButton>}
       />
 
       <StatGrid columns={4}>
-        <StatCard label="Total referred" value="18" sub="All time" />
-        <StatCard label="Active" value="12" sub="Currently enrolled" />
-        <StatCard label="Converted" value="6" sub="Certificates issued" />
-        <StatCard label="Conversion rate" value="33%" sub="Referred to converted" />
+        <StatCard label={agentCopy.referral.stats.totalReferrals} value="18" sub={agentCopy.referral.stats.subs.allTime} />
+        <StatCard label={agentCopy.referral.stats.active} value="12" sub={agentCopy.referral.stats.subs.currentlyEnrolled} />
+        <StatCard label={agentCopy.referral.stats.converted} value="6" sub={agentCopy.referral.stats.subs.certificatesIssued} />
+        <StatCard label={agentCopy.referral.stats.conversionRate} value="33%" sub={agentCopy.referral.stats.subs.referredToConverted} />
       </StatGrid>
 
-      <SectionCard title="Referred students">
+      <SectionCard title={agentCopy.referral.referredStudentsTitle}>
         <DataTable
-          columns={['Student', 'Programme', 'Stage', 'Status', 'Referred on']}
+          columns={[agentCopy.referral.table.student, agentCopy.referral.table.programme, agentCopy.referral.table.stageShort, agentCopy.referral.table.status, agentCopy.referral.table.referredOn]}
           rows={[
             { cells: ['Chidinma Okafor', 'MSc Finance, University of Lagos', 'Verification', 'Active', '12 Feb 2026'], badgeType: 'green' },
             { cells: ['Emeka Nwosu', 'BSc Computer Science, Covenant Uni', 'Documents', 'Active', '28 Jan 2026'], badgeType: 'green' },

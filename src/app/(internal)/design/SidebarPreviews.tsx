@@ -27,7 +27,7 @@ export function SidebarPreviews() {
           </button>
         ))}
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2" data-role={activeRole}>
         {/* Expanded */}
         <div className="overflow-hidden rounded-xl border border-border">
           <p className="border-b border-border/60 bg-muted/30 px-3 py-2 text-xs font-medium text-muted-foreground">

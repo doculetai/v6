@@ -426,7 +426,7 @@ No stated SLA for admin review. Copy must not promise a timeline.
 > **Full reference:** `docs/ux-patterns.md` — read when building UI features.
 
 Key rules (always apply):
-- **Amounts:** Always `₦ 1,500,000` (full NGN, commas, IBM Plex Mono). Never abbreviated. Role-accented for confirmed amounts, muted for pending.
+- **Amounts:** Always dual-currency: `₦ 1,500,000 · $980 USD`. NGN primary (full, commas, IBM Plex Mono, role-accented for confirmed / muted for pending). USD secondary (IBM Plex Mono, muted, smaller). USD rate from daily cached exchange rate in DB (`src/db/queries/exchange-rates.ts`). Never abbreviated.
 - **Loading:** Skeleton placeholders for sections, spinner-in-button for mutations. Never full-page spinner.
 - **Forms:** Inline error below field on blur + submit. No summary banner, no toast for errors. Precise: "Select a school to continue."
 - **Mobile:** Bottom tab bar 4 items (Overview, Documents, Proof, Settings). Sidebar desktop-only. Mobile header: logo left, bell right.

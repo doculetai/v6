@@ -1,6 +1,6 @@
 /**
  * Layer E — Student settings: MFA QR code visible on trigger.
- * MFASettingsCard lives directly on the settings page (no tab click needed).
+ * MFASettingsCard lives on the Security tab of the settings page.
  * Clicking "Enable two-factor authentication" must render a base64 QR img.
  * beforeAll/afterAll purge auth.mfa_factors so tests are idempotent.
  */
@@ -19,15 +19,17 @@ test.describe.serial('Triggered: MFA QR code render', () => {
     await unenrollMfaFactors(STUDENT_ID);
   });
 
-  test('MFA card renders on settings page', async ({ page }) => {
+  test('MFA card renders on Security tab of settings page', async ({ page }) => {
     await page.goto('/dashboard/student/settings');
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Security' }).click();
     await expect(page.getByText('Two-factor authentication')).toBeVisible({ timeout: 10_000 });
   });
 
   test('MFA disabled state shows enable button', async ({ page }) => {
     await page.goto('/dashboard/student/settings');
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Security' }).click();
     await expect(
       page.getByRole('button', { name: 'Enable two-factor authentication' }),
     ).toBeVisible({ timeout: 10_000 });
@@ -36,6 +38,7 @@ test.describe.serial('Triggered: MFA QR code render', () => {
   test('clicking enable renders QR code image', async ({ page }) => {
     await page.goto('/dashboard/student/settings');
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Security' }).click();
     await page.getByRole('button', { name: 'Enable two-factor authentication' }).click();
     // Supabase mfa.enroll() returns an SVG; the card converts it to a data URL
     await expect(
@@ -46,6 +49,7 @@ test.describe.serial('Triggered: MFA QR code render', () => {
   test('QR code state shows scan instruction text', async ({ page }) => {
     await page.goto('/dashboard/student/settings');
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Security' }).click();
     await page.getByRole('button', { name: 'Enable two-factor authentication' }).click();
     await expect(
       page.getByText('Scan this QR code with your authenticator app.'),
@@ -55,6 +59,7 @@ test.describe.serial('Triggered: MFA QR code render', () => {
   test('QR code state shows verification code input', async ({ page }) => {
     await page.goto('/dashboard/student/settings');
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Security' }).click();
     await page.getByRole('button', { name: 'Enable two-factor authentication' }).click();
     await expect(
       page.getByRole('button', { name: 'Verify and enable' }),

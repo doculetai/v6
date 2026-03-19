@@ -14,17 +14,21 @@ test.describe.serial('Journey state: onboarding complete', () => {
   test('stage 1 completed, stage 2 current', async ({ page }) => {
     await page.goto('/dashboard/student');
     await page.waitForLoadState('networkidle');
-    await expect(page.locator('[data-stage-id="onboarding"]'))
-      .toHaveAttribute('data-stage-status', 'completed', { timeout: 10_000 });
-    await expect(page.locator('[data-stage-id="verification"]'))
-      .toHaveAttribute('data-stage-status', 'current', { timeout: 10_000 });
+    // JourneyProgress renders 'Complete' sub-label for completed stages
+    await expect(
+      page.locator('li').filter({ hasText: 'Profile setup' }).getByText('Complete'),
+    ).toBeVisible({ timeout: 10_000 });
+    // Phone stage is next (current = 'In progress'); label is 'Phone' not 'Phone verification'
+    await expect(
+      page.locator('li').filter({ hasText: 'Phone' }).getByText('In progress'),
+    ).toBeVisible({ timeout: 10_000 });
   });
 
-  test('nextAction CTA is "Continue verification"', async ({ page }) => {
+  test('nextAction CTA is "Verify phone"', async ({ page }) => {
     await page.goto('/dashboard/student');
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('link', { name: /continue verification/i }).first(),
+      page.getByRole('link', { name: /verify phone/i }).first(),
     ).toBeVisible({ timeout: 10_000 });
   });
 });

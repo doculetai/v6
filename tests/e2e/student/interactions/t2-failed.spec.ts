@@ -34,8 +34,8 @@ test.describe.serial('Journey state: T2 KYC failed', () => {
     await page.goto('/dashboard/student/verification');
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('button', { name: /retry|resubmit|try again/i })
-        .or(page.getByRole('link', { name: /retry|resubmit|try again/i })),
+      page.getByRole('button', { name: /retry|resubmit|try again/i }).first()
+        .or(page.getByRole('link', { name: /retry|resubmit|try again/i }).first()),
     ).toBeVisible({ timeout: 10_000 });
   });
 

@@ -11,14 +11,20 @@ test.describe.serial('Journey state: documents complete', () => {
     });
   });
 
-  test('all 3 stages completed, proof stage current', async ({ page }) => {
+  test('profile setup + bank statement complete; certificate stage in progress', async ({ page }) => {
     await page.goto('/dashboard/student');
     await page.waitForLoadState('networkidle');
-    for (const stage of ['onboarding', 'verification', 'documents']) {
-      await expect(page.locator(`[data-stage-id="${stage}"]`))
-        .toHaveAttribute('data-stage-status', 'completed', { timeout: 10_000 });
-    }
-    await expect(page.locator('[data-stage-id="proof"]'))
-      .toHaveAttribute('data-stage-status', 'current', { timeout: 10_000 });
+    // Profile setup and Bank statement stages should be Complete
+    await expect(
+      page.locator('li').filter({ hasText: 'Profile setup' }).getByText('Complete'),
+    ).toBeVisible({ timeout: 10_000 });
+    // 'Documents' is the stage label (not 'Bank statement')
+    await expect(
+      page.locator('li').filter({ hasText: 'Documents' }).getByText('Complete'),
+    ).toBeVisible({ timeout: 10_000 });
+    // Certificate stage is next (In progress)
+    await expect(
+      page.locator('li').filter({ hasText: 'Certificate' }).getByText('In progress'),
+    ).toBeVisible({ timeout: 10_000 });
   });
 });

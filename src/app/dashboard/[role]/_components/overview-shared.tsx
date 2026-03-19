@@ -121,20 +121,18 @@ export type NextStepItemConfig = {
   href: string;
 };
 
-export function NextStepCard({ step, index }: { step: NextStepItemConfig; index: number }) {
+export function NextStepCard({ step }: { step: NextStepItemConfig; index?: number }) {
   return (
-    <div className="rounded-xl border-l-4 border-l-primary bg-primary/[0.04] px-5 py-4">
+    <div className="rounded-xl border border-primary/20 bg-primary/[0.04] px-5 py-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-primary/70">
-            Step {index + 1}
-          </p>
-          <p className="mt-0.5 text-sm font-semibold text-foreground">{step.label}</p>
+          <p className="text-sm font-semibold text-foreground">{step.label}</p>
           <p className="mt-0.5 text-sm text-muted-foreground">{step.description}</p>
         </div>
-        <Button asChild size="sm" variant="default" className="mt-3 shrink-0 sm:mt-0">
-          <Link href={step.href}>
+        <Button asChild size="sm" variant="default" className="mt-3 min-h-11 shrink-0 sm:mt-0">
+          <Link href={step.href} className="inline-flex items-center gap-1.5">
             {step.cta}
+            <ArrowRight className="size-3.5" weight="duotone" aria-hidden="true" />
           </Link>
         </Button>
       </div>

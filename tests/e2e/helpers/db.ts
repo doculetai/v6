@@ -73,11 +73,11 @@ export async function unenrollMfaFactors(userId: string): Promise<void> {
   try {
     await db.execute(
       sql`DELETE FROM auth.mfa_challenges WHERE factor_id IN (
-            SELECT id FROM auth.mfa_factors WHERE user_id = ${userId}::uuid
+            SELECT id FROM auth.mfa_factors WHERE user_id = CAST(${userId} AS uuid)
           )`,
     );
     await db.execute(
-      sql`DELETE FROM auth.mfa_factors WHERE user_id = ${userId}::uuid`,
+      sql`DELETE FROM auth.mfa_factors WHERE user_id = CAST(${userId} AS uuid)`,
     );
   } finally {
     await client.end();
@@ -247,6 +247,7 @@ export async function setStudentState(
       await db.insert(certificates).values({
         studentId: userId,
         token: `e2e_cert_${crypto.randomUUID()}`,
+        certCode: `E2E-${crypto.randomUUID().slice(0, 8).toUpperCase()}`,
         status: 'active',
         paymentStatus: 'paid',
         issuedAt: new Date(),

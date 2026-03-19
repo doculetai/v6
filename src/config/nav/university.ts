@@ -1,4 +1,5 @@
-import { Files, Gear, GraduationCap, House, ListChecks, Users } from '@/components/icons';
+import { Gear, GraduationCap, House, Users } from '@/components/icons';
+import { primitivesCopy } from '@/config/copy/primitives';
 import { routes } from '@/config/routes';
 
 import type { NavConfig } from './types';
@@ -10,7 +11,7 @@ export const universityNavConfig: NavConfig = {
   ],
   items: [
     {
-      label: 'Overview',
+      label: primitivesCopy.nav.overview,
       href: routes.dashboard.university.overview,
       icon: House,
       description: 'Enrolment summary',
@@ -31,13 +32,6 @@ export const universityNavConfig: NavConfig = {
       group: 'admissions',
     },
     {
-      label: 'Documents',
-      href: routes.dashboard.university.documents,
-      icon: Files,
-      description: 'Student document submissions',
-      group: 'admissions',
-    },
-    {
       label: 'Settings',
       href: routes.dashboard.university.settings,
       icon: Gear,
@@ -46,11 +40,6 @@ export const universityNavConfig: NavConfig = {
       mobileHidden: true,
     },
   ],
-  quickAction: {
-    label: 'Review documents',
-    icon: ListChecks,
-    href: routes.dashboard.university.documents,
-  },
 };
 
 // Backward compat

@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test';
 
 const UNIVERSITY_NAV_ITEMS = [
   { label: 'Overview',  href: '/dashboard/university' },
-  { label: 'Programs',  href: '/dashboard/university/programs' },
+  { label: 'Programmes',  href: '/dashboard/university/programs' },
   { label: 'Students',  href: '/dashboard/university/students' },
   { label: 'Settings',  href: '/dashboard/university/settings' },
 ] as const;

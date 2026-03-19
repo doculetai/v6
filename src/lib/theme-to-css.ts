@@ -11,6 +11,8 @@ const SHADCN_KEYS: (keyof SemanticTokens)[] = [
   'foreground',
   'card',
   'cardForeground',
+  'popover',
+  'popoverForeground',
   'primary',
   'primaryForeground',
   'secondary',
@@ -172,4 +174,17 @@ export function themeToCss(theme: Theme): string {
   ];
 
   return `:root {\n${rootLines.join('\n')}\n}\n\n.dark {\n${darkLines.join('\n')}\n}\n`;
+}
+
+/**
+ * Returns the [data-role] CSS selectors as a string.
+ * Useful for injecting into iframes, design lab previews, or test environments
+ * where globals.css is not loaded. Mirrors ROLE_ACCENTS in src/config/roles.ts.
+ */
+export function roleAccentToCss(ROLE_ACCENTS: Record<string, { text: string; bg: string }>): string {
+  return Object.entries(ROLE_ACCENTS)
+    .map(([role, { text, bg }]) =>
+      `[data-role="${role}"] { --role-accent: ${text}; --role-accent-bg: ${bg}; }`
+    )
+    .join('\n');
 }

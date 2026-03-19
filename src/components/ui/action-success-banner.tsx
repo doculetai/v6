@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { JourneyNextAction } from '@/lib/journey/types';
+import { primitivesCopy } from '@/config/copy/primitives';
 
 interface ActionSuccessBannerProps {
   message: string;
@@ -45,7 +46,7 @@ function ActionSuccessBanner({ message, nextAction, onDismiss }: ActionSuccessBa
               size="icon"
               className="size-8"
               onClick={onDismiss}
-              aria-label="Dismiss"
+              aria-label={primitivesCopy.ariaExtended.dismiss}
             >
               <X className="size-4" weight="duotone" aria-hidden="true" />
             </Button>

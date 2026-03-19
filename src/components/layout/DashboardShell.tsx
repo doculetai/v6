@@ -70,6 +70,7 @@ export function DashboardShell({ role, children, className, studentTrustStage, i
 
   return (
     <div
+      data-role={role}
       className={cn(
         'flex h-screen overflow-hidden bg-background text-foreground',
         className,

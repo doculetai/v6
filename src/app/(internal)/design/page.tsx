@@ -28,6 +28,7 @@ import {
   TypographyShowcase,
 } from './ThemeShowcase';
 import { Code, Section } from './_helpers';
+import { designLabCopy as c } from '@/config/copy/design-lab';
 
 export const metadata: Metadata = {
   title: 'Design System — Doculet V6',
@@ -109,7 +110,7 @@ export default function DesignPage() {
         <div className="border-t border-border/40" />
 
         {/* ── Spacing ── */}
-        <Section id="spacing" title="Spacing">
+        <Section id="spacing" title={c.sections.spacing}>
           <div className="rounded-xl border border-border bg-card p-6">
             <p className="mb-3 text-xs text-muted-foreground">T-shirt sizes</p>
             <div className="flex flex-wrap items-end gap-3">
@@ -142,7 +143,7 @@ export default function DesignPage() {
         <div className="border-t border-border/40" />
 
         {/* ── Iconography ── */}
-        <Section id="iconography" title="Iconography">
+        <Section id="iconography" title={c.sections.iconography}>
           <div className="space-y-6">
             <div className="flex flex-wrap gap-3">
               {Object.entries(ICON_SIZES).map(([name, cls]) => (
@@ -176,7 +177,7 @@ export default function DesignPage() {
         <div className="border-t border-border/40" />
 
         {/* ── Skeletons ── */}
-        <Section id="skeletons" title="Skeleton Components">
+        <Section id="skeletons" title={c.sections.skeletons}>
           <div className="space-y-8">
             {skeletons.map((s) => (
               <div key={s.import} className="space-y-3">
@@ -195,7 +196,7 @@ export default function DesignPage() {
         <div className="border-t border-border/40" />
 
         {/* ── Navigation ── */}
-        <Section id="navigation" title="Navigation — Sidebar Preview">
+        <Section id="navigation" title={c.sections.navigation}>
           <div className="space-y-4">
             <SidebarPreviews />
             <div className="flex items-center justify-end">

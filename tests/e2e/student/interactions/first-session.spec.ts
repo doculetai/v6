@@ -26,7 +26,7 @@ test.describe.serial('Journey state: first session', () => {
   test('nextAction CTA links to /dashboard/student/setup', async ({ page }) => {
     await page.goto('/dashboard/student');
     await page.waitForLoadState('networkidle');
-    const cta = page.getByRole('link', { name: /set up your profile/i }).first();
+    const cta = page.getByRole('link', { name: /get started/i }).first();
     await expect(cta).toBeVisible({ timeout: 10_000 });
     await cta.click();
     await expect(page).toHaveURL(/\/dashboard\/student\/setup/, { timeout: 10_000 });
